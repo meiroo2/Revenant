@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class Moveable : MonoBehaviour
 {
+    /*
     public PlayerAnimController m_PlayerAnimcont;
     public GameObject toMove;
     public bool canMove = true;
-    private float m_curDirection;
-
-    public bool m_SetMoveStuck = true;
+    private Vector2 m_playerMoveVec;
 
     private Rigidbody2D m_rigid;
 
@@ -45,4 +44,5 @@ public class Moveable : MonoBehaviour
             m_PlayerAnimcont.setPlayerAnimState(PlayerAnimController.PlayerAnimState.IDLE);
         }
     }
+    */
 }

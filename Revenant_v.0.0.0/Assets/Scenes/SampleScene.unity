@@ -1153,11 +1153,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1021289265}
-  - component: {fileID: 1021289266}
   - component: {fileID: 1021289267}
   - component: {fileID: 1021289268}
-  - component: {fileID: 1021289269}
+  - component: {fileID: 1021289266}
   - component: {fileID: 1021289270}
+  - component: {fileID: 1021289271}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1196,6 +1196,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105661aab8d2c664b9b490428fd7d006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <m_curHumanState>k__BackingField: 0
+  <m_Hp>k__BackingField: 10
+  <m_Speed>k__BackingField: 1
+  <m_stunTime>k__BackingField: 0
+  <m_hasStun>k__BackingField: 0
+  <m_isEnemy>k__BackingField: 0
+  <m_isRightHeaded>k__BackingField: 1
+  <m_curPos>k__BackingField: 0000000000000000
+  <m_curPlayerState>k__BackingField: 0
+  <m_canMove>k__BackingField: 1
+  <m_canRoll>k__BackingField: 1
+  <m_canShot>k__BackingField: 1
 --- !u!61 &1021289267
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1243,22 +1255,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1021289269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1021289264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 687cda7fae6d1fb47a8c1b128ecabc56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PlayerAnimcont: {fileID: 496197440}
-  toMove: {fileID: 1021289264}
-  canMove: 1
-  m_SetMoveStuck: 1
 --- !u!114 &1021289270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1278,6 +1274,21 @@ MonoBehaviour:
   m_RotationSpeed: 1
   m_HeadSprites: []
   doSpriteChange: 0
+--- !u!114 &1021289271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021289264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5dfc7784e539794c9a5829fcdd1df42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Animators:
+  - {fileID: 154853273}
+  - {fileID: 1862713629}
 --- !u!1 &1041879377
 GameObject:
   m_ObjectHideFlags: 0
@@ -1472,10 +1483,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13165570e5c98274f999910617359ce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <m_curHumanState>k__BackingField: 0
   <m_Hp>k__BackingField: 1
   <m_Speed>k__BackingField: 1
-  <m_StunTime>k__BackingField: 1
+  <m_stunTime>k__BackingField: 0
   <m_hasStun>k__BackingField: 0
+  <m_isEnemy>k__BackingField: 0
+  <m_isRightHeaded>k__BackingField: 1
+  <m_curPos>k__BackingField: 0000000000000000
 --- !u!4 &1324483682
 Transform:
   m_ObjectHideFlags: 0

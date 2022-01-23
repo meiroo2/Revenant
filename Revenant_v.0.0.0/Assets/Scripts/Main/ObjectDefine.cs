@@ -19,7 +19,7 @@ public enum ObjectType
 public class ObjectDefine : MonoBehaviour
 {
     // Member Variables
-    public ObjectType m_objectType { get; set; } = ObjectType.Other;
+    public ObjectType m_objectType { get; private set; } = ObjectType.Other;
     public bool m_canAttacked { get; set; } = false;
     public bool m_canUse { get; set; } = false;
 

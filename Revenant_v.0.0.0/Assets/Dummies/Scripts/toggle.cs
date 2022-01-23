@@ -17,6 +17,6 @@ public class toggle : MonoBehaviour
     private void Update()
     {
         m_isStuckMove = !this.GetComponent<Toggle>().isOn;
-        m_Moveable.m_SetMoveStuck = m_isStuckMove;
+        //m_Moveable.m_SetMoveStuck = m_isStuckMove;
     }
 }

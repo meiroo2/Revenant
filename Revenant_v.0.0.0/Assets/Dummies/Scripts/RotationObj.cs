@@ -49,7 +49,7 @@ public class RotationObj : MonoBehaviour
         dy = mousePos.y - transform.position.y;
         dx = mousePos.x - transform.position.x;
 
-        if (m_Player.getisRightHeaded() == false)
+        if (m_Player.m_isRightHeaded == false)
         {
             dy = -dy;
             dx = -dx;
@@ -63,7 +63,7 @@ public class RotationObj : MonoBehaviour
         {
             if (rotateDegree > 90f || rotateDegree < -90f)
             {
-                if (m_Player.getisRightHeaded())
+                if (m_Player.m_isRightHeaded)
                     m_Player.setisRightHeaded(false);
                 else
                     m_Player.setisRightHeaded(true);
@@ -72,7 +72,7 @@ public class RotationObj : MonoBehaviour
 
         if (doSpriteChange)
         {
-            if (m_Player.getisRightHeaded())
+            if (m_Player.m_isRightHeaded)
             {
                 if (rotateDegree > 30f)
                     spriteRenderer.sprite = m_HeadSprites[0];
