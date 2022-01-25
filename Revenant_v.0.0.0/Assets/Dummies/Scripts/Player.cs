@@ -21,11 +21,12 @@ public class Player : Human
     [field: SerializeField] public bool m_canMove { get; private set; } = true;
     [field: SerializeField] public bool m_canRoll { get; private set; } = true;
     [field: SerializeField] public bool m_canShot { get; private set; } = true;
+    public float m_BackWalkSpeedRatio = 0.7f;
 
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
 
     private Rigidbody2D m_playerRigid;
-    public PlayerSoundnAni m_playerSoundnAni;
+    private PlayerSoundnAni m_playerSoundnAni;
 
     // Constructor
     private void Awake()
@@ -62,7 +63,10 @@ public class Player : Human
                     changePlayerFSM(playerState.IDLE);
                 else
                 {
-                    m_playerRigid.velocity = m_playerMoveVec * m_Speed;
+                    if ((m_isRightHeaded ? 1 : -1) == (int)m_playerMoveVec.x)
+                        m_playerRigid.velocity = m_playerMoveVec * m_Speed;
+                    else
+                        m_playerRigid.velocity = m_playerMoveVec * m_Speed * m_BackWalkSpeedRatio;
                 }
                 break;
 
@@ -152,4 +156,8 @@ public class Player : Human
     }
 
     // Functions
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        Debug.Log(collision.gameObject.GetComponent<MatTypeInterface>().m_matType);
+    }
 }

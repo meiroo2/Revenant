@@ -18,10 +18,6 @@ public class PlayerSoundnAni : MonoBehaviour
     }
 
     // Updates
-    private void Update()
-    {
-
-    }
 
     // Functions
     public void playplayerAnim()
@@ -36,19 +32,19 @@ public class PlayerSoundnAni : MonoBehaviour
                 break;
 
             case playerState.WALK:
-                foreach (Animator element in m_Animators)
-                {
-                    element.SetInteger("isWalk", 0);
-                }
 
                 isRightHeaded = m_Player.m_isRightHeaded ? 1 : -1;
                 if (isRightHeaded == (int)m_Player.m_playerMoveVec.x)
+                {
+                    Debug.Log("Forward");
                     foreach (Animator element in m_Animators)
                     {
                         element.SetInteger("isWalk", 1);
                     }
+                }
                 else
                 {
+                    Debug.Log("Backward");
                     foreach (Animator element in m_Animators)
                     {
                         element.SetInteger("isWalk", -1);
