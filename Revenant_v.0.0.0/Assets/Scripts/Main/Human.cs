@@ -22,6 +22,9 @@ public class Human : ObjectDefine
     [field: SerializeField] public bool m_isRightHeaded { get; private set; } = true;
     [field: SerializeField] public int[] m_curPos { get; set; } = new int[2];
 
+    // żŔşęÁ§ĆŽŔÇ żřˇĄ Ŕ§ÄĄ
+    public Vector2 m_originVec { get; set; }
+
     // Constructor
     private void Awake()
     {
@@ -51,7 +54,7 @@ public class Human : ObjectDefine
 
                 if(m_isEnemy == false)
                 {
-                    // ���� ���� �ڵ�
+                    // °ÔŔÓ żŔšö ÄÚľĺ
                 }
             }
         }
@@ -87,11 +90,20 @@ public class Human : ObjectDefine
                 break;
         }
     }
-    // MJMJMJ
-    // HJHJHJ
-    // TESTISTESTMERGEYEAHYEET
-    public void printSomething()
+    
+    // żŔşęÁ§ĆŽ¸Ś żřˇĄ Ŕ§ÄĄˇÎ şŻČŻ(y: -100)
+    public void respawn()
     {
-        Debug.Log(Mathf.Abs(-1));
+        // žĆˇĄˇÎ ¸šŔĚ śłžîÁłŔť ś§
+        if(transform.position.y < -10.0f)
+        {
+            // żřˇĄ Ŕ§ÄĄˇÎ ľšžĆżÂ´Ů
+            transform.position = m_originVec;
+        }
+    }
+
+    public void buffHp()
+    {
+        m_Hp = 10000.0f;
     }
 }
