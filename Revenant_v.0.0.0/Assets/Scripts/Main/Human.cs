@@ -54,7 +54,7 @@ public class Human : ObjectDefine
 
                 if(m_isEnemy == false)
                 {
-                    // °ÔŔÓ żŔšö ÄÚľĺ
+                    // Play Dead Ani
                 }
             }
         }
