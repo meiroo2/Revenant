@@ -14,7 +14,6 @@ public class EnemyDummy1 : EnemyDummy
 
     private void Awake()
     {
-        
         spriteRenderer = GetComponent<SpriteRenderer>();
         rigidBody = GetComponent<Rigidbody2D>();
     }
@@ -33,9 +32,5 @@ public class EnemyDummy1 : EnemyDummy
         MoveYInput();
     }
 
-    //IEnumerator MoveXTo(int n)
-    //{
-    //    yield return new WaitForSeconds(0.1f);
-    //    transform.position = new Vector2(n, transform.position.y);
-    //}
+    
 }

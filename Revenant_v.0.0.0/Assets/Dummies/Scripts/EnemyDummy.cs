@@ -29,5 +29,8 @@ public class EnemyDummy : Human
         rigidBody.velocity = new Vector2(0, Input.GetAxisRaw("Vertical"));
     }
 
-
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        Debug.Log("TriggerEnter");
+    }
 }
