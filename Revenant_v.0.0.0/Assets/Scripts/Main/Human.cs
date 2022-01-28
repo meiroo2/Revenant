@@ -22,7 +22,7 @@ public class Human : ObjectDefine
     [field: SerializeField] public bool m_isRightHeaded { get; private set; } = true;
     [field: SerializeField] public int[] m_curPos { get; set; } = new int[2];
 
-    // ¿ÀºêÁ§Æ®ÀÇ ¿ø·¡ À§Ä¡
+    // Å¼Å”ÅŸÄ™ÃÂ§Ä†Å½Å”Ã‡ Å¼Å™Ë‡Ä„ Å”Â§Ã„Ä„
     public Vector2 m_originVec { get; set; }
 
     // Constructor
@@ -54,8 +54,7 @@ public class Human : ObjectDefine
 
                 if(m_isEnemy == false)
                 {
-                    // °ÔÀÓ ¿À¹ö ÄÚµå
-                    //GetComponent<Player>().m_curPlayerState = playerState.DEAD;
+                    // Â°Ã”Å”Ã“ Å¼Å”Å¡Ã¶ Ã„ÃšÄ¾Äº
                 }
             }
         }
@@ -91,15 +90,14 @@ public class Human : ObjectDefine
                 break;
         }
     }
-
-
-    // ¿ÀºêÁ§Æ®¸¦ ¿ø·¡ À§Ä¡·Î º¯È¯(y: -100)
+    
+    // Å¼Å”ÅŸÄ™ÃÂ§Ä†Å½Â¸Åš Å¼Å™Ë‡Ä„ Å”Â§Ã„Ä„Ë‡Ã ÅŸÅ»ÄŒÅ»(y: -100)
     public void respawn()
     {
-        // ¾Æ·¡·Î ¸¹ÀÌ ¶³¾îÁ³À» ¶§
+        // Å¾Ä†Ë‡Ä„Ë‡Ã Â¸Å¡Å”Äš Å›Å‚Å¾Ã®ÃÅ‚Å”Å¥ Å›Â§
         if(transform.position.y < -10.0f)
         {
-            // ¿ø·¡ À§Ä¡·Î µ¹¾Æ¿Â´Ù
+            // Å¼Å™Ë‡Ä„ Å”Â§Ã„Ä„Ë‡Ã Ä¾Å¡Å¾Ä†Å¼Ã‚Â´Å®
             transform.position = m_originVec;
         }
     }
