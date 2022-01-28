@@ -52,7 +52,6 @@ public class Human : ObjectDefine
                 if(m_isEnemy == false)
                 {
                     // 게임 오버 코드
-                    //GetComponent<Player>().m_curPlayerState = playerState.DEAD;
                 }
             }
         }
@@ -87,5 +86,12 @@ public class Human : ObjectDefine
                 m_curHumanState = humanState.Pause;
                 break;
         }
+    }
+    // MJMJMJ
+    // HJHJHJ
+    // TESTISTESTMERGEYEAHYEET
+    public void printSomething()
+    {
+        Debug.Log(Mathf.Abs(-1));
     }
 }
