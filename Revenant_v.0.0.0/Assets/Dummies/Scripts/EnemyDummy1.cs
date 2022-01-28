@@ -23,6 +23,9 @@ public class EnemyDummy1 : EnemyDummy
     {
         //Debug.Log(getYPos());
         StartCoroutine(MoveXTo(3));
+
+        // y축 값이 -10보다 작으면 리스폰
+        respawn();
     }
 
     private void FixedUpdate()

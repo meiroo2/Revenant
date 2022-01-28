@@ -22,6 +22,9 @@ public class Human : ObjectDefine
     [field: SerializeField] public bool m_isRightHeaded { get; private set; } = true;
     [field: SerializeField] public int[] m_curPos { get; set; } = new int[2];
 
+    // 오브젝트의 원래 위치
+    public Vector2 m_originVec { get; set; }
+
     // Constructor
     private void Awake()
     {
@@ -90,9 +93,19 @@ public class Human : ObjectDefine
     }
 
 
-    protected Vector2 originVec;
+    // 오브젝트를 원래 위치로 변환(y: -100)
     public void respawn()
     {
-        transform.position = originVec;
+        // 아래로 많이 떨어졌을 때
+        if(transform.position.y < -10.0f)
+        {
+            // 원래 위치로 돌아온다
+            transform.position = m_originVec;
+        }
+    }
+
+    public void buffHp()
+    {
+        m_Hp = 10000.0f;
     }
 }
