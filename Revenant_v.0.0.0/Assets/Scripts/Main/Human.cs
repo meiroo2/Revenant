@@ -88,4 +88,11 @@ public class Human : ObjectDefine
                 break;
         }
     }
+
+
+    protected Vector2 originVec;
+    public void respawn()
+    {
+        transform.position = originVec;
+    }
 }
