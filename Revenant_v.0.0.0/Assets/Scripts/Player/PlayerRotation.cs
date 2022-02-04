@@ -32,22 +32,6 @@ public class PlayerRotation : MonoBehaviour
     // Updates
     private void Update()
     {
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        dy = mousePos.y - transform.position.y;
-        dx = mousePos.x - transform.position.x;
-
-        if (m_Player.m_isRightHeaded == false)
-        {
-            dy = -dy;
-            dx = -dx;
-        }
-
-        rotateDegree = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
-
-        toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
-
-
         if (m_doRotate && rotateDegree > 90f || rotateDegree < -90f)
         {
             if (m_Player.m_isRightHeaded)
@@ -62,6 +46,21 @@ public class PlayerRotation : MonoBehaviour
             if (!m_spriteChangeMode)
                 m_playerSoundnAni.playplayerAnim();
         }
+
+        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        dy = mousePos.y - transform.position.y;
+        dx = mousePos.x - transform.position.x;
+
+        if (m_Player.m_isRightHeaded == false)
+        {
+            dy = -dy;
+            dx = -dx;
+        }
+
+        rotateDegree = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
+
+        toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
 
         if (m_spriteChangeMode)
         {
