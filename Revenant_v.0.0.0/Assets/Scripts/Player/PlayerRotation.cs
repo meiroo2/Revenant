@@ -5,8 +5,10 @@ using UnityEngine;
 public class PlayerRotation : MonoBehaviour
 {
     // Member Variables
-    public bool doRotate = true;
-    public bool doSpriteChange = true;
+    public bool m_doRotate = true;
+    public bool m_spriteChangeMode = false;
+    public SpriteRenderer m_HeadspriteRenderer;
+    public Sprite[] m_HeadSprites;
 
     private PlayerSoundnAni m_playerSoundnAni;
     private Player m_Player;
@@ -22,6 +24,9 @@ public class PlayerRotation : MonoBehaviour
     {
         m_Player = GetComponentInParent<Player>();
         m_playerSoundnAni = GetComponentInParent<PlayerSoundnAni>();
+
+        if (m_spriteChangeMode == true)
+            m_HeadspriteRenderer.gameObject.GetComponent<Animator>().enabled = false;
     }
 
     // Updates
@@ -43,7 +48,7 @@ public class PlayerRotation : MonoBehaviour
         toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
 
 
-        if (rotateDegree > 90f || rotateDegree < -90f)
+        if (m_doRotate && rotateDegree > 90f || rotateDegree < -90f)
         {
             if (m_Player.m_isRightHeaded)
             {
@@ -53,35 +58,36 @@ public class PlayerRotation : MonoBehaviour
             {
                 m_Player.setisRightHeaded(true);
             }
-            m_playerSoundnAni.playplayerAnim();
+
+            if (!m_spriteChangeMode)
+                m_playerSoundnAni.playplayerAnim();
         }
 
-        /*
-        if (doSpriteChange)
+        if (m_spriteChangeMode)
         {
             if (m_Player.m_isRightHeaded)
             {
                 if (rotateDegree > 30f)
-                    spriteRenderer.sprite = m_HeadSprites[0];
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[0];
                 else if (rotateDegree < -30f)
-                    spriteRenderer.sprite = m_HeadSprites[2];
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[2];
                 else
-                    spriteRenderer.sprite = m_HeadSprites[1];
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[1];
             }
             else
             {
                 if (-rotateDegree > 30f)
-                    spriteRenderer.sprite = m_HeadSprites[0];
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[0];
                 else if (-rotateDegree < -30f)
-                    spriteRenderer.sprite = m_HeadSprites[2];
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[2];
                 else
-                    spriteRenderer.sprite = m_HeadSprites[1];
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[1];
             }
         }
-        */
     }
     private void FixedUpdate()
     {
-        transform.rotation = toRotation;
+        if (m_doRotate)
+            transform.rotation = toRotation;
     }
 }
