@@ -66,21 +66,25 @@ public class PlayerRotation : MonoBehaviour
         {
             if (m_Player.m_isRightHeaded)
             {
-                if (rotateDegree > 30f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[0];
-                else if (rotateDegree < -30f)
+                if(rotateDegree > 45f)
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[3];
+                else if (rotateDegree > 0f)
                     m_HeadspriteRenderer.sprite = m_HeadSprites[2];
-                else
+                else if (rotateDegree > -45f)
                     m_HeadspriteRenderer.sprite = m_HeadSprites[1];
+                else if (rotateDegree > -90f)
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[0];
             }
             else
             {
-                if (-rotateDegree > 30f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[0];
-                else if (-rotateDegree < -30f)
+                if (-rotateDegree > 45f)
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[3];
+                else if (-rotateDegree > 0f)
                     m_HeadspriteRenderer.sprite = m_HeadSprites[2];
-                else
+                else if (-rotateDegree > -45f)
                     m_HeadspriteRenderer.sprite = m_HeadSprites[1];
+                else if (-rotateDegree > -90f)
+                    m_HeadspriteRenderer.sprite = m_HeadSprites[0];
             }
         }
     }
