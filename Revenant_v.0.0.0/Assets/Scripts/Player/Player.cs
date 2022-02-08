@@ -21,18 +21,24 @@ public class Player : Human
     [field: SerializeField] public bool m_canMove { get; private set; } = true;
     [field: SerializeField] public bool m_canRoll { get; private set; } = true;
     [field: SerializeField] public bool m_canShot { get; private set; } = true;
+
     public float m_BackWalkSpeedRatio = 0.7f;
+    public float m_RunSpeedRatio = 1.5f;
 
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
 
+    private PlayerRotation m_playerRotation;
     private Rigidbody2D m_playerRigid;
     private PlayerSoundnAni m_playerSoundnAni;
+    private Player_Gun m_playerGun;
 
     // Constructor
     private void Awake()
     {
         m_playerRigid = GetComponent<Rigidbody2D>();
         m_playerSoundnAni = GetComponent<PlayerSoundnAni>();
+        m_playerRotation = GetComponentInChildren<PlayerRotation>();
+        m_playerGun = GetComponentInChildren<Player_Gun>();
     }
 
     // Update
@@ -64,13 +70,24 @@ public class Player : Human
                 else
                 {
                     if ((m_isRightHeaded ? 1 : -1) == (int)m_playerMoveVec.x)
+                    {
                         m_playerRigid.velocity = m_playerMoveVec * m_Speed;
+                        if (Input.GetKeyDown(KeyCode.LeftShift))
+                            changePlayerFSM(playerState.RUN);
+                    }
                     else
                         m_playerRigid.velocity = m_playerMoveVec * m_Speed * m_BackWalkSpeedRatio;
                 }
                 break;
 
             case playerState.RUN:
+                if (m_isRightHeaded)
+                    m_playerRigid.velocity = new Vector2(m_Speed * m_RunSpeedRatio, 0f);
+                else
+                    m_playerRigid.velocity = new Vector2(-m_Speed * m_RunSpeedRatio, 0f);
+
+                if (Input.GetKeyUp(KeyCode.LeftShift))
+                    changePlayerFSM(playerState.WALK);
                 break;
 
             case playerState.ROLL:
@@ -104,6 +121,9 @@ public class Player : Human
                 break;
 
             case playerState.RUN:
+                m_curPlayerState = playerState.RUN;
+                m_playerRotation.m_doRotate = false;
+                m_playerGun.m_canShot = false;
                 break;
 
             case playerState.ROLL:
@@ -136,6 +156,8 @@ public class Player : Human
                 break;
 
             case playerState.RUN:
+                m_playerRotation.m_doRotate = true;
+                m_playerGun.m_canShot = true;
                 break;
 
             case playerState.ROLL:

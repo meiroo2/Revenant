@@ -11,6 +11,7 @@ public class Player_Gun : MonoBehaviour
     public GameObject m_BulletPrefab;
     public float m_BulletSpeed;
     public float m_BulletDamage;
+    public bool m_canShot = true;
 
     private Player m_Player;
 
@@ -25,15 +26,18 @@ public class Player_Gun : MonoBehaviour
     // 업데이트 문 혹은 업데이트 때 호출되는 함수들 적기 (Update->FixedUpdate->자체 업데이트함수 순서)
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (m_canShot)
         {
-            GameObject InstancedBullet = Instantiate(m_BulletPrefab);
-            InstancedBullet.GetComponent<Player_Bullet>().InitBullet(m_BulletSpeed);
+            if (Input.GetMouseButtonDown(0))
+            {
+                GameObject InstancedBullet = Instantiate(m_BulletPrefab);
+                InstancedBullet.GetComponent<Player_Bullet>().InitBullet(m_BulletSpeed);
 
-            if (m_Player.m_isRightHeaded == false)
-                InstancedBullet.GetComponent<Player_Bullet>().InitBullet(-m_BulletSpeed);
+                if (m_Player.m_isRightHeaded == false)
+                    InstancedBullet.GetComponent<Player_Bullet>().InitBullet(-m_BulletSpeed);
 
-            InstancedBullet.transform.SetPositionAndRotation(transform.position, transform.rotation);
+                InstancedBullet.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            }
         }
     }
 

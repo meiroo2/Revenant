@@ -47,123 +47,126 @@ public class PlayerRotation : MonoBehaviour
     // Updates
     private void Update()
     {
-        if (m_doRotate && rotateDegree > 90f || rotateDegree < -90f)
+        if (m_doRotate)
         {
-            if (m_Player.m_isRightHeaded)
+            if (rotateDegree > 90f || rotateDegree < -90f)
             {
-                m_Player.setisRightHeaded(false);
+                if (m_Player.m_isRightHeaded)
+                {
+                    m_Player.setisRightHeaded(false);
+                }
+                else
+                {
+                    m_Player.setisRightHeaded(true);
+                }
+
+                if (!m_spriteChangeMode)
+                    m_playerSoundnAni.playplayerAnim();
             }
-            else
+
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            dy = mousePos.y - transform.position.y;
+            dx = mousePos.x - transform.position.x;
+
+            if (m_Player.m_isRightHeaded == false)
             {
-                m_Player.setisRightHeaded(true);
+                dy = -dy;
+                dx = -dx;
             }
 
-            if (!m_spriteChangeMode)
-                m_playerSoundnAni.playplayerAnim();
-        }
+            rotateDegree = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
 
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
 
-        dy = mousePos.y - transform.position.y;
-        dx = mousePos.x - transform.position.x;
-
-        if (m_Player.m_isRightHeaded == false)
-        {
-            dy = -dy;
-            dx = -dx;
-        }
-
-        rotateDegree = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
-
-        toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
-
-        if (m_spriteChangeMode)
-        {
-            if (m_Player.m_isRightHeaded)
+            if (m_spriteChangeMode)
             {
-                float Tempdegree = 90f;
-                int SpriteNum = m_HeadSprites.Length - 1;
-                do
+                if (m_Player.m_isRightHeaded)
                 {
-                    if (Tempdegree - m_HeadSpritesDegree >= -90f)
+                    float Tempdegree = 90f;
+                    int SpriteNum = m_HeadSprites.Length - 1;
+                    do
                     {
-                        Tempdegree -= m_HeadSpritesDegree;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                        if (Tempdegree - m_HeadSpritesDegree >= -90f)
+                        {
+                            Tempdegree -= m_HeadSpritesDegree;
+                        }
+                        else
+                        {
+                            break;
+                        }
 
-                    if(rotateDegree > Tempdegree)
-                    {
-                        m_HeadspriteRenderer.sprite = m_HeadSprites[SpriteNum];
-                        SpriteNum--;
-                    }
-                } while (true);
+                        if (rotateDegree > Tempdegree)
+                        {
+                            m_HeadspriteRenderer.sprite = m_HeadSprites[SpriteNum];
+                            SpriteNum--;
+                        }
+                    } while (true);
 
-                Tempdegree = 90f;
-                SpriteNum = m_JacketLSprites.Length - 1;
-                do
+                    Tempdegree = 90f;
+                    SpriteNum = m_JacketLSprites.Length - 1;
+                    do
+                    {
+                        if (Tempdegree - m_JacketSpritesDegree >= -90f)
+                        {
+                            Tempdegree -= m_JacketSpritesDegree;
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        if (rotateDegree > Tempdegree)
+                        {
+                            m_JacketLSpriteRenderer.sprite = m_JacketLSprites[SpriteNum];
+                            m_JacketRSpriteRenderer.sprite = m_JacketRSprites[SpriteNum];
+                            SpriteNum--;
+                        }
+                    } while (true);
+                }
+                else
                 {
-                    if (Tempdegree - m_JacketSpritesDegree >= -90f)
+                    float Tempdegree = 90f;
+                    int SpriteNum = m_HeadSprites.Length - 1;
+                    do
                     {
-                        Tempdegree -= m_JacketSpritesDegree;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                        if (Tempdegree - m_HeadSpritesDegree >= -90f)
+                        {
+                            Tempdegree -= m_HeadSpritesDegree;
+                        }
+                        else
+                        {
+                            break;
+                        }
 
-                    if (rotateDegree > Tempdegree)
-                    {
-                        m_JacketLSpriteRenderer.sprite = m_JacketLSprites[SpriteNum];
-                        m_JacketRSpriteRenderer.sprite = m_JacketRSprites[SpriteNum];
-                        SpriteNum--;
-                    }
-                } while (true);
-            }
-            else
-            {
-                float Tempdegree = 90f;
-                int SpriteNum = m_HeadSprites.Length - 1;
-                do
-                {
-                    if (Tempdegree - m_HeadSpritesDegree >= -90f)
-                    {
-                        Tempdegree -= m_HeadSpritesDegree;
-                    }
-                    else
-                    {
-                        break;
-                    }
+                        if (-rotateDegree > Tempdegree)
+                        {
+                            m_HeadspriteRenderer.sprite = m_HeadSprites[SpriteNum];
+                            SpriteNum--;
+                        }
+                    } while (true);
 
-                    if (-rotateDegree > Tempdegree)
+                    Tempdegree = 90f;
+                    SpriteNum = m_JacketLSprites.Length - 1;
+                    do
                     {
-                        m_HeadspriteRenderer.sprite = m_HeadSprites[SpriteNum];
-                        SpriteNum--;
-                    }
-                } while (true);
+                        if (Tempdegree - m_JacketSpritesDegree >= -90f)
+                        {
+                            Tempdegree -= m_JacketSpritesDegree;
+                        }
+                        else
+                        {
+                            break;
+                        }
 
-                Tempdegree = 90f;
-                SpriteNum = m_JacketLSprites.Length - 1;
-                do
-                {
-                    if (Tempdegree - m_JacketSpritesDegree >= -90f)
-                    {
-                        Tempdegree -= m_JacketSpritesDegree;
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    if (-rotateDegree > Tempdegree)
-                    {
-                        m_JacketLSpriteRenderer.sprite = m_JacketLSprites[SpriteNum];
-                        m_JacketRSpriteRenderer.sprite = m_JacketRSprites[SpriteNum];
-                        SpriteNum--;
-                    }
-                } while (true);
+                        if (-rotateDegree > Tempdegree)
+                        {
+                            m_JacketLSpriteRenderer.sprite = m_JacketLSprites[SpriteNum];
+                            m_JacketRSpriteRenderer.sprite = m_JacketRSprites[SpriteNum];
+                            SpriteNum--;
+                        }
+                    } while (true);
+                }
             }
         }
     }
