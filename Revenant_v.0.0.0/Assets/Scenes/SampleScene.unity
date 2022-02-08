@@ -1071,7 +1071,6 @@ GameObject:
   m_Component:
   - component: {fileID: 676802297}
   - component: {fileID: 676802298}
-  - component: {fileID: 676802299}
   m_Layer: 0
   m_Name: Player_InJacket
   m_TagString: Untagged
@@ -1146,26 +1145,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &676802299
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 676802296}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: efbac25d34cfced45b4fb1cc19ae08f8, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &751262434
 GameObject:
   m_ObjectHideFlags: 0
@@ -1578,10 +1557,28 @@ MonoBehaviour:
   m_spriteChangeMode: 1
   m_HeadspriteRenderer: {fileID: 154853271}
   m_HeadSprites:
-  - {fileID: 21300000, guid: eb239dc3077f9a0429de180de80f5501, type: 3}
-  - {fileID: 21300000, guid: 33d83b77059b0ac4aa87cdfb4959b685, type: 3}
-  - {fileID: 21300000, guid: ef770a45f2db84940870124a5259ec20, type: 3}
   - {fileID: 21300000, guid: d074068bb96235742843021208e77187, type: 3}
+  - {fileID: 21300000, guid: ef770a45f2db84940870124a5259ec20, type: 3}
+  - {fileID: 21300000, guid: 33d83b77059b0ac4aa87cdfb4959b685, type: 3}
+  - {fileID: 21300000, guid: eb239dc3077f9a0429de180de80f5501, type: 3}
+  m_JacketLSpriteRenderer: {fileID: 2123382623}
+  m_JacketRSpriteRenderer: {fileID: 676802298}
+  m_JacketLSprites:
+  - {fileID: 21300000, guid: 2353939e051c6834f9e753a8c7e4699a, type: 3}
+  - {fileID: 21300000, guid: c6191e68ac2c82e4e9c65fa5610f15e4, type: 3}
+  - {fileID: 21300000, guid: 5bdcdb6129aac644db934814c206fe0a, type: 3}
+  - {fileID: 21300000, guid: f7cf16bc719e7ec46a7da754d335ac9d, type: 3}
+  - {fileID: 21300000, guid: ff7d1a8faedee4b4cbc99e643b55f62c, type: 3}
+  - {fileID: 21300000, guid: bb4d0ea52b7096245b9e6131518a6fb2, type: 3}
+  - {fileID: 21300000, guid: 7a4f8e68d8ca31649af68057f615e3a1, type: 3}
+  m_JacketRSprites:
+  - {fileID: 21300000, guid: 35b42ca944fad7a42ab3ff1983a79a48, type: 3}
+  - {fileID: 21300000, guid: 7a23131b632879d4499b72e9a27c4ce4, type: 3}
+  - {fileID: 21300000, guid: b209289526b0d6a448b6e38138534def, type: 3}
+  - {fileID: 21300000, guid: 1e794134ae9660d47966a26413ea5be6, type: 3}
+  - {fileID: 21300000, guid: 8d8420781bd9f5a40bae8325bea53741, type: 3}
+  - {fileID: 21300000, guid: b2b0a68da33f83e46b1bc4aeaef90c7a, type: 3}
+  - {fileID: 21300000, guid: 25af5e5c358214c4fb0963346471dd22, type: 3}
 --- !u!1 &1110655793
 GameObject:
   m_ObjectHideFlags: 0
@@ -2576,7 +2573,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2123382622}
   - component: {fileID: 2123382623}
-  - component: {fileID: 2123382624}
   m_Layer: 0
   m_Name: Player_OutJacket
   m_TagString: Untagged
@@ -2651,23 +2647,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &2123382624
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2123382621}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 88e4c19bdd7edfd49a51645a01e840c7, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0

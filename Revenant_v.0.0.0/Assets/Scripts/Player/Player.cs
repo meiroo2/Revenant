@@ -158,6 +158,6 @@ public class Player : Human
     // Functions
     private void OnCollisionStay2D(Collision2D collision)
     {
-        Debug.Log(collision.gameObject.GetComponent<MatTypeInterface>().m_matType);
+        //Debug.Log(collision.gameObject.GetComponent<MatTypeInterface>().m_matType);
     }
 }
