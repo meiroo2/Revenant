@@ -7,8 +7,17 @@ public class PlayerRotation : MonoBehaviour
     // Member Variables
     public bool m_doRotate = true;
     public bool m_spriteChangeMode = false;
+
+    [Space(10f)]
+    [Header("Up to Down")]
     public SpriteRenderer m_HeadspriteRenderer;
     public Sprite[] m_HeadSprites;
+
+    [Space(10f)]
+    public SpriteRenderer m_JacketLSpriteRenderer;
+    public SpriteRenderer m_JacketRSpriteRenderer;
+    public Sprite[] m_JacketLSprites;
+    public Sprite[] m_JacketRSprites;
 
     private PlayerSoundnAni m_playerSoundnAni;
     private Player m_Player;
@@ -19,6 +28,9 @@ public class PlayerRotation : MonoBehaviour
     private float dx;
     private float rotateDegree;
 
+    private float m_HeadSpritesDegree;
+    private float m_JacketSpritesDegree;
+
     // Constructors
     private void Awake()
     {
@@ -27,64 +39,134 @@ public class PlayerRotation : MonoBehaviour
 
         if (m_spriteChangeMode == true)
             m_HeadspriteRenderer.gameObject.GetComponent<Animator>().enabled = false;
+
+        m_HeadSpritesDegree = 180f / m_HeadSprites.Length;
+        m_JacketSpritesDegree = 180f / m_JacketLSprites.Length;
     }
 
     // Updates
     private void Update()
     {
-        if (m_doRotate && rotateDegree > 90f || rotateDegree < -90f)
+        if (m_doRotate)
         {
-            if (m_Player.m_isRightHeaded)
+            if (rotateDegree > 90f || rotateDegree < -90f)
             {
-                m_Player.setisRightHeaded(false);
+                if (m_Player.m_isRightHeaded)
+                {
+                    m_Player.setisRightHeaded(false);
+                }
+                else
+                {
+                    m_Player.setisRightHeaded(true);
+                }
+
+                if (!m_spriteChangeMode)
+                    m_playerSoundnAni.playplayerAnim();
             }
-            else
+
+            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            dy = mousePos.y - transform.position.y;
+            dx = mousePos.x - transform.position.x;
+
+            if (m_Player.m_isRightHeaded == false)
             {
-                m_Player.setisRightHeaded(true);
+                dy = -dy;
+                dx = -dx;
             }
 
-            if (!m_spriteChangeMode)
-                m_playerSoundnAni.playplayerAnim();
-        }
+            rotateDegree = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
 
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
 
-        dy = mousePos.y - transform.position.y;
-        dx = mousePos.x - transform.position.x;
-
-        if (m_Player.m_isRightHeaded == false)
-        {
-            dy = -dy;
-            dx = -dx;
-        }
-
-        rotateDegree = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
-
-        toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
-
-        if (m_spriteChangeMode)
-        {
-            if (m_Player.m_isRightHeaded)
+            if (m_spriteChangeMode)
             {
-                if(rotateDegree > 45f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[3];
-                else if (rotateDegree > 0f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[2];
-                else if (rotateDegree > -45f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[1];
-                else if (rotateDegree > -90f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[0];
-            }
-            else
-            {
-                if (-rotateDegree > 45f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[3];
-                else if (-rotateDegree > 0f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[2];
-                else if (-rotateDegree > -45f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[1];
-                else if (-rotateDegree > -90f)
-                    m_HeadspriteRenderer.sprite = m_HeadSprites[0];
+                if (m_Player.m_isRightHeaded)
+                {
+                    float Tempdegree = 90f;
+                    int SpriteNum = m_HeadSprites.Length - 1;
+                    do
+                    {
+                        if (Tempdegree - m_HeadSpritesDegree >= -90f)
+                        {
+                            Tempdegree -= m_HeadSpritesDegree;
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        if (rotateDegree > Tempdegree)
+                        {
+                            m_HeadspriteRenderer.sprite = m_HeadSprites[SpriteNum];
+                            SpriteNum--;
+                        }
+                    } while (true);
+
+                    Tempdegree = 90f;
+                    SpriteNum = m_JacketLSprites.Length - 1;
+                    do
+                    {
+                        if (Tempdegree - m_JacketSpritesDegree >= -90f)
+                        {
+                            Tempdegree -= m_JacketSpritesDegree;
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        if (rotateDegree > Tempdegree)
+                        {
+                            m_JacketLSpriteRenderer.sprite = m_JacketLSprites[SpriteNum];
+                            m_JacketRSpriteRenderer.sprite = m_JacketRSprites[SpriteNum];
+                            SpriteNum--;
+                        }
+                    } while (true);
+                }
+                else
+                {
+                    float Tempdegree = 90f;
+                    int SpriteNum = m_HeadSprites.Length - 1;
+                    do
+                    {
+                        if (Tempdegree - m_HeadSpritesDegree >= -90f)
+                        {
+                            Tempdegree -= m_HeadSpritesDegree;
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        if (-rotateDegree > Tempdegree)
+                        {
+                            m_HeadspriteRenderer.sprite = m_HeadSprites[SpriteNum];
+                            SpriteNum--;
+                        }
+                    } while (true);
+
+                    Tempdegree = 90f;
+                    SpriteNum = m_JacketLSprites.Length - 1;
+                    do
+                    {
+                        if (Tempdegree - m_JacketSpritesDegree >= -90f)
+                        {
+                            Tempdegree -= m_JacketSpritesDegree;
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                        if (-rotateDegree > Tempdegree)
+                        {
+                            m_JacketLSpriteRenderer.sprite = m_JacketLSprites[SpriteNum];
+                            m_JacketRSpriteRenderer.sprite = m_JacketRSprites[SpriteNum];
+                            SpriteNum--;
+                        }
+                    } while (true);
+                }
             }
         }
     }
