@@ -14,7 +14,7 @@ public enum playerState
     DEAD
 }
 
-public class Player : Human
+public class Player : Human, IBulletHit
 {
     // Member Variables
     [field: SerializeField] public playerState m_curPlayerState { get; private set; } = playerState.IDLE;
@@ -180,8 +180,8 @@ public class Player : Human
     }
 
     // Functions
-    private void OnCollisionStay2D(Collision2D collision)
+    public void BulletHit(float _damage)
     {
-        //Debug.Log(collision.gameObject.GetComponent<MatTypeInterface>().m_matType);
+        Debug.Log("플레이어에게 " + _damage.ToString() + " 데미지의 총알이 맞음!");
     }
 }
