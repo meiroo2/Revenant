@@ -25,11 +25,19 @@ public class EnemyDummy1 : EnemyDummy
 
         // y축 값이 -10보다 작으면 리스폰
         respawn();
+        
     }
 
     private void FixedUpdate()
     {
         MoveYInput();
+        //DummyCall();
+    }
+
+    public override void DummyCall()
+    {
+        spriteRenderer.flipX = true;
+        Debug.Log("Child Dummy");
     }
 
     
