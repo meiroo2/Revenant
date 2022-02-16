@@ -114,6 +114,7 @@ public class Player : Human
         {
             case playerState.IDLE:
                 m_curPlayerState = playerState.IDLE;
+                m_playerRigid.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
                 break;
 
             case playerState.WALK:
@@ -149,6 +150,7 @@ public class Player : Human
         switch (m_curPlayerState)
         {
             case playerState.IDLE:
+                m_playerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
                 break;
 
             case playerState.WALK:

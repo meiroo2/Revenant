@@ -7,6 +7,7 @@ public class PlayerRotation : MonoBehaviour
     // Member Variables
     public bool m_doRotate = true;
     public bool m_spriteChangeMode = false;
+    public float m_rotationLimitAngle = 65f;
 
     [Space(10f)]
     [Header("Up to Down")]
@@ -69,7 +70,7 @@ public class PlayerRotation : MonoBehaviour
             dy = mousePos.y - transform.position.y;
             dx = mousePos.x - transform.position.x;
 
-            if (m_Player.m_isRightHeaded == false)
+            if (!m_Player.m_isRightHeaded)
             {
                 dy = -dy;
                 dx = -dx;
@@ -77,7 +78,20 @@ public class PlayerRotation : MonoBehaviour
 
             rotateDegree = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg;
 
-            toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
+            if (m_Player.m_isRightHeaded)
+            {
+                if(rotateDegree < m_rotationLimitAngle)
+                    toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
+                else
+                    toRotation = Quaternion.Euler(0f, 0f, m_rotationLimitAngle);
+            }
+            else if(!m_Player.m_isRightHeaded)
+            {
+                if (-rotateDegree < m_rotationLimitAngle)
+                    toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
+                else
+                    toRotation = Quaternion.Euler(0f, 0f, -m_rotationLimitAngle);
+            }
 
             if (m_spriteChangeMode)
             {
@@ -173,6 +187,8 @@ public class PlayerRotation : MonoBehaviour
     private void FixedUpdate()
     {
         if (m_doRotate)
+        {
             transform.rotation = toRotation;
+        }
     }
 }
