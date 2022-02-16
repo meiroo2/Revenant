@@ -17,6 +17,12 @@ public class EnemyDummy : Human
 
     public void ChangeColor(Color _input) { spriteRenderer.color = _input; }
 
+    public virtual void DummyCall()
+    {
+        rigidBody.velocity += new Vector2(1, 0);
+        Debug.Log("Parent Dummy");
+    }
+
     public IEnumerator MoveXTo(int n)
     {
         yield return new WaitForSeconds(0.1f);
@@ -33,4 +39,5 @@ public class EnemyDummy : Human
     {
         Debug.Log("TriggerEnter");
     }
+
 }
