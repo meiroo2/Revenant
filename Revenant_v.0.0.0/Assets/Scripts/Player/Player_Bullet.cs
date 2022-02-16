@@ -6,11 +6,13 @@ public class Player_Bullet : MonoBehaviour
 {
     private float m_Speed = 0f;
     private float m_Timer = 0f;
+    private float m_Damage = 0f;
 
     // Constructors
-    public void InitBullet(float _speed)
+    public void InitBullet(float _speed, float _damage)
     {
         m_Speed = _speed;
+        m_Damage = _damage;
     }
 
     // Update is called once per frame
@@ -27,5 +29,11 @@ public class Player_Bullet : MonoBehaviour
             Destroy(this.gameObject);
         else
             m_Timer += Time.fixedDeltaTime;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        collision.gameObject.GetComponent<IBulletHit>().BulletHit(m_Damage);
+        Destroy(this.gameObject);
     }
 }

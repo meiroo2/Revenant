@@ -8,7 +8,7 @@ public enum MatType
     Metal
 }
 
-public interface MatTypeInterface
+public interface IMatType
 {
     public MatType m_matType { get; set; }
 }
