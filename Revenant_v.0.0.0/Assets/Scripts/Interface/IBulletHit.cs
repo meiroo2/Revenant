@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IBulletHit
 {
-    public void BulletHit(float _damage);
+    public void BulletHit(float _damage, int _hitPoint);
 }

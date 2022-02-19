@@ -9,6 +9,7 @@ public class Player_Gun : MonoBehaviour
     // public 혹은 시리얼라이즈드 필드 쓸 때, bool값이 가장 위에 오게 쓰기(인스펙터에서 보기 편하게 하려고)
     // 그 후에 나머지 변수들 적기
     public GameObject m_BulletPrefab;
+    public AimCursor m_aimCursor;
     public float m_BulletSpeed;
     public float m_BulletDamage;
     public bool m_canShot = true;
@@ -37,6 +38,8 @@ public class Player_Gun : MonoBehaviour
                     InstancedBullet.GetComponent<Player_Bullet>().InitBullet(-m_BulletSpeed, m_BulletDamage);
 
                 InstancedBullet.transform.SetPositionAndRotation(transform.position, transform.rotation);
+
+                InstancedBullet.GetComponent<Player_Bullet>().m_aimedObjId = m_aimCursor.AimedObjid;
             }
         }
     }

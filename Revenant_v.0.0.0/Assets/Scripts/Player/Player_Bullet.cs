@@ -8,6 +8,8 @@ public class Player_Bullet : MonoBehaviour
     private float m_Timer = 0f;
     private float m_Damage = 0f;
 
+    public int m_aimedObjId = 0;
+
     // Constructors
     public void InitBullet(float _speed, float _damage)
     {
@@ -31,9 +33,19 @@ public class Player_Bullet : MonoBehaviour
             m_Timer += Time.fixedDeltaTime;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        collision.gameObject.GetComponent<IBulletHit>().BulletHit(m_Damage);
-        Destroy(this.gameObject);
+        if (m_aimedObjId == collision.gameObject.GetInstanceID())
+        {
+            int i = 2;
+            if (collision.gameObject.tag == "Head")
+                i = 0;
+            else if (collision.gameObject.tag == "Body")
+                i = 1;
+
+            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, i);
+            Destroy(this.gameObject);
+        }
     }
+
 }
