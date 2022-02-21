@@ -32,14 +32,15 @@ public class Player_Gun : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 GameObject InstancedBullet = Instantiate(m_BulletPrefab);
-                InstancedBullet.GetComponent<Player_Bullet>().InitBullet(m_BulletSpeed, m_BulletDamage);
+                Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
 
-                if (m_Player.m_isRightHeaded == false)
-                    InstancedBullet.GetComponent<Player_Bullet>().InitBullet(-m_BulletSpeed, m_BulletDamage);
+                if (m_Player.m_isRightHeaded)
+                    InstancedBullet_Script.InitBullet(m_BulletSpeed, m_BulletDamage);
+                else
+                    InstancedBullet_Script.InitBullet(-m_BulletSpeed, m_BulletDamage);
 
                 InstancedBullet.transform.SetPositionAndRotation(transform.position, transform.rotation);
-
-                InstancedBullet.GetComponent<Player_Bullet>().m_aimedObjId = m_aimCursor.AimedObjid;
+                InstancedBullet_Script.m_aimedObjId = m_aimCursor.AimedObjid;
             }
         }
     }
