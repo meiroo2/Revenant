@@ -14,7 +14,7 @@ public class Floor : ObjectDefine, IMatType, IBulletHit
     }
 
     // Functions
-    public void BulletHit(float _damage, int _hitPoint)
+    public void BulletHit(float _damage, HitPoints _hitPoints)
     {
         Debug.Log(m_matType.ToString() + " 재질의 바닥에 " + _damage.ToString() + "데미지의 총알이 맞음!");
     }

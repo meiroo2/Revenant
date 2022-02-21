@@ -42,11 +42,15 @@ public class AimCursor : MonoBehaviour
     // Physics
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(m_AimedCollider != collision)
+        AimedObjid = collision.gameObject.GetInstanceID();
+
+        /*
+        if (m_AimedCollider != collision)
         {
             m_AimedCollider = collision;
             AimedObjid = m_AimedCollider.gameObject.GetInstanceID();
         }
+        */
     }
     private void OnTriggerExit2D(Collider2D collision)
     {

@@ -24,21 +24,23 @@ public class EnemyA : MonoBehaviour, IBulletHit
         //Move();
     }
 
-    public void BulletHit(float _damage, int _hitPoint)
+    public void BulletHit(float _damage, HitPoints _hitPoints)
     {
         float damage = _damage;
 
-        if (_hitPoint == 0)
+        if (_hitPoints == 0)
         {
             damage *= 2;
         }
             
-        else if (_hitPoint == 1)
+        /*
+        else if (_hitPoints == 1)
         {
             
         }
-        if(isAlive && _hitPoint < 2)
-            Damaged(damage, _hitPoint);
+        if(isAlive)
+            Damaged(damage, _hitPoints);
+        */
     }
 
     public void Damaged(float damage, int hitPoint)

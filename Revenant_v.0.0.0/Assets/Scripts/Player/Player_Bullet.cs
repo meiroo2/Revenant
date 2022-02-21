@@ -53,13 +53,15 @@ public class Player_Bullet : MonoBehaviour
     {
         if (m_aimedObjId == collision.gameObject.GetInstanceID())
         {
-            int i = 2;
-            if (collision.gameObject.tag == "Head")
-                i = 0;
-            else if (collision.gameObject.tag == "Body")
-                i = 1;
+            HitPoints hitPoints = HitPoints.OTHER;
 
-            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, i);
+            if (collision.gameObject.tag == "Head")
+                hitPoints = HitPoints.HEAD;
+            else if (collision.gameObject.tag == "Body")
+                hitPoints = HitPoints.BODY;
+
+            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, hitPoints);
+            Debug.Log(collision.gameObject.name);
             Destroy(this.gameObject);
         }
     }
