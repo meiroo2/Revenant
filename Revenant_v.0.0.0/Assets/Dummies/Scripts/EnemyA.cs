@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyA : MonoBehaviour, IBulletHit
 {
     
-    float Hp = 100;
+    float Hp = 4;
     SpriteRenderer[] spriteRenderers;
     bool isAlive = true;
 
@@ -26,7 +26,7 @@ public class EnemyA : MonoBehaviour, IBulletHit
         {
             
         }
-        if(isAlive)
+        if(isAlive && _hitPoint < 2)
             Damaged(damage);
     }
 
