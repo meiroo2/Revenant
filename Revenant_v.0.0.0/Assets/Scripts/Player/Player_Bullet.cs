@@ -4,35 +4,51 @@ using UnityEngine;
 
 public class Player_Bullet : MonoBehaviour
 {
+    // Visible Member Variables
+
+
+    // Member Variables
     private float m_Speed = 0f;
     private float m_Timer = 0f;
     private float m_Damage = 0f;
-
-    public int m_aimedObjId = 0;
+    public int m_aimedObjId { get; set; } = 0;
 
     // Constructors
+    private void Awake()
+    {
+
+    }
+    private void Start()
+    {
+
+    }
     public void InitBullet(float _speed, float _damage)
     {
         m_Speed = _speed;
         m_Damage = _damage;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    // Updates
+    private void Update()
     {
-        transform.Translate(new Vector3(m_Speed * Time.fixedDeltaTime, 0f, 0f)); // Translate로 이동. RigidBody 이동할 필요 없을 듯?
+
+    }
+    private void FixedUpdate()
+    {
+        transform.Translate(new Vector2(m_Speed * Time.deltaTime, 0f));
 
         if (m_Speed > 0)
             Debug.DrawRay(transform.position, transform.right * 0.5f, Color.red);
         else
             Debug.DrawRay(transform.position, -transform.right * 0.5f, Color.red);
 
-        if (m_Timer > 3f)
+        if (m_Timer >= 3f)
             Destroy(this.gameObject);
         else
-            m_Timer += Time.fixedDeltaTime;
+            m_Timer += Time.deltaTime;
     }
 
+    // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (m_aimedObjId == collision.gameObject.GetInstanceID())
@@ -48,4 +64,8 @@ public class Player_Bullet : MonoBehaviour
         }
     }
 
+    // Functions
+
+
+    // 기타 분류하고 싶은 것이 있을 경우
 }
