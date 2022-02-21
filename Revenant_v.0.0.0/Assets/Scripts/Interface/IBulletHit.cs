@@ -2,9 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum HitPoints
+{
+    HEAD,
+    BODY,
+    OBJECT,
+    OTHER
+}
+
 public interface IBulletHit
 {
-    public void BulletHit(float _damage, int _hitPoint);
-    // _hitPoint : 0 == Head / 1 == Body / 2 == Other
-    
+    public void BulletHit(float _damage, HitPoints hitPoints);
 }
