@@ -5,7 +5,7 @@ using UnityEngine;
 public class Pistol : BASEWEAPON
 {
     // Visible Member Variables
-
+    public Animator m_GunFireAnimator;
 
     // Member Variables
 
@@ -13,7 +13,7 @@ public class Pistol : BASEWEAPON
     // Constructors
     private void Awake()
     {
-
+        
     }
     private void Start()
     {
@@ -45,6 +45,8 @@ public class Pistol : BASEWEAPON
     {
         if (m_PlayerGun.m_canShot)
         {
+            m_GunFireAnimator.SetTrigger("Fire");
+
             GameObject InstancedBullet = Instantiate(m_BulletPrefab);
             Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
 
