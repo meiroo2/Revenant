@@ -11,6 +11,7 @@ public class Player_Bullet : MonoBehaviour
     private float m_Speed = 0f;
     private float m_Timer = 0f;
     private float m_Damage = 0f;
+    private HitPoints m_HitPoint = HitPoints.OTHER;
     public int m_aimedObjId { get; set; } = 0;
 
     // Constructors
@@ -51,17 +52,20 @@ public class Player_Bullet : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (m_aimedObjId == collision.gameObject.GetInstanceID())
+        if (collision.gameObject.CompareTag("Head"))
+            m_HitPoint = HitPoints.HEAD;
+        else if (collision.gameObject.CompareTag("Body"))
+            m_HitPoint = HitPoints.BODY;
+        else
+            m_HitPoint = HitPoints.OTHER;
+
+        if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
         {
-            HitPoints hitPoints = HitPoints.OTHER;
-
-            if (collision.gameObject.tag == "Head")
-                hitPoints = HitPoints.HEAD;
-            else if (collision.gameObject.tag == "Body")
-                hitPoints = HitPoints.BODY;
-
-            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, hitPoints);
-            Debug.Log(collision.gameObject.name);
+            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, m_HitPoint);
+            Destroy(this.gameObject);
+        }
+        else if(m_HitPoint == HitPoints.OTHER)
+        {
             Destroy(this.gameObject);
         }
     }

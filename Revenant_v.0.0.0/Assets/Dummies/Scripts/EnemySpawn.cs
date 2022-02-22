@@ -6,9 +6,16 @@ public class EnemySpawn : MonoBehaviour
     [SerializeField]
     GameObject enemyPrefab;
 
+    [SerializeField]
+    GameObject[] enemySpawnPoints;
+
     void Start()
     {
-        //Instantiate(enemyPrefab, transform.position, )
+        foreach(var enemySpawnPoint in enemySpawnPoints)
+        {
+            Instantiate(enemyPrefab, enemySpawnPoint.transform.position, transform.rotation);
+        }
+        
 
     }
 
