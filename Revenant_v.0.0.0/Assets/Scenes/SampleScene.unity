@@ -329,7 +329,7 @@ MonoBehaviour:
   - {fileID: 1862713629}
   - {fileID: 535787590}
   - {fileID: 1708506335}
-  - {fileID: 1968735957}
+  - {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,7 +1318,7 @@ MonoBehaviour:
   - {fileID: 1862713629}
   - {fileID: 535787590}
   - {fileID: 1708506335}
-  - {fileID: 1968735957}
+  - {fileID: 0}
 --- !u!1 &1022344549
 GameObject:
   m_ObjectHideFlags: 0
@@ -1364,11 +1364,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 838b7996807ecbe4d92aeed13f476f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BulletPrefab: {fileID: 852461890178520722, guid: 15a52f1306152d749be00905ab738d03, type: 3}
-  m_aimCursor: {fileID: 1968375745}
-  m_BulletSpeed: 2
-  m_BulletDamage: 0
   m_canShot: 1
+  m_Player_Arm: {fileID: 1041879378}
+  m_aimCursor: {fileID: 1968375745}
+  m_Player: {fileID: 1021289266}
+  m_Weapon: {fileID: 1968735957}
 --- !u!1 &1041879377
 GameObject:
   m_ObjectHideFlags: 0
@@ -2767,7 +2767,7 @@ GameObject:
   - component: {fileID: 1968375745}
   - component: {fileID: 1968375746}
   - component: {fileID: 1968375747}
-  m_Layer: 19
+  m_Layer: 20
   m_Name: AimCursor
   m_TagString: AimCursor
   m_Icon: {fileID: 0}
@@ -2902,7 +2902,7 @@ GameObject:
   - component: {fileID: 1968735956}
   - component: {fileID: 1968735957}
   m_Layer: 0
-  m_Name: Gun
+  m_Name: Rifle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2975,26 +2975,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &1968735957
-Animator:
-  serializedVersion: 4
+--- !u!114 &1968735957
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1968735954}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1bc3ff6a9ce85f742893bd0f5a02ecf8, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bca44d24b32553b45aca18d9499f0dee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BulletPrefab: {fileID: 852461890178520722, guid: 15a52f1306152d749be00905ab738d03, type: 3}
+  m_BulletSpeed: 5
+  m_BulletDamage: 0
 --- !u!1 &2062160739
 GameObject:
   m_ObjectHideFlags: 0
