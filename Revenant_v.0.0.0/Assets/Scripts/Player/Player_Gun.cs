@@ -4,50 +4,45 @@ using UnityEngine;
 
 public class Player_Gun : MonoBehaviour
 {
-    // Member Variables
-    // public -> private 순서로 적기
-    // public 혹은 시리얼라이즈드 필드 쓸 때, bool값이 가장 위에 오게 쓰기(인스펙터에서 보기 편하게 하려고)
-    // 그 후에 나머지 변수들 적기
-    public GameObject m_BulletPrefab;
-    public AimCursor m_aimCursor;
-    public float m_BulletSpeed;
-    public float m_BulletDamage;
+    // Visible Member Variables
     public bool m_canShot = true;
+    public Transform m_Player_Arm;
+    public AimCursor m_aimCursor;
+    public Player m_Player;
 
-    private Player m_Player;
+    public BASEWEAPON m_Weapon;
+
+    // Member Variables
+
 
     // Constructors
-    // 생성자 관련 함수들 적기(Awake->Start->기타 자체 생성자 순서)
     private void Awake()
     {
-        m_Player = GetComponentInParent<Player>();
+        
+    }
+    private void Start()
+    {
+        m_Weapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
     }
 
     // Updates
-    // 업데이트 문 혹은 업데이트 때 호출되는 함수들 적기 (Update->FixedUpdate->자체 업데이트함수 순서)
     private void Update()
     {
-        if (m_canShot)
+        if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                GameObject InstancedBullet = Instantiate(m_BulletPrefab);
-                Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
-
-                if (m_Player.m_isRightHeaded)
-                    InstancedBullet_Script.InitBullet(m_BulletSpeed, m_BulletDamage);
-                else
-                    InstancedBullet_Script.InitBullet(-m_BulletSpeed, m_BulletDamage);
-
-                InstancedBullet.transform.SetPositionAndRotation(transform.position, transform.rotation);
-                InstancedBullet_Script.m_aimedObjId = m_aimCursor.AimedObjid;
-            }
+            m_Weapon.Fire();
         }
+    }
+    private void FixedUpdate()
+    {
+
     }
 
     // Physics
-    // 충돌 관련 함수들 적기
+
 
     // Functions
-    // 
+
+
+    // 기타 분류하고 싶은 것이 있을 경우
 }
