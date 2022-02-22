@@ -963,7 +963,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1245037624}
   m_Layer: 0
-  m_Name: EnemySpawn1
+  m_Name: TargetSpawn1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1042,7 +1042,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1254279891
 Canvas:
   m_ObjectHideFlags: 0
@@ -1052,7 +1052,7 @@ Canvas:
   m_GameObject: {fileID: 1254279888}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 2
   m_Camera: {fileID: 1860580989}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1072,8 +1072,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1254279888}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
+  m_LocalScale: {x: 0.0025, y: 0.0025, z: 0.0025}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 124330675}
@@ -1083,8 +1083,8 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920.0001, y: 1080}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1596783013
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1297,7 +1297,7 @@ GameObject:
   - component: {fileID: 1745442351}
   - component: {fileID: 1745442352}
   m_Layer: 0
-  m_Name: EnemySpawns
+  m_Name: TargetSpawns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

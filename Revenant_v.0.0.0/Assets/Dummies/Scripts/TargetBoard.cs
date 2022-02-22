@@ -15,49 +15,62 @@ public class TargetBoard : MonoBehaviour, IBulletHit
     public TargetBoardState targetBoardState { get; set; }
 
     HitPoints hitPoint;
-    
-    bool isAlive = true;
 
     Animator animator;
     Rigidbody2D rigid;
+    [SerializeField]
+    PolygonCollider2D[] hitColliders;
+
 
     private void Awake()
     {
-        targetBoardState = TargetBoardState.SPAWN;
+        //targetBoardState = TargetBoardState.SPAWN;
+        hitPoint = HitPoints.OTHER;
         animator = GetComponent<Animator>();
+        animSet("isAlive", true);
 
-        animBoolSet("isAlive", true);
     }
 
     private void Update()
     {
-        if(isAlive)
-        {
-            //animator.SetBool("isAlive", true);
-        }
-        else
-        {
-            //animator.SetBool("isAlive", false);
-        }
+
     }
+
     public void BulletHit(float _damage, HitPoints hitPoints)
     {
         hitPoint = hitPoints;
+        if (hitPoint == HitPoints.HEAD)
+        {
+            animator.SetTrigger("isHead");
+        }
+        else if (hitPoint == HitPoints.BODY)
+        {
+            animator.SetTrigger("isBody");
+        }
 
-        animBoolSet("isAlive", false);
+        //animSet("isAlive", false);
+        hitColliders[0].enabled = false;
+        hitColliders[1].enabled = false;
 
-
-        Invoke(nameof(setAliveToTrue),1.5f);
+        Invoke(nameof(setAliveToTrue), 1.5f);
+        
     }
-
-
+    
     public void setAliveToTrue()
     {
-        animBoolSet("isAlive", true);
+        animSet("isAlive", true);
+        hitColliders[0].enabled = true;
+        hitColliders[1].enabled = true;
     }
 
-    public void animBoolSet(string _anim, bool _input)
+    public void setDown()
     {
+        animSet("isAlive", false);
+    }
+
+    public void animSet(string _anim, bool _input)
+    {
+        
         animator.SetBool(_anim, _input);
     }
 }
