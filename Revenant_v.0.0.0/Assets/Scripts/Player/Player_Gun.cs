@@ -10,10 +10,13 @@ public class Player_Gun : MonoBehaviour
     public AimCursor m_aimCursor;
     public Player m_Player;
     public BASEWEAPON[] m_Weapons;
+    public Transform m_PlayerArmPos;
 
     // Member Variables
     private int m_WeaponIdx = 0;
     private BASEWEAPON m_Weapon;
+
+    private bool doRecoil = false;
 
     // Constructors
     private void Awake()
@@ -56,11 +59,19 @@ public class Player_Gun : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             m_Weapon.Fire();
+            if (Vector2.Distance(m_Player_Arm.position, m_PlayerArmPos.position) <= 0.03f)
+                m_Player_Arm.Translate(-m_Player_Arm.right * 0.03f);
+            doRecoil = true;
         }
     }
     private void FixedUpdate()
     {
-
+        if (doRecoil)
+        {
+            m_Player_Arm.position = Vector2.Lerp(m_Player_Arm.position, m_PlayerArmPos.position, Time.deltaTime * 3f);
+            if (Vector2.Distance(m_Player_Arm.position, m_PlayerArmPos.position) <= 0.0005f)
+                doRecoil = false;
+        }
     }
 
     // Physics

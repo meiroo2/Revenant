@@ -6,6 +6,7 @@ public class Pistol : BASEWEAPON
 {
     // Visible Member Variables
     public Animator m_GunFireAnimator;
+    public Animator m_ReflectionAnimator;
 
     // Member Variables
 
@@ -45,7 +46,8 @@ public class Pistol : BASEWEAPON
     {
         if (m_PlayerGun.m_canShot)
         {
-            m_GunFireAnimator.SetTrigger("Fire");
+            m_GunFireAnimator.Play("Rifle_Gunfire", -1, 0f);
+            m_ReflectionAnimator.Play("Rifle_Reflection", -1, 0f);
 
             GameObject InstancedBullet = Instantiate(m_BulletPrefab);
             Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
