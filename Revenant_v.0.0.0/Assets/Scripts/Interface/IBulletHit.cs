@@ -6,11 +6,10 @@ public enum HitPoints
 {
     HEAD,
     BODY,
-    OBJECT,
     OTHER
 }
 
 public interface IBulletHit
-{
+{ 
     public void BulletHit(float _damage, HitPoints hitPoints);
 }
