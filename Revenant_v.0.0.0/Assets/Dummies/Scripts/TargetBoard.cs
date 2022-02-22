@@ -25,6 +25,8 @@ public class TargetBoard : MonoBehaviour, IBulletHit
     {
         targetBoardState = TargetBoardState.SPAWN;
         animator = GetComponent<Animator>();
+
+        animBoolSet("isAlive", true);
     }
 
     private void Update()
@@ -42,13 +44,16 @@ public class TargetBoard : MonoBehaviour, IBulletHit
     {
         hitPoint = hitPoints;
 
-        isAlive = false;
         animBoolSet("isAlive", false);
+
+
+        Invoke(nameof(setAliveToTrue),1.5f);
     }
+
 
     public void setAliveToTrue()
     {
-
+        animBoolSet("isAlive", true);
     }
 
     public void animBoolSet(string _anim, bool _input)
