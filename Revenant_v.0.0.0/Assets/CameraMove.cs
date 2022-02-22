@@ -33,6 +33,8 @@ public class CameraMove : MonoBehaviour
     {
         m_cameraPos = Vector3.Lerp(m_cameraPos, m_Player.transform.position, Time.deltaTime * m_cameraSpeed);
         m_cameraPos.z = -10f;
+
+        transform.position = m_cameraPos;
     }
     private void FixedUpdate()
     {
@@ -44,7 +46,7 @@ public class CameraMove : MonoBehaviour
         m_cameraPos.y = m_cameraPos.y / 100;
         */
 
-        transform.position = m_cameraPos;
+        
     }
 
     // Physics
