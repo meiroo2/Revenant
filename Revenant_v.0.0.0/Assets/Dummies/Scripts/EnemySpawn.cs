@@ -13,7 +13,7 @@ public class EnemySpawn : MonoBehaviour
     {
         foreach(var enemySpawnPoint in enemySpawnPoints)
         {
-            Instantiate(enemyPrefab, enemySpawnPoint.transform.position, transform.rotation);
+            Instantiate(enemyPrefab, enemySpawnPoint.transform);//enemySpawnPoint.transform.position, transform.rotation,);
         }
         
 
