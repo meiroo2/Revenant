@@ -52,9 +52,9 @@ public class Player_Bullet : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Head")
+        if (collision.gameObject.CompareTag("Head"))
             m_HitPoint = HitPoints.HEAD;
-        else if (collision.gameObject.tag == "Body")
+        else if (collision.gameObject.CompareTag("Body"))
             m_HitPoint = HitPoints.BODY;
         else
             m_HitPoint = HitPoints.OTHER;
