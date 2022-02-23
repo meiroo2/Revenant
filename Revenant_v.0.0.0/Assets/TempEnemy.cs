@@ -6,7 +6,7 @@ public class TempEnemy : MonoBehaviour, IBulletHit
 {
     public SpriteRenderer[] spriteRenderers;
 
-    public void BulletHit(float _damage, HitPoints _hitPoints)
+    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
     {
         if (_hitPoints == HitPoints.HEAD)
         {

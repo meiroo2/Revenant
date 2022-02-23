@@ -11,5 +11,5 @@ public enum HitPoints
 
 public interface IBulletHit
 { 
-    public void BulletHit(float _damage, HitPoints hitPoints);
+    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints);
 }

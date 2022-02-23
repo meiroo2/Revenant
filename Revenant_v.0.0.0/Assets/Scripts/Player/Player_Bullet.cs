@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player_Bullet : MonoBehaviour
 {
     // Visible Member Variables
-
+    public SoundMgr m_SoundMgr;
 
     // Member Variables
     private float m_Speed = 0f;
@@ -61,11 +61,12 @@ public class Player_Bullet : MonoBehaviour
 
         if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
         {
-            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, m_HitPoint);
+            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, collision.ClosestPoint(transform.position), m_HitPoint);
             Destroy(this.gameObject);
         }
         else if(m_HitPoint == HitPoints.OTHER)
         {
+            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, collision.ClosestPoint(transform.position), m_HitPoint);
             Destroy(this.gameObject);
         }
     }

@@ -21,6 +21,9 @@ public class TargetBoard : MonoBehaviour, IBulletHit
     [SerializeField]
     PolygonCollider2D[] hitColliders;
 
+    //HJTEST
+    private SoundMgr m_SoundMgr;
+
 
     private void Awake()
     {
@@ -29,6 +32,8 @@ public class TargetBoard : MonoBehaviour, IBulletHit
         animator = GetComponent<Animator>();
         animSet("isAlive", true);
 
+        //HJETST
+        m_SoundMgr = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr>();
     }
 
     private void Update()
@@ -36,16 +41,22 @@ public class TargetBoard : MonoBehaviour, IBulletHit
 
     }
 
-    public void BulletHit(float _damage, HitPoints hitPoints)
+    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
     {
-        hitPoint = hitPoints;
+        hitPoint = _hitPoints;
         if (hitPoint == HitPoints.HEAD)
         {
             animator.SetTrigger("isHead");
+
+            //HJTEST
+            m_SoundMgr.playBulletHitSound(MatType.Target_Head, _contactPoint);
         }
         else if (hitPoint == HitPoints.BODY)
         {
             animator.SetTrigger("isBody");
+
+            //HJTEST
+            m_SoundMgr.playBulletHitSound(MatType.Target_Body, _contactPoint);
         }
 
         //animSet("isAlive", false);

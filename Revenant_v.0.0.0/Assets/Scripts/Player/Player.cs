@@ -180,7 +180,7 @@ public class Player : Human, IBulletHit
     }
 
     // Functions
-    public void BulletHit(float _damage, HitPoints _hitPoints)
+    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
     {
         Debug.Log("플레이어에게 " + _damage.ToString() + " 데미지의 총알이 맞음!");
     }

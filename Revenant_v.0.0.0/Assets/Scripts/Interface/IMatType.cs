@@ -4,8 +4,11 @@ using UnityEngine;
 
 public enum MatType
 {
+    Normal,
     Wood,
-    Metal
+    Metal,
+    Target_Head,
+    Target_Body
 }
 
 public interface IMatType

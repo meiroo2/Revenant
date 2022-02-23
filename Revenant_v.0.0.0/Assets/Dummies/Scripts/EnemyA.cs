@@ -24,7 +24,7 @@ public class EnemyA : MonoBehaviour, IBulletHit
         //Move();
     }
 
-    public void BulletHit(float _damage, HitPoints _hitPoints)
+    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
     {
         float damage = _damage;
 
