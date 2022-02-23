@@ -69,11 +69,66 @@ MonoBehaviour:
   Path: ../Revenent_Sound/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 637812261920968094
+  lastModified: 637812480118222770
   FileSizes:
   - Name: Desktop
-    Value: 1042
+    Value: 1196
   Exists: 1
+--- !u!114 &-1846164112011285353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Target_Practice/isEnd
+  m_EditorClassIdentifier: 
+  Name: isEnd
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 2374636077
+    data2: 4005207751
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - FALSE
+  - TRUE
+  Exists: 1
+--- !u!114 &-424517173517080928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/Target_Practice
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/Target_Practice
+  Guid:
+    Data1: -1278877927
+    Data2: 1088886151
+    Data3: -573339733
+    Data4: -755620192
+  Banks:
+  - {fileID: 5784220613970355979}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -1846164112011285353}
+  - {fileID: 465316176056005098}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 12000
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,12 +150,13 @@ MonoBehaviour:
   - {fileID: 421008950446572590}
   - {fileID: -8838897549644904103}
   - {fileID: 3789707001836953921}
+  - {fileID: -424517173517080928}
   EditorParameters: []
   MasterBanks:
   - {fileID: 5784220613970355979}
   StringsBanks:
   - {fileID: -3118849643136342556}
-  cacheTime: 637812261920968094
+  cacheTime: 637812480118222770
   cacheVersion: 10
 --- !u!114 &421008950446572590
 MonoBehaviour:
@@ -129,6 +185,30 @@ MonoBehaviour:
   MinDistance: 0
   MaxDistance: 5
   Length: 725
+--- !u!114 &465316176056005098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Target_Practice/Target_Success
+  m_EditorClassIdentifier: 
+  Name: Target_Success
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3966678950
+    data2: 487921078
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &2294031828980966762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,8 +278,8 @@ MonoBehaviour:
   Path: ../Revenent_Sound/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 637812261920948079
+  lastModified: 637812480118202747
   FileSizes:
   - Name: Desktop
-    Value: 39712
+    Value: 770624
   Exists: 1

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SoundMgr : MonoBehaviour
 {
@@ -8,7 +9,10 @@ public class SoundMgr : MonoBehaviour
 
 
     // Member Variables
-
+    private FMOD.Studio.EventInstance m_eventInstance;
+    public float m_level = 0f;
+    public bool m_isEnd = true;
+    public TextMeshProUGUI m_tmp;
 
     // Constructors
     private void Awake()
@@ -17,7 +21,7 @@ public class SoundMgr : MonoBehaviour
     }
     private void Start()
     {
-
+        m_eventInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Target_Practice");
     }
     /*
     <커스텀 초기화 함수가 필요할 경우>
@@ -30,7 +34,20 @@ public class SoundMgr : MonoBehaviour
     // Updates
     private void Update()
     {
+        if (m_isEnd == false)
+            m_tmp.text = "Score : " + (m_level * 100f).ToString();
 
+        if (!m_isEnd)
+        {
+            m_eventInstance.setParameterByName("Target_Success", m_level);
+
+            if (m_level > 0f)
+            {
+                m_level -= Time.deltaTime * 0.1f;
+            }
+            else
+                m_level = 0f;
+        }
     }
     private void FixedUpdate()
     {
@@ -73,4 +90,16 @@ public class SoundMgr : MonoBehaviour
 
 
     // 기타 분류하고 싶은 것이 있을 경우
+    public void endGame()
+    {
+        m_eventInstance.setParameterByName("isEnd", 1);
+        m_isEnd = true;
+    }
+    public void startGame()
+    {
+        m_level = 0f;
+        m_eventInstance.start();
+        m_isEnd = false;
+        m_eventInstance.setParameterByName("isEnd", 0);
+    }
 }

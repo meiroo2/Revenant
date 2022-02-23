@@ -23,6 +23,7 @@ public class TargetBoard : MonoBehaviour, IBulletHit
 
     //HJTEST
     private SoundMgr m_SoundMgr;
+    private TargetGameMgr m_TargetMgr;
 
 
     private void Awake()
@@ -34,6 +35,7 @@ public class TargetBoard : MonoBehaviour, IBulletHit
 
         //HJETST
         m_SoundMgr = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr>();
+        m_TargetMgr = GameObject.Find("TargetGameMgr").GetComponent<TargetGameMgr>();
     }
 
     private void Update()
@@ -50,6 +52,8 @@ public class TargetBoard : MonoBehaviour, IBulletHit
 
             //HJTEST
             m_SoundMgr.playBulletHitSound(MatType.Target_Head, _contactPoint);
+            if (m_SoundMgr.m_isEnd == false)
+                m_TargetMgr.getScore(true);
         }
         else if (hitPoint == HitPoints.BODY)
         {
@@ -57,6 +61,8 @@ public class TargetBoard : MonoBehaviour, IBulletHit
 
             //HJTEST
             m_SoundMgr.playBulletHitSound(MatType.Target_Body, _contactPoint);
+            if (m_SoundMgr.m_isEnd == false)
+                m_TargetMgr.getScore(false);
         }
 
         //animSet("isAlive", false);
