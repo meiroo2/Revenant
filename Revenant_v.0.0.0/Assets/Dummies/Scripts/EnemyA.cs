@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class EnemyA : MonoBehaviour, IBulletHit
 {
-    
-    float Hp = 50;
+    [SerializeField]
+    float Hp = 4;
+
     SpriteRenderer[] spriteRenderers;
     Color originHead;
     Color originBody;
@@ -21,7 +22,7 @@ public class EnemyA : MonoBehaviour, IBulletHit
     }
     private void Update()
     {
-        //Move();
+        //AutoMove();
     }
 
     public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
@@ -79,7 +80,7 @@ public class EnemyA : MonoBehaviour, IBulletHit
     }
 
 
-    public void Move()
+    public void AutoMove()
     {
         rigid.velocity = new Vector2(-1, 0);
     }
