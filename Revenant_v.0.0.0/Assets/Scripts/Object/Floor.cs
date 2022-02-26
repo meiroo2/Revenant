@@ -14,7 +14,7 @@ public class Floor : ObjectDefine, IMatType, IBulletHit
     private void Awake()
     {
         InitObjectDefine(ObjectType.Floor, true, false);
-        m_SoundMgr = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr>();
+        //m_SoundMgr = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr>();
     }
     private void Start()
     {
