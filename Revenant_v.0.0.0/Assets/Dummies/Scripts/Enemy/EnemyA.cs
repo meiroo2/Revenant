@@ -41,6 +41,7 @@ public class EnemyA : MonoBehaviour, IBulletHit
         }
         if(isAlive)
             Damaged(damage, _hitPoints);
+
         */
     }
 
