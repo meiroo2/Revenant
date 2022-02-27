@@ -27,59 +27,6 @@ MonoBehaviour:
   MinDistance: 0
   MaxDistance: 5
   Length: 314
---- !u!114 &-8115998129591739680
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/Battle_Practice
-  m_EditorClassIdentifier: 
-  Path: event:/BGM/Battle_Practice
-  Guid:
-    Data1: 32148495
-    Data2: 1263004399
-    Data3: 1524732547
-    Data4: 84197815
-  Banks:
-  - {fileID: 5784220613970355979}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 0
-  Parameters:
-  - {fileID: -8019022591948207228}
-  - {fileID: -5755387839449027671}
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 8727
---- !u!114 &-8019022591948207228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Battle_Practice/isStart
-  m_EditorClassIdentifier: 
-  Name: isStart
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 818418027
-    data2: 4744364
-  Type: 0
-  IsGlobal: 0
-  Labels: []
-  Exists: 1
 --- !u!114 &-7179687399233399415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,54 +54,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1409
---- !u!114 &-5755387839449027671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Battle_Practice/isBattle
-  m_EditorClassIdentifier: 
-  Name: isBattle
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 2670609956
-    data2: 3311941995
-  Type: 0
-  IsGlobal: 1
-  Labels: []
-  Exists: 1
---- !u!114 &-4616740330481876350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/isBattle
-  m_EditorClassIdentifier: 
-  Name: isBattle
-  StudioPath: parameter:/isBattle
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 2670609956
-    data2: 3311941995
-  Type: 0
-  IsGlobal: 1
-  Labels: []
-  Exists: 1
 --- !u!114 &-3118849643136342556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,39 +69,11 @@ MonoBehaviour:
   Path: ../Revenent_Sound/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 637815091092437071
+  lastModified: 637815162186463829
   FileSizes:
   - Name: Desktop
-    Value: 1394
+    Value: 1196
   Exists: 1
---- !u!114 &-2675857263320859710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/AMB/Battle_Practice_AMB
-  m_EditorClassIdentifier: 
-  Path: event:/AMB/Battle_Practice_AMB
-  Guid:
-    Data1: 573708433
-    Data2: 1128250148
-    Data3: -1448445821
-    Data4: -549206293
-  Banks:
-  - {fileID: 5784220613970355979}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters:
-  - {fileID: 3161886620780850544}
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 63590
 --- !u!114 &-1846164112011285353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,15 +151,12 @@ MonoBehaviour:
   - {fileID: -8838897549644904103}
   - {fileID: 3789707001836953921}
   - {fileID: -424517173517080928}
-  - {fileID: -8115998129591739680}
-  - {fileID: -2675857263320859710}
-  EditorParameters:
-  - {fileID: -4616740330481876350}
+  EditorParameters: []
   MasterBanks:
   - {fileID: 5784220613970355979}
   StringsBanks:
   - {fileID: -3118849643136342556}
-  cacheTime: 637815091092437071
+  cacheTime: 637815162186463829
   cacheVersion: 10
 --- !u!114 &421008950446572590
 MonoBehaviour:
@@ -368,30 +236,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &3161886620780850544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Battle_Practice_AMB/isBattle
-  m_EditorClassIdentifier: 
-  Name: isBattle
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 2670609956
-    data2: 3311941995
-  Type: 0
-  IsGlobal: 1
-  Labels: []
-  Exists: 1
 --- !u!114 &3789707001836953921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,8 +278,8 @@ MonoBehaviour:
   Path: ../Revenent_Sound/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 637815091092417067
+  lastModified: 637815162186463829
   FileSizes:
   - Name: Desktop
-    Value: 1900480
+    Value: 770624
   Exists: 1
