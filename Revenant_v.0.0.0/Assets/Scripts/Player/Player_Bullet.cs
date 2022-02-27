@@ -60,18 +60,7 @@ public class Player_Bullet : MonoBehaviour
         else
             m_HitPoint = HitPoints.OTHER;
 
-        collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, transform.position, m_HitPoint);
-
-        GameObject _effect = Instantiate(m_HitEffect);
-
-        if (m_Speed < 0)
-            _effect.transform.localScale = new Vector2(-_effect.transform.localScale.x, _effect.transform.localScale.y);
-
-        _effect.transform.SetPositionAndRotation(transform.position, this.gameObject.transform.rotation);
-
-        Destroy(this.gameObject);
-
-        /*
+        
         if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
         {
             collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, collision.ClosestPoint(transform.position), m_HitPoint);
@@ -98,7 +87,7 @@ public class Player_Bullet : MonoBehaviour
 
             Destroy(this.gameObject);
         }
-        */
+        
     }
 
     // Functions
