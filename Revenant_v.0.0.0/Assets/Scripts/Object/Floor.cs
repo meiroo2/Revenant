@@ -8,13 +8,13 @@ public class Floor : ObjectDefine, IMatType, IBulletHit
     [field: SerializeField] public MatType m_matType { get; set; } = MatType.Normal;
 
     // Member Variables
-    private SoundMgr m_SoundMgr;
+    private SoundMgr_SFX m_SoundMgrSFX;
 
     // Constructors
     private void Awake()
     {
         InitObjectDefine(ObjectType.Floor, true, false);
-        //m_SoundMgr = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr>();
+        m_SoundMgrSFX = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
     }
     private void Start()
     {
@@ -44,7 +44,7 @@ public class Floor : ObjectDefine, IMatType, IBulletHit
     // Functions
     public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
     {
-        m_SoundMgr.playBulletHitSound(m_matType, _contactPoint);
+        m_SoundMgrSFX.playBulletHitSound(m_matType, _contactPoint);
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
