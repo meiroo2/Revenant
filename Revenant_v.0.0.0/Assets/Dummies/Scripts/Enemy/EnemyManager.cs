@@ -11,30 +11,51 @@ public enum RoomNum
 
 public class EnemyManager : MonoBehaviour
 {
-    [SerializeField]
-    RoomNum roomNumber;
+    
 
-    GameObject[] spawnedPosList;
-    GameObject[] spawnedEnemyList;
-    int spawnedEnemyNum;
+    public int enemyNum { get; set; }
+    public int dieCount { get; set; }
 
-    private void Update()
+    [field: SerializeField]
+    public float respawnTime { get; set; }
+
+    SpawnPosition[] spawnPositions;
+
+    RoomNum roomNum = RoomNum.EnemyTest;
+
+    private void Awake()
     {
-        EnemyManage();
+        spawnPositions = GetComponentsInChildren<SpawnPosition>();
     }
-    public void EnemyManage()
+
+    private void Start()
     {
-        switch (roomNumber)
+        //respawnTime = 1.0f;
+        dieCount = 0;
+    }
+
+    public void PlusDieCount()
+    {
+        if(roomNum == RoomNum.EnemyTest)
         {
-            case RoomNum.EnemyTest:
-                checkEnemyAllDie();
-                break;
-            default:
-                break;
-        }
-    }
-    void checkEnemyAllDie()
-    {
 
+            // 모든 적이 사망
+            if (++dieCount >= enemyNum)
+            {
+                dieCount = 0;
+                // 리스폰
+                Invoke(nameof(RespawnAllEnemy), respawnTime);
+            }
+
+        }
+        
+    }
+
+    void RespawnAllEnemy()
+    {
+        for(int i = 0; i < enemyNum; i++)
+        {
+            spawnPositions[i].SpawnEnemy();
+        }
     }
 }
