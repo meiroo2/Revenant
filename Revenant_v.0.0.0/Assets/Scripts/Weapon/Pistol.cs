@@ -7,7 +7,7 @@ public class Pistol : BASEWEAPON
     // Visible Member Variables
     public Animator m_GunFireAnimator;
     public Animator m_ReflectionAnimator;
-    public SoundMgr m_SoundMgr;
+    public SoundMgr_SFX m_SoundMgrSFX;
 
     // Member Variables
 
@@ -47,7 +47,7 @@ public class Pistol : BASEWEAPON
     {
         if (m_PlayerGun.m_canShot)
         {
-            m_SoundMgr.playGunFireSound(0, m_Player.gameObject);
+            m_SoundMgrSFX.playGunFireSound(0, m_Player.gameObject);
 
             m_GunFireAnimator.Play("Rifle_Gunfire", -1, 0f);
             m_ReflectionAnimator.Play("Rifle_Reflection", -1, 0f);
@@ -55,7 +55,7 @@ public class Pistol : BASEWEAPON
             GameObject InstancedBullet = Instantiate(m_BulletPrefab);
             Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
 
-            InstancedBullet_Script.m_SoundMgr = m_SoundMgr;
+            InstancedBullet_Script.m_SoundMgrSFX = m_SoundMgrSFX;
 
             if (m_Player.m_isRightHeaded)
                 InstancedBullet_Script.InitBullet(m_BulletSpeed, m_BulletDamage);
