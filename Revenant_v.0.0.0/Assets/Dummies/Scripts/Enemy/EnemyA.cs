@@ -1,88 +1,84 @@
 using System.Collections;
 using UnityEngine;
 
+
+public enum DIR
+{
+    LEFT, RIGHT, UP, DOWN
+}
 public class EnemyA : MonoBehaviour, IBulletHit
 {
     [SerializeField]
-    float Hp = 4;
-
-    SpriteRenderer[] spriteRenderers;
-    Color originHead;
-    Color originBody;
+    float Hp = 5;
 
     bool isAlive = true;
     Rigidbody2D rigid;
 
+    EnemyManager enemyManager;
+
     private void Awake()
     {
-        spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
         rigid = GetComponent<Rigidbody2D>();
-        originHead = spriteRenderers[0].color;
-        originBody = spriteRenderers[1].color;
+        enemyManager = GetComponentInParent<EnemyManager>();
     }
     private void Update()
     {
-        //AutoMove();
+        AutoMove(DIR.LEFT);
     }
 
     public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
     {
         float damage = _damage;
 
-        if (_hitPoints == 0)
+        if (_hitPoints == HitPoints.HEAD)
         {
+            Debug.Log("Head Hit");
             damage *= 2;
         }
-            
-        /*
-        else if (_hitPoints == 1)
+        else if (_hitPoints == HitPoints.BODY)
         {
-            
+            Debug.Log("Body Hit");
         }
         if(isAlive)
-            Damaged(damage, _hitPoints);
+            Damaged(damage);
 
-        */
     }
 
-    public void Damaged(float damage, int hitPoint)
+    public void Damaged(float damage)
     {
-        CancelInvoke(nameof(ColorOrigin));
-        ColorRed(hitPoint);
-
-        if (Hp - damage < 0)
+        // »ç¸Á
+        if (Hp - damage <= 0)
         {
             Debug.Log(name + " Die");
             isAlive = false;
-            foreach(var i in spriteRenderers)
-            {
-                i.sprite = null;
-            }
+
+            enemyManager.PlusDieCount();
+
+            Destroy(gameObject);
         }
+        // ÇÇ°Ý
         else
         {
-            // Turn Red
             Debug.Log(name + " damaged: " + damage);
             Hp -= damage;
         }
         
     }
 
-    public void ColorRed(int hitPoint)
+    public void AutoMove(DIR _dir)
     {
-        spriteRenderers[hitPoint].color = Color.red;
-        Invoke(nameof(ColorOrigin), 1.5f);
-    }
-
-    public void ColorOrigin()
-    {
-        spriteRenderers[0].color = originHead;
-        spriteRenderers[1].color = originBody;
-    }
-
-
-    public void AutoMove()
-    {
-        rigid.velocity = new Vector2(-1, 0);
+        switch(_dir)
+        {
+            case DIR.LEFT:
+                rigid.velocity = new Vector2(-1, 0);
+                break;
+            case DIR.RIGHT:
+                rigid.velocity = new Vector2(1, 0);
+                break;
+            default:
+                Debug.Log("There is No Dir Move Code");
+                break;
+        }
+        
     }
 }

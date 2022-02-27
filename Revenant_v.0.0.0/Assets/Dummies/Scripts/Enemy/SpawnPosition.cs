@@ -5,17 +5,28 @@ public class SpawnPosition : MonoBehaviour
 {
     [SerializeField]
     GameObject enemyPrefab;
+    EnemyManager enemyManager;
+
+    private void Awake()
+    {
+        enemyManager = GetComponentInParent<EnemyManager>();
+    }
 
     void Start()
     {
-        if (enemyPrefab)
-            Instantiate(enemyPrefab, transform);//enemySpawnPoint.transform.position, transform.rotation,);
-        else
-            Debug.Log("No Prefab");
+        // 맨 처음 적 생성, 적 관리자에게 적 수를 추가
+        enemyManager.enemyNum++;
+        SpawnEnemy();
     }
 
-    void Update()
+    public void SpawnEnemy()
     {
-        
+        if (enemyPrefab)
+        {
+            Instantiate(enemyPrefab, transform);//enemySpawnPoint.transform.position, transform.rotation,);
+            
+        }
+        else
+            Debug.Log("No Prefab");
     }
 }
