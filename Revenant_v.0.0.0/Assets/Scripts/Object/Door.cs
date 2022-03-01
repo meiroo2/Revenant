@@ -9,7 +9,7 @@ public class Door : MonoBehaviour, IUseableObj
     [field: SerializeField] private bool isOpen = false;
 
     // Member Variables
-
+    public UseableObjList m_ObjProperty { get; set; }
 
     // Constructors
     private void Awake()
