@@ -3,6 +3,17 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class AimedObjInfo
+{
+    public int m_ObjID;
+    public Vector2 m_ObjPos;
+    public AimedObjInfo(int _objid, Vector2 _objpos)
+    {
+        m_ObjID = _objid;
+        m_ObjPos = _objpos;
+    }
+}
+
 public class AimCursor : MonoBehaviour
 {
     // Visible Member Variables
@@ -12,8 +23,7 @@ public class AimCursor : MonoBehaviour
     private Collider2D m_AimedCollider;
     private Vector2 m_CursorPos;
 
-    private List<int> m_ObjIds = new List<int>();
-    private List<Vector2> m_ObjPoses = new List<Vector2>();
+    private List<AimedObjInfo> m_AimedObjs = new List<AimedObjInfo>();
 
     private int m_ShortestId = 0;
     private float m_ShortestLength = 0f;
@@ -49,26 +59,22 @@ public class AimCursor : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        m_ObjIds.Add(collision.gameObject.GetInstanceID());
-        m_ObjPoses.Add(collision.transform.position);
+        m_AimedObjs.Add(new AimedObjInfo(collision.gameObject.GetInstanceID(), collision.transform.position));
     }
     
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(m_ObjPoses.Count > 0)
+        if(m_AimedObjs.Count > 0)
         {
-            m_ShortestId = m_ObjIds[0];
-            m_ShortestLength = Vector2.Distance(m_ObjPoses[0], transform.position);
+            m_ShortestId = m_AimedObjs[0].m_ObjID;
+            m_ShortestLength = ((Vector2)transform.position - m_AimedObjs[0].m_ObjPos).sqrMagnitude;
 
-            if(m_ObjPoses.Count > 1)
+            for(int i = 1; i < m_AimedObjs.Count; i++)
             {
-                for (int i = 1; i < m_ObjPoses.Count; i++)
+                if(m_ShortestLength > ((Vector2)transform.position - m_AimedObjs[i].m_ObjPos).sqrMagnitude)
                 {
-                    if (m_ShortestLength > Vector2.Distance(m_ObjPoses[i], transform.position))
-                    {
-                        m_ShortestLength = Vector2.Distance(m_ObjPoses[i], transform.position);
-                        m_ShortestId = m_ObjIds[i];
-                    }
+                    m_ShortestLength = ((Vector2)transform.position - m_AimedObjs[i].m_ObjPos).sqrMagnitude;
+                    m_ShortestId = m_AimedObjs[i].m_ObjID;
                 }
             }
 
@@ -78,21 +84,19 @@ public class AimCursor : MonoBehaviour
     
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(m_ObjIds.Count > 0)
+        if(m_AimedObjs.Count > 0)
         {
-            for(int i = 0; i < m_ObjIds.Count; i++)
+            for(int i = 0; i < m_AimedObjs.Count; i++)
             {
-                if (m_ObjIds[i] == collision.GetInstanceID())
+                if (m_AimedObjs[i].m_ObjID == collision.gameObject.GetInstanceID())
                 {
-                    int tempidx = m_ObjIds.IndexOf(m_ObjIds[i]);
-                    m_ObjIds.RemoveAt(tempidx);
-                    m_ObjPoses.RemoveAt(tempidx);
+                    m_AimedObjs.RemoveAt(i);
                     break;
                 }
             }
 
-            if (m_ObjIds.Count == 0)
-                AimedObjid = 0;
+            if (m_AimedObjs.Count == 0)
+                AimedObjid = -1;
         }
     }
 
