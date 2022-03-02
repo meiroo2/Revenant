@@ -53,6 +53,8 @@ public class Player_Bullet : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //Debug.Log(m_aimedObjId + " " + collision.gameObject.GetInstanceID());
+
         if (collision.gameObject.CompareTag("Head"))
             m_HitPoint = HitPoints.HEAD;
         else if (collision.gameObject.CompareTag("Body"))
@@ -63,27 +65,27 @@ public class Player_Bullet : MonoBehaviour
         
         if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
         {
-            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, collision.ClosestPoint(transform.position), m_HitPoint);
+            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, transform.position, m_HitPoint);
 
             GameObject _effect = Instantiate(m_HitEffect);
 
             if (m_Speed < 0)
                 _effect.transform.localScale = new Vector2(-_effect.transform.localScale.x, _effect.transform.localScale.y);
 
-            _effect.transform.SetPositionAndRotation(collision.ClosestPoint(transform.position), this.gameObject.transform.rotation);
+            _effect.transform.SetPositionAndRotation(transform.position, this.gameObject.transform.rotation);
 
             Destroy(this.gameObject);
         }
         else if(m_HitPoint == HitPoints.OTHER)
         {
-            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, collision.ClosestPoint(transform.position), m_HitPoint);
+            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(m_Damage, transform.position, m_HitPoint);
 
             GameObject _effect = Instantiate(m_HitEffect);
 
             if (m_Speed < 0)
                 _effect.transform.localScale = new Vector2(-_effect.transform.localScale.x, _effect.transform.localScale.y);
 
-            _effect.transform.SetPositionAndRotation(collision.ClosestPoint(transform.position), this.gameObject.transform.rotation);
+            _effect.transform.SetPositionAndRotation(transform.position, this.gameObject.transform.rotation);
 
             Destroy(this.gameObject);
         }
