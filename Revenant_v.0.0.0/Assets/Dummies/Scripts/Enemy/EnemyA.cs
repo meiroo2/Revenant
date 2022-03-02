@@ -6,24 +6,40 @@ public enum DIR
 {
     LEFT, RIGHT, UP, DOWN
 }
-public class EnemyA : MonoBehaviour, IBulletHit
+public class EnemyA : Human, IBulletHit
 {
-    [SerializeField]
-    float Hp = 5;
 
     bool isAlive = true;
     Rigidbody2D rigid;
 
+    // 감지거리
+    [field: SerializeField]
+    public float detectDistance { get; set; }
+
+    // 사정거리
+    [field: SerializeField]
+    public float attackDistance { get; set; }
+
     EnemyManager enemyManager;
+
+    [SerializeField]
+    EnemyState curEnemyState;
+    EnemyState nextEnemyState;
+
+    Gun gun;
 
     private void Awake()
     {
+        setisRightHeaded(false);
         rigid = GetComponent<Rigidbody2D>();
         enemyManager = GetComponentInParent<EnemyManager>();
+
+        gun = GetComponentInChildren<Gun>();
     }
-    private void Update()
+
+    private void FixedUpdate()
     {
-        AutoMove(DIR.LEFT);
+        AI();
     }
 
     public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
@@ -43,11 +59,11 @@ public class EnemyA : MonoBehaviour, IBulletHit
             Damaged(damage);
 
     }
-
+    
     public void Damaged(float damage)
     {
         // 사망
-        if (Hp - damage <= 0)
+        if (m_Hp - damage <= 0)
         {
             Debug.Log(name + " Die");
             isAlive = false;
@@ -60,7 +76,7 @@ public class EnemyA : MonoBehaviour, IBulletHit
         else
         {
             Debug.Log(name + " damaged: " + damage);
-            Hp -= damage;
+            m_Hp -= damage;
         }
         
     }
@@ -79,6 +95,51 @@ public class EnemyA : MonoBehaviour, IBulletHit
                 Debug.Log("There is No Dir Move Code");
                 break;
         }
+    }
+
+    public void CheckPlayer()
+    {
+        RaycastHit2D rayHit2D;
+        //Vector3 purposePos;
+        if (m_isRightHeaded)
+        {
+            Debug.DrawRay(transform.position, Vector3.right * attackDistance, Color.magenta);
+            //purposePos = new Vector2(transform.position.x + detectDistance, transform.position.y + detectDistance);
+            rayHit2D = Physics2D.Raycast(transform.position, Vector3.right, attackDistance, LayerMask.GetMask("Player"));
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, Vector3.left * attackDistance, Color.magenta);
+            //purposePos = new Vector2(transform.position.x - detectDistance, transform.position.y - detectDistance);
+            rayHit2D = Physics2D.Raycast(transform.position, Vector3.left, attackDistance, LayerMask.GetMask("Player"));
+            
+        }
+        //Ray2D ray2d = new Ray2D(transform.position, purposePos);
+        //Debug.DrawRay(transform.position, Vector2.right * detectDistance, Color.magenta);
+        if(rayHit2D)
+            curEnemyState = EnemyState.FIGHT;
         
+        //Debug.Log(purposePos);
+
+    }
+
+    public void AI()
+    {
+        switch(curEnemyState)
+        {
+            case EnemyState.IDLE:// 무방비
+                // 왼쪽으로 쭉감
+                AutoMove(DIR.LEFT);
+                // 플레이어 만나면 전투
+                CheckPlayer();
+                break;
+            case EnemyState.GUARD:// 경계
+                break;
+            case EnemyState.FIGHT:// 전투
+                gun.Fire();
+                break;
+            case EnemyState.DEAD: // 시체
+                break;
+        }
     }
 }
