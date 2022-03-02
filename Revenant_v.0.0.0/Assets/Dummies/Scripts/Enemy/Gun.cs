@@ -35,8 +35,9 @@ public class Gun : MonoBehaviour
 
     void BulletCreate()
     {
-        Debug.Log("Fire");
-        Instantiate(bulletPrefab, transform);
-        
+        //Debug.Log("Fire");
+        GameObject gameObject = Instantiate(bulletPrefab);
+        gameObject.transform.position = transform.position;
+
     }
 }
