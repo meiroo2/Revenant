@@ -258,8 +258,9 @@ MonoBehaviour:
   <m_isEnemy>k__BackingField: 0
   <m_isRightHeaded>k__BackingField: 1
   <m_curPos>k__BackingField: 0000000000000000
-  <detectDistance>k__BackingField: 3
+  <stunStack>k__BackingField: 10
   <attackDistance>k__BackingField: 1.5
+  <readyTime>k__BackingField: 0
   curEnemyState: 0
 --- !u!50 &4314626955191385359
 Rigidbody2D:
@@ -491,5 +492,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 8704810453878243624, guid: edce2d6294407584eb63728da5123f03, type: 3}
+  firepredelay: 1.5
   bulletspeed: 1
   bulletdamage: 1
