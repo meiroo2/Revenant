@@ -12,13 +12,21 @@ public class EnemyA : Human, IBulletHit
     bool isAlive = true;
     Rigidbody2D rigid;
 
-    // 감지거리
+    // 경직정도
     [field: SerializeField]
-    public float detectDistance { get; set; }
+    public float stunStack { get; set; }
 
-    // 사정거리
+    // 감지거리
+    //[field: SerializeField]
+    //public float detectDistance { get; set; }
+
+    // 사정거리(감지)
     [field: SerializeField]
     public float attackDistance { get; set; }
+
+    // 사격 준비 
+    [field: SerializeField]
+    public float readyTime { get; set; }
 
     EnemyManager enemyManager;
 
@@ -68,7 +76,8 @@ public class EnemyA : Human, IBulletHit
             Debug.Log(name + " Die");
             isAlive = false;
 
-            enemyManager.PlusDieCount();
+            if(enemyManager)
+                enemyManager.PlusDieCount();
 
             Destroy(gameObject);
         }
