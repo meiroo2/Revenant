@@ -8,12 +8,12 @@ public class HidePos : MonoBehaviour, IUseableObj
     [field: SerializeField] public UseableObjList m_ObjProperty { get; set; } = UseableObjList.HIDEPOS;
 
     // Member Variables
-
+    private HideObj m_HideObj;
 
     // Constructors
     private void Awake()
     {
-
+        m_HideObj = GetComponentInParent<HideObj>();
     }
     private void Start()
     {
@@ -43,7 +43,7 @@ public class HidePos : MonoBehaviour, IUseableObj
     // Functions
     public void useObj()
     {
-        //Debug.Log("숨었습니다!");
+        m_HideObj.setPlayerStateToHide();
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

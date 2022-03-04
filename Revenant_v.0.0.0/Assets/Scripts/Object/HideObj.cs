@@ -46,11 +46,13 @@ public class HideObj : MonoBehaviour
         if (m_Player.m_curPlayerState != playerState.HIDDEN)
         {
             m_Player.changePlayerFSM(playerState.HIDDEN);
+            Debug.Log("¼ûÀ½");
             // ¼û´Â OBJ ÄÝ¶óÀÌ´õ ÄÑÁü
         }
         else
         {
             m_Player.changePlayerFSM(playerState.IDLE);
+            Debug.Log("¼ûÀ½");
             // ¼û´Â OBJ ÄÝ¶óÀÌ´õ ²¨Áü
         }
     }

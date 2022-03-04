@@ -88,14 +88,12 @@ public class Player_UseRange : MonoBehaviour
                     switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
                     {
                         case UseableObjList.OBJECT:
-                            Debug.Log("»ç¿ë");
                             m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj();
                             break;
 
                         case UseableObjList.HIDEPOS:
                             if (Vector2.Distance(transform.position, collision.transform.position) < 0.4f)
                             {
-                                Debug.Log("¼ûÀ½");
                                 m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj();
                             }
                             break;
