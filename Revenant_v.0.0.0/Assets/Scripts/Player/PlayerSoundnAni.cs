@@ -36,11 +36,10 @@ public class PlayerSoundnAni : MonoBehaviour
                     break;
 
                 case playerState.WALK:
-
                     isRightHeaded = m_Player.m_isRightHeaded ? 1 : -1;
                     if (isRightHeaded == (int)m_Player.m_playerMoveVec.x)
                     {
-                        //Debug.Log("Forward");
+                        Debug.Log("Forward");
                         foreach (Animator element in m_Animators)
                         {
                             element.SetInteger("isWalk", 1);
@@ -48,7 +47,7 @@ public class PlayerSoundnAni : MonoBehaviour
                     }
                     else
                     {
-                        //Debug.Log("Backward");
+                        Debug.Log("Backward");
                         foreach (Animator element in m_Animators)
                         {
                             element.SetInteger("isWalk", -1);
@@ -72,6 +71,10 @@ public class PlayerSoundnAni : MonoBehaviour
                     break;
 
                 case playerState.DEAD:
+                    foreach (Animator element in m_Animators)
+                    {
+                        element.SetInteger("isWalk", 0);
+                    }
                     break;
             }
         }

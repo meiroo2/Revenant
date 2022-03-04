@@ -124,13 +124,17 @@ public class Player : Human, IBulletHit
             case playerState.RUN:
                 m_curPlayerState = playerState.RUN;
                 m_playerRotation.m_doRotate = false;
-                m_playerGun.m_canShot = false;
+                m_canShot = false;
                 break;
 
             case playerState.ROLL:
                 break;
 
             case playerState.HIDDEN:
+                m_curPlayerState = playerState.HIDDEN;
+                m_playerRotation.m_doRotate = false;
+                m_canMove = false;
+                m_canShot = false;
                 break;
 
             case playerState.HIDDEN_STAND:
@@ -140,6 +144,10 @@ public class Player : Human, IBulletHit
                 break;
 
             case playerState.DEAD:
+                m_curPlayerState = playerState.DEAD;
+                m_playerRotation.m_doRotate = false;
+                m_canMove = false;
+                m_canShot = false;
                 break;
         }
 
@@ -166,6 +174,9 @@ public class Player : Human, IBulletHit
                 break;
 
             case playerState.HIDDEN:
+                m_playerRotation.m_doRotate = true;
+                m_canMove = true;
+                m_canShot = true;
                 break;
 
             case playerState.HIDDEN_STAND:
@@ -182,6 +193,11 @@ public class Player : Human, IBulletHit
     // Functions
     public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
     {
-        Debug.Log("플레이어에게 " + _damage.ToString() + " 데미지의 총알이 맞음!");
+        if(m_curHumanState != humanState.Dead)
+        {
+            humanAttacked(_damage);
+            if (m_Hp == -1)
+                changePlayerFSM(playerState.DEAD);
+        }
     }
 }

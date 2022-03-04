@@ -12,6 +12,8 @@ public class Player_Gun : MonoBehaviour
     public BASEWEAPON[] m_Weapons;
     public Transform m_PlayerArmPos;
 
+    public GameObject m_Grenade;
+
     // Member Variables
     private int m_WeaponIdx = 0;
     private BASEWEAPON m_Weapon;
@@ -56,12 +58,30 @@ public class Player_Gun : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (m_Player.m_canShot)
         {
-            m_Weapon.Fire();
-            if (Vector2.Distance(m_Player_Arm.position, m_PlayerArmPos.position) <= 0.03f)
-                m_Player_Arm.Translate(-m_Player_Arm.right * 0.03f);
-            doRecoil = true;
+            if (Input.GetMouseButtonDown(0))
+            {
+                m_Weapon.Fire();
+                if (Vector2.Distance(m_Player_Arm.position, m_PlayerArmPos.position) <= 0.03f)
+                    m_Player_Arm.Translate(-m_Player_Arm.right * 0.03f);
+                doRecoil = true;
+            }
+
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+
+            }
+
+            if (Input.GetKeyUp(KeyCode.G))
+            {
+                GameObject InstancedGren = GameObject.Instantiate(m_Grenade);
+                InstancedGren.transform.SetPositionAndRotation(m_Player_Arm.position, m_Player_Arm.rotation);
+                if (m_Player.m_isRightHeaded)
+                    InstancedGren.GetComponent<Rigidbody2D>().AddForce(transform.right * 15f);
+                else
+                    InstancedGren.GetComponent<Rigidbody2D>().AddForce(-transform.right * 15f);
+            }
         }
     }
     private void FixedUpdate()
