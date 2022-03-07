@@ -23,8 +23,9 @@ public class EnemyA : Human, IBulletHit
     // 사정거리(감지)
     [field: SerializeField]
     public float attackDistance { get; set; }
+    public GameObject Mark;
 
-    // 사격 준비 
+    // 사격 준비
     [field: SerializeField]
     public float readyTime { get; set; }
 
@@ -43,6 +44,8 @@ public class EnemyA : Human, IBulletHit
         enemyManager = GetComponentInParent<EnemyManager>();
 
         gun = GetComponentInChildren<Gun>();
+
+
     }
 
     private void FixedUpdate()
@@ -109,27 +112,30 @@ public class EnemyA : Human, IBulletHit
     public void CheckPlayer()
     {
         RaycastHit2D rayHit2D;
-        //Vector3 purposePos;
         if (m_isRightHeaded)
         {
             Debug.DrawRay(transform.position, Vector3.right * attackDistance, Color.magenta);
-            //purposePos = new Vector2(transform.position.x + detectDistance, transform.position.y + detectDistance);
             rayHit2D = Physics2D.Raycast(transform.position, Vector3.right, attackDistance, LayerMask.GetMask("Player"));
         }
         else
         {
             Debug.DrawRay(transform.position, Vector3.left * attackDistance, Color.magenta);
-            //purposePos = new Vector2(transform.position.x - detectDistance, transform.position.y - detectDistance);
             rayHit2D = Physics2D.Raycast(transform.position, Vector3.left, attackDistance, LayerMask.GetMask("Player"));
             
         }
-        //Ray2D ray2d = new Ray2D(transform.position, purposePos);
-        //Debug.DrawRay(transform.position, Vector2.right * detectDistance, Color.magenta);
         if(rayHit2D)
-            curEnemyState = EnemyState.FIGHT;
-        
-        //Debug.Log(purposePos);
+        {
+            FightAIState();
+        }
+            
 
+
+    }
+
+    void FightAIState()
+    {
+        Mark.SetActive(true);
+        curEnemyState = EnemyState.FIGHT;
     }
 
     public void AI()
