@@ -28,6 +28,7 @@ public class EnemyA : Human, IBulletHit
     // 사격 준비
     [field: SerializeField]
     public float readyTime { get; set; }
+    bool isReady = false; // true 시 사격 불가
 
     EnemyManager enemyManager;
 
@@ -134,8 +135,16 @@ public class EnemyA : Human, IBulletHit
 
     void FightAIState()
     {
+        // !
         Mark.SetActive(true);
+
+        // 준비 동작
+        isReady = true;
+        Invoke(nameof(ReadyComplete), readyTime);
+        
+        // 공격 상태
         curEnemyState = EnemyState.FIGHT;
+
     }
 
     public void AI()
@@ -151,10 +160,16 @@ public class EnemyA : Human, IBulletHit
             case EnemyState.GUARD:// 경계
                 break;
             case EnemyState.FIGHT:// 전투
-                gun.Fire();
+                if(isReady == false)    // 준비 동작 끝나면
+                    gun.Fire();
                 break;
             case EnemyState.DEAD: // 시체
                 break;
         }
+    }
+
+    void ReadyComplete()
+    {
+        isReady = false;
     }
 }
