@@ -15,6 +15,9 @@ public class EnemyA : Human, IBulletHit
     // 경직정도
     [field: SerializeField]
     public float stunStack { get; set; }
+    float curStun;
+    bool isStun = false;
+    public GameObject stunMark;
 
     // 감지거리
     //[field: SerializeField]
@@ -23,10 +26,12 @@ public class EnemyA : Human, IBulletHit
     // 사정거리(감지)
     [field: SerializeField]
     public float attackDistance { get; set; }
+    public GameObject detectMark;
 
-    // 사격 준비 
+    // 사격 준비
     [field: SerializeField]
     public float readyTime { get; set; }
+    bool isReady = false; // true 시 사격 불가
 
     EnemyManager enemyManager;
 
@@ -43,6 +48,8 @@ public class EnemyA : Human, IBulletHit
         enemyManager = GetComponentInParent<EnemyManager>();
 
         gun = GetComponentInChildren<Gun>();
+
+        curStun = stunStack;
     }
 
     private void FixedUpdate()
@@ -53,23 +60,30 @@ public class EnemyA : Human, IBulletHit
     public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
     {
         float damage = _damage;
+        float stun = _damage;
 
         if (_hitPoints == HitPoints.HEAD)
         {
             Debug.Log("Head Hit");
             damage *= 2;
+            stun *= 2;
         }
         else if (_hitPoints == HitPoints.BODY)
         {
             Debug.Log("Body Hit");
         }
         if(isAlive)
-            Damaged(damage);
+        {
+            Damaged(stun, damage);
+
+        }
+            
 
     }
     
-    public void Damaged(float damage)
+    public void Damaged(float stun, float damage)
     {
+
         // 사망
         if (m_Hp - damage <= 0)
         {
@@ -81,14 +95,26 @@ public class EnemyA : Human, IBulletHit
 
             Destroy(gameObject);
         }
+        // 경직
+        else if(curStun - stun <= 0)
+        {
+            m_Hp -= damage;
+            Debug.Log(name + " stunned ");
+            StunAIState();
+            curStun = stunStack; // 스택 초기화
+        }
         // 피격
         else
         {
-            Debug.Log(name + " damaged: " + damage);
+            //Debug.Log(name + " damaged: " + damage);
             m_Hp -= damage;
+            Debug.Log(name + " stun damage: " + stun);
+            curStun -= stun;
         }
         
     }
+
+
 
     public void AutoMove(DIR _dir)
     {
@@ -109,26 +135,54 @@ public class EnemyA : Human, IBulletHit
     public void CheckPlayer()
     {
         RaycastHit2D rayHit2D;
-        //Vector3 purposePos;
         if (m_isRightHeaded)
         {
             Debug.DrawRay(transform.position, Vector3.right * attackDistance, Color.magenta);
-            //purposePos = new Vector2(transform.position.x + detectDistance, transform.position.y + detectDistance);
             rayHit2D = Physics2D.Raycast(transform.position, Vector3.right, attackDistance, LayerMask.GetMask("Player"));
         }
         else
         {
             Debug.DrawRay(transform.position, Vector3.left * attackDistance, Color.magenta);
-            //purposePos = new Vector2(transform.position.x - detectDistance, transform.position.y - detectDistance);
             rayHit2D = Physics2D.Raycast(transform.position, Vector3.left, attackDistance, LayerMask.GetMask("Player"));
             
         }
-        //Ray2D ray2d = new Ray2D(transform.position, purposePos);
-        //Debug.DrawRay(transform.position, Vector2.right * detectDistance, Color.magenta);
         if(rayHit2D)
-            curEnemyState = EnemyState.FIGHT;
+        {
+            FightAIState();
+        }
+            
+
+
+    }
+
+    void StunAIState()
+    {
+        isStun = true;
+        // ★
+        detectMark.SetActive(false);
+        stunMark.SetActive(true);
+        curEnemyState = EnemyState.STUN;
+
+        Invoke(nameof(StunComplete), m_stunTime);
+    }
+
+    void StunComplete()
+    {
+        isStun = false;
+        stunMark.SetActive(false);
+    }
+
+    void FightAIState()
+    {
+        // !
+        detectMark.SetActive(true);
+
+        // 준비 동작
+        isReady = true;
+        Invoke(nameof(ReadyComplete), readyTime);
         
-        //Debug.Log(purposePos);
+        // 공격 상태
+        curEnemyState = EnemyState.FIGHT;
 
     }
 
@@ -137,18 +191,31 @@ public class EnemyA : Human, IBulletHit
         switch(curEnemyState)
         {
             case EnemyState.IDLE:// 무방비
-                // 왼쪽으로 쭉감
-                AutoMove(DIR.LEFT);
                 // 플레이어 만나면 전투
                 CheckPlayer();
+
+                // 왼쪽으로 쭉감
+                AutoMove(DIR.LEFT);
                 break;
             case EnemyState.GUARD:// 경계
                 break;
             case EnemyState.FIGHT:// 전투
-                gun.Fire();
+                if(isReady == false)    // 준비 동작 끝나면
+                    gun.Fire();
+                break;
+            case EnemyState.STUN:// 스턴
+                if (isStun == false)
+                {
+                    curEnemyState = EnemyState.IDLE;
+                }
                 break;
             case EnemyState.DEAD: // 시체
                 break;
         }
+    }
+
+    void ReadyComplete()
+    {
+        isReady = false;
     }
 }
