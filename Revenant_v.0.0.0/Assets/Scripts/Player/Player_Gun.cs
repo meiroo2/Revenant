@@ -10,9 +10,18 @@ public class Player_Gun : MonoBehaviour
     public AimCursor m_aimCursor;
     public Player m_Player;
     public BASEWEAPON[] m_Weapons;
-    public Transform m_PlayerArmPos;
 
     public GameObject m_Grenade;
+
+    public Transform m_OutArmEffectorPos;
+    public Transform m_OutArmEffectorOriginPos;
+
+    public Transform m_InArmEffectorPos;
+    public Transform m_InArmEffectorOriginPos;
+
+    public Transform m_GunPos;
+    public Transform m_GunOriginPos;
+
 
     // Member Variables
     private int m_WeaponIdx = 0;
@@ -63,8 +72,14 @@ public class Player_Gun : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 m_Weapon.Fire();
-                if (Vector2.Distance(m_Player_Arm.position, m_PlayerArmPos.position) <= 0.03f)
-                    m_Player_Arm.Translate(-m_Player_Arm.right * 0.03f);
+
+                if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.05f)
+                {
+                    m_OutArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
+                    m_InArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
+                    m_GunPos.Translate(new Vector2(-0.04f, 0f));
+                }
+
                 doRecoil = true;
             }
 
@@ -88,8 +103,11 @@ public class Player_Gun : MonoBehaviour
     {
         if (doRecoil)
         {
-            m_Player_Arm.position = Vector2.Lerp(m_Player_Arm.position, m_PlayerArmPos.position, Time.deltaTime * 3f);
-            if (Vector2.Distance(m_Player_Arm.position, m_PlayerArmPos.position) <= 0.0005f)
+            m_OutArmEffectorPos.position = Vector2.Lerp(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position, Time.deltaTime * 3f);
+            m_InArmEffectorPos.position = Vector2.Lerp(m_InArmEffectorPos.position, m_InArmEffectorOriginPos.position, Time.deltaTime * 3f);
+            m_GunPos.position = Vector2.Lerp(m_GunPos.position, m_GunOriginPos.position, Time.deltaTime * 3f);
+
+            if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.0005f)
                 doRecoil = false;
         }
     }
