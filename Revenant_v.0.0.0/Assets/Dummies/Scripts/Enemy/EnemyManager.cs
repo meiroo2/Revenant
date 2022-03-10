@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum RoomNum
 {
+    EnemyTest,
     FireTest01,
     FireTest02,
-    PROTOTYPE
 }
 
 public class EnemyManager : MonoBehaviour
@@ -21,8 +21,7 @@ public class EnemyManager : MonoBehaviour
 
     SpawnPosition[] spawnPositions;
 
-    [SerializeField]
-    RoomNum roomNum;
+    RoomNum roomNum = RoomNum.EnemyTest;
 
     private void Awake()
     {
@@ -37,7 +36,7 @@ public class EnemyManager : MonoBehaviour
 
     public void PlusDieCount()
     {
-        if(roomNum == RoomNum.FireTest01)
+        if(roomNum == RoomNum.EnemyTest)
         {
 
             // 모든 적이 사망

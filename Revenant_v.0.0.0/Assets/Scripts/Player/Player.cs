@@ -33,6 +33,7 @@ public class Player : Human, IBulletHit
     private Rigidbody2D m_playerRigid;
     private PlayerSoundnAni m_playerSoundnAni;
     private Player_Gun m_playerGun;
+    private SoundMgr_SFX m_SFXMgr;
 
 
     // Constructor
@@ -42,6 +43,7 @@ public class Player : Human, IBulletHit
         m_playerSoundnAni = GetComponent<PlayerSoundnAni>();
         m_playerRotation = GetComponentInChildren<PlayerRotation>();
         m_playerGun = GetComponentInChildren<Player_Gun>();
+        m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
     }
 
     // Update
@@ -170,7 +172,7 @@ public class Player : Human, IBulletHit
 
             case playerState.RUN:
                 m_playerRotation.m_doRotate = true;
-                m_playerGun.m_canShot = true;
+                m_canShot = true;
                 break;
 
             case playerState.ROLL:
@@ -202,6 +204,7 @@ public class Player : Human, IBulletHit
             if (m_Hp == -1)
                 changePlayerFSM(playerState.DEAD);
 
+            m_SFXMgr.playBulletHitSound(MatType.Normal, _bulletHitInfo.m_ContactPoint);
             m_PlayerHealthUI.UpdatePlayerUI();
         }
     }
