@@ -201,6 +201,8 @@ public class Player : Human, IBulletHit
     {
         if(m_curHumanState != humanState.Dead)
         {
+            Debug.Log(_bulletHitInfo.m_Damage + "데미지 총알이 플레이어한테 박힘");
+
             humanAttacked(_bulletHitInfo.m_Damage);
             if (m_Hp == -1)
             {
