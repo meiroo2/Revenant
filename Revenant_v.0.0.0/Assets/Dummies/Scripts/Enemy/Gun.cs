@@ -38,6 +38,7 @@ public class Gun : MonoBehaviour
     {
         //Debug.Log("Fire");
         GameObject gameObject = Instantiate(bulletPrefab);
+        bulletPrefab.GetComponent<Bullet>().damage = bulletdamage;
         gameObject.transform.position = transform.position;
 
     }

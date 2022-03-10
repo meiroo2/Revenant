@@ -7,8 +7,8 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     float speed = 0.1f;
 
-    [SerializeField]
-    float damage = 1f;
+    [field: SerializeField]
+    public float damage { get; set; }
 
     [SerializeField]
     float stun = 3.0f;
