@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HideObj : MonoBehaviour
+public class HideObj : MonoBehaviour, IBulletHit
 {
     // Visible Member Variables
     public Player m_Player;
 
     // Member Variables
-
 
     // Constructors
     private void Awake()
@@ -41,6 +40,10 @@ public class HideObj : MonoBehaviour
 
 
     // Functions
+    public void BulletHit(BulletHitInfo _bulletHitInfo)
+    {
+
+    }
     public void setPlayerStateToHide()
     {
         if (m_Player.m_curPlayerState != playerState.HIDDEN)
