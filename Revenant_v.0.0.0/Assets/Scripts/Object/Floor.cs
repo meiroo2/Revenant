@@ -42,9 +42,9 @@ public class Floor : ObjectDefine, IMatType, IBulletHit
 
 
     // Functions
-    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
+    public void BulletHit(BulletHitInfo _bulletHitInfo)
     {
-        m_SoundMgrSFX.playBulletHitSound(m_matType, _contactPoint);
+        m_SoundMgrSFX.playBulletHitSound(m_matType, _bulletHitInfo.m_ContactPoint);
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

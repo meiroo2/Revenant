@@ -42,16 +42,16 @@ public class TargetBoard : MonoBehaviour, IBulletHit
     {
 
     }
-
-    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
+    
+    public void BulletHit(BulletHitInfo _bulletHitInfo)
     {
-        hitPoint = _hitPoints;
+        hitPoint = _bulletHitInfo.m_HitPoint;
         if (hitPoint == HitPoints.HEAD)
         {
             animator.SetTrigger("isHead");
 
             //HJTEST
-            m_SoundMgr.playBulletHitSound(MatType.Target_Head, _contactPoint);
+            m_SoundMgr.playBulletHitSound(MatType.Target_Head, _bulletHitInfo.m_ContactPoint);
             if (m_SoundMgr.m_isEnd == false)
                 m_TargetMgr.getScore(true);
         }
@@ -60,7 +60,7 @@ public class TargetBoard : MonoBehaviour, IBulletHit
             animator.SetTrigger("isBody");
 
             //HJTEST
-            m_SoundMgr.playBulletHitSound(MatType.Target_Body, _contactPoint);
+            m_SoundMgr.playBulletHitSound(MatType.Target_Body, _bulletHitInfo.m_ContactPoint);
             if (m_SoundMgr.m_isEnd == false)
                 m_TargetMgr.getScore(false);
         }

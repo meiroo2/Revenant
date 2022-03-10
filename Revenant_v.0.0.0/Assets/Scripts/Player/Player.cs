@@ -27,10 +27,13 @@ public class Player : Human, IBulletHit
 
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
 
+    public Player_Health m_PlayerHealthUI;
+
     private PlayerRotation m_playerRotation;
     private Rigidbody2D m_playerRigid;
     private PlayerSoundnAni m_playerSoundnAni;
     private Player_Gun m_playerGun;
+
 
     // Constructor
     private void Awake()
@@ -191,13 +194,15 @@ public class Player : Human, IBulletHit
     }
 
     // Functions
-    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
+    public void BulletHit(BulletHitInfo _bulletHitInfo)
     {
         if(m_curHumanState != humanState.Dead)
         {
-            humanAttacked(_damage);
+            humanAttacked(_bulletHitInfo.m_Damage);
             if (m_Hp == -1)
                 changePlayerFSM(playerState.DEAD);
+
+            m_PlayerHealthUI.UpdatePlayerUI();
         }
     }
 }

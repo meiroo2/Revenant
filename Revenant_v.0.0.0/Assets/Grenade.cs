@@ -96,7 +96,7 @@ public class Grenade : MonoBehaviour
         for (int i = 0; i < m_IBulletHits.Count; i++)
         {
             Debug.Log(m_IBulletHits[i].name + "ÆøÆÄ");
-            m_IBulletHits[i].GetComponentInParent<IBulletHit>().BulletHit(10f, transform.position, HitPoints.BODY);
+            m_IBulletHits[i].GetComponentInParent<IBulletHit>().BulletHit(new BulletHitInfo(true, 1f, 0f, transform.position, HitPoints.BODY));
         }
         Destroy(transform.parent.gameObject);
     }

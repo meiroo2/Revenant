@@ -57,18 +57,18 @@ public class EnemyA : Human, IBulletHit
         AI();
     }
 
-    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
+    public void BulletHit(BulletHitInfo _bulletHitInfo)
     {
-        float damage = _damage;
-        float stun = _damage;
+        float damage = _bulletHitInfo.m_Damage;
+        float stun = _bulletHitInfo.m_StunValue;
 
-        if (_hitPoints == HitPoints.HEAD)
+        if (_bulletHitInfo.m_HitPoint == HitPoints.HEAD)
         {
             Debug.Log("Head Hit");
             damage *= 2;
             stun *= 2;
         }
-        else if (_hitPoints == HitPoints.BODY)
+        else if (_bulletHitInfo.m_HitPoint == HitPoints.BODY)
         {
             Debug.Log("Body Hit");
         }
