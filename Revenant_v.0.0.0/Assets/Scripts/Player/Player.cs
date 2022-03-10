@@ -28,6 +28,7 @@ public class Player : Human, IBulletHit
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
 
     public Player_Health m_PlayerHealthUI;
+    public UIMgr m_UIMgr;
 
     private PlayerRotation m_playerRotation;
     private Rigidbody2D m_playerRigid;
@@ -200,7 +201,10 @@ public class Player : Human, IBulletHit
         {
             humanAttacked(_bulletHitInfo.m_Damage);
             if (m_Hp == -1)
+            {
                 changePlayerFSM(playerState.DEAD);
+                m_UIMgr.m_GameOverUI.SetActive(true);
+            }
 
             m_PlayerHealthUI.UpdatePlayerUI();
         }
