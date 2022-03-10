@@ -6,18 +6,18 @@ public class TempEnemy : MonoBehaviour, IBulletHit
 {
     public SpriteRenderer[] spriteRenderers;
 
-    public void BulletHit(float _damage, Vector2 _contactPoint, HitPoints _hitPoints)
+    public void BulletHit(BulletHitInfo _bulletHitInfo)
     {
-        if (_hitPoints == HitPoints.HEAD)
+        if (_bulletHitInfo.m_HitPoint == HitPoints.HEAD)
         {
-            Debug.Log(_damage.ToString() + "데미지의 총알이 머리를 맞았습니다!");
+            Debug.Log(_bulletHitInfo.m_Damage.ToString() + "데미지의 총알이 머리를 맞았습니다!");
             spriteRenderers[0].color = new Color32(255, 0, 0, 255);
             Invoke(nameof(setToRed), 0.5f);
         }
 
-        else if (_hitPoints == HitPoints.BODY)
+        else if (_bulletHitInfo.m_HitPoint == HitPoints.BODY)
         {
-            Debug.Log(_damage.ToString() + "데미지의 총알이 몸통를 맞았습니다!");
+            Debug.Log(_bulletHitInfo.m_Damage.ToString() + "데미지의 총알이 몸통를 맞았습니다!");
             spriteRenderers[1].color = new Color32(255, 0, 0, 255);
             Invoke(nameof(setToRed1), 0.5f);
         }  

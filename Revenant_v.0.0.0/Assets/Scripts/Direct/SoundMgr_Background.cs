@@ -8,9 +8,6 @@ public class SoundMgr_Background : MonoBehaviour
     public FMODUnity.EventReference[] m_AMBs;
     public FMODUnity.EventReference[] m_BGMs;
 
-    [FMODUnity.ParamRef]
-    public string[] m_GlobalParam;
-
     // Member Variables
     private FMOD.Studio.EventInstance m_AMBInstance;
     private FMOD.Studio.EventInstance m_BGMInstance;
