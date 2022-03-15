@@ -240,7 +240,7 @@ public class Player : Human, IBulletHit
     {
         if(m_curHumanState != humanState.Dead)
         {
-            Debug.Log(_bulletHitInfo.m_Damage + "µ¥¹ÌÁö ÃÑ¾ËÀÌ ÇÃ·¹ÀÌ¾îÇÑÅ× ¹ÚÈû");
+            Debug.Log(_bulletHitInfo.m_Damage + "ë°ë¯¸ì§€ ì´ì•Œì´ í”Œë ˆì´ì–´í•œí…Œ ë°•í˜");
 
             humanAttacked(_bulletHitInfo.m_Damage);
             if (m_Hp == -1)
