@@ -10,6 +10,9 @@ public class PlayerSoundnAni : MonoBehaviour
 
     public Animator[] m_Animators;
 
+    public Animator m_PlayerAnimator;
+    public SpriteRenderer[] m_SpriteRenderers;
+
     private Player m_Player;
     private int isRightHeaded;
 
@@ -33,6 +36,7 @@ public class PlayerSoundnAni : MonoBehaviour
                     {
                         element.SetInteger("isWalk", 0);
                     }
+                    m_PlayerAnimator.SetInteger("DoDash", 0);
                     break;
 
                 case playerState.WALK:
@@ -59,6 +63,7 @@ public class PlayerSoundnAni : MonoBehaviour
                     break;
 
                 case playerState.ROLL:
+                    m_PlayerAnimator.SetInteger("DoDash", 1);
                     break;
 
                 case playerState.HIDDEN:
@@ -78,5 +83,18 @@ public class PlayerSoundnAni : MonoBehaviour
                     break;
             }
         }
+    }
+    public void setPlayerSprites(bool _setTrue)
+    {
+        if (_setTrue)
+            foreach (SpriteRenderer element in m_SpriteRenderers)
+            {
+                element.enabled = true;
+            }
+        else
+            foreach (SpriteRenderer element in m_SpriteRenderers)
+            {
+                element.enabled = false;
+            }
     }
 }

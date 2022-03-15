@@ -41,6 +41,8 @@ public class EnemyA : Human, IBulletHit
 
     Gun gun;
 
+    private SoundMgr_SFX m_SFXMgr;
+
     private void Awake()
     {
         setisRightHeaded(false);
@@ -50,6 +52,8 @@ public class EnemyA : Human, IBulletHit
         gun = GetComponentInChildren<Gun>();
 
         curStun = stunStack;
+
+        m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
     }
 
     private void FixedUpdate()
@@ -67,10 +71,14 @@ public class EnemyA : Human, IBulletHit
             Debug.Log("Head Hit");
             damage *= 2;
             stun *= 2;
+
+            m_SFXMgr.playBulletHitSound(MatType.Target_Head, _bulletHitInfo.m_ContactPoint);
         }
         else if (_bulletHitInfo.m_HitPoint == HitPoints.BODY)
         {
             Debug.Log("Body Hit");
+
+            m_SFXMgr.playBulletHitSound(MatType.Target_Body, _bulletHitInfo.m_ContactPoint);
         }
         if(isAlive)
         {

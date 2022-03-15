@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class SpawnPosition : MonoBehaviour
 {
-    [SerializeField]
-    GameObject enemyPrefab;
+    
     EnemyManager enemyManager;
 
     private void Awake()
@@ -16,17 +15,30 @@ public class SpawnPosition : MonoBehaviour
     {
         // 맨 처음 적 생성, 적 관리자에게 적 수를 추가
         enemyManager.enemyNum++;
-        SpawnEnemy();
+        Invoke(nameof(spawnFirstEnemy), 3f);
     }
 
-    public void SpawnEnemy()
+    void spawnFirstEnemy()
     {
-        if (enemyPrefab)
+        if (enemyManager.enemyPrefab[0])
         {
-            Instantiate(enemyPrefab, transform);//enemySpawnPoint.transform.position, transform.rotation,);
-            
+            Instantiate(enemyManager.enemyPrefab[0], transform);//enemySpawnPoint.transform.position, transform.rotation,);
+
         }
-        else
-            Debug.Log("No Prefab");
+    }
+
+    public void SpawnEnemy(GameObject enemyPrefab)
+    {
+        
+
+            if (enemyPrefab)
+            {
+                Instantiate(enemyPrefab, transform);//enemySpawnPoint.transform.position, transform.rotation,);
+
+            }
+            else
+                Debug.Log("No Prefab");
+
+        
     }
 }

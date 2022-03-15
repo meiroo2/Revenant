@@ -8,8 +8,11 @@ public class CameraMove : MonoBehaviour
     public float m_cameraSpeed = 1f;
     public GameObject m_Player;
 
+    public float m_OffSet;
+
     // Member Variables
     private Vector3 m_cameraPos;
+    private Vector2 m_MousePos;
 
     // Constructors
     private void Awake()
@@ -31,13 +34,21 @@ public class CameraMove : MonoBehaviour
     // Updates
     private void Update()
     {
-        m_cameraPos = Vector3.Lerp(m_cameraPos, m_Player.transform.position, Time.deltaTime * m_cameraSpeed);
-        m_cameraPos.z = -10f;
-
-        transform.position = m_cameraPos;
+        
     }
     private void FixedUpdate()
     {
+        m_cameraPos = Vector3.Lerp(m_cameraPos, m_Player.transform.position, Time.deltaTime * m_cameraSpeed);
+        m_cameraPos.z = -10f;
+
+        m_MousePos = Input.mousePosition;
+        m_cameraPos.x += (m_MousePos.x - 960) / 15000f;
+        m_cameraPos.y += (m_MousePos.y - 540) / 15000f;
+
+        m_cameraPos.y += m_OffSet;
+
+        transform.position = m_cameraPos;
+
         /*
         m_cameraPos.x = Mathf.RoundToInt(m_cameraPos.x * 100);
         m_cameraPos.y = Mathf.RoundToInt(m_cameraPos.y * 100);
@@ -45,8 +56,6 @@ public class CameraMove : MonoBehaviour
         m_cameraPos.x = m_cameraPos.x / 100;
         m_cameraPos.y = m_cameraPos.y / 100;
         */
-
-        
     }
 
     // Physics

@@ -61,8 +61,7 @@ public class PlayerRotation : MonoBehaviour
                     m_Player.setisRightHeaded(true);
                 }
 
-                if (!m_spriteChangeMode)
-                    m_playerSoundnAni.playplayerAnim();
+                m_playerSoundnAni.playplayerAnim();
             }
 
             mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

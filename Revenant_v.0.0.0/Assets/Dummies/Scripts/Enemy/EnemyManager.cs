@@ -4,25 +4,28 @@ using UnityEngine;
 
 public enum RoomNum
 {
+    EnemyTest,
     FireTest01,
     FireTest02,
-    PROTOTYPE
 }
 
 public class EnemyManager : MonoBehaviour
 {
-    
+    [field: SerializeField]
+    public GameObject[] enemyPrefab { get; set; }
+
 
     public int enemyNum { get; set; }
     public int dieCount { get; set; }
+
+    public int enemyWave { get; set; }
 
     [field: SerializeField]
     public float respawnTime { get; set; }
 
     SpawnPosition[] spawnPositions;
 
-    [SerializeField]
-    RoomNum roomNum;
+    RoomNum roomNum = RoomNum.EnemyTest;
 
     private void Awake()
     {
@@ -33,16 +36,19 @@ public class EnemyManager : MonoBehaviour
     {
         //respawnTime = 1.0f;
         dieCount = 0;
+        enemyWave = 0;
     }
 
     public void PlusDieCount()
     {
-        if(roomNum == RoomNum.FireTest01)
+        if(roomNum == RoomNum.EnemyTest)
         {
 
             // 모든 적이 사망
             if (++dieCount >= enemyNum)
             {
+                // 웨이브 증가
+                enemyWave++;
                 dieCount = 0;
                 // 리스폰
                 Invoke(nameof(RespawnAllEnemy), respawnTime);
@@ -56,7 +62,13 @@ public class EnemyManager : MonoBehaviour
     {
         for(int i = 0; i < enemyNum; i++)
         {
-            spawnPositions[i].SpawnEnemy();
+            // 일반 적 -> 스나이퍼 포함 적 -> 일반 적 순
+            if (enemyWave % 2 == 1 && i == 2)
+            {
+                spawnPositions[i].SpawnEnemy(enemyPrefab[1]);
+            }
+            else
+                spawnPositions[i].SpawnEnemy(enemyPrefab[0]);
         }
     }
 }

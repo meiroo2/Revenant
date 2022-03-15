@@ -28,10 +28,12 @@ public class AimCursor : MonoBehaviour
     private int m_ShortestId = 0;
     private float m_ShortestLength = 0f;
 
+    private Camera m_MainCamera;
+
     // Constructors
     private void Awake()
     {
-
+        m_MainCamera = Camera.main;
     }
     private void Start()
     {
@@ -48,12 +50,12 @@ public class AimCursor : MonoBehaviour
     // Updates
     private void Update()
     {
-        m_CursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = m_CursorPos;
+        
     }
     private void FixedUpdate()
     {
-
+        m_CursorPos = m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
+        transform.position = m_CursorPos;
     }
 
     // Physics
