@@ -21,9 +21,9 @@ public class Player : Human, IBulletHit
     [field: SerializeField] public bool m_canMove { get; private set; } = true;
     [field: SerializeField] public bool m_canRoll { get; private set; } = true;
     [field: SerializeField] public bool m_canShot { get; private set; } = true;
-
-    public float m_BackWalkSpeedRatio = 0.7f;
-    public float m_RunSpeedRatio = 1.5f;
+    [field: SerializeField] public float m_BackWalkSpeedRatio { get; private set; } = 0.7f;
+    [field: SerializeField] public float m_RunSpeedRatio { get; private set; } = 1.5f;
+    [field: SerializeField] public int m_LeftRollCount { get; private set; } = 3;
 
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
 
@@ -36,10 +36,16 @@ public class Player : Human, IBulletHit
     private Player_Gun m_playerGun;
     private SoundMgr_SFX m_SFXMgr;
 
+    private Animator m_PlayerAnimator;
+
+    private bool m_isRecoveringRollCount = false;
+
 
     // Constructor
     private void Awake()
     {
+        m_PlayerAnimator = GetComponent<Animator>();
+
         m_playerRigid = GetComponent<Rigidbody2D>();
         m_playerSoundnAni = GetComponent<PlayerSoundnAni>();
         m_playerRotation = GetComponentInChildren<PlayerRotation>();
@@ -78,8 +84,11 @@ public class Player : Human, IBulletHit
                     if ((m_isRightHeaded ? 1 : -1) == (int)m_playerMoveVec.x)
                     {
                         m_playerRigid.velocity = m_playerMoveVec * m_Speed;
+
                         if (Input.GetKeyDown(KeyCode.LeftShift))
                             changePlayerFSM(playerState.RUN);
+                        else if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
+                            changePlayerFSM(playerState.ROLL);
                     }
                     else
                         m_playerRigid.velocity = m_playerMoveVec * m_Speed * m_BackWalkSpeedRatio;
@@ -94,9 +103,23 @@ public class Player : Human, IBulletHit
 
                 if (Input.GetKeyUp(KeyCode.LeftShift))
                     changePlayerFSM(playerState.WALK);
+                else if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
+                    changePlayerFSM(playerState.ROLL);
                 break;
 
             case playerState.ROLL:
+                if(m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.5f && m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.55f)
+                {
+                    if (m_isRightHeaded)
+                    {
+                        m_playerRigid.MovePosition(new Vector2(transform.position.x + 0.3f, transform.position.y));
+                    }
+                    else
+                    {
+                        m_playerRigid.MovePosition(new Vector2(transform.position.x - 0.3f, transform.position.y));
+                    }
+                }
+                
                 break;
 
             case playerState.HIDDEN:
@@ -134,6 +157,18 @@ public class Player : Human, IBulletHit
                 break;
 
             case playerState.ROLL:
+                m_LeftRollCount -= 1;
+
+                if (!m_isRecoveringRollCount)
+                    StartCoroutine(RecoverRollCount());
+
+                Invoke(nameof(changeRolltoWalk), 1f);
+                m_curPlayerState = playerState.ROLL;
+                m_playerRotation.m_doRotate = false;
+                m_canShot = false;
+                m_canMove = false;
+
+                m_playerSoundnAni.setPlayerSprites(false);
                 break;
 
             case playerState.HIDDEN:
@@ -177,6 +212,10 @@ public class Player : Human, IBulletHit
                 break;
 
             case playerState.ROLL:
+                m_playerRotation.m_doRotate = true;
+                m_canShot = true;
+                m_canMove = true;
+                m_playerSoundnAni.setPlayerSprites(true);
                 break;
 
             case playerState.HIDDEN:
@@ -201,7 +240,7 @@ public class Player : Human, IBulletHit
     {
         if(m_curHumanState != humanState.Dead)
         {
-            Debug.Log(_bulletHitInfo.m_Damage + "µ¥¹ÌÁö ÃÑ¾ËÀÌ ÇÃ·¹ÀÌ¾îÇÑÅ× ¹ÚÈû");
+            Debug.Log(_bulletHitInfo.m_Damage + "ë°ë¯¸ì§€ ì´ì•Œì´ í”Œë ˆì´ì–´í•œí…Œ ë°•íž˜");
 
             humanAttacked(_bulletHitInfo.m_Damage);
             if (m_Hp == -1)
@@ -213,5 +252,19 @@ public class Player : Human, IBulletHit
             m_SFXMgr.playBulletHitSound(MatType.Normal, _bulletHitInfo.m_ContactPoint);
             m_PlayerHealthUI.UpdatePlayerUI();
         }
+    }
+    private IEnumerator RecoverRollCount()
+    {
+        m_isRecoveringRollCount = true;
+        yield return new WaitForSeconds(3f);
+        m_LeftRollCount += 1;
+        if (m_LeftRollCount < 3)
+            StartCoroutine(RecoverRollCount());
+        else if(m_LeftRollCount == 3)
+            m_isRecoveringRollCount = false;
+    }
+    private void changeRolltoWalk()
+    {
+        changePlayerFSM(playerState.WALK);
     }
 }
