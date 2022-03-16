@@ -6,7 +6,7 @@ public enum DIR
 {
     LEFT, RIGHT, UP, DOWN
 }
-public class EnemyA : Human, IBulletHit
+public class EnemyA : Human, IAttacked
 {
 
     bool isAlive = true;
@@ -61,24 +61,24 @@ public class EnemyA : Human, IBulletHit
         AI();
     }
 
-    public void BulletHit(BulletHitInfo _bulletHitInfo)
+    public void Attacked(AttackedInfo _AttackedInfo)
     {
-        float damage = _bulletHitInfo.m_Damage;
-        float stun = _bulletHitInfo.m_StunValue;
+        float damage = _AttackedInfo.m_Damage;
+        float stun = _AttackedInfo.m_StunValue;
 
-        if (_bulletHitInfo.m_HitPoint == HitPoints.HEAD)
+        if (_AttackedInfo.m_HitPoint == HitPoints.HEAD)
         {
             Debug.Log("Head Hit");
             damage *= 2;
             stun *= 2;
 
-            m_SFXMgr.playBulletHitSound(MatType.Target_Head, _bulletHitInfo.m_ContactPoint);
+            m_SFXMgr.playAttackedSound(MatType.Target_Head, _AttackedInfo.m_ContactPoint);
         }
-        else if (_bulletHitInfo.m_HitPoint == HitPoints.BODY)
+        else if (_AttackedInfo.m_HitPoint == HitPoints.BODY)
         {
             Debug.Log("Body Hit");
 
-            m_SFXMgr.playBulletHitSound(MatType.Target_Body, _bulletHitInfo.m_ContactPoint);
+            m_SFXMgr.playAttackedSound(MatType.Target_Body, _AttackedInfo.m_ContactPoint);
         }
         if(isAlive)
         {

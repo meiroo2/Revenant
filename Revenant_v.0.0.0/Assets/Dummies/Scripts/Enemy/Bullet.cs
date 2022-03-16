@@ -42,14 +42,14 @@ public class Bullet : MonoBehaviour
             {
                 hitPoint = HitPoints.HEAD;
                 damage *= 2;
-                collision.GetComponentInParent<IBulletHit>().BulletHit(new BulletHitInfo(false, damage, stun, transform.position, hitPoint));
+                collision.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(false, damage, stun, transform.position, hitPoint));
                 Destroy(gameObject);
                 
             }
             else if (collision.CompareTag("Body"))
             {
                 hitPoint = HitPoints.BODY;
-                collision.GetComponentInParent<IBulletHit>().BulletHit(new BulletHitInfo(false, damage, stun, transform.position, hitPoint));
+                collision.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(false, damage, stun, transform.position, hitPoint));
                 Destroy(gameObject);
                 
             }

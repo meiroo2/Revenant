@@ -14,7 +14,7 @@ public enum playerState
     DEAD
 }
 
-public class Player : Human, IBulletHit
+public class Player : Human, IAttacked
 {
     // Member Variables
     [field: SerializeField] public playerState m_curPlayerState { get; private set; } = playerState.IDLE;
@@ -236,20 +236,20 @@ public class Player : Human, IBulletHit
     }
 
     // Functions
-    public void BulletHit(BulletHitInfo _bulletHitInfo)
+    public void Attacked(AttackedInfo _AttackedInfo)
     {
         if(m_curHumanState != humanState.Dead)
         {
-            Debug.Log(_bulletHitInfo.m_Damage + "데미지 총알이 플레이어한테 박힘");
+            Debug.Log(_AttackedInfo.m_Damage + "데미지 총알이 플레이어한테 박힘");
 
-            humanAttacked(_bulletHitInfo.m_Damage);
+            humanAttacked(_AttackedInfo.m_Damage);
             if (m_Hp == -1)
             {
                 changePlayerFSM(playerState.DEAD);
                 m_UIMgr.m_GameOverUI.SetActive(true);
             }
 
-            m_SFXMgr.playBulletHitSound(MatType.Normal, _bulletHitInfo.m_ContactPoint);
+            m_SFXMgr.playAttackedSound(MatType.Normal, _AttackedInfo.m_ContactPoint);
             m_PlayerHealthUI.UpdatePlayerUI();
         }
     }
