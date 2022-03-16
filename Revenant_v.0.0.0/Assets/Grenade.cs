@@ -64,5 +64,5 @@ public class Grenade : MonoBehaviour
         Destroy(transform.parent.gameObject);
     }
 
-    // ±âÅ¸ ºĞ·ùÇÏ°í ½ÍÀº °ÍÀÌ ÀÖÀ» °æ¿ì
+    // ê¸°íƒ€ ë¶„ë¥˜í•˜ê³  ì‹¶ì€ ê²ƒì´ ìˆì„ ê²½ìš°
 }
