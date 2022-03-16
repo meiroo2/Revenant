@@ -69,7 +69,7 @@ public class Player_Gun : MonoBehaviour
 
         if (m_Player.m_canShot)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0))
             {
                 m_Weapon.Fire();
 

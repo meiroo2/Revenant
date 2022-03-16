@@ -9,7 +9,7 @@ public enum TargetBoardState
 }
 
 
-public class TargetBoard : MonoBehaviour, IBulletHit
+public class TargetBoard : MonoBehaviour, IAttacked
 {
     float Hp = 1;
     public TargetBoardState targetBoardState { get; set; }
@@ -43,15 +43,15 @@ public class TargetBoard : MonoBehaviour, IBulletHit
 
     }
     
-    public void BulletHit(BulletHitInfo _bulletHitInfo)
+    public void Attacked(AttackedInfo _AttackedInfo)
     {
-        hitPoint = _bulletHitInfo.m_HitPoint;
+        hitPoint = _AttackedInfo.m_HitPoint;
         if (hitPoint == HitPoints.HEAD)
         {
             animator.SetTrigger("isHead");
 
             //HJTEST
-            m_SoundMgr.playBulletHitSound(MatType.Target_Head, _bulletHitInfo.m_ContactPoint);
+            m_SoundMgr.playAttackedSound(MatType.Target_Head, _AttackedInfo.m_ContactPoint);
             if (m_SoundMgr.m_isEnd == false)
                 m_TargetMgr.getScore(true);
         }
@@ -60,7 +60,7 @@ public class TargetBoard : MonoBehaviour, IBulletHit
             animator.SetTrigger("isBody");
 
             //HJTEST
-            m_SoundMgr.playBulletHitSound(MatType.Target_Body, _bulletHitInfo.m_ContactPoint);
+            m_SoundMgr.playAttackedSound(MatType.Target_Body, _AttackedInfo.m_ContactPoint);
             if (m_SoundMgr.m_isEnd == false)
                 m_TargetMgr.getScore(false);
         }

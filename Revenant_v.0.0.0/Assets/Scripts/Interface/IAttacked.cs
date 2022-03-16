@@ -9,7 +9,7 @@ public enum HitPoints
     OTHER
 }
 
-public struct BulletHitInfo
+public struct AttackedInfo
 {
     public bool m_IsPlayer;
     public float m_Damage;
@@ -17,7 +17,7 @@ public struct BulletHitInfo
     public Vector2 m_ContactPoint;
     public HitPoints m_HitPoint;
 
-    public BulletHitInfo(bool _isPlayer, float _damage, float _stunvalue, Vector2 _contactpoint, HitPoints _hitPoints)
+    public AttackedInfo(bool _isPlayer, float _damage, float _stunvalue, Vector2 _contactpoint, HitPoints _hitPoints)
     {
         m_IsPlayer = _isPlayer;
         m_Damage = _damage;
@@ -27,7 +27,7 @@ public struct BulletHitInfo
     }
 }
 
-public interface IBulletHit
+public interface IAttacked
 { 
-    public void BulletHit(BulletHitInfo _bulletHitInfo);
+    public void Attacked(AttackedInfo _AttackedInfo);
 }

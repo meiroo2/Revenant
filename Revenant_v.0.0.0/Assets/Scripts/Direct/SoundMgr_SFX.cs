@@ -42,11 +42,11 @@ public class SoundMgr_SFX : MonoBehaviour
     {
         FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Weapons/Rifle/Rifle_Shot", _position);
     }
-    public void playBulletHitSound(MatType _matType, GameObject _position)
+    public void playAttackedSound(MatType _matType, GameObject _position)
     {
         FMODUnity.RuntimeManager.PlayOneShotAttached("event:/SFX/Weapons/Bullet_Hit/Normal", _position);
     }
-    public void playBulletHitSound(MatType _matType, Vector2 _position)
+    public void playAttackedSound(MatType _matType, Vector2 _position)
     {
         switch (_matType)
         {

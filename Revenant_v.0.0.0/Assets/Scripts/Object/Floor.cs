@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Floor : ObjectDefine, IMatType, IBulletHit
+public class Floor : ObjectDefine, IMatType, IAttacked
 {
     // Visible Member Variables
     [field: SerializeField] public MatType m_matType { get; set; } = MatType.Normal;
@@ -42,9 +42,9 @@ public class Floor : ObjectDefine, IMatType, IBulletHit
 
 
     // Functions
-    public void BulletHit(BulletHitInfo _bulletHitInfo)
+    public void Attacked(AttackedInfo _AttackedInfo)
     {
-        m_SoundMgrSFX.playBulletHitSound(m_matType, _bulletHitInfo.m_ContactPoint);
+        m_SoundMgrSFX.playAttackedSound(m_matType, _AttackedInfo.m_ContactPoint);
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

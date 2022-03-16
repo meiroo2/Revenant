@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HideObj : MonoBehaviour, IBulletHit
+public class HideObj : MonoBehaviour, IAttacked
 {
     // Visible Member Variables
     public Player m_Player;
@@ -40,7 +40,7 @@ public class HideObj : MonoBehaviour, IBulletHit
 
 
     // Functions
-    public void BulletHit(BulletHitInfo _bulletHitInfo)
+    public void Attacked(AttackedInfo _AttackedInfo)
     {
 
     }

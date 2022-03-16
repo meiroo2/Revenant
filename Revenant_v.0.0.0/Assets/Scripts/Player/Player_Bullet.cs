@@ -65,7 +65,7 @@ public class Player_Bullet : MonoBehaviour
         
         if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
         {
-            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(new BulletHitInfo(true, m_Damage, 1f, transform.position, m_HitPoint));
+            collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1f, transform.position, m_HitPoint));
 
             GameObject _effect = Instantiate(m_HitEffect);
 
@@ -78,7 +78,7 @@ public class Player_Bullet : MonoBehaviour
         }
         else if(m_HitPoint == HitPoints.OTHER)
         {
-            collision.gameObject.GetComponentInParent<IBulletHit>().BulletHit(new BulletHitInfo(true, m_Damage, 1f, transform.position, m_HitPoint));
+            collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1f, transform.position, m_HitPoint));
 
             GameObject _effect = Instantiate(m_HitEffect);
 

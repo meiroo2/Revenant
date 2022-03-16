@@ -11,7 +11,7 @@ public class Grenade : MonoBehaviour
     private Collider2D m_AimedCollider;
     private Vector2 m_CursorPos;
 
-    private List<GameObject> m_IBulletHits = new List<GameObject>();
+    private List<GameObject> m_IAttackeds = new List<GameObject>();
     private List<AimedObjInfo> m_AimedObjs = new List<AimedObjInfo>();
 
     private int m_ShortestId = 0;
@@ -48,7 +48,7 @@ public class Grenade : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         m_AimedObjs.Add(new AimedObjInfo(collision.gameObject.GetInstanceID(), collision.transform.position));
-        m_IBulletHits.Add(collision.gameObject);
+        m_IAttackeds.Add(collision.gameObject);
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -80,7 +80,7 @@ public class Grenade : MonoBehaviour
                 if (m_AimedObjs[i].m_ObjID == collision.gameObject.GetInstanceID())
                 {
                     m_AimedObjs.RemoveAt(i);
-                    m_IBulletHits.RemoveAt(i);
+                    m_IAttackeds.RemoveAt(i);
                     break;
                 }
             }
@@ -93,10 +93,13 @@ public class Grenade : MonoBehaviour
     // Functions
     private void Explode()
     {
-        for (int i = 0; i < m_IBulletHits.Count; i++)
+        for (int i = 0; i < m_IAttackeds.Count; i++)
         {
-            Debug.Log(m_IBulletHits[i].name + "ÆøÆÄ");
-            m_IBulletHits[i].GetComponentInParent<IBulletHit>().BulletHit(new BulletHitInfo(true, 1f, 0f, transform.position, HitPoints.BODY));
+            if (m_IAttackeds[i].CompareTag("Body"))
+            {
+                Debug.Log(m_IAttackeds[i].name + "ÆøÆÄ");
+                m_IAttackeds[i].GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, 1f, 0f, transform.position, HitPoints.BODY));
+            }
         }
         Destroy(transform.parent.gameObject);
     }
