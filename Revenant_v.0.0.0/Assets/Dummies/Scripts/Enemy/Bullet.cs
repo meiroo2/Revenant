@@ -8,10 +8,10 @@ public class Bullet : MonoBehaviour
     float speed = 0.1f;
 
     [field: SerializeField]
-    public float damage { get; set; }
+    public int damage { get; set; }
 
     [SerializeField]
-    float stun = 3.0f;
+    int stun = 3;
 
     HitPoints hitPoint = HitPoints.OTHER;
 
@@ -42,14 +42,14 @@ public class Bullet : MonoBehaviour
             {
                 hitPoint = HitPoints.HEAD;
                 damage *= 2;
-                collision.GetComponentInParent<IBulletHit>().BulletHit(new BulletHitInfo(false, damage, stun, transform.position, hitPoint));
+                collision.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(false, damage, stun, transform.position, hitPoint, WeaponType.BULLET));
                 Destroy(gameObject);
                 
             }
             else if (collision.CompareTag("Body"))
             {
                 hitPoint = HitPoints.BODY;
-                collision.GetComponentInParent<IBulletHit>().BulletHit(new BulletHitInfo(false, damage, stun, transform.position, hitPoint));
+                collision.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(false, damage, stun, transform.position, hitPoint, WeaponType.BULLET));
                 Destroy(gameObject);
                 
             }
