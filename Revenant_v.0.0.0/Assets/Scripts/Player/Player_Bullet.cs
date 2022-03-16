@@ -10,7 +10,7 @@ public class Player_Bullet : MonoBehaviour
     // Member Variables
     private float m_Speed = 0f;
     private float m_Timer = 0f;
-    private float m_Damage = 0f;
+    private int m_Damage = 0;
     private HitPoints m_HitPoint = HitPoints.OTHER;
     public int m_aimedObjId { get; set; } = 0;
     public GameObject m_HitEffect;
@@ -24,7 +24,7 @@ public class Player_Bullet : MonoBehaviour
     {
 
     }
-    public void InitBullet(float _speed, float _damage)
+    public void InitBullet(float _speed, int _damage)
     {
         m_Speed = _speed;
         m_Damage = _damage;
@@ -65,8 +65,7 @@ public class Player_Bullet : MonoBehaviour
         
         if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
         {
-            collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1f, transform.position, m_HitPoint));
-
+            collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
             GameObject _effect = Instantiate(m_HitEffect);
 
             if (m_Speed < 0)
@@ -78,7 +77,7 @@ public class Player_Bullet : MonoBehaviour
         }
         else if(m_HitPoint == HitPoints.OTHER)
         {
-            collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1f, transform.position, m_HitPoint));
+            collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
 
             GameObject _effect = Instantiate(m_HitEffect);
 
@@ -95,5 +94,5 @@ public class Player_Bullet : MonoBehaviour
     // Functions
 
 
-    // ±‚≈∏ ∫–∑˘«œ∞Ì ΩÕ¿∫ ∞Õ¿Ã ¿÷¿ª ∞ÊøÏ
+    // Í∏∞ÌÉÄ Î∂ÑÎ•òÌïòÍ≥† Ïã∂ÏùÄ Í≤ÉÏù¥ ÏûàÏùÑ Í≤ΩÏö∞
 }

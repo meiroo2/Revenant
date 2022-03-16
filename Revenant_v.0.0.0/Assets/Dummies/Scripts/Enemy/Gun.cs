@@ -12,7 +12,7 @@ public class Gun : MonoBehaviour
     [SerializeField]
     float bulletspeed = 1.0f;
     [SerializeField]
-    float bulletdamage = 1.0f;
+    int bulletdamage = 1;
     private void Awake()
     {
         

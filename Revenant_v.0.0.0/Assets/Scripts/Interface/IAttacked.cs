@@ -9,21 +9,30 @@ public enum HitPoints
     OTHER
 }
 
+public enum WeaponType
+{
+    BULLET,
+    GRENADE,
+    KNIFE
+}
+
 public struct AttackedInfo
 {
     public bool m_IsPlayer;
-    public float m_Damage;
-    public float m_StunValue;
+    public int m_Damage;
+    public int m_StunValue;
     public Vector2 m_ContactPoint;
     public HitPoints m_HitPoint;
+    public WeaponType m_WeaponType;
 
-    public AttackedInfo(bool _isPlayer, float _damage, float _stunvalue, Vector2 _contactpoint, HitPoints _hitPoints)
+    public AttackedInfo(bool _isPlayer, int _damage, int _stunvalue, Vector2 _contactpoint, HitPoints _hitPoints, WeaponType _weaponType)
     {
         m_IsPlayer = _isPlayer;
         m_Damage = _damage;
         m_StunValue = _stunvalue;
         m_ContactPoint = _contactpoint;
         m_HitPoint = _hitPoints;
+        m_WeaponType = _weaponType;
     }
 }
 
