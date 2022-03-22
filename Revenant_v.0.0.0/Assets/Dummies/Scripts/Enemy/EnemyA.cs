@@ -4,13 +4,19 @@ using UnityEngine;
 
 public enum DIR
 {
-    LEFT, RIGHT, UP, DOWN
+    LEFT, RIGHT, UP, DOWN, STOP
 }
 public class EnemyA : Human, IAttacked
 {
 
     bool isAlive = true;
     Rigidbody2D rigid;
+    Animator animator;
+    
+
+    // 이동 방향
+    public DIR defaultDir;
+    DIR curDir;
 
     // 경직정도
     [field: SerializeField]
@@ -19,13 +25,14 @@ public class EnemyA : Human, IAttacked
     bool isStun = false;
     public GameObject stunMark;
 
-    // 감지거리
-    //[field: SerializeField]
-    //public float detectDistance { get; set; }
 
-    // 사정거리(감지)
+    // 추격 거리
     [field: SerializeField]
-    public float attackDistance { get; set; }
+    public float guardDistance { get; set; }    // 추격 거리
+
+    // 전투 거리
+    [field: SerializeField]
+    public float attackDistance { get; set; }   // 공격 거리
     public GameObject detectMark;
 
     // 사격 준비
@@ -47,6 +54,8 @@ public class EnemyA : Human, IAttacked
     {
         setisRightHeaded(false);
         rigid = GetComponent<Rigidbody2D>();
+        //enemyAnimator.GetComponent<EnemyAnimatior>();
+        animator = GetComponent<Animator>();
         enemyManager = GetComponentInParent<EnemyManager>();
 
         gun = GetComponentInChildren<Gun>();
@@ -124,9 +133,9 @@ public class EnemyA : Human, IAttacked
 
 
 
-    public void AutoMove(DIR _dir)
+    public void AutoMove()
     {
-        switch(_dir)
+        switch(curDir)
         {
             case DIR.LEFT:
                 rigid.velocity = new Vector2(-1, 0);
@@ -135,28 +144,40 @@ public class EnemyA : Human, IAttacked
                 rigid.velocity = new Vector2(1, 0);
                 break;
             default:
-                Debug.Log("There is No Dir Move Code");
+                //Debug.Log("There is No Dir Move Code");
                 break;
         }
     }
 
-    public void CheckPlayer()
+    public void CheckPlayer(float distance)
     {
         RaycastHit2D rayHit2D;
+        
         if (m_isRightHeaded)
         {
-            Debug.DrawRay(transform.position, Vector3.right * attackDistance, Color.magenta);
-            rayHit2D = Physics2D.Raycast(transform.position, Vector3.right, attackDistance, LayerMask.GetMask("Player"));
+            Debug.DrawRay(transform.position, Vector3.right * distance, Color.magenta);
+            rayHit2D = Physics2D.Raycast(transform.position, Vector3.right, distance, LayerMask.GetMask("Player"));
         }
         else
         {
-            Debug.DrawRay(transform.position, Vector3.left * attackDistance, Color.magenta);
-            rayHit2D = Physics2D.Raycast(transform.position, Vector3.left, attackDistance, LayerMask.GetMask("Player"));
+            Debug.DrawRay(transform.position, Vector3.left * distance, Color.magenta);
+            rayHit2D = Physics2D.Raycast(transform.position, Vector3.left, distance, LayerMask.GetMask("Player"));
             
         }
         if(rayHit2D)
         {
-            FightAIState();
+            switch (curEnemyState)
+            {
+                // 대기 -> 추격
+                case EnemyState.IDLE:
+                    GuardAIState();
+                    break;
+
+                // 추격 -> 공격
+                case EnemyState.GUARD:
+                    FightAIState();
+                    break;
+            }
         }
             
 
@@ -180,8 +201,17 @@ public class EnemyA : Human, IAttacked
         stunMark.SetActive(false);
     }
 
+    void GuardAIState()
+    {
+        // 추격 상태
+        curEnemyState = EnemyState.GUARD;
+    }
+
     void FightAIState()
     {
+        // 애니메이션
+        animator.SetBool("isFight", true);
+
         // !
         detectMark.SetActive(true);
 
@@ -198,17 +228,20 @@ public class EnemyA : Human, IAttacked
     {
         switch(curEnemyState)
         {
-            case EnemyState.IDLE:// 무방비
-                // 플레이어 만나면 전투
-                CheckPlayer();
+            case EnemyState.IDLE:// 대기
+                // 플레이어 만나면 추격
+                CheckPlayer(guardDistance);
+                break;
 
+            case EnemyState.GUARD:// 추격
                 // 왼쪽으로 쭉감
-                AutoMove(DIR.LEFT);
+                AutoMove();
+                CheckPlayer(attackDistance);
                 break;
-            case EnemyState.GUARD:// 경계
-                break;
+
             case EnemyState.FIGHT:// 전투
-                if(isReady == false)    // 준비 동작 끝나면
+                rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
+                if (isReady == false)    // 준비 동작 끝나면
                     gun.Fire();
                 break;
             case EnemyState.STUN:// 스턴
@@ -225,5 +258,29 @@ public class EnemyA : Human, IAttacked
     void ReadyComplete()
     {
         isReady = false;
+    }
+
+    // 겹침 현상
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Enemy"))
+        {
+            OverLap();
+        }
+    }
+
+    void OverLap()
+    {
+        
+        
+
+        Debug.Log("Dir = Stop");
+        curDir = DIR.STOP; // 현재 이동방향값 STOP
+        
+    }
+
+    void unOverLap()
+    {
+        rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 }

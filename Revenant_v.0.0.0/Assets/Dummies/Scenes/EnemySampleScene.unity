@@ -1595,7 +1595,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <enemyPrefab>k__BackingField:
   - {fileID: 4314626955191385356, guid: 020a3ebe8d6ad9f4f992fbff47ddeb16, type: 3}
-  - {fileID: 2224687398200138854, guid: e5477f78c985d7f429ae05bde45ccd46, type: 3}
   <respawnTime>k__BackingField: 3
 --- !u!1 &681679791
 GameObject:
@@ -2258,6 +2257,8 @@ MonoBehaviour:
   m_isPlay: 1
   m_Animators:
   - {fileID: 1880250837}
+  m_PlayerAnimator: {fileID: 0}
+  m_SpriteRenderers: []
 --- !u!114 &869540627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2282,8 +2283,9 @@ MonoBehaviour:
   <m_canMove>k__BackingField: 1
   <m_canRoll>k__BackingField: 1
   <m_canShot>k__BackingField: 1
-  m_BackWalkSpeedRatio: 0.7
-  m_RunSpeedRatio: 2
+  <m_BackWalkSpeedRatio>k__BackingField: 0.7
+  <m_RunSpeedRatio>k__BackingField: 1.5
+  <m_LeftRollCount>k__BackingField: 3
   m_PlayerHealthUI: {fileID: 1103029311}
   m_UIMgr: {fileID: 442968229}
 --- !u!50 &869540628
@@ -4757,6 +4759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_cameraSpeed: 5
   m_Player: {fileID: 869540624}
+  m_OffSet: 0
 --- !u!1 &2050398353
 GameObject:
   m_ObjectHideFlags: 0
