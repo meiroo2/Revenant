@@ -5,14 +5,14 @@ using UnityEngine;
 public class Player_Gun : MonoBehaviour
 {
     // Visible Member Variables
-    public bool m_canShot = true;
-    public Transform m_Player_Arm;
     public AimCursor m_aimCursor;
-    public Player m_Player;
-    public BASEWEAPON[] m_Weapons;
+    public BASEWEAPON[] m_MainWeapons;
+    public BASEWEAPON[] m_SubWeapons;
+    public BASEWEAPON[] m_Throwables;
+    [field: SerializeField] public int m_ActiveWeaponType { get; private set; } = 0; // 0 == Main, 1 == Sub, 2 == Throwable
 
-    public GameObject m_Grenade;
-
+    [Space (30f)]
+    [Header("For IK")]
     public Transform m_OutArmEffectorPos;
     public Transform m_OutArmEffectorOriginPos;
 
@@ -22,26 +22,59 @@ public class Player_Gun : MonoBehaviour
     public Transform m_GunPos;
     public Transform m_GunOriginPos;
 
-
     // Member Variables
-    private int m_WeaponIdx = 0;
-    private BASEWEAPON m_Weapon;
+    private Player m_Player;
+    private Transform m_Player_Arm;
+
+    private BASEWEAPON m_curMainWeapon;
+    private BASEWEAPON m_curSubWeapon;
+    private BASEWEAPON m_curThrowable;
+
+    private BASEWEAPON m_ActiveWeapon;
 
     private bool doRecoil = false;
+    private bool m_isCastingThrow = false;
 
     // Constructors
     private void Awake()
     {
-        for(int i = 0; i < m_Weapons.Length; i++)
+        m_Player = GetComponentInParent<Player>();
+        m_Player_Arm = GetComponentInParent<PlayerRotation>().gameObject.transform;
+
+        if(m_MainWeapons.Length != 0)
         {
-            m_Weapons[i].gameObject.SetActive(false);
+            foreach (BASEWEAPON element in m_MainWeapons)
+            {
+                element.gameObject.SetActive(false);
+            }
+            m_curMainWeapon = m_MainWeapons[0];
         }
-        m_Weapons[0].gameObject.SetActive(true);
+
+        if (m_SubWeapons.Length != 0)
+        {
+            foreach (BASEWEAPON element in m_SubWeapons)
+            {
+                element.gameObject.SetActive(false);
+            }
+            m_curSubWeapon = m_SubWeapons[0];
+        }
+
+        if (m_Throwables.Length != 0)
+        {
+            foreach (BASEWEAPON element in m_Throwables)
+            {
+                element.gameObject.SetActive(false);
+            }
+            m_curThrowable = m_Throwables[0];
+        }
+
+
+        m_curMainWeapon.gameObject.SetActive(true);
+        m_ActiveWeapon = m_curMainWeapon;
     }
     private void Start()
     {
-        m_Weapon = m_Weapons[0];
-        m_Weapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+        m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
     }
 
     // Updates
@@ -49,53 +82,51 @@ public class Player_Gun : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
-            if(m_WeaponIdx + 1 < m_Weapons.Length)
+            if (m_ActiveWeapon.m_WeaponType == 0)
             {
-                m_Weapons[m_WeaponIdx].gameObject.SetActive(false);
-                m_WeaponIdx++;
-                m_Weapons[m_WeaponIdx].gameObject.SetActive(true);
-                m_Weapon = m_Weapons[m_WeaponIdx];
-                m_Weapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+                m_ActiveWeapon.gameObject.SetActive(false);
+                m_ActiveWeapon = m_curSubWeapon;
+                m_ActiveWeapon.gameObject.SetActive(true);
+                m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+            }
+            else if (m_ActiveWeapon.m_WeaponType == 1)
+            {
+                m_ActiveWeapon.gameObject.SetActive(false);
+                m_ActiveWeapon = m_curMainWeapon;
+                m_ActiveWeapon.gameObject.SetActive(true);
+                m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
             }
             else
             {
-                m_Weapons[m_WeaponIdx].gameObject.SetActive(false);
-                m_WeaponIdx = 0;
-                m_Weapons[m_WeaponIdx].gameObject.SetActive(true);
-                m_Weapon = m_Weapons[m_WeaponIdx];
-                m_Weapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+                m_ActiveWeapon.gameObject.SetActive(false);
+                m_ActiveWeapon = m_curSubWeapon;
+                m_ActiveWeapon.gameObject.SetActive(true);
+                m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
             }
+        }
+        else if (Input.GetKeyDown(KeyCode.G))
+        {
+            m_ActiveWeapon.gameObject.SetActive(false);
+            m_ActiveWeapon = m_curThrowable;
+            m_ActiveWeapon.gameObject.SetActive(true);
+            m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
         }
 
         if (m_Player.m_canShot)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && !m_isCastingThrow)
             {
-                m_Weapon.Fire();
-
-                if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.05f)
+                if(m_ActiveWeapon.Fire() == true)
                 {
-                    m_OutArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
-                    m_InArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
-                    m_GunPos.Translate(new Vector2(-0.04f, 0f));
+                    if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.05f)
+                    {
+                        m_OutArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
+                        m_InArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
+                        m_GunPos.Translate(new Vector2(-0.04f, 0f));
+                    }
+
+                    doRecoil = true;
                 }
-
-                doRecoil = true;
-            }
-
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-
-            }
-
-            if (Input.GetKeyUp(KeyCode.G))
-            {
-                GameObject InstancedGren = GameObject.Instantiate(m_Grenade);
-                InstancedGren.transform.SetPositionAndRotation(m_Player_Arm.position, m_Player_Arm.rotation);
-                if (m_Player.m_isRightHeaded)
-                    InstancedGren.GetComponent<Rigidbody2D>().AddForce(transform.right * 15f);
-                else
-                    InstancedGren.GetComponent<Rigidbody2D>().AddForce(-transform.right * 15f);
             }
         }
     }
@@ -119,4 +150,44 @@ public class Player_Gun : MonoBehaviour
 
 
     // 기타 분류하고 싶은 것이 있을 경우
+    private void changeWeapon(int _input)
+    {
+        exitWeapon();
+        // 0 == To Main, 1 == To Sub, 2 == To Throw
+        switch (_input)
+        {
+            case 0:
+                m_curMainWeapon.gameObject.SetActive(true);
+                m_ActiveWeapon = m_curMainWeapon;
+                m_ActiveWeaponType = 0;
+                break;
+
+            case 1:
+                m_curSubWeapon.gameObject.SetActive(true);
+                m_ActiveWeapon = m_curSubWeapon;
+                m_ActiveWeaponType = 1;
+                break;
+
+            case 2:
+                m_curThrowable.gameObject.SetActive(true);
+                m_ActiveWeapon = m_curThrowable;
+                m_ActiveWeaponType = 2;
+                break;
+        }
+    }
+    private void exitWeapon()
+    {
+        switch (m_ActiveWeaponType)
+        {
+            case 0:
+                m_curMainWeapon.gameObject.SetActive(false);
+                break;
+            case 1:
+                m_curSubWeapon.gameObject.SetActive(false);
+                break;
+            case 2:
+                m_curThrowable.gameObject.SetActive(false);
+                break;
+        }
+    }
 }

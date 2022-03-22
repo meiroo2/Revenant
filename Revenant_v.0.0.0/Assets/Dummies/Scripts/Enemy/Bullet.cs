@@ -62,6 +62,11 @@ public class Bullet : MonoBehaviour
         else
         {
             hitPoint = HitPoints.OTHER;
+            if (collision.CompareTag("Object"))
+            {
+                collision.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(false, damage, stun, transform.position, hitPoint, WeaponType.BULLET));
+                Destroy(gameObject);
+            }
         }
 
 

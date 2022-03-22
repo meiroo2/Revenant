@@ -5,28 +5,50 @@ using UnityEngine;
 public class Rifle : BASEWEAPON
 {
     // Visible Member Variables
-
+    public int FireCount = 3;
+    public float ContinuousFireDelay = 0.1f;
 
     // Member Variables
-    private float m_FireDelay = 0.1f;
-    private float m_TrueDelay = 0.5f;
-    private int m_FireNum = 3;
-    private bool m_Resting = false;
-
-    private bool m_Shooting = false;
+    private int m_FireCount;
 
     // Constructors
-
+    private void Awake()
+    {
+        m_FireCount = FireCount;
+    }
 
     // Updates
     private void Update()
     {
-        if (m_Shooting && !m_Resting && m_FireDelay == 0.1f)
+        
+    }
+
+
+    // Physics
+
+
+    // Functions
+    public override bool Fire()
+    {
+        if (m_isDelayEnd)
         {
-            m_FireNum--;
+            m_isDelayEnd = false;
+            Internal_Fire();
+
+            return true;
+        }
+        return false;
+    }
+    private void Internal_Fire()
+    {
+        if(m_FireCount > 0)
+        {
+            m_FireCount--;
 
             GameObject InstancedBullet = Instantiate(m_BulletPrefab);
             Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
+
+            InstancedBullet_Script.m_SoundMgrSFX = m_SoundMgrSFX;
 
             if (m_Player.m_isRightHeaded)
                 InstancedBullet_Script.InitBullet(m_BulletSpeed, m_BulletDamage);
@@ -35,44 +57,14 @@ public class Rifle : BASEWEAPON
 
             InstancedBullet.transform.SetPositionAndRotation(m_Player_Arm.position, m_Player_Arm.rotation);
             InstancedBullet_Script.m_aimedObjId = m_aimCursor.AimedObjid;
+            m_SoundMgrSFX.playGunFireSound(0, m_Player.gameObject);
 
-            if (m_FireNum == 0)
-                m_Resting = true;
+            Invoke(nameof(Internal_Fire), ContinuousFireDelay);
         }
-        else if (m_Shooting && m_Resting)
+        else
         {
-            m_TrueDelay -= Time.deltaTime;
-            if (m_TrueDelay <= 0f)
-            {
-                m_FireDelay = 0.1f;
-                m_TrueDelay = 0.5f;
-                m_FireNum = 3;
-                m_Shooting = false;
-                m_Resting = false;
-            }
-        }
-
-        if (m_Shooting)
-        {
-            m_FireDelay -= Time.deltaTime;
-            if (m_FireDelay <= 0f)
-            {
-                m_FireDelay = 0.1f;
-            }
-        }
-    }
-
-
-    // Physics
-
-
-    // Functions
-    public override void Fire()
-    {
-        if (m_PlayerGun.m_canShot)
-        {
-            if (!m_Shooting)
-                m_Shooting = true;
+            Invoke(nameof(setisDelayEndToTrue), m_ShotDelay);
+            m_FireCount = FireCount;
         }
     }
 
