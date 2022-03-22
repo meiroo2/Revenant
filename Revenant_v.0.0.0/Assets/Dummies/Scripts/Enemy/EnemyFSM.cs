@@ -3,5 +3,5 @@ using System.Collections.Generic;
 
 public enum EnemyState
 {
-    IDLE, GUARD, FIGHT,DEAD, STUN
+    IDLE, GUARD, FIGHT, DEAD, STUN
 }
