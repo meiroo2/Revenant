@@ -7,7 +7,7 @@ public class CameraMove : MonoBehaviour
     // Visible Member Variables
     public float m_cameraSpeed = 1f;
     public GameObject m_Player;
-
+    public bool m_FollowMouse = true;
     public float m_OffSet;
 
     // Member Variables
@@ -41,11 +41,15 @@ public class CameraMove : MonoBehaviour
         m_cameraPos = Vector3.Lerp(m_cameraPos, m_Player.transform.position, Time.deltaTime * m_cameraSpeed);
         m_cameraPos.z = -10f;
 
-        m_MousePos = Input.mousePosition;
-        m_cameraPos.x += (m_MousePos.x - 960) / 15000f;
-        m_cameraPos.y += (m_MousePos.y - 540) / 15000f;
+        if (m_FollowMouse)
+        {
+            m_MousePos = Input.mousePosition;
+            m_cameraPos.x += (m_MousePos.x - 960) / 15000f;
+            m_cameraPos.y += (m_MousePos.y - 540) / 15000f;
 
-        m_cameraPos.y += m_OffSet;
+            m_cameraPos.y += m_OffSet;
+        }
+
 
         transform.position = m_cameraPos;
 

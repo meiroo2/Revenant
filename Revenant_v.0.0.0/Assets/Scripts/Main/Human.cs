@@ -15,7 +15,7 @@ public class Human : ObjectDefine
     // Member Variables
     [field: SerializeField] public humanState m_curHumanState { get; private set; } = humanState.Live;
     [field: SerializeField] public float m_Hp { get; protected set; } = 10;
-    [field: SerializeField] public float m_Speed { get; private set; } = 1f;
+    [field: SerializeField] public float m_Speed { get; protected set; } = 1f;
     [field: SerializeField] public float m_stunTime { get; private set; } = 0f;
     [field: SerializeField] public bool m_hasStun { get; private set; } = false;
     [field: SerializeField] public bool m_isEnemy { get; private set; } = false;

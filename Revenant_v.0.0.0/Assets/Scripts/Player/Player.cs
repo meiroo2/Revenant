@@ -60,7 +60,7 @@ public class Player : Human, IAttacked
     }
     private void FixedUpdate()
     {
-        
+
     }
 
 
@@ -108,18 +108,16 @@ public class Player : Human, IAttacked
                 break;
 
             case playerState.ROLL:
-                if(m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.5f && m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.55f)
+                if (m_isRightHeaded)
                 {
-                    if (m_isRightHeaded)
-                    {
-                        m_playerRigid.MovePosition(new Vector2(transform.position.x + 0.3f, transform.position.y));
-                    }
-                    else
-                    {
-                        m_playerRigid.MovePosition(new Vector2(transform.position.x - 0.3f, transform.position.y));
-                    }
+                    m_playerRigid.MovePosition(new Vector2(transform.position.x + 0.03f, transform.position.y));
                 }
-                
+                else
+                {
+                    m_playerRigid.MovePosition(new Vector2(transform.position.x - 0.03f, transform.position.y));
+                }
+                if (m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                    changePlayerFSM(playerState.WALK);
                 break;
 
             case playerState.HIDDEN:
@@ -162,20 +160,20 @@ public class Player : Human, IAttacked
                 if (!m_isRecoveringRollCount)
                     StartCoroutine(RecoverRollCount());
 
-                Invoke(nameof(changeRolltoWalk), 1f);
                 m_curPlayerState = playerState.ROLL;
                 m_playerRotation.m_doRotate = false;
                 m_canShot = false;
                 m_canMove = false;
 
-                m_playerSoundnAni.setPlayerSprites(false);
+                m_playerSoundnAni.setSprites(true, false, false, false, false);
                 break;
 
             case playerState.HIDDEN:
+                m_playerSoundnAni.setSprites(false, false, true, true, true);
                 m_curPlayerState = playerState.HIDDEN;
-                m_playerRotation.m_doRotate = false;
+                m_playerRotation.m_doRotate = true;
                 m_canMove = false;
-                m_canShot = false;
+                m_canShot = true;
                 break;
 
             case playerState.HIDDEN_STAND:
@@ -196,6 +194,7 @@ public class Player : Human, IAttacked
     }
     private void exitPlayerFSM()
     {
+        m_playerSoundnAni.exitplayerAnim();
         switch (m_curPlayerState)
         {
             case playerState.IDLE:
@@ -215,10 +214,11 @@ public class Player : Human, IAttacked
                 m_playerRotation.m_doRotate = true;
                 m_canShot = true;
                 m_canMove = true;
-                m_playerSoundnAni.setPlayerSprites(true);
+                m_playerSoundnAni.setSprites(false, true, true, true, true);
                 break;
 
             case playerState.HIDDEN:
+                m_playerSoundnAni.setSprites(false, true, true, true, true);
                 m_playerRotation.m_doRotate = true;
                 m_canMove = true;
                 m_canShot = true;
@@ -238,7 +238,7 @@ public class Player : Human, IAttacked
     // Functions
     public void Attacked(AttackedInfo _AttackedInfo)
     {
-        if(m_curHumanState != humanState.Dead)
+        if (m_curHumanState != humanState.Dead)
         {
             Debug.Log(_AttackedInfo.m_Damage + "데미지 총알이 플레이어한테 박힘");
 
@@ -260,7 +260,7 @@ public class Player : Human, IAttacked
         m_LeftRollCount += 1;
         if (m_LeftRollCount < 3)
             StartCoroutine(RecoverRollCount());
-        else if(m_LeftRollCount == 3)
+        else if (m_LeftRollCount == 3)
             m_isRecoveringRollCount = false;
     }
     private void changeRolltoWalk()

@@ -10,6 +10,7 @@ public class Door : MonoBehaviour, IUseableObj
 
     // Member Variables
     public UseableObjList m_ObjProperty { get; set; }
+    public bool m_isOn { get; set; } = false;
 
     // Constructors
     private void Awake()

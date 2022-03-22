@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class PlayerRotation : MonoBehaviour
 {
-    // Member Variables
+    // Visible Member Variables
     public bool m_doRotate = true;
     public bool m_spriteChangeMode = false;
-    public float m_rotationLimitAngle = 65f;
+    public float m_rotationHighLimitAngle = 65f;
+    public float m_rotationLowLimitAngle = -45f;
 
     [Space(10f)]
     [Header("Up to Down")]
@@ -20,6 +21,10 @@ public class PlayerRotation : MonoBehaviour
     public Sprite[] m_JacketLSprites;
     public Sprite[] m_JacketRSprites;
 
+    [Space(10f)]
+    public Transform m_HeadIKPos;
+
+    // Member Variables
     private PlayerSoundnAni m_playerSoundnAni;
     private Player m_Player;
 
@@ -32,6 +37,8 @@ public class PlayerRotation : MonoBehaviour
     private float m_HeadSpritesDegree;
     private float m_JacketSpritesDegree;
 
+    private Vector2 m_OriginalHeadIKPos;
+
     // Constructors
     private void Awake()
     {
@@ -43,6 +50,8 @@ public class PlayerRotation : MonoBehaviour
 
         m_HeadSpritesDegree = 180f / m_HeadSprites.Length;
         m_JacketSpritesDegree = 180f / m_JacketLSprites.Length;
+
+        m_OriginalHeadIKPos = m_HeadIKPos.localPosition;
     }
 
     // Updates
@@ -79,17 +88,35 @@ public class PlayerRotation : MonoBehaviour
 
             if (m_Player.m_isRightHeaded)
             {
-                if(rotateDegree < m_rotationLimitAngle)
+                if(rotateDegree < m_rotationHighLimitAngle && rotateDegree > m_rotationLowLimitAngle)
                     toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
                 else
-                    toRotation = Quaternion.Euler(0f, 0f, m_rotationLimitAngle);
+                {
+                    if (rotateDegree > 0)
+                        toRotation = Quaternion.Euler(0f, 0f, m_rotationHighLimitAngle);
+                    else
+                        toRotation = Quaternion.Euler(0f, 0f, m_rotationLowLimitAngle);
+                }
+
+                // 오른쪽 보고
+                if (m_OriginalHeadIKPos.x - rotateDegree / 400f >= -0.10f && m_OriginalHeadIKPos.x - rotateDegree / 400f <= 0.14f)
+                    m_HeadIKPos.localPosition = new Vector2(m_OriginalHeadIKPos.x - rotateDegree / 400f, m_OriginalHeadIKPos.y);
             }
             else if(!m_Player.m_isRightHeaded)
             {
-                if (-rotateDegree < m_rotationLimitAngle)
+                if (-rotateDegree < m_rotationHighLimitAngle && -rotateDegree > m_rotationLowLimitAngle)
                     toRotation = Quaternion.Euler(0f, 0f, rotateDegree);
                 else
-                    toRotation = Quaternion.Euler(0f, 0f, -m_rotationLimitAngle);
+                {
+                    if (-rotateDegree > 0)
+                        toRotation = Quaternion.Euler(0f, 0f, -m_rotationHighLimitAngle);
+                    else
+                        toRotation = Quaternion.Euler(0f, 0f, -m_rotationLowLimitAngle);
+                }
+
+                // 왼쪽 보고
+                if (m_OriginalHeadIKPos.x + rotateDegree / 400f >= -0.10f && m_OriginalHeadIKPos.x + rotateDegree / 400f <= 0.14f)
+                    m_HeadIKPos.localPosition = new Vector2(m_OriginalHeadIKPos.x + rotateDegree / 400f, m_OriginalHeadIKPos.y);
             }
 
             if (m_spriteChangeMode)

@@ -6,6 +6,7 @@ public class HidePos : MonoBehaviour, IUseableObj
 {
     // Visible Member Variables
     [field: SerializeField] public UseableObjList m_ObjProperty { get; set; } = UseableObjList.HIDEPOS;
+    public bool m_isOn { get; set; } = false;
 
     // Member Variables
     private HideObj m_HideObj;
@@ -30,7 +31,7 @@ public class HidePos : MonoBehaviour, IUseableObj
     // Updates
     private void Update()
     {
-
+        m_isOn = m_HideObj.m_isOn;
     }
     private void FixedUpdate()
     {

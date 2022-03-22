@@ -45,7 +45,7 @@ public class Player_UseRange : MonoBehaviour
         if (isPressedFKey)
         {
             Timer -= Time.deltaTime;
-            if(Timer <= 0f)
+            if (Timer <= 0f)
             {
                 Timer = 0.1f;
                 isPressedFKey = false;
