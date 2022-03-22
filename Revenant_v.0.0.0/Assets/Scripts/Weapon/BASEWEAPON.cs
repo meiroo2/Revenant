@@ -7,8 +7,8 @@ public class BASEWEAPON : MonoBehaviour
     // Visible Member Variables
     public GameObject m_BulletPrefab;
     public float m_BulletSpeed = 15;
-    public float m_BulletDamage = 1;
-    public float m_StunValue = 1;
+    public int m_BulletDamage = 1;
+    public int m_StunValue = 1;
 
     // Member Variables
     protected Transform m_Player_Arm;

@@ -680,7 +680,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8889013347204925098}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &338662275
 GameObject:
@@ -1055,6 +1055,50 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &622889074
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 622889075}
+  - component: {fileID: 622889076}
+  m_Layer: 0
+  m_Name: Player_Throw
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &622889075
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622889074}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.316, y: -0.073, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8889013347204925098}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &622889076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 622889074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a8b9fffa2f646341a589d1b4a89d64f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &735689797
 GameObject:
   m_ObjectHideFlags: 0
@@ -1627,7 +1671,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8889013347204925098}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1034618104
 GameObject:
@@ -1985,7 +2029,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8889013347204925098}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -31}
 --- !u!1 &1320738139
 GameObject:
@@ -3088,6 +3132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_cameraSpeed: 3
   m_Player: {fileID: 8889013347158947016}
+  m_OffSet: 0
 --- !u!224 &1881999006 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7492365225162037006, guid: e265b069b419ccc4d9d101d9a785ace4, type: 3}
@@ -3308,7 +3353,7 @@ Transform:
   - {fileID: 4257508509421281002}
   - {fileID: 735689799}
   m_Father: {fileID: 8889013347204925098}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1670789330667869972
 Transform:
@@ -3324,7 +3369,7 @@ Transform:
   m_Children:
   - {fileID: 737839305}
   m_Father: {fileID: 8889013347204925098}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2002351549530298519
 Transform:
@@ -4212,8 +4257,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BulletPrefab: {fileID: 852461890178520722, guid: 15a52f1306152d749be00905ab738d03, type: 3}
   m_BulletSpeed: 5
-  m_BulletDamage: 0
-  m_StunValue: 0
+  m_BulletDamage: 1
+  m_StunValue: 1
 --- !u!1 &8889013346946032812
 GameObject:
   m_ObjectHideFlags: 0
@@ -4696,6 +4741,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8889013347159992990}
+  - {fileID: 622889075}
   - {fileID: 307323261}
   - {fileID: 1316613503}
   - {fileID: 1005476360}
@@ -4959,7 +5005,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8889013347204925098}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8889013347713658813
 SpriteRenderer:
@@ -5196,7 +5242,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8889013347204925098}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8889013348081298214
 SpriteRenderer:
@@ -5561,7 +5607,7 @@ MonoBehaviour:
   m_BulletPrefab: {fileID: 852461890178520722, guid: 15a52f1306152d749be00905ab738d03, type: 3}
   m_BulletSpeed: 15
   m_BulletDamage: 1
-  m_StunValue: 0
+  m_StunValue: 1
   m_GunFireAnimator: {fileID: 8889013348639542381}
   m_ReflectionAnimator: {fileID: 8889013348221943443}
   m_SoundMgrSFX: {fileID: 1346712533}

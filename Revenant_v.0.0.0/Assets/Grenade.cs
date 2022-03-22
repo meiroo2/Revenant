@@ -5,104 +5,64 @@ using UnityEngine;
 public class Grenade : MonoBehaviour
 {
     // Visible Member Variables
+    [field: SerializeField] public float m_BoomTime { get; private set; } = 3f;
+    [field: SerializeField] public int m_Damage { get; private set; } = 3;
+    [field: SerializeField] public int m_Stunvalue { get; private set; } = 1;
 
     // Member Variables
-    public int AimedObjid { get; private set; } = -1;
-    private Collider2D m_AimedCollider;
-    private Vector2 m_CursorPos;
-
-    private List<GameObject> m_IAttackeds = new List<GameObject>();
-    private List<AimedObjInfo> m_AimedObjs = new List<AimedObjInfo>();
-
-    private int m_ShortestId = 0;
-    private float m_ShortestLength = 0f;
+    private List<GameObject> m_HitBoxes = new List<GameObject>();
+    private AttackedInfo m_AttackedInfo;
 
     // Constructors
-    private void Awake()
-    {
-
-    }
     private void Start()
     {
-        Invoke(nameof(Explode), 3f);
+        Invoke(nameof(Explode), m_BoomTime);
+        m_AttackedInfo = new AttackedInfo(true, m_Damage, m_Stunvalue, transform.position, HitPoints.BODY, WeaponType.GRENADE);
     }
-    /*
-    <ƒøΩ∫≈“ √ ±‚»≠ «‘ºˆ∞° « ø‰«“ ∞ÊøÏ>
-    public void Init()
+    public void InitGrenade(float _BoomTime, int _Damage, int _Stunvalue)
     {
-
+        m_BoomTime = _BoomTime;
+        m_Damage = _Damage;
+        m_Stunvalue = _Stunvalue;
+        m_AttackedInfo.m_Damage = m_Damage;
+        m_AttackedInfo.m_StunValue = m_Stunvalue;
     }
-    */
 
     // Updates
-    private void Update()
-    {
-
-    }
-    private void FixedUpdate()
-    {
-
-    }
 
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        m_AimedObjs.Add(new AimedObjInfo(collision.gameObject.GetInstanceID(), collision.transform.position));
-        m_IAttackeds.Add(collision.gameObject);
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (m_AimedObjs.Count > 0)
-        {
-            m_ShortestId = m_AimedObjs[0].m_ObjID;
-            m_ShortestLength = ((Vector2)transform.position - m_AimedObjs[0].m_ObjPos).sqrMagnitude;
-
-            for (int i = 1; i < m_AimedObjs.Count; i++)
-            {
-                if (m_ShortestLength > ((Vector2)transform.position - m_AimedObjs[i].m_ObjPos).sqrMagnitude)
-                {
-                    m_ShortestLength = ((Vector2)transform.position - m_AimedObjs[i].m_ObjPos).sqrMagnitude;
-                    m_ShortestId = m_AimedObjs[i].m_ObjID;
-                }
-            }
-
-            AimedObjid = m_ShortestId;
-        }
+        m_HitBoxes.Add(collision.gameObject);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (m_AimedObjs.Count > 0)
+        if (m_HitBoxes.Count > 0)
         {
-            for (int i = 0; i < m_AimedObjs.Count; i++)
+            for (int i = 0; i < m_HitBoxes.Count; i++)
             {
-                if (m_AimedObjs[i].m_ObjID == collision.gameObject.GetInstanceID())
+                if (m_HitBoxes[i] == collision.gameObject)
                 {
-                    m_AimedObjs.RemoveAt(i);
-                    m_IAttackeds.RemoveAt(i);
+                    m_HitBoxes.RemoveAt(i);
                     break;
                 }
             }
-
-            if (m_AimedObjs.Count == 0)
-                AimedObjid = -1;
         }
     }
 
     // Functions
     private void Explode()
     {
-        for (int i = 0; i < m_IAttackeds.Count; i++)
+        for (int i = 0; i < m_HitBoxes.Count; i++)
         {
-            if (m_IAttackeds[i].CompareTag("Body"))
+            if (m_HitBoxes[i].CompareTag("Body"))
             {
-                Debug.Log(m_IAttackeds[i].name + "∆¯∆ƒ");
-                m_IAttackeds[i].GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, 1f, 0f, transform.position, HitPoints.BODY));
+                m_HitBoxes[i].GetComponentInParent<IAttacked>().Attacked(m_AttackedInfo);
             }
         }
         Destroy(transform.parent.gameObject);
     }
 
-    // ±‚≈∏ ∫–∑˘«œ∞Ì ΩÕ¿∫ ∞Õ¿Ã ¿÷¿ª ∞ÊøÏ
+    // Í∏∞ÌÉÄ Î∂ÑÎ•òÌïòÍ≥† Ïã∂ÏùÄ Í≤ÉÏù¥ ÏûàÏùÑ Í≤ΩÏö∞
 }
