@@ -7,6 +7,7 @@ public enum RoomNum
     EnemyTest,
     FireTest01,
     FireTest02,
+    Stage01
 }
 
 public class EnemyManager : MonoBehaviour
@@ -24,7 +25,7 @@ public class EnemyManager : MonoBehaviour
     public float respawnTime { get; set; }
 
     SpawnPosition[] spawnPositions;
-
+    [SerializeField]
     RoomNum roomNum = RoomNum.EnemyTest;
 
     private void Awake()

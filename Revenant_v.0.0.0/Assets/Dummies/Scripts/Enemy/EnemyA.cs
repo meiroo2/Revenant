@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using TMPro;
 
 
 public enum DIR
@@ -8,15 +9,24 @@ public enum DIR
 }
 public class EnemyA : Human, IAttacked
 {
+    [field: SerializeField]
+    public float SAFE_DISTANCE { get; set; } = 0.1f;
+
+    public GameObject textForTest;
 
     bool isAlive = true;
     Rigidbody2D rigid;
     Animator animator;
-    
+    CircleCollider2D guardHearCollider;
+    [SerializeField]
+    float hearDistance = 1f;
 
     // 이동 방향
     public DIR defaultDir;
     DIR curDir;
+
+    // 이동 위치
+    public Vector2 sensorPos;
 
     // 경직정도
     [field: SerializeField]
@@ -25,25 +35,31 @@ public class EnemyA : Human, IAttacked
     bool isStun = false;
     public GameObject stunMark;
 
-
-    // 추격 거리
+    // 무방비 선딜
     [field: SerializeField]
-    public float guardDistance { get; set; }    // 추격 거리
+    public float m_preIdleTime { get; set; } = 1.0f;
+
+    // 추격 선딜
+    [field: SerializeField]
+    public float m_preGuardTime { get; set; } = 1.0f;
+    // 추격 시야 거리 - 시각
+    [field: SerializeField]
+    public float guardSightDistance { get; set; }    // 추격 거리
 
     // 전투 거리
     [field: SerializeField]
-    public float attackDistance { get; set; }   // 공격 거리
+    public float fightSightDistance { get; set; } = 1.5f;   // 공격 거리
     public GameObject detectMark;
 
-    // 사격 준비
+    // 사격 선딜
     [field: SerializeField]
-    public float readyTime { get; set; }
+    public float m_preFightTime { get; set; }
     bool isReady = false; // true 시 사격 불가
 
     EnemyManager enemyManager;
 
-    [SerializeField]
-    EnemyState curEnemyState;
+    [field: SerializeField]
+    public EnemyState curEnemyState { get; set; }
     EnemyState nextEnemyState;
 
     Gun gun;
@@ -63,6 +79,13 @@ public class EnemyA : Human, IAttacked
         curStun = stunStack;
 
         m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
+
+        guardHearCollider = GetComponentInChildren<CircleCollider2D>();
+        guardHearCollider.radius = hearDistance;
+    }
+    private void Update()
+    {
+        textForTest.GetComponent<TextMeshProUGUI>().text = curEnemyState.ToString();
     }
 
     private void FixedUpdate()
@@ -117,6 +140,7 @@ public class EnemyA : Human, IAttacked
         {
             m_Hp -= damage;
             Debug.Log(name + " stunned ");
+            
             StunAIState();
             curStun = stunStack; // 스택 초기화
         }
@@ -132,10 +156,10 @@ public class EnemyA : Human, IAttacked
     }
 
 
-
+    // 추격 - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public void AutoMove()
     {
-        switch(curDir)
+        switch (curDir)
         {
             case DIR.LEFT:
                 rigid.velocity = new Vector2(-1, 0);
@@ -148,41 +172,105 @@ public class EnemyA : Human, IAttacked
                 break;
         }
     }
+    // 이동 전 몸체 회전
+    // 좌우 회전만 있음
 
-    public void CheckPlayer(float distance)
+    public void Rotation()
     {
-        RaycastHit2D rayHit2D;
-        
-        if (m_isRightHeaded)
+        // 음수: 좌, 양수: 우
+        if (sensorPos.x - transform.position.x < SAFE_DISTANCE)
         {
-            Debug.DrawRay(transform.position, Vector3.right * distance, Color.magenta);
-            rayHit2D = Physics2D.Raycast(transform.position, Vector3.right, distance, LayerMask.GetMask("Player"));
+            if (m_isRightHeaded)
+                setisRightHeaded(false);
+
+        }
+        else if (sensorPos.x - transform.position.x > SAFE_DISTANCE)
+        {
+            if (!m_isRightHeaded)
+                setisRightHeaded(true);
+        }
+        else { }//no rotation
+    }
+
+    // 이동
+
+    public void Move()
+    {
+        Rotation();
+        // 도착할때까지 이동
+        if (Destination() != true)
+        {
+            //Debug.Log("destination = false");
+            
+            if (m_isRightHeaded)
+                rigid.velocity = new Vector2(1, 0);
+            else
+                rigid.velocity = new Vector2(-1, 0);
+        }
+    }
+
+    // 도착
+    bool Destination()
+    {
+        if(m_isRightHeaded)
+        {
+            if (sensorPos.x - transform.position.x < SAFE_DISTANCE)
+                return true;
         }
         else
         {
-            Debug.DrawRay(transform.position, Vector3.left * distance, Color.magenta);
-            rayHit2D = Physics2D.Raycast(transform.position, Vector3.left, distance, LayerMask.GetMask("Player"));
-            
+            if ((sensorPos.x - transform.position.x) * -1 < SAFE_DISTANCE)
+                return true;
         }
-        if(rayHit2D)
-        {
-            switch (curEnemyState)
-            {
-                // 대기 -> 추격
-                case EnemyState.IDLE:
-                    GuardAIState();
-                    break;
-
-                // 추격 -> 공격
-                case EnemyState.GUARD:
-                    FightAIState();
-                    break;
-            }
-        }
-            
-
-
+        return false;
     }
+
+    // 센서 표시
+    // * 자극 받은 위치를 저장
+    public void Sensor()
+    {
+        // 추격 자극
+        RaycastHit2D guardRayHit2D;
+
+        // 전투 자극
+        RaycastHit2D fightRayHit2D;
+        if (m_isRightHeaded)
+        {
+            // 추격 센서
+            Debug.DrawRay(transform.position, Vector3.right * guardSightDistance, Color.magenta);
+            guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, guardSightDistance, LayerMask.GetMask("Player"));
+
+            // 전투 센서
+            Debug.DrawRay(transform.position, Vector3.right * fightSightDistance, Color.yellow);
+            fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, fightSightDistance, LayerMask.GetMask("Player"));
+            
+        }
+        else
+        {
+
+            Debug.DrawRay(transform.position, Vector3.left * guardSightDistance, Color.magenta);
+            guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, guardSightDistance, LayerMask.GetMask("Player"));
+
+
+            Debug.DrawRay(transform.position, Vector3.left * fightSightDistance, Color.yellow);
+            fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, fightSightDistance, LayerMask.GetMask("Player"));
+
+        }
+        // 무방비 / 추격-> 전투
+        if (fightRayHit2D)
+        {
+            sensorPos = fightRayHit2D.collider.transform.position;
+            FightAIState();
+        }
+        // 무방비 / 전투 -> 추격
+        else if(guardRayHit2D)
+        {
+            sensorPos = guardRayHit2D.collider.transform.position;
+            GuardAIState();
+        }
+        
+    }
+
 
     void StunAIState()
     {
@@ -190,6 +278,10 @@ public class EnemyA : Human, IAttacked
         // ★
         detectMark.SetActive(false);
         stunMark.SetActive(true);
+
+        // 다음 상태: 스턴 먹기 전 상태
+        if (curEnemyState != EnemyState.STUN) // 스턴일 때를 저장하면 무한 스턴에 걸릴 것
+            nextEnemyState = curEnemyState;
         curEnemyState = EnemyState.STUN;
 
         Invoke(nameof(StunComplete), m_stunTime);
@@ -201,24 +293,31 @@ public class EnemyA : Human, IAttacked
         stunMark.SetActive(false);
     }
 
-    void GuardAIState()
+    public void GuardAIState()
     {
-        // 추격 상태
+        // 선딜 (전투 상태 돌입 딜레이)
+        Invoke(nameof(PreGuardComplete), m_preGuardTime);
+    }
+
+    void PreGuardComplete()
+    {
         curEnemyState = EnemyState.GUARD;
     }
 
     void FightAIState()
     {
+        rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
+
+        // 선딜 (전투 상태 돌입 딜레이)
+        isReady = true;
+        Invoke(nameof(ReadyComplete), m_preFightTime);
+
         // 애니메이션
         animator.SetBool("isFight", true);
 
         // !
         detectMark.SetActive(true);
 
-        // 준비 동작
-        isReady = true;
-        Invoke(nameof(ReadyComplete), readyTime);
-        
         // 공격 상태
         curEnemyState = EnemyState.FIGHT;
 
@@ -230,24 +329,32 @@ public class EnemyA : Human, IAttacked
         {
             case EnemyState.IDLE:// 대기
                 // 플레이어 만나면 추격
-                CheckPlayer(guardDistance);
+                Sensor();
                 break;
 
             case EnemyState.GUARD:// 추격
                 // 왼쪽으로 쭉감
-                AutoMove();
-                CheckPlayer(attackDistance);
+                //AutoMove();
+                Move();
+                Sensor();
                 break;
 
             case EnemyState.FIGHT:// 전투
-                rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
+                
                 if (isReady == false)    // 준비 동작 끝나면
+                {
+                    rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 멈춤 해제
                     gun.Fire();
+                    Sensor();
+                }
+                    
                 break;
             case EnemyState.STUN:// 스턴
                 if (isStun == false)
                 {
-                    curEnemyState = EnemyState.IDLE;
+                    curEnemyState = nextEnemyState; // 다음 상태: 스턴 먹기 전 상태
+                    //Sensor();
+                    //curEnemyState = EnemyState.IDLE;
                 }
                 break;
             case EnemyState.DEAD: // 시체
