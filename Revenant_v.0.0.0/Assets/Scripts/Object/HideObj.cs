@@ -49,15 +49,17 @@ public class HideObj : MonoBehaviour, IAttacked
     {
         m_SFXMgr.playAttackedSound(MatType.Target_Body, _AttackedInfo.m_ContactPoint);
     }
-    public void setPlayerStateToHide()
+    public bool setPlayerStateToHide()
     {
         
-        if (m_Player.m_curPlayerState != playerState.HIDDEN)
+        if ((m_Player.m_curPlayerState != playerState.HIDDEN) && (m_Player.m_curPlayerState != playerState.HIDDEN_STAND))
         {
             m_Player.changePlayerFSM(playerState.HIDDEN);
-            Debug.Log("숨음");
             // 숨는 OBJ 콜라이더 켜짐
             m_HideCollider.enabled = true;
+            m_isOn = true;
+
+            return true;
         }
         else
         {
@@ -65,21 +67,10 @@ public class HideObj : MonoBehaviour, IAttacked
             Debug.Log("숨음");
             // 숨는 OBJ 콜라이더 꺼짐
             m_HideCollider.enabled = false;
-        }
-        
-
-        /*
-        if (!m_isOn)
-        {
-            m_isOn = true;
-            m_HideCollider.enabled = true;
-        }
-        else
-        {
             m_isOn = false;
-            m_HideCollider.enabled = false;
+
+            return false;
         }
-        */
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

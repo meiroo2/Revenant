@@ -15,6 +15,12 @@ public class Rifle : BASEWEAPON
     private void Awake()
     {
         m_FireCount = FireCount;
+        m_LeftBullet = m_BulletPerMag;
+        m_LeftMag = m_Magcount;
+    }
+    private void OnEnable()
+    {
+        m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
     }
 
     // Updates
@@ -28,21 +34,52 @@ public class Rifle : BASEWEAPON
 
 
     // Functions
-    public override bool Fire()
+    public override int Fire()
     {
         if (m_isDelayEnd)
         {
-            m_isDelayEnd = false;
-            Internal_Fire();
-
-            return true;
+            if (m_LeftBullet > 0)
+            {
+                Internal_Fire();
+                return 1;
+            }
+            else
+            {
+                return 2;
+            }
         }
-        return false;
+        return 0;
+    }
+    public override bool Reload()
+    {
+        if (m_LeftMag > 0)
+        {
+            if (m_LeftBullet <= m_BulletPerMag && m_LeftBullet > 0)
+            {
+                m_LeftMag--;
+                m_LeftBullet = m_BulletPerMag + 1;
+                m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+                return true;
+            }
+            else if (m_LeftBullet == 0)
+            {
+                m_LeftMag--;
+                m_LeftBullet = m_BulletPerMag;
+                m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
     }
     private void Internal_Fire()
     {
-        if(m_FireCount > 0)
+        if(m_FireCount > 0 && m_LeftBullet > 0)
         {
+            m_LeftBullet--;
+            m_isDelayEnd = false;
             m_FireCount--;
 
             GameObject InstancedBullet = Instantiate(m_BulletPrefab);
@@ -60,6 +97,8 @@ public class Rifle : BASEWEAPON
             m_SoundMgrSFX.playGunFireSound(0, m_Player.gameObject);
 
             Invoke(nameof(Internal_Fire), ContinuousFireDelay);
+
+            m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
         }
         else
         {

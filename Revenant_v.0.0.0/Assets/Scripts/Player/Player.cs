@@ -110,11 +110,11 @@ public class Player : Human, IAttacked
             case playerState.ROLL:
                 if (m_isRightHeaded)
                 {
-                    m_playerRigid.MovePosition(new Vector2(transform.position.x + 0.03f, transform.position.y));
+                    m_playerRigid.MovePosition(new Vector2(transform.position.x + 0.045f, transform.position.y));
                 }
                 else
                 {
-                    m_playerRigid.MovePosition(new Vector2(transform.position.x - 0.03f, transform.position.y));
+                    m_playerRigid.MovePosition(new Vector2(transform.position.x - 0.045f, transform.position.y));
                 }
                 if (m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                     changePlayerFSM(playerState.WALK);

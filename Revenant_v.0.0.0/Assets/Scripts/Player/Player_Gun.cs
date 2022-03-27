@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player_Gun : MonoBehaviour
 {
     // Visible Member Variables
+    public Player_UIMgr m_PlayerUIMgr;
     public AimCursor m_aimCursor;
     public BASEWEAPON[] m_MainWeapons;
     public BASEWEAPON[] m_SubWeapons;
@@ -83,7 +84,8 @@ public class Player_Gun : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             if (m_ActiveWeapon.m_WeaponType == 0)
-            {
+            {   // To Sub
+                m_PlayerUIMgr.changeWeapon(1);
                 m_ActiveWeapon.gameObject.SetActive(false);
                 m_ActiveWeapon = m_curSubWeapon;
                 m_ActiveWeapon.gameObject.SetActive(true);
@@ -91,6 +93,8 @@ public class Player_Gun : MonoBehaviour
             }
             else if (m_ActiveWeapon.m_WeaponType == 1)
             {
+                // To Main
+                m_PlayerUIMgr.changeWeapon(0);
                 m_ActiveWeapon.gameObject.SetActive(false);
                 m_ActiveWeapon = m_curMainWeapon;
                 m_ActiveWeapon.gameObject.SetActive(true);
@@ -98,6 +102,8 @@ public class Player_Gun : MonoBehaviour
             }
             else
             {
+                // To Sub
+                m_PlayerUIMgr.changeWeapon(1);
                 m_ActiveWeapon.gameObject.SetActive(false);
                 m_ActiveWeapon = m_curSubWeapon;
                 m_ActiveWeapon.gameObject.SetActive(true);
@@ -116,18 +122,28 @@ public class Player_Gun : MonoBehaviour
         {
             if (Input.GetMouseButton(0) && !m_isCastingThrow)
             {
-                if(m_ActiveWeapon.Fire() == true)
+                switch (m_ActiveWeapon.Fire())
                 {
-                    if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.05f)
-                    {
-                        m_OutArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
-                        m_InArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
-                        m_GunPos.Translate(new Vector2(-0.04f, 0f));
-                    }
-
-                    doRecoil = true;
+                    case 0: // 발사 실패(딜레이)
+                        break;
+                    case 1: // 발사 성공
+                        if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.05f)
+                        {
+                            m_OutArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
+                            m_InArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
+                            m_GunPos.Translate(new Vector2(-0.04f, 0f));
+                        }
+                        doRecoil = true;
+                        break;
+                    case 2: // 총알 없음
+                        break;
                 }
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            m_ActiveWeapon.Reload();
         }
     }
     private void FixedUpdate()
