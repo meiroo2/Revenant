@@ -564,7 +564,7 @@ GameObject:
   - component: {fileID: 4091246551752116029}
   - component: {fileID: 7341437432570184068}
   m_Layer: 11
-  m_Name: A0Dummy
+  m_Name: A0Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -636,13 +636,17 @@ MonoBehaviour:
   <m_isEnemy>k__BackingField: 1
   <m_isRightHeaded>k__BackingField: 1
   <m_curPos>k__BackingField: 0000000000000000
+  textForTest: {fileID: 0}
   defaultDir: 0
+  sensorPos: {x: 0, y: 0}
   <stunStack>k__BackingField: 2
   stunMark: {fileID: 3916476591077509722}
-  <guardDistance>k__BackingField: 8
-  <attackDistance>k__BackingField: 1.5
+  <m_preIdleTime>k__BackingField: 1
+  <m_preGuardTime>k__BackingField: 2
+  <guardDistance>k__BackingField: 3
+  <fightDistance>k__BackingField: 1.5
   detectMark: {fileID: 2351965788401254327}
-  <readyTime>k__BackingField: 0.5
+  <m_preFightTime>k__BackingField: 0
   curEnemyState: 0
 --- !u!50 &4314626955191385359
 Rigidbody2D:
