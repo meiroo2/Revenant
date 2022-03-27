@@ -36,7 +36,7 @@ public class Door : MonoBehaviour, IUseableObj
 
 
     // Functions
-    public void useObj()
+    public bool useObj()
     {
         if (isOpen)
         {
@@ -48,6 +48,8 @@ public class Door : MonoBehaviour, IUseableObj
             isOpen = true;
             GetComponent<SpriteRenderer>().color = new Color32(0, 0, 255, 255);
         }
+
+        return true;
     }
 
 }

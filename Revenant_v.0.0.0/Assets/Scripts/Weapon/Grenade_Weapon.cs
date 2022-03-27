@@ -13,7 +13,8 @@ public class Grenade_Weapon : BASEWEAPON
     // Constructors
     private void Awake()
     {
-
+        m_LeftBullet = m_BulletPerMag;
+        m_LeftMag = m_Magcount;
     }
     private void Start()
     {
@@ -41,7 +42,7 @@ public class Grenade_Weapon : BASEWEAPON
 
 
     // Functions
-    public override bool Fire()
+    public override int Fire()
     {
         if (m_LeftBullet > 0 && m_isDelayEnd)
         {
@@ -54,10 +55,10 @@ public class Grenade_Weapon : BASEWEAPON
                 InstancedGren.GetComponent<Rigidbody2D>().AddForce(transform.up * 15f);
             else
                 InstancedGren.GetComponent<Rigidbody2D>().AddForce(transform.up * 15f);
-            return true;
+            return 1;
         }
         else
-            return false;
+            return 0;
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
