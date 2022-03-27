@@ -1,24 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class UIMgr : MonoBehaviour
+public class Portal : MonoBehaviour, IUseableObj
 {
     // Visible Member Variables
-    public GameObject m_GameOverUI;
+    public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
+    public bool m_isOn { get; set; } = false;
+    public GameObject m_OtherSide;
 
     // Member Variables
+    private GameObject m_Player;
 
 
     // Constructors
     private void Awake()
     {
-        Screen.SetResolution(1920, 1080, true);
+        m_Player = GameObject.FindGameObjectWithTag("Player");
     }
     private void Start()
     {
-        m_GameOverUI.SetActive(false);
+
     }
     /*
     <커스텀 초기화 함수가 필요할 경우>
@@ -31,8 +33,7 @@ public class UIMgr : MonoBehaviour
     // Updates
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F5))
-            CurSceneReload();
+
     }
     private void FixedUpdate()
     {
@@ -43,11 +44,11 @@ public class UIMgr : MonoBehaviour
 
 
     // Functions
-    public void CurSceneReload()
+    public bool useObj()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        m_Player.transform.position = m_OtherSide.transform.position;
+        return true;
     }
-
 
     // 기타 분류하고 싶은 것이 있을 경우
 }
