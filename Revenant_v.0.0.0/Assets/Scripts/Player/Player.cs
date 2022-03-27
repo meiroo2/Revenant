@@ -27,8 +27,9 @@ public class Player : Human, IAttacked
 
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
 
-    public Player_Health m_PlayerHealthUI;
+    public Player_UIMgr m_PlayerUIMgr;
     public UIMgr m_UIMgr;
+    public NoiseMaker m_NoiseMaker;
 
     private PlayerRotation m_playerRotation;
     private Rigidbody2D m_playerRigid;
@@ -39,6 +40,8 @@ public class Player : Human, IAttacked
     private Animator m_PlayerAnimator;
 
     private bool m_isRecoveringRollCount = false;
+
+    private IEnumerator m_FootStep;
 
 
     // Constructor
@@ -145,16 +148,22 @@ public class Player : Human, IAttacked
                 break;
 
             case playerState.WALK:
+                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(0.8f, 0.1f));
+                StartCoroutine(m_FootStep);
                 m_curPlayerState = playerState.WALK;
                 break;
 
             case playerState.RUN:
+                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f));
+                StartCoroutine(m_FootStep);
                 m_curPlayerState = playerState.RUN;
                 m_playerRotation.m_doRotate = false;
                 m_canShot = false;
                 break;
 
             case playerState.ROLL:
+                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f));
+                StartCoroutine(m_FootStep);
                 m_LeftRollCount -= 1;
 
                 if (!m_isRecoveringRollCount)
@@ -202,15 +211,18 @@ public class Player : Human, IAttacked
                 break;
 
             case playerState.WALK:
+                StopCoroutine(m_FootStep);
                 m_playerRigid.velocity = Vector2.zero;
                 break;
 
             case playerState.RUN:
+                StopCoroutine(m_FootStep);
                 m_playerRotation.m_doRotate = true;
                 m_canShot = true;
                 break;
 
             case playerState.ROLL:
+                StopCoroutine(m_FootStep);
                 m_playerRotation.m_doRotate = true;
                 m_canShot = true;
                 m_canMove = true;
@@ -250,7 +262,7 @@ public class Player : Human, IAttacked
             }
 
             m_SFXMgr.playAttackedSound(MatType.Normal, _AttackedInfo.m_ContactPoint);
-            m_PlayerHealthUI.UpdatePlayerUI();
+            m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Hp / 10f));
         }
     }
     private IEnumerator RecoverRollCount()
@@ -262,6 +274,14 @@ public class Player : Human, IAttacked
             StartCoroutine(RecoverRollCount());
         else if (m_LeftRollCount == 3)
             m_isRecoveringRollCount = false;
+    }
+    private IEnumerator MakePlayerNoise(NoiseType _noiseType, Vector2 _size)
+    {
+        while (true)
+        {
+            m_NoiseMaker.MakeNoise(_noiseType, _size, transform.position, true);
+            yield return new WaitForSeconds(0.1f);
+        }
     }
     private void changeRolltoWalk()
     {

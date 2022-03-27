@@ -7,6 +7,13 @@ using UnityEngine.UI;
 public class Player_UIMgr : MonoBehaviour
 {
     // Visible Member Variables
+    [Header("For Health")]
+    public RectTransform m_Player_Health;
+    public Sprite m_RedHealth;
+    public Sprite m_GrayHealth;
+
+    [Space(20f)]
+    [Header("For Weapon")]
     public RectTransform m_MainWeaponSlot;
     public RectTransform m_SubWeaponSlot;
     public TextMeshProUGUI m_BulletText;
@@ -22,6 +29,7 @@ public class Player_UIMgr : MonoBehaviour
 
     private Vector2 m_FrontSlotPos;
     private Vector2 m_BehindSlotPos;
+    private Image[] m_HealthSlots;
 
 
     // Constructors
@@ -29,6 +37,7 @@ public class Player_UIMgr : MonoBehaviour
     {
         m_FrontSlotPos = m_MainWeaponSlot.anchoredPosition;
         m_BehindSlotPos = m_SubWeaponSlot.anchoredPosition;
+        m_HealthSlots = m_Player_Health.GetComponentsInChildren<Image>();
     }
 
     // Updates
@@ -97,7 +106,21 @@ public class Player_UIMgr : MonoBehaviour
                 break;
         }
     }
+    public void UpdatePlayerHp(int _Hp)
+    {
+        for(int i = 0; i < _Hp; i++)
+        {
+            m_HealthSlots[i].sprite = m_RedHealth;
+        }
 
+        if(_Hp < m_HealthSlots.Length)
+        {
+            for(int i = _Hp; i < m_HealthSlots.Length; i++)
+            {
+                m_HealthSlots[i].sprite = m_GrayHealth;
+            }
+        }
+    }
 
     // 기타 분류하고 싶은 것이 있을 경우
 }

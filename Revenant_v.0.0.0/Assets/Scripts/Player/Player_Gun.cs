@@ -10,9 +10,10 @@ public class Player_Gun : MonoBehaviour
     public BASEWEAPON[] m_MainWeapons;
     public BASEWEAPON[] m_SubWeapons;
     public BASEWEAPON[] m_Throwables;
-    [field: SerializeField] public int m_ActiveWeaponType { get; private set; } = 0; // 0 == Main, 1 == Sub, 2 == Throwable
+    public NoiseMaker m_NoiseMaker;
 
-    [Space (30f)]
+
+    [Space(30f)]
     [Header("For IK")]
     public Transform m_OutArmEffectorPos;
     public Transform m_OutArmEffectorOriginPos;
@@ -24,6 +25,7 @@ public class Player_Gun : MonoBehaviour
     public Transform m_GunOriginPos;
 
     // Member Variables
+    private PlayerSoundnAni m_PlayerSoundnAni;
     private Player m_Player;
     private Transform m_Player_Arm;
 
@@ -35,6 +37,7 @@ public class Player_Gun : MonoBehaviour
 
     private bool doRecoil = false;
     private bool m_isCastingThrow = false;
+    private int m_ActiveWeaponType = 0; // 0 == Main, 1 == Sub, 2 == Throwable
 
     // Constructors
     private void Awake()
@@ -42,7 +45,7 @@ public class Player_Gun : MonoBehaviour
         m_Player = GetComponentInParent<Player>();
         m_Player_Arm = GetComponentInParent<PlayerRotation>().gameObject.transform;
 
-        if(m_MainWeapons.Length != 0)
+        if (m_MainWeapons.Length != 0)
         {
             foreach (BASEWEAPON element in m_MainWeapons)
             {
@@ -69,9 +72,9 @@ public class Player_Gun : MonoBehaviour
             m_curThrowable = m_Throwables[0];
         }
 
-
         m_curMainWeapon.gameObject.SetActive(true);
         m_ActiveWeapon = m_curMainWeapon;
+        m_PlayerSoundnAni = GetComponentInParent<PlayerSoundnAni>();
     }
     private void Start()
     {
@@ -85,37 +88,49 @@ public class Player_Gun : MonoBehaviour
         {
             if (m_ActiveWeapon.m_WeaponType == 0)
             {   // To Sub
+                /*
                 m_PlayerUIMgr.changeWeapon(1);
                 m_ActiveWeapon.gameObject.SetActive(false);
                 m_ActiveWeapon = m_curSubWeapon;
                 m_ActiveWeapon.gameObject.SetActive(true);
                 m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+                */
+                changeWeapon(1);
             }
             else if (m_ActiveWeapon.m_WeaponType == 1)
             {
                 // To Main
+                /*
                 m_PlayerUIMgr.changeWeapon(0);
                 m_ActiveWeapon.gameObject.SetActive(false);
                 m_ActiveWeapon = m_curMainWeapon;
                 m_ActiveWeapon.gameObject.SetActive(true);
                 m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+                */
+                changeWeapon(0);
             }
             else
             {
                 // To Sub
+                /*
                 m_PlayerUIMgr.changeWeapon(1);
                 m_ActiveWeapon.gameObject.SetActive(false);
                 m_ActiveWeapon = m_curSubWeapon;
                 m_ActiveWeapon.gameObject.SetActive(true);
                 m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+                */
+                changeWeapon(1);
             }
         }
         else if (Input.GetKeyDown(KeyCode.G))
         {
+            /*
             m_ActiveWeapon.gameObject.SetActive(false);
             m_ActiveWeapon = m_curThrowable;
             m_ActiveWeapon.gameObject.SetActive(true);
             m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+            */
+            changeWeapon(2);
         }
 
         if (m_Player.m_canShot)
@@ -127,6 +142,8 @@ public class Player_Gun : MonoBehaviour
                     case 0: // 발사 실패(딜레이)
                         break;
                     case 1: // 발사 성공
+                        m_PlayerSoundnAni.playShotAni();
+
                         if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.05f)
                         {
                             m_OutArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
@@ -134,6 +151,9 @@ public class Player_Gun : MonoBehaviour
                             m_GunPos.Translate(new Vector2(-0.04f, 0f));
                         }
                         doRecoil = true;
+
+                        // 소음 발생
+                        m_NoiseMaker.MakeNoise(NoiseType.FIREARM, new Vector2(7f, 1.5f), m_Player.transform.position, true);
                         break;
                     case 2: // 총알 없음
                         break;
@@ -173,36 +193,41 @@ public class Player_Gun : MonoBehaviour
         switch (_input)
         {
             case 0:
-                m_curMainWeapon.gameObject.SetActive(true);
+                m_PlayerUIMgr.changeWeapon(0);
                 m_ActiveWeapon = m_curMainWeapon;
+                m_ActiveWeapon.gameObject.SetActive(true);
                 m_ActiveWeaponType = 0;
                 break;
 
             case 1:
-                m_curSubWeapon.gameObject.SetActive(true);
+                m_PlayerUIMgr.changeWeapon(1);
                 m_ActiveWeapon = m_curSubWeapon;
+                m_ActiveWeapon.gameObject.SetActive(true);
                 m_ActiveWeaponType = 1;
                 break;
 
             case 2:
-                m_curThrowable.gameObject.SetActive(true);
+                m_PlayerSoundnAni.changeArmMode(false);
                 m_ActiveWeapon = m_curThrowable;
+                m_ActiveWeapon.gameObject.SetActive(true);
                 m_ActiveWeaponType = 2;
                 break;
         }
+        m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
     }
     private void exitWeapon()
     {
         switch (m_ActiveWeaponType)
         {
             case 0:
-                m_curMainWeapon.gameObject.SetActive(false);
+                m_ActiveWeapon.gameObject.SetActive(false);
                 break;
             case 1:
-                m_curSubWeapon.gameObject.SetActive(false);
+                m_ActiveWeapon.gameObject.SetActive(false);
                 break;
             case 2:
-                m_curThrowable.gameObject.SetActive(false);
+                m_PlayerSoundnAni.changeArmMode(true);
+                m_ActiveWeapon.gameObject.SetActive(false);
                 break;
         }
     }

@@ -12,12 +12,13 @@ public class hearCollider : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(enemyA.curEnemyState==EnemyState.IDLE || enemyA.curEnemyState == EnemyState.GUARD)
+        if (collision.CompareTag("Noise"))
         {
-            if (collision.CompareTag("Something"))
+            NoisePrefab temp = collision.GetComponent<NoisePrefab>();
+            if (enemyA.curEnemyState == EnemyState.IDLE || enemyA.curEnemyState == EnemyState.GUARD)
             {
-
-                enemyA.sensorPos = collision.transform.position;
+                enemyA.sensorPos = temp.transform.position;
+                Debug.Log("적이 감지한 소음은 " + temp.m_NoiseType + "이며, 플레이어 소음의 여부는 " + temp.m_isPlayer + "입니다.");
                 enemyA.GuardAIState();
             }
         }
