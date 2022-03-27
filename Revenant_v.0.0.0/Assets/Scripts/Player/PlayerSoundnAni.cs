@@ -14,9 +14,14 @@ public class PlayerSoundnAni : MonoBehaviour
     public GameObject m_Leg;
     public GameObject m_Arm;
 
+    public SpriteRenderer[] m_ThrowArmSprites;
+    public GameObject[] m_BasicArms;
+
     // Member Variables
     private Player m_Player;
     private int isRightHeaded;
+
+    private Animator m_OutArmAnimator;
 
     private SpriteRenderer m_PlayerSprite;
     private SpriteRenderer[] m_HeadSprites;
@@ -24,8 +29,12 @@ public class PlayerSoundnAni : MonoBehaviour
     private SpriteRenderer[] m_LegSprites;
     private SpriteRenderer[] m_ArmSprites;
 
+    private SpriteRenderer[] m_BasicArmSprites;
+
     private bool[] m_curSpriteCheck = new bool[] { false, true, true, true, true };
     private bool[] m_beforeSpriteCheck = new bool[] { false, true, true, true, true };
+
+    private bool m_isArmBasic = true;
 
 
 
@@ -44,14 +53,34 @@ public class PlayerSoundnAni : MonoBehaviour
         }
 
         m_BodySprites = temp.ToArray();
-
         m_LegSprites = m_Leg.GetComponentsInChildren<SpriteRenderer>();
         m_ArmSprites = m_Arm.GetComponentsInChildren<SpriteRenderer>();
+
+        temp = null;
+        temp = new List<SpriteRenderer>();
+        for(int i = 0; i < m_BasicArms.Length; i++)
+        {
+            temp.AddRange(m_BasicArms[i].GetComponentsInChildren<SpriteRenderer>());
+        }
+        m_BasicArmSprites = temp.ToArray();
+
+        for(int i = 0; i < m_ThrowArmSprites.Length; i++)
+        {
+            if (m_ThrowArmSprites[i].gameObject.GetComponent<Animator>())
+                m_OutArmAnimator = m_ThrowArmSprites[i].gameObject.GetComponent<Animator>();
+        }
     }
 
     // Updates
 
     // Functions
+    public void playShotAni()
+    {
+        if (!m_isArmBasic)
+        {
+            m_OutArmAnimator.Play("ThrowAnim", -1, 0f);
+        }
+    }
     public void playplayerAnim()
     {
         if (m_isPlay)
@@ -149,13 +178,71 @@ public class PlayerSoundnAni : MonoBehaviour
         m_beforeSpriteCheck = m_curSpriteCheck;
         m_PlayerSprite.enabled = (_Player == true) ? true : false;
         for (int i = 0; i < m_HeadSprites.Length; i++) { m_HeadSprites[i].enabled = (_Head == true) ? true : false; }
-        for (int i = 0; i < m_ArmSprites.Length; i++) { m_ArmSprites[i].enabled = (_Arm == true) ? true : false; }
+
+        if (m_isArmBasic)
+        {
+            if (_Arm)
+            {
+                for (int i = 0; i < m_ArmSprites.Length; i++) { m_ArmSprites[i].enabled = (_Arm == true) ? true : false; }
+                for (int i = 0; i < m_ThrowArmSprites.Length; i++) { m_ThrowArmSprites[i].enabled = (_Arm != true) ? true : false; }
+            }
+            else
+            {
+                for (int i = 0; i < m_ArmSprites.Length; i++) { m_ArmSprites[i].enabled = (_Arm == true) ? true : false; }
+            }
+        }
+        else
+        {
+            if (_Arm)
+            {
+                for (int i = 0; i < m_ArmSprites.Length; i++) { m_ArmSprites[i].enabled = (_Arm == true) ? true : false; }
+
+                for (int i = 0; i < m_BasicArmSprites.Length; i++) { m_BasicArmSprites[i].enabled = (_Arm != true) ? true : false; }
+
+                for (int i = 0; i < m_ThrowArmSprites.Length; i++) { m_ThrowArmSprites[i].enabled = (_Arm == true) ? true : false; }
+            }
+            else
+            {
+                for (int i = 0; i < m_ArmSprites.Length; i++) { m_ArmSprites[i].enabled = (_Arm == true) ? true : false; }
+                for (int i = 0; i < m_ThrowArmSprites.Length; i++) { m_ThrowArmSprites[i].enabled = (_Arm == true) ? true : false; }
+            }
+        }
+
         for (int i = 0; i < m_BodySprites.Length; i++) { m_BodySprites[i].enabled = (_Body == true) ? true : false; }
         for (int i = 0; i < m_LegSprites.Length; i++) { m_LegSprites[i].enabled = (_Leg == true) ? true : false; }
         m_curSpriteCheck[0] = _Player;
         m_curSpriteCheck[1] = _Head;
         m_curSpriteCheck[2] = _Body;
         m_curSpriteCheck[3] = _Leg;
+
         m_curSpriteCheck[4] = _Arm;
+    }
+    public void changeArmMode(bool _isBasic)
+    {
+        Debug.Log("호출추리");
+        if (_isBasic)
+        {
+            m_isArmBasic = true;
+            for(int i = 0; i < m_BasicArmSprites.Length; i++)
+            {
+                m_BasicArmSprites[i].enabled = true;
+            }
+            for(int i = 0; i < m_ThrowArmSprites.Length; i++)
+            {
+                m_ThrowArmSprites[i].enabled = false;
+            }
+        }
+        else
+        {
+            m_isArmBasic = false;
+            for (int i = 0; i < m_BasicArmSprites.Length; i++)
+            {
+                m_BasicArmSprites[i].enabled = false;
+            }
+            for (int i = 0; i < m_ThrowArmSprites.Length; i++)
+            {
+                m_ThrowArmSprites[i].enabled = true;
+            }
+        }
     }
 }

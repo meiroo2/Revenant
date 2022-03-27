@@ -80,8 +80,8 @@ public class EnemyA : Human, IAttacked
 
         m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
 
-        guardHearCollider = GetComponentInChildren<CircleCollider2D>();
-        guardHearCollider.radius = hearDistance;
+        //guardHearCollider = GetComponentInChildren<CircleCollider2D>();
+        //guardHearCollider.radius = hearDistance;
     }
     private void Update()
     {
