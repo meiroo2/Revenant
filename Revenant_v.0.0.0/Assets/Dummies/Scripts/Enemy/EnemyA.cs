@@ -18,8 +18,6 @@ public class EnemyA : Human, IAttacked
     Rigidbody2D rigid;
     Animator animator;
     CircleCollider2D guardHearCollider;
-    [SerializeField]
-    float hearDistance = 1f;
 
     // 이동 방향
     public DIR defaultDir;
@@ -79,9 +77,6 @@ public class EnemyA : Human, IAttacked
         curStun = stunStack;
 
         m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
-
-        guardHearCollider = GetComponentInChildren<CircleCollider2D>();
-        guardHearCollider.radius = hearDistance;
     }
     private void Update()
     {
@@ -115,10 +110,7 @@ public class EnemyA : Human, IAttacked
         if(isAlive)
         {
             Damaged(stun, damage);
-
         }
-            
-
     }
     
     public void Damaged(float stun, float damage)
