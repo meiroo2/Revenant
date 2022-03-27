@@ -20,7 +20,7 @@ public class SpawnPosition : MonoBehaviour
 
     void spawnFirstEnemy()
     {
-        if (enemyManager.enemyPrefab[0])
+        if (enemyManager.enemyNum > 0)
         {
             Instantiate(enemyManager.enemyPrefab[0], transform);//enemySpawnPoint.transform.position, transform.rotation,);
 
