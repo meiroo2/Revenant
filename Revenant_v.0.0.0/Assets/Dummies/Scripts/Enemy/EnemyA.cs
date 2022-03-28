@@ -54,6 +54,7 @@ public class EnemyA : Human, IAttacked
     public float m_preFightTime { get; set; }
     bool isReady = false; // true 시 사격 불가
 
+    [SerializeField]
     EnemyManager enemyManager;
 
     [field: SerializeField]
@@ -70,7 +71,6 @@ public class EnemyA : Human, IAttacked
         rigid = GetComponent<Rigidbody2D>();
         //enemyAnimator.GetComponent<EnemyAnimatior>();
         animator = GetComponent<Animator>();
-        enemyManager = GetComponentInParent<EnemyManager>();
 
         gun = GetComponentInChildren<Gun>();
 
@@ -117,6 +117,12 @@ public class EnemyA : Human, IAttacked
     public void Damaged(float stun, float damage)
     {
 
+        // 피격 센서 자극 위치
+        if (enemyManager)
+            sensorPos = enemyManager.player.transform.position;
+        else Debug.Log("there is no enemyManager");
+        GuardAIState();
+
         // 사망
         if (m_Hp - damage <= 0)
         {
@@ -145,7 +151,6 @@ public class EnemyA : Human, IAttacked
             Debug.Log(name + " stun damage: " + stun);
             curStun -= stun;
         }
-        
     }
 
 
@@ -191,14 +196,19 @@ public class EnemyA : Human, IAttacked
     {
         Rotation();
         // 도착할때까지 이동
-        if (Destination() != true)
+        if (!Destination())
         {
-            //Debug.Log("destination = false");
-            
+            // 애니메이션
+            animator.SetBool("isWalk", true);
             if (m_isRightHeaded)
                 rigid.velocity = new Vector2(1, 0);
             else
                 rigid.velocity = new Vector2(-1, 0);
+        }
+        // 도착
+        else
+        {
+            animator.SetBool("isWalk", false);
         }
     }
 
@@ -249,28 +259,41 @@ public class EnemyA : Human, IAttacked
             fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, fightSightDistance, LayerMask.GetMask("Player"));
 
         }
-        // 무방비 / 추격-> 전투
-        if (fightRayHit2D)
+        if(!isStun)
         {
-            sensorPos = fightRayHit2D.collider.transform.position;
-            FightAIState();
+            // 무방비 / 추격-> 전투
+            if (fightRayHit2D)
+            {
+                sensorPos = fightRayHit2D.collider.transform.position;
+                FightAIState();
+            }
+            // 무방비 / 전투 -> 추격
+            else if (guardRayHit2D)
+            {
+                sensorPos = guardRayHit2D.collider.transform.position;
+                GuardAIState();
+            }
         }
-        // 무방비 / 전투 -> 추격
-        else if(guardRayHit2D)
-        {
-            sensorPos = guardRayHit2D.collider.transform.position;
-            GuardAIState();
-        }
-        
+            
     }
 
 
     void StunAIState()
     {
+        Debug.Log("stunState");
+        //rigid.velocity = new Vector2(0, 0);// 이동 멈춤
+        rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
+
+        // 애니메이션
+        animator.SetTrigger("Stun");
+        animator.SetBool("isStun", true);
+
         isStun = true;
         // ★
-        detectMark.SetActive(false);
-        stunMark.SetActive(true);
+        if(detectMark)
+            detectMark.SetActive(false);
+        if(stunMark)
+            stunMark.SetActive(true);
 
         // 다음 상태: 스턴 먹기 전 상태
         if (curEnemyState != EnemyState.STUN) // 스턴일 때를 저장하면 무한 스턴에 걸릴 것
@@ -282,14 +305,24 @@ public class EnemyA : Human, IAttacked
 
     void StunComplete()
     {
+        Debug.Log("stunComplete");
+        rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 전투 시 그 자리에 바로 멈춤
+        // 애니메이션
+        animator.SetBool("isStun", false);
+
         isStun = false;
-        stunMark.SetActive(false);
+        if(stunMark)
+            stunMark.SetActive(false);
     }
 
     public void GuardAIState()
     {
-        // 선딜 (전투 상태 돌입 딜레이)
-        Invoke(nameof(PreGuardComplete), m_preGuardTime);
+        if(!isStun)
+        {
+            // 선딜 (전투 상태 돌입 딜레이)
+            Invoke(nameof(PreGuardComplete), m_preGuardTime);
+        }
+        
     }
 
     void PreGuardComplete()
@@ -299,20 +332,28 @@ public class EnemyA : Human, IAttacked
 
     void FightAIState()
     {
-        rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
+        if (!isStun)
+        {
+           
 
-        // 선딜 (전투 상태 돌입 딜레이)
-        isReady = true;
-        Invoke(nameof(ReadyComplete), m_preFightTime);
+            rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
 
-        // 애니메이션
-        animator.SetBool("isFight", true);
+            // 선딜 (전투 상태 돌입 딜레이)
+            isReady = true;
+            Invoke(nameof(ReadyComplete), m_preFightTime);
 
-        // !
-        detectMark.SetActive(true);
+            // 애니메이션
+            animator.SetBool("isFight", true);
+            animator.SetBool("isWalk", false);
 
-        // 공격 상태
-        curEnemyState = EnemyState.FIGHT;
+            Debug.Log("FightAnim");
+            // !
+            if (detectMark)
+                detectMark.SetActive(true);
+
+            // 공격 상태
+            curEnemyState = EnemyState.FIGHT;
+        }
 
     }
 
@@ -326,16 +367,16 @@ public class EnemyA : Human, IAttacked
                 break;
 
             case EnemyState.GUARD:// 추격
-                // 왼쪽으로 쭉감
-                //AutoMove();
-                Move();
                 Sensor();
+                // 이동
+                Move();
                 break;
 
             case EnemyState.FIGHT:// 전투
                 
                 if (isReady == false)    // 준비 동작 끝나면
                 {
+                    //Debug.Log("I'mReady");
                     rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 멈춤 해제
                     gun.Fire();
                     Sensor();
@@ -343,11 +384,17 @@ public class EnemyA : Human, IAttacked
                     
                 break;
             case EnemyState.STUN:// 스턴
-                if (isStun == false)
+
+                if (isStun == false) // 스턴 완료
                 {
-                    curEnemyState = nextEnemyState; // 다음 상태: 스턴 먹기 전 상태
-                    //Sensor();
-                    //curEnemyState = EnemyState.IDLE;
+                    if (nextEnemyState == EnemyState.FIGHT)
+                    {
+                        FightAIState();
+                    }
+                        
+                    else
+                        curEnemyState = nextEnemyState; // 다음 상태: 스턴 먹기 전 상태
+                    
                 }
                 break;
             case EnemyState.DEAD: // 시체
@@ -357,6 +404,7 @@ public class EnemyA : Human, IAttacked
 
     void ReadyComplete()
     {
+        Debug.Log("ReadyComplete");
         isReady = false;
     }
 
