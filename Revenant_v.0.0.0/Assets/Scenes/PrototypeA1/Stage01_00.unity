@@ -5836,14 +5836,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1692349862}
   - component: {fileID: 1692349860}
-  - component: {fileID: 1692349861}
+  - component: {fileID: 1692349863}
   m_Layer: 18
   m_Name: ToStage01_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!61 &1692349860
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5870,19 +5870,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1692349861
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692349859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b20dc50f934553e44b4ad5f06190a567, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OtherSide: {fileID: 0}
 --- !u!4 &1692349862
 Transform:
   m_ObjectHideFlags: 0
@@ -5898,6 +5885,19 @@ Transform:
   m_Father: {fileID: 32467532}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1692349863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692349859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f41b38679b2dc43be0d219692d4126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LoadSceneIdx: 1
 --- !u!1 &1708130357
 GameObject:
   m_ObjectHideFlags: 0
@@ -6685,10 +6685,10 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+    x: 0.00052083336
+    y: 0.0009259259
+    width: 1.5229168
+    height: 0.5703704
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34
