@@ -44,7 +44,10 @@ public class Player_Gun : MonoBehaviour
     {
         m_Player = GetComponentInParent<Player>();
         m_Player_Arm = GetComponentInParent<PlayerRotation>().gameObject.transform;
-
+        m_PlayerSoundnAni = GetComponentInParent<PlayerSoundnAni>();
+    }
+    private void Start()
+    {
         if (m_MainWeapons.Length != 0)
         {
             foreach (BASEWEAPON element in m_MainWeapons)
@@ -74,10 +77,6 @@ public class Player_Gun : MonoBehaviour
 
         m_curMainWeapon.gameObject.SetActive(true);
         m_ActiveWeapon = m_curMainWeapon;
-        m_PlayerSoundnAni = GetComponentInParent<PlayerSoundnAni>();
-    }
-    private void Start()
-    {
         m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
     }
 

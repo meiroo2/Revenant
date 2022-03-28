@@ -83,7 +83,7 @@ public class Player_UseRange : MonoBehaviour
                     }
                 }
 
-                if (m_ShortestLength <= 0.02f)
+                if (m_ShortestLength <= 0.05f)
                 {
                     switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
                     {
