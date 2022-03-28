@@ -17,10 +17,11 @@ public class Rifle : BASEWEAPON
         m_FireCount = FireCount;
         m_LeftBullet = m_BulletPerMag;
         m_LeftMag = m_Magcount;
+        m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
     }
     private void OnEnable()
     {
-        m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+        m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
     }
 
     // Updates
@@ -58,14 +59,14 @@ public class Rifle : BASEWEAPON
             {
                 m_LeftMag--;
                 m_LeftBullet = m_BulletPerMag + 1;
-                m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+                m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
                 return true;
             }
             else if (m_LeftBullet == 0)
             {
                 m_LeftMag--;
                 m_LeftBullet = m_BulletPerMag;
-                m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+                m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
                 return true;
             }
             else
@@ -98,7 +99,7 @@ public class Rifle : BASEWEAPON
 
             Invoke(nameof(Internal_Fire), ContinuousFireDelay);
 
-            m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+            m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
         }
         else
         {

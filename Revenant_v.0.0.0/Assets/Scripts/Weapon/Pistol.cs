@@ -24,7 +24,7 @@ public class Pistol : BASEWEAPON
     }
     private void OnEnable()
     {
-        m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+        m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
     }
 
     // Updates
@@ -59,14 +59,14 @@ public class Pistol : BASEWEAPON
             {
                 m_LeftMag--;
                 m_LeftBullet = m_BulletPerMag + 1;
-                m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+                m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
                 return true;
             }
             else if (m_LeftBullet == 0)
             {
                 m_LeftMag--;
                 m_LeftBullet = m_BulletPerMag;
-                m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+                m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
                 return true;
             }
             else
@@ -109,6 +109,6 @@ public class Pistol : BASEWEAPON
         else
             InstancedShell.GetComponent<Rigidbody2D>().AddForce(new Vector2(1f, 1f), ForceMode2D.Impulse);
 
-        m_PlayerUIMgr.setBulletInfo(m_LeftBullet, m_LeftMag);
+        m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
     }
 }

@@ -16,7 +16,8 @@ public class Player_UIMgr : MonoBehaviour
     [Header("For Weapon")]
     public RectTransform m_MainWeaponSlot;
     public RectTransform m_SubWeaponSlot;
-    public TextMeshProUGUI m_BulletText;
+    public TextMeshProUGUI m_MainBulletText;
+    public TextMeshProUGUI m_SubBulletText;
     public Image m_MainWeaponImg;
     public Image m_SubWeaponImg;
 
@@ -74,9 +75,17 @@ public class Player_UIMgr : MonoBehaviour
 
 
     // Functions
-    public void setBulletInfo(int _LeftBullet, int _LeftMag)
+    public void setLeftBulletUI(int _LeftBullet, int _LeftMag, int _SlotNum)
     {
-        m_BulletText.text = _LeftBullet + " / " + _LeftMag;
+        switch (_SlotNum)
+        {
+            case 0:
+                m_MainBulletText.text = _LeftBullet + " / " + _LeftMag;
+                break;
+            case 1:
+                m_SubBulletText.text = _LeftBullet + " / " + _LeftMag;
+                break;
+        }
     }
     public void changeWeapon(int _Num)
     {

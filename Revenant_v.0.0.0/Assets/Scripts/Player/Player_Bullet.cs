@@ -77,7 +77,7 @@ public class Player_Bullet : MonoBehaviour
         }
         else if(m_HitPoint == HitPoints.OTHER)
         {
-            /*
+            
             collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
 
             GameObject _effect = Instantiate(m_HitEffect);
@@ -88,7 +88,7 @@ public class Player_Bullet : MonoBehaviour
             _effect.transform.SetPositionAndRotation(transform.position, this.gameObject.transform.rotation);
 
             Destroy(this.gameObject);
-            */
+            
         }
         
     }
