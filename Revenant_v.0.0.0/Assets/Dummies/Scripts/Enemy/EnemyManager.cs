@@ -21,6 +21,8 @@ public class EnemyManager : MonoBehaviour
 
     public int enemyWave { get; set; }
 
+    public Player player { get; private set; }
+
     [field: SerializeField]
     public float respawnTime { get; set; }
 
@@ -31,6 +33,7 @@ public class EnemyManager : MonoBehaviour
     private void Awake()
     {
         spawnPositions = GetComponentsInChildren<SpawnPosition>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
 
     private void Start()
