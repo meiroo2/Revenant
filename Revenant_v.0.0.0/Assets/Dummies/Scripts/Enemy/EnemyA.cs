@@ -12,7 +12,7 @@ public class EnemyA : Human, IAttacked
     [field: SerializeField]
     public float SAFE_DISTANCE { get; set; } = 0.1f;
 
-    public GameObject textForTest;
+    public TextMeshProUGUI textForTest;
 
     bool isAlive = true;
     Rigidbody2D rigid;
@@ -80,7 +80,8 @@ public class EnemyA : Human, IAttacked
     }
     private void Update()
     {
-        textForTest.GetComponent<TextMeshProUGUI>().text = curEnemyState.ToString();
+        if(textForTest)
+            textForTest.text = curEnemyState.ToString();
     }
 
     private void FixedUpdate()
