@@ -37,16 +37,7 @@ public class Bullet : MonoBehaviour
     {
         if(collision.GetComponentInParent<Player>())
         {
-
-            if (collision.CompareTag("Head"))
-            {
-                hitPoint = HitPoints.HEAD;
-                damage *= 2;
-                collision.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(false, damage, stun, transform.position, hitPoint, WeaponType.BULLET));
-                Destroy(gameObject);
-                
-            }
-            else if (collision.CompareTag("Body"))
+            if (collision.CompareTag("Body"))
             {
                 hitPoint = HitPoints.BODY;
                 collision.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(false, damage, stun, transform.position, hitPoint, WeaponType.BULLET));
