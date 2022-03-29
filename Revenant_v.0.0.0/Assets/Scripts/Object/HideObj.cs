@@ -7,6 +7,7 @@ public class HideObj : MonoBehaviour, IAttacked
     // Visible Member Variables
     public Player m_Player;
     public bool m_isOn = false;
+    public bool m_isPlayerHide = false;
 
     // Member Variables
     private BoxCollider2D m_HideCollider;

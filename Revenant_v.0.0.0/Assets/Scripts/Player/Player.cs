@@ -182,7 +182,7 @@ public class Player : Human, IAttacked
                 m_curPlayerState = playerState.HIDDEN;
                 m_playerRotation.m_doRotate = true;
                 m_canMove = false;
-                m_canShot = true;
+                m_canShot = false;
                 break;
 
             case playerState.HIDDEN_STAND:

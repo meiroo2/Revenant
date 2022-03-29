@@ -46,6 +46,7 @@ public class HidePos : MonoBehaviour, IUseableObj
     {
         if (!m_HideObj.m_isOn)  // ºó ¾öÆó¹°
         {
+            m_HideObj.m_isPlayerHide = true;
             m_HideObj.setPlayerStateToHide();   // ¼û´Â´Ù
             return true;    // ¼û±â ¼º°ø
         }
@@ -54,6 +55,7 @@ public class HidePos : MonoBehaviour, IUseableObj
             // ÇÃ·¹ÀÌ¾î°¡ ¼ûÀº »óÅÂ¸é
             if (m_HideObj.m_Player.m_curPlayerState == playerState.HIDDEN || m_HideObj.m_Player.m_curPlayerState == playerState.HIDDEN_STAND)
             {
+                m_HideObj.m_isPlayerHide = false;
                 m_HideObj.setPlayerStateToHide();
                 return true;
             }
