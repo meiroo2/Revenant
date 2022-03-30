@@ -13,12 +13,15 @@ public class Pistol : BASEWEAPON
     public GameObject m_Shell;
     public GameObject m_ShellPos;
 
-    // Member Variables
+    public HitSFXMaker m_HitSFXMaker;
 
+    // Member Variables
+    private ObjectPuller m_ObjPuller;
 
     // Constructors
     private void Awake()
     {
+        m_ObjPuller = GetComponentInChildren<ObjectPuller>();
         m_LeftBullet = m_BulletPerMag;
         m_LeftMag = m_Magcount;
     }
@@ -85,11 +88,16 @@ public class Pistol : BASEWEAPON
 
         m_SoundMgrSFX.playGunFireSound(0, m_Player.gameObject);
 
-        m_GunFireAnimator.Play("Rifle_Gunfire", -1, 0f);
+
+        // ÃÑ¿° »ý¼º
+        //m_GunFireAnimator.SetBool("isFire", true);
+        m_ObjPuller.EnableNewObj();
+
         m_ReflectionAnimator.Play("Rifle_Reflection", -1, 0f);
 
         GameObject InstancedBullet = Instantiate(m_BulletPrefab);
         Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
+        InstancedBullet_Script.m_HitSFXMaker = m_HitSFXMaker;
 
         InstancedBullet_Script.m_SoundMgrSFX = m_SoundMgrSFX;
 

@@ -13,7 +13,7 @@ public class Player_Bullet : MonoBehaviour
     private int m_Damage = 0;
     private HitPoints m_HitPoint = HitPoints.OTHER;
     public int m_aimedObjId { get; set; } = 0;
-    public GameObject m_HitEffect;
+    public HitSFXMaker m_HitSFXMaker;
 
     // Constructors
     private void Awake()
@@ -66,12 +66,11 @@ public class Player_Bullet : MonoBehaviour
         if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
         {
             collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
-            GameObject _effect = Instantiate(m_HitEffect);
 
-            if (m_Speed < 0)
-                _effect.transform.localScale = new Vector2(-_effect.transform.localScale.x, _effect.transform.localScale.y);
-
-            _effect.transform.SetPositionAndRotation(transform.position, this.gameObject.transform.rotation);
+            if (m_HitPoint == HitPoints.HEAD)
+                m_HitSFXMaker.EnableNewObj(0, transform.position, transform.rotation ,(m_Speed > 0f) ? true : false);
+            else if (m_HitPoint == HitPoints.BODY)
+                m_HitSFXMaker.EnableNewObj(Random.Range(1,3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
 
             Destroy(this.gameObject);
         }
@@ -80,15 +79,11 @@ public class Player_Bullet : MonoBehaviour
             
             collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
 
-            GameObject _effect = Instantiate(m_HitEffect);
-
-            if (m_Speed < 0)
-                _effect.transform.localScale = new Vector2(-_effect.transform.localScale.x, _effect.transform.localScale.y);
-
-            _effect.transform.SetPositionAndRotation(transform.position, this.gameObject.transform.rotation);
+            Vector2 temp = transform.position;
+            Vector2 temp2 = collision.ClosestPoint(temp);
+            m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), temp2, transform.rotation, (m_Speed > 0f) ? true : false);
 
             Destroy(this.gameObject);
-            
         }
         
     }
