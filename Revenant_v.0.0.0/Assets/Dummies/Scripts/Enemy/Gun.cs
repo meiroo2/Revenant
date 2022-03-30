@@ -12,7 +12,7 @@ public class Gun : MonoBehaviour
     [SerializeField]
     float bulletspeed = 1.0f;
     [SerializeField]
-    int bulletdamage = 1;
+    int bulletdamage = 50;
     private void Awake()
     {
         
@@ -38,7 +38,8 @@ public class Gun : MonoBehaviour
     {
         //Debug.Log("Fire");
         GameObject gameObject = Instantiate(bulletPrefab);
-        bulletPrefab.GetComponent<Bullet>().damage = bulletdamage;
+        gameObject.GetComponent<Bullet>().damage = bulletdamage;
+
         gameObject.transform.position = transform.position;
 
     }

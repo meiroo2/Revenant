@@ -7,8 +7,7 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     float speed = 0.1f;
 
-    [field: SerializeField]
-    public int damage { get; set; }
+    public int damage { get; set; } = 10;
 
     [SerializeField]
     int stun = 3;
@@ -19,6 +18,7 @@ public class Bullet : MonoBehaviour
 
     private void Awake()
     {
+        
     }
 
     void Start()
