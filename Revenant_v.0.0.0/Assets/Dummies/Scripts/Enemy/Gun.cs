@@ -19,7 +19,7 @@ public class Gun : MonoBehaviour
     }
     public void Fire()
     {
-        // ¼öÁ¤ÇÒ°Å Ã¹¹ßÀ» ½ğ ÈÄ¿¡ µô·¹ÀÌ°¡ »ı±âµµ·Ï, ¸Ç Ã³À½ ÁØºñ µ¿ÀÛ µô·¹ÀÌ´Â Enemy ½ºÅ©¸³Æ®¿¡¼­ µû·Î
+        // ìˆ˜ì •í• ê±° ì²«ë°œì„ ìœ í›„ì— ë”œë ˆì´ê°€ ìƒê¸°ë„ë¡, ë§¨ ì²˜ìŒ ì¤€ë¹„ ë™ì‘ ë”œë ˆì´ëŠ” Enemy ìŠ¤í¬ë¦½íŠ¸ì—ì„œ ë”°ë¡œ
         if(canfire)
         {
             Debug.Log("Fire");
@@ -39,7 +39,6 @@ public class Gun : MonoBehaviour
         //Debug.Log("Fire");
         GameObject gameObject = Instantiate(bulletPrefab);
         gameObject.GetComponent<Bullet>().damage = bulletdamage;
-
         gameObject.transform.position = transform.position;
 
     }

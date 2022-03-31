@@ -397,7 +397,7 @@ public class EnemyA : Human, IAttacked
                 
                 if (isReady == false)    // 준비 동작 끝나면
                 {
-                    //Debug.Log("I'mReady");
+                    Debug.Log("I'mReady");
                     rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 멈춤 해제
                     gun.Fire();
                     Sensor();
