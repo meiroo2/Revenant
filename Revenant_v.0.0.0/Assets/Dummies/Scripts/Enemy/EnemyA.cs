@@ -9,6 +9,8 @@ public enum DIR
 }
 public class EnemyA : Human, IAttacked
 {
+    Parts parts;
+
     [field: SerializeField]
     public float SAFE_DISTANCE { get; set; } = 0.1f;
 
@@ -17,6 +19,7 @@ public class EnemyA : Human, IAttacked
     bool isAlive = true;
     Rigidbody2D rigid;
     Animator animator;
+    
     CircleCollider2D guardHearCollider;
 
     // 이동 방향
@@ -77,6 +80,8 @@ public class EnemyA : Human, IAttacked
         curStun = stunStack;
 
         m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
+
+        parts = GetComponentInChildren<Parts>();
     }
     private void Update()
     {
@@ -265,6 +270,7 @@ public class EnemyA : Human, IAttacked
             if (fightRayHit2D)
             {
                 sensorPos = fightRayHit2D.collider.transform.position;
+                
                 FightAIState();
             }
             // 무방비 / 전투 -> 추격
@@ -319,6 +325,16 @@ public class EnemyA : Human, IAttacked
     {
         if(!isStun)
         {
+            rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 전투 시 그 자리에 바로 멈춤
+
+            animator.SetBool("isFight", false);
+            animator.SetBool("isWalk", true);
+            // 애니메이션
+            animator.SetBool("isReady", false);
+
+            // 파츠 끄기
+            parts.setSpriteParts(false);
+
             // 선딜 (전투 상태 돌입 딜레이)
             Invoke(nameof(PreGuardComplete), m_preGuardTime);
         }
@@ -327,14 +343,16 @@ public class EnemyA : Human, IAttacked
 
     void PreGuardComplete()
     {
+        // 애니메이션
+        animator.SetBool("isReady", true);
         curEnemyState = EnemyState.GUARD;
+        
     }
 
     void FightAIState()
     {
         if (!isStun)
         {
-           
 
             rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
 
@@ -343,10 +361,13 @@ public class EnemyA : Human, IAttacked
             Invoke(nameof(ReadyComplete), m_preFightTime);
 
             // 애니메이션
-            animator.SetBool("isFight", true);
             animator.SetBool("isWalk", false);
+            animator.SetBool("isFight", true);
 
-            Debug.Log("FightAnim");
+            // 파츠 틀기
+            parts.setSpriteParts(true);
+
+            //Debug.Log("FightAnim");
             // !
             if (detectMark)
                 detectMark.SetActive(true);
@@ -431,4 +452,6 @@ public class EnemyA : Human, IAttacked
     {
         rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
+
+    
 }

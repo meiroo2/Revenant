@@ -12,14 +12,14 @@ public class Gun : MonoBehaviour
     [SerializeField]
     float bulletspeed = 1.0f;
     [SerializeField]
-    int bulletdamage = 1;
+    int bulletdamage = 50;
     private void Awake()
     {
         
     }
     public void Fire()
     {
-        // ¼öÁ¤ÇÒ°Å Ã¹¹ßÀ» ½ğ ÈÄ¿¡ µô·¹ÀÌ°¡ »ı±âµµ·Ï, ¸Ç Ã³À½ ÁØºñ µ¿ÀÛ µô·¹ÀÌ´Â Enemy ½ºÅ©¸³Æ®¿¡¼­ µû·Î
+        // ìˆ˜ì •í• ê±° ì²«ë°œì„ ìœ í›„ì— ë”œë ˆì´ê°€ ìƒê¸°ë„ë¡, ë§¨ ì²˜ìŒ ì¤€ë¹„ ë™ì‘ ë”œë ˆì´ëŠ” Enemy ìŠ¤í¬ë¦½íŠ¸ì—ì„œ ë”°ë¡œ
         if(canfire)
         {
             Debug.Log("Fire");
