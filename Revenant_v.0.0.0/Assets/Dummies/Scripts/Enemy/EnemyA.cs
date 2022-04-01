@@ -274,7 +274,7 @@ public class EnemyA : Human, IAttacked
             if (fightRayHit2D)
             {
                 sensorPos = fightRayHit2D.collider.transform.position;
-                
+
                 FightAIState();
             }
             // 무방비 / 전투 -> 추격
@@ -405,6 +405,7 @@ public class EnemyA : Human, IAttacked
                     rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 멈춤 해제
                     gun.Fire();
                     Sensor();
+
                 }
                     
                 break;
