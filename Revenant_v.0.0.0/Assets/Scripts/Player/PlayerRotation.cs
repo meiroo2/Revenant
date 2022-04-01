@@ -39,12 +39,11 @@ public class PlayerRotation : MonoBehaviour
 
     private Vector2 m_OriginalHeadIKPos;
 
+    private AimCursor m_AimCursor;
+
     // Constructors
     private void Awake()
     {
-        m_Player = GetComponentInParent<Player>();
-        m_playerSoundnAni = GetComponentInParent<PlayerSoundnAni>();
-
         if (m_spriteChangeMode == true)
             m_HeadspriteRenderer.gameObject.GetComponent<Animator>().enabled = false;
 
@@ -52,6 +51,12 @@ public class PlayerRotation : MonoBehaviour
         m_JacketSpritesDegree = 180f / m_JacketLSprites.Length;
 
         m_OriginalHeadIKPos = m_HeadIKPos.localPosition;
+    }
+    private void Start()
+    {
+        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_playerSoundnAni = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerSoundnAni;
+        m_AimCursor = GameManager.GetInstance().GetComponentInChildren<AimCursor>();
     }
 
     // Updates

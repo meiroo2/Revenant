@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 public class UIMgr : MonoBehaviour
 {
     // Visible Member Variables
-    public GameObject m_GameOverUI;
+    [field: SerializeField] private GameObject m_GameOverUIPrefab;
+    public GameObject m_GameOverUI { get; private set; }
 
     // Member Variables
 
@@ -14,6 +15,7 @@ public class UIMgr : MonoBehaviour
     // Constructors
     private void Awake()
     {
+        m_GameOverUI = Instantiate(m_GameOverUIPrefab, GameManager.GetInstance().GetComponent<GameManager>().m_MainCanvas.transform);
         Screen.SetResolution(1920, 1080, true);
     }
     private void Start()

@@ -6,7 +6,7 @@ public class CameraMove : MonoBehaviour
 {
     // Visible Member Variables
     public float m_cameraSpeed = 1f;
-    public GameObject m_Player;
+    private GameObject m_Player;
     public bool m_FollowMouse = true;
     public float m_OffSet;
 
@@ -21,7 +21,7 @@ public class CameraMove : MonoBehaviour
     }
     private void Start()
     {
-
+        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
     }
     /*
     <커스텀 초기화 함수가 필요할 경우>

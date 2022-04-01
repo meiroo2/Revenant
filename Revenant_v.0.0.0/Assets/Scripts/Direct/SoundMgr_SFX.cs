@@ -11,24 +11,8 @@ public class SoundMgr_SFX : MonoBehaviour
 
 
     // Constructors
-    private void Awake()
-    {
-
-    }
-    private void Start()
-    {
-
-    }
 
     // Updates
-    private void Update()
-    {
-
-    }
-    private void FixedUpdate()
-    {
-
-    }
 
     // Physics
 
@@ -60,6 +44,16 @@ public class SoundMgr_SFX : MonoBehaviour
 
             case MatType.Target_Body:
                 FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Weapons/Bullet_Hit/Target_Body", _position);
+                break;
+        }
+    }
+
+    public void playSFXSound(int _input, Vector2 _position)
+    {
+        switch (_input)
+        {
+            case 0:
+                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Weapons/Shell/Shell_Fall", _position);
                 break;
         }
     }

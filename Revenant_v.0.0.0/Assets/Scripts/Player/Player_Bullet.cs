@@ -5,7 +5,6 @@ using UnityEngine;
 public class Player_Bullet : MonoBehaviour
 {
     // Visible Member Variables
-    public SoundMgr_SFX m_SoundMgrSFX;
 
     // Member Variables
     private float m_Speed = 0f;
@@ -13,16 +12,16 @@ public class Player_Bullet : MonoBehaviour
     private int m_Damage = 0;
     private HitPoints m_HitPoint = HitPoints.OTHER;
     public int m_aimedObjId { get; set; } = 0;
-    public HitSFXMaker m_HitSFXMaker;
+    private HitSFXMaker m_HitSFXMaker;
+    private SoundMgr_SFX m_SoundMgrSFX;
+    private PlayerRotation m_PlayerRotation;
 
     // Constructors
-    private void Awake()
-    {
-
-    }
     private void Start()
     {
-
+        m_HitSFXMaker = GameManager.GetInstance().GetComponentInChildren<HitSFXMaker>();
+        m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_PlayerRotation = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation;
     }
     public void InitBullet(float _speed, int _damage)
     {
@@ -31,18 +30,9 @@ public class Player_Bullet : MonoBehaviour
     }
 
     // Updates
-    private void Update()
-    {
-
-    }
     private void FixedUpdate()
     {
         transform.Translate(new Vector2(m_Speed * Time.deltaTime, 0f));
-
-        if (m_Speed > 0)
-            Debug.DrawRay(transform.position, transform.right * 0.5f, Color.red);
-        else
-            Debug.DrawRay(transform.position, -transform.right * 0.5f, Color.red);
 
         if (m_Timer >= 3f)
             Destroy(this.gameObject);
@@ -53,39 +43,36 @@ public class Player_Bullet : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log(m_aimedObjId + " " + collision.gameObject.GetInstanceID());
-
-        if (collision.gameObject.CompareTag("Head"))
-            m_HitPoint = HitPoints.HEAD;
-        else if (collision.gameObject.CompareTag("Body"))
-            m_HitPoint = HitPoints.BODY;
-        else
-            m_HitPoint = HitPoints.OTHER;
-
-        
-        if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
+        if (!collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
+            if (collision.gameObject.CompareTag("Head"))
+                m_HitPoint = HitPoints.HEAD;
+            else if (collision.gameObject.CompareTag("Body"))
+                m_HitPoint = HitPoints.BODY;
+            else
+                m_HitPoint = HitPoints.OTHER;
 
-            if (m_HitPoint == HitPoints.HEAD)
-                m_HitSFXMaker.EnableNewObj(0, transform.position, transform.rotation ,(m_Speed > 0f) ? true : false);
-            else if (m_HitPoint == HitPoints.BODY)
-                m_HitSFXMaker.EnableNewObj(Random.Range(1,3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
 
-            Destroy(this.gameObject);
+            if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
+            {
+                collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
+
+                if (m_HitPoint == HitPoints.HEAD)
+                    m_HitSFXMaker.EnableNewObj(0, transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
+                else if (m_HitPoint == HitPoints.BODY)
+                    m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
+
+                Destroy(this.gameObject);
+            }
+            else if (m_HitPoint == HitPoints.OTHER)
+            {
+                collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
+
+                m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
+
+                Destroy(this.gameObject);
+            }
         }
-        else if(m_HitPoint == HitPoints.OTHER)
-        {
-            
-            collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
-
-            Vector2 temp = transform.position;
-            Vector2 temp2 = collision.ClosestPoint(temp);
-            m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), temp2, transform.rotation, (m_Speed > 0f) ? true : false);
-
-            Destroy(this.gameObject);
-        }
-        
     }
 
     // Functions

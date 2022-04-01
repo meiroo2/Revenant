@@ -14,11 +14,10 @@ public class Floor : ObjectDefine, IMatType, IAttacked
     private void Awake()
     {
         InitObjectDefine(ObjectType.Floor, true, false);
-        m_SoundMgrSFX = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
     }
     private void Start()
     {
-
+        m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
     /*
     <커스텀 초기화 함수가 필요할 경우>
