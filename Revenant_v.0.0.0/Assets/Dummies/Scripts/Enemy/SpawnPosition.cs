@@ -13,9 +13,14 @@ public class SpawnPosition : MonoBehaviour
 
     void Start()
     {
-        // 맨 처음 적 생성, 적 관리자에게 적 수를 추가
-        enemyManager.enemyNum++;
-        Invoke(nameof(spawnFirstEnemy), 3f);
+        // 트레이닝 룸에서만
+        if(enemyManager.roomNum == RoomNum.EnemyTest)
+        {
+            // 맨 처음 적 생성, 적 관리자에게 적 수를 추가
+            enemyManager.enemyNum++;
+            Invoke(nameof(spawnFirstEnemy), 3f);
+        }
+        
     }
 
     void spawnFirstEnemy()

@@ -5,9 +5,8 @@ using UnityEngine;
 public enum RoomNum
 {
     EnemyTest,
-    FireTest01,
-    FireTest02,
-    Stage01
+    Stage01,
+    Stage01_Test
 }
 
 public class EnemyManager : MonoBehaviour
@@ -27,8 +26,8 @@ public class EnemyManager : MonoBehaviour
     public float respawnTime { get; set; }
 
     SpawnPosition[] spawnPositions;
-    [SerializeField]
-    RoomNum roomNum = RoomNum.EnemyTest;
+    [field: SerializeField]
+    public RoomNum roomNum { get; set; } = RoomNum.EnemyTest;
 
     private void Awake()
     {
@@ -41,6 +40,8 @@ public class EnemyManager : MonoBehaviour
         //respawnTime = 1.0f;
         dieCount = 0;
         enemyWave = 0;
+        if (roomNum == RoomNum.Stage01_Test && enemyPrefab != null && spawnPositions !=null)
+            Instantiate(enemyPrefab[0], spawnPositions[0].gameObject.transform);
     }
 
     public void PlusDieCount()

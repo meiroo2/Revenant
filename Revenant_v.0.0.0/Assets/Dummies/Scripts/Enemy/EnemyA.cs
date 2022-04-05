@@ -27,7 +27,9 @@ public class EnemyA : Human, IAttacked
     DIR curDir;
 
     // 이동 위치
-    public Vector2 sensorPos;
+    [field:SerializeField]
+    public Vector2 sensorPos { get; set; }
+    Vector2 originalPos { get; set; }
 
     // 경직정도
     [field: SerializeField]
@@ -82,6 +84,8 @@ public class EnemyA : Human, IAttacked
         m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
 
         parts = GetComponentInChildren<Parts>();
+
+        originalPos = transform.position;
     }
     private void Update()
     {
@@ -270,7 +274,7 @@ public class EnemyA : Human, IAttacked
             if (fightRayHit2D)
             {
                 sensorPos = fightRayHit2D.collider.transform.position;
-                
+
                 FightAIState();
             }
             // 무방비 / 전투 -> 추격
@@ -401,6 +405,7 @@ public class EnemyA : Human, IAttacked
                     rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 멈춤 해제
                     gun.Fire();
                     Sensor();
+
                 }
                     
                 break;
