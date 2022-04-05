@@ -6,8 +6,9 @@ using UnityEngine;
 public class PlayerSoundnAni : MonoBehaviour
 {
     // Visible Member Variables
+    public Player m_Player;
     public bool m_isPlay = true;
-    public Animator[] m_Animators;
+    public GameObject[] m_AnimatorInterFaceObjs;
     public Animator m_PlayerAnimator;
     public GameObject m_Head;
     public GameObject[] m_Body;
@@ -18,7 +19,7 @@ public class PlayerSoundnAni : MonoBehaviour
     public GameObject[] m_BasicArms;
 
     // Member Variables
-    private Player m_Player;
+    private IPlayerAnimator[] m_Animators;
     private int isRightHeaded;
 
     private Animator m_OutArmAnimator;
@@ -41,7 +42,11 @@ public class PlayerSoundnAni : MonoBehaviour
     // Constructors
     private void Awake()
     {
-        m_Player = GetComponent<Player>();
+        m_Animators = new IPlayerAnimator[m_AnimatorInterFaceObjs.Length];
+        for(int i = 0; i < m_AnimatorInterFaceObjs.Length; i++)
+        {
+            m_Animators[i] = m_AnimatorInterFaceObjs[i].GetComponent<IPlayerAnimator>();
+        }
 
         m_PlayerSprite = m_Player.GetComponent<SpriteRenderer>();
         m_HeadSprites = m_Head.GetComponentsInChildren<SpriteRenderer>();
@@ -88,9 +93,9 @@ public class PlayerSoundnAni : MonoBehaviour
             switch (m_Player.m_curPlayerState)
             {
                 case playerState.IDLE:
-                    foreach (Animator element in m_Animators)
+                    foreach (IPlayerAnimator element in m_Animators)
                     {
-                        element.SetInteger("isWalk", 0);
+                        element.PlayPlayerPartAni(new PlayerPartAniParam(m_Player.m_curPlayerState));
                     }
                     m_PlayerAnimator.SetInteger("DoDash", 0);
                     break;
@@ -100,17 +105,17 @@ public class PlayerSoundnAni : MonoBehaviour
                     if (isRightHeaded == (int)m_Player.m_playerMoveVec.x)
                     {
                         //Debug.Log("Forward");
-                        foreach (Animator element in m_Animators)
+                        foreach (IPlayerAnimator element in m_Animators)
                         {
-                            element.SetInteger("isWalk", 1);
+                            element.PlayPlayerPartAni(new PlayerPartAniParam(m_Player.m_curPlayerState, true));
                         }
                     }
                     else
                     {
                         //Debug.Log("Backward");
-                        foreach (Animator element in m_Animators)
+                        foreach (IPlayerAnimator element in m_Animators)
                         {
-                            element.SetInteger("isWalk", -1);
+                            element.PlayPlayerPartAni(new PlayerPartAniParam(m_Player.m_curPlayerState, false));
                         }
                     }
                     break;

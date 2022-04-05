@@ -5,8 +5,6 @@ using UnityEngine;
 public class BASEWEAPON : MonoBehaviour
 {
     // Visible Member Variables
-    public Player_UIMgr m_PlayerUIMgr;
-    public SoundMgr_SFX m_SoundMgrSFX;
     public GameObject m_BulletPrefab;
     public float m_BulletSpeed = 15;
     public int m_BulletDamage = 1;
@@ -20,14 +18,17 @@ public class BASEWEAPON : MonoBehaviour
 
 
     // Member Variables
-    protected int m_LeftBullet;
-    protected int m_LeftMag;
+    public int m_LeftBullet { get; protected set; }
+    public int m_LeftMag { get; protected set; }
     protected bool m_isDelayEnd = true;
     protected Transform m_Player_Arm;
     protected AimCursor m_aimCursor;
     protected Player m_Player;
     protected Player_Gun m_PlayerGun;
-    
+
+    protected Player_UIMgr m_PlayerUIMgr;
+    protected SoundMgr_SFX m_SoundMgrSFX;
+
 
     // Constructors
     public void InitWeapon(Transform _playerarm, AimCursor _aimcursor, Player _player, Player_Gun _playergun)

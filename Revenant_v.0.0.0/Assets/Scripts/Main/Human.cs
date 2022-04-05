@@ -13,14 +13,14 @@ public enum humanState
 public class Human : ObjectDefine
 {
     // Member Variables
-    [field: SerializeField] public humanState m_curHumanState { get; private set; } = humanState.Live;
+    public humanState m_curHumanState { get; private set; } = humanState.Live;
     [field: SerializeField] public float m_Hp { get; protected set; } = 10;
     [field: SerializeField] public float m_Speed { get; protected set; } = 1f;
     [field: SerializeField] public float m_stunTime { get; private set; } = 0f;
     [field: SerializeField] public bool m_hasStun { get; private set; } = false;
     [field: SerializeField] public bool m_isEnemy { get; private set; } = false;
-    [field: SerializeField] public bool m_isRightHeaded { get; private set; } = true;
-    [field: SerializeField] public int[] m_curPos { get; set; } = new int[2];
+    public bool m_isRightHeaded { get; private set; } = true;
+    public int[] m_curPos { get; set; } = new int[2];
 
     // 오브젝트의 원래 위치
     public Vector2 m_originVec { get; set; }

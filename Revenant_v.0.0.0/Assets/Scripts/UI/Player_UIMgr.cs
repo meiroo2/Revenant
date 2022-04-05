@@ -6,20 +6,21 @@ using UnityEngine.UI;
 
 public class Player_UIMgr : MonoBehaviour
 {
-    // Visible Member Variables
-    [Header("For Health")]
-    public RectTransform m_Player_Health;
+    [field: SerializeField] private Player_UI m_PlayerUIPrefab;
+    public Player_UI m_PlayerUI { get; private set; }
+
+    [Space (20f)]
     public Sprite m_RedHealth;
     public Sprite m_GrayHealth;
 
-    [Space(20f)]
-    [Header("For Weapon")]
-    public RectTransform m_MainWeaponSlot;
-    public RectTransform m_SubWeaponSlot;
-    public TextMeshProUGUI m_MainBulletText;
-    public TextMeshProUGUI m_SubBulletText;
-    public Image m_MainWeaponImg;
-    public Image m_SubWeaponImg;
+    // Visible Member Variables
+    RectTransform m_Player_Health;
+    RectTransform m_MainWeaponSlot;
+    RectTransform m_SubWeaponSlot;
+    TextMeshProUGUI m_MainBulletText;
+    TextMeshProUGUI m_SubBulletText;
+    Image m_MainWeaponImg;
+    Image m_SubWeaponImg;
 
 
     // Member Variables
@@ -34,8 +35,18 @@ public class Player_UIMgr : MonoBehaviour
 
 
     // Constructors
-    private void Awake()
+    private void Start()
     {
+        m_PlayerUI = Instantiate(m_PlayerUIPrefab, GameManager.GetInstance().GetComponent<GameManager>().m_MainCanvas.transform);
+
+        m_Player_Health = m_PlayerUI.m_HealthSlot.GetComponent<RectTransform>();
+        m_MainWeaponSlot = m_PlayerUI.m_WeaponSlots[0].GetComponent<RectTransform>();
+        m_SubWeaponSlot = m_PlayerUI.m_WeaponSlots[1].GetComponent<RectTransform>();
+        m_MainBulletText = m_PlayerUI.m_WeaponTexts[0].GetComponent<TextMeshProUGUI>();
+        m_SubBulletText = m_PlayerUI.m_WeaponTexts[1].GetComponent<TextMeshProUGUI>();
+        m_MainWeaponImg = m_PlayerUI.m_WeaponImgs[0].GetComponent<Image>();
+        m_SubWeaponImg = m_PlayerUI.m_WeaponImgs[1].GetComponent<Image>();
+
         m_FrontSlotPos = m_MainWeaponSlot.anchoredPosition;
         m_BehindSlotPos = m_SubWeaponSlot.anchoredPosition;
         m_HealthSlots = m_Player_Health.GetComponentsInChildren<Image>();

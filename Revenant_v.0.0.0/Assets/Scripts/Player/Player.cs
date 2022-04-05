@@ -17,43 +17,46 @@ public enum playerState
 public class Player : Human, IAttacked
 {
     // Member Variables
-    [field: SerializeField] public playerState m_curPlayerState { get; private set; } = playerState.IDLE;
-    [field: SerializeField] public bool m_canMove { get; private set; } = true;
-    [field: SerializeField] public bool m_canRoll { get; private set; } = true;
-    [field: SerializeField] public bool m_canShot { get; private set; } = true;
+    public playerState m_curPlayerState { get; private set; } = playerState.IDLE;
+    public bool m_canMove { get; private set; } = true;
+    public bool m_canRoll { get; private set; } = true;
+    public bool m_canShot { get; private set; } = true;
     [field: SerializeField] public float m_BackWalkSpeedRatio { get; private set; } = 0.7f;
     [field: SerializeField] public float m_RunSpeedRatio { get; private set; } = 1.5f;
     [field: SerializeField] public int m_LeftRollCount { get; private set; } = 3;
-
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
 
-    public Player_UIMgr m_PlayerUIMgr;
-    public UIMgr m_UIMgr;
-    public NoiseMaker m_NoiseMaker;
+    [Space(20f)]
+    [Header("Public Player Scripts")]
+    public PlayerSoundnAni m_playerSoundnAni;
+    public PlayerRotation m_playerRotation;
+    public Player_Gun m_playerGun;
+    public Player_UseRange m_useRange;
 
-    private PlayerRotation m_playerRotation;
+    private Player_UIMgr m_PlayerUIMgr;
+    private UIMgr m_UIMgr;
+    private NoiseMaker m_NoiseMaker;
     private Rigidbody2D m_playerRigid;
-    private PlayerSoundnAni m_playerSoundnAni;
-    private Player_Gun m_playerGun;
     private SoundMgr_SFX m_SFXMgr;
-
     private Animator m_PlayerAnimator;
 
     private bool m_isRecoveringRollCount = false;
-
     private IEnumerator m_FootStep;
 
+    // For Player_Managers
 
     // Constructor
     private void Awake()
     {
         m_PlayerAnimator = GetComponent<Animator>();
-
         m_playerRigid = GetComponent<Rigidbody2D>();
-        m_playerSoundnAni = GetComponent<PlayerSoundnAni>();
-        m_playerRotation = GetComponentInChildren<PlayerRotation>();
-        m_playerGun = GetComponentInChildren<Player_Gun>();
-        m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
+    }
+    private void Start()
+    {
+        m_NoiseMaker = GameManager.GetInstance().GetComponentInChildren<NoiseMaker>();
+        m_UIMgr = GameManager.GetInstance().GetComponentInChildren<UIMgr>();
+        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
+        m_SFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
 
     // Update
@@ -61,11 +64,6 @@ public class Player : Human, IAttacked
     {
         updatePlayerFSM();
     }
-    private void FixedUpdate()
-    {
-
-    }
-
 
     // Player FSM Functions
     private void updatePlayerFSM()

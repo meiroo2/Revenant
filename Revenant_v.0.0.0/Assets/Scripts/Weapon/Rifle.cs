@@ -17,11 +17,17 @@ public class Rifle : BASEWEAPON
         m_FireCount = FireCount;
         m_LeftBullet = m_BulletPerMag;
         m_LeftMag = m_Magcount;
+    }
+    private void Start()
+    {
+        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
+        m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+
         m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
     }
     private void OnEnable()
     {
-        m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
+        //m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
     }
 
     // Updates
@@ -85,8 +91,6 @@ public class Rifle : BASEWEAPON
 
             GameObject InstancedBullet = Instantiate(m_BulletPrefab);
             Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
-
-            InstancedBullet_Script.m_SoundMgrSFX = m_SoundMgrSFX;
 
             if (m_Player.m_isRightHeaded)
                 InstancedBullet_Script.InitBullet(m_BulletSpeed, m_BulletDamage);

@@ -18,7 +18,8 @@ public class Grenade_Weapon : BASEWEAPON
     }
     private void Start()
     {
-
+        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
+        m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
     /*
     <커스텀 초기화 함수가 필요할 경우>

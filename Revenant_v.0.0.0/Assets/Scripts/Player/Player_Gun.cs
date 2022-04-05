@@ -5,13 +5,9 @@ using UnityEngine;
 public class Player_Gun : MonoBehaviour
 {
     // Visible Member Variables
-    public Player_UIMgr m_PlayerUIMgr;
-    public AimCursor m_aimCursor;
     public BASEWEAPON[] m_MainWeapons;
     public BASEWEAPON[] m_SubWeapons;
     public BASEWEAPON[] m_Throwables;
-    public NoiseMaker m_NoiseMaker;
-
 
     [Space(30f)]
     [Header("For IK")]
@@ -25,6 +21,10 @@ public class Player_Gun : MonoBehaviour
     public Transform m_GunOriginPos;
 
     // Member Variables
+    private NoiseMaker m_NoiseMaker;
+    private Player_UIMgr m_PlayerUIMgr;
+    private AimCursor m_aimCursor;
+
     private PlayerSoundnAni m_PlayerSoundnAni;
     private Player m_Player;
     private Transform m_Player_Arm;
@@ -40,14 +40,15 @@ public class Player_Gun : MonoBehaviour
     private int m_ActiveWeaponType = 0; // 0 == Main, 1 == Sub, 2 == Throwable
 
     // Constructors
-    private void Awake()
-    {
-        m_Player = GetComponentInParent<Player>();
-        m_Player_Arm = GetComponentInParent<PlayerRotation>().gameObject.transform;
-        m_PlayerSoundnAni = GetComponentInParent<PlayerSoundnAni>();
-    }
     private void Start()
     {
+        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player_Arm = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation.transform;
+        m_PlayerSoundnAni = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerSoundnAni;
+        m_NoiseMaker = GameManager.GetInstance().GetComponentInChildren<NoiseMaker>();
+        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
+        m_aimCursor = GameManager.GetInstance().GetComponentInChildren<AimCursor>();
+
         if (m_MainWeapons.Length != 0)
         {
             foreach (BASEWEAPON element in m_MainWeapons)
@@ -78,6 +79,9 @@ public class Player_Gun : MonoBehaviour
         m_curMainWeapon.gameObject.SetActive(true);
         m_ActiveWeapon = m_curMainWeapon;
         m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
+
+        GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>().setLeftBulletUI(m_curMainWeapon.m_LeftBullet, m_curMainWeapon.m_LeftMag, 0);
+        //GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>().setLeftBulletUI(m_curSubWeapon.m_LeftBullet, m_curSubWeapon.m_LeftMag, 0);
     }
 
     // Updates
@@ -169,9 +173,9 @@ public class Player_Gun : MonoBehaviour
     {
         if (doRecoil)
         {
-            m_OutArmEffectorPos.position = Vector2.Lerp(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position, Time.deltaTime * 3f);
-            m_InArmEffectorPos.position = Vector2.Lerp(m_InArmEffectorPos.position, m_InArmEffectorOriginPos.position, Time.deltaTime * 3f);
-            m_GunPos.position = Vector2.Lerp(m_GunPos.position, m_GunOriginPos.position, Time.deltaTime * 3f);
+            m_OutArmEffectorPos.position = Vector2.Lerp(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position, Time.deltaTime * 6f);
+            m_InArmEffectorPos.position = Vector2.Lerp(m_InArmEffectorPos.position, m_InArmEffectorOriginPos.position, Time.deltaTime * 6f);
+            m_GunPos.position = Vector2.Lerp(m_GunPos.position, m_GunOriginPos.position, Time.deltaTime * 6f);
 
             if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.0005f)
                 doRecoil = false;

@@ -16,7 +16,7 @@ public enum WeaponType
     KNIFE
 }
 
-public struct AttackedInfo
+public class AttackedInfo
 {
     public bool m_IsPlayer;
     public int m_Damage;
