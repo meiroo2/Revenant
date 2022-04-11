@@ -25,5 +25,8 @@ public class IHotBoxParam
 
 public interface IHotBox
 {
+    // 0 = No Hit, 1 = Hit
+    public int m_hotBoxType { get; set; }
+
     public void HitHotBox(IHotBoxParam _param);
 }
