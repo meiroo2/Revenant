@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class TargetBoard_HeadHotBox : MonoBehaviour, IHotBox
 {
+    public int m_hotBoxType { get; set; }
     TargetBoard targetBoard;
     private void Awake()
     {

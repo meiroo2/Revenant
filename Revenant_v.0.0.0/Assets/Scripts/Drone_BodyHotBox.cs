@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Drone_BodyHotBox : MonoBehaviour, IHotBox
 {
+    public int m_hotBoxType { get; set; }
     Drone drone;
 
     private void Awake()
