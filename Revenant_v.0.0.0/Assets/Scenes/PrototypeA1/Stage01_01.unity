@@ -123,6 +123,39 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &57161211
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 57161212}
+  m_Layer: 13
+  m_Name: LeftSensors
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &57161212
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57161211}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 577262272}
+  - {fileID: 1459990704}
+  m_Father: {fileID: 173845113}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &66427138
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,7 +349,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1054189776}
-  - {fileID: 577262272}
+  - {fileID: 57161212}
   - {fileID: 1346897183}
   m_Father: {fileID: 0}
   m_RootOrder: 12
@@ -333,6 +366,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34113ea157639cc4c8fc58da947fd8df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_OnStairObjNum: 
+  m_OnStairObjCount: 
 --- !u!1 &237369687
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,10 +939,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 577262272}
-  - component: {fileID: 577262273}
   - component: {fileID: 577262274}
-  m_Layer: 18
-  m_Name: LeftSensor
+  - component: {fileID: 577262273}
+  m_Layer: 1
+  m_Name: Sensor00
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -920,13 +955,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577262271}
-  m_LocalRotation: {x: 0, y: 0, z: -0.21643952, w: 0.97629607}
-  m_LocalPosition: {x: -0.702, y: 0.029, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.21643952, w: 0.97629607}
+  m_LocalPosition: {x: -0.6590001, y: 0.12100003, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 173845113}
-  m_RootOrder: 1
+  m_Father: {fileID: 57161212}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -25}
 --- !u!61 &577262273
 BoxCollider2D:
@@ -941,7 +976,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.09065899}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -952,7 +987,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.1}
+  m_Size: {x: 0.089334145, y: 0.08696401}
   m_EdgeRadius: 0
 --- !u!114 &577262274
 MonoBehaviour:
@@ -966,6 +1001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1cba75767261af418c0b347ad5cbd10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_isGoingUp: 1
 --- !u!1 &609029314
 GameObject:
   m_ObjectHideFlags: 0
@@ -1937,7 +1973,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1040381990}
   - component: {fileID: 1040381989}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: UpBg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2249,7 +2285,7 @@ GameObject:
   - component: {fileID: 1346897183}
   - component: {fileID: 1346897184}
   - component: {fileID: 1346897185}
-  m_Layer: 18
+  m_Layer: 1
   m_Name: RightSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2309,6 +2345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1cba75767261af418c0b347ad5cbd10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_isGoingUp: 0
 --- !u!1 &1424640118
 GameObject:
   m_ObjectHideFlags: 0
@@ -2414,6 +2451,78 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <m_ObjProperty>k__BackingField: 0
+--- !u!1 &1459990703
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1459990704}
+  - component: {fileID: 1459990706}
+  - component: {fileID: 1459990705}
+  m_Layer: 1
+  m_Name: Sensor01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1459990704
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459990703}
+  m_LocalRotation: {x: -0, y: -0, z: -0.21643952, w: 0.97629607}
+  m_LocalPosition: {x: -0.573, y: 0.094, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 57161212}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -25}
+--- !u!61 &1459990705
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459990703}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.29194063, y: -0.2962293}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.41611874, y: 0.12807947}
+  m_EdgeRadius: 0
+--- !u!114 &1459990706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1459990703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1cba75767261af418c0b347ad5cbd10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_isGoingUp: 1
 --- !u!1 &1539775644
 GameObject:
   m_ObjectHideFlags: 0
@@ -2739,8 +2848,6 @@ MonoBehaviour:
   <m_Hp>k__BackingField: 2000
   <m_Speed>k__BackingField: 1
   <m_stunTime>k__BackingField: 0.35
-  <m_hasStun>k__BackingField: 0
-  <m_isEnemy>k__BackingField: 1
   <SAFE_DISTANCE>k__BackingField: 0.1
   textForTest: {fileID: 0}
   defaultDir: 0

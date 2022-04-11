@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Floor : ObjectDefine, IMatType, IAttacked
+public class Floor : ObjectDefine, IMatType, IHotBox
 {
     // Visible Member Variables
     [field: SerializeField] public MatType m_matType { get; set; } = MatType.Normal;
@@ -19,31 +19,17 @@ public class Floor : ObjectDefine, IMatType, IAttacked
     {
         m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
-    /*
-    <커스텀 초기화 함수가 필요할 경우>
-    public void Init()
-    {
-
-    }
-    */
 
     // Updates
-    private void Update()
-    {
 
-    }
-    private void FixedUpdate()
-    {
-
-    }
 
     // Physics
 
 
     // Functions
-    public void Attacked(AttackedInfo _AttackedInfo)
+    public void HitHotBox(IHotBoxParam _param)
     {
-        m_SoundMgrSFX.playAttackedSound(m_matType, _AttackedInfo.m_ContactPoint);
+        m_SoundMgrSFX.playAttackedSound(m_matType, _param.m_contactPoint);
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

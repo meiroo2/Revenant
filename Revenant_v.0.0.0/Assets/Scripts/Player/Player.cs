@@ -21,17 +21,18 @@ public class Player : Human
     public bool m_canMove { get; private set; } = true;
     public bool m_canRoll { get; private set; } = true;
     public bool m_canShot { get; private set; } = true;
+    public bool m_canChangeWeapon { get; private set; } = false;
     [field: SerializeField] public float m_BackWalkSpeedRatio { get; private set; } = 0.7f;
     [field: SerializeField] public float m_RunSpeedRatio { get; private set; } = 1.5f;
     [field: SerializeField] public int m_LeftRollCount { get; private set; } = 3;
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
 
-    [Space(20f)]
-    [Header("Public Player Scripts")]
-    public PlayerSoundnAni m_playerSoundnAni;
-    public PlayerRotation m_playerRotation;
-    public Player_Gun m_playerGun;
-    public Player_UseRange m_useRange;
+    //[Space(20f)]
+    //[Header("Public Player Scripts")]
+    public PlayerSoundnAni m_playerSoundnAni { get; private set; }
+    public PlayerRotation m_playerRotation { get; private set; }
+    public Player_Gun m_playerGun { get; private set; }
+    public Player_UseRange m_useRange { get; private set; }
 
     private Player_UIMgr m_PlayerUIMgr;
     private UIMgr m_UIMgr;
@@ -48,6 +49,11 @@ public class Player : Human
     // Constructor
     private void Awake()
     {
+        m_playerSoundnAni = GetComponentInChildren<PlayerSoundnAni>();
+        m_playerRotation = GetComponentInChildren<PlayerRotation>();
+        m_playerGun = GetComponentInChildren<Player_Gun>();
+        m_useRange = GetComponentInChildren<Player_UseRange>();
+
         m_PlayerAnimator = GetComponent<Animator>();
         m_playerRigid = GetComponent<Rigidbody2D>();
     }

@@ -107,7 +107,7 @@ public class Pistol : WEAPON_Player
         else
             InstancedBullet_Script.InitBullet(-m_BulletSpeed, m_BulletDamage);
 
-        InstancedBullet.transform.SetPositionAndRotation(transform.position, m_Player_Arm.rotation);
+        InstancedBullet.transform.SetPositionAndRotation(m_Player_Arm.transform.position, m_Player_Arm.rotation);
 
         // 에임이 가리키고 있는 가장 가까운 히트박스의 고유값을 총알한테 넘겨줌
         InstancedBullet_Script.m_aimedObjId = m_aimCursor.AimedObjid;
