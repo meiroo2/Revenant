@@ -13,7 +13,8 @@ Shader "Unlit/OutlineShader"
             // Add values to determine if outlining is enabled and outline color.
             [PerRendererData] _Outline("Outline", Float) = 0
             [PerRendererData] _OutlineColor("Outline Color", Color) = (1,1,1,1)
-            [PerRendererData] _OutlineSize("Outline Size", float) = 1
+            [PerRendererData] _OutlineSize("Outline Size", int) = 1
+            [PerRendererData] _isOpacue("isOpacue", int) = 0
     }
 
         SubShader
@@ -47,10 +48,12 @@ Shader "Unlit/OutlineShader"
                 fixed4 _OutlineColor;
                 float _OutlineSize;
                 float4 _MainTex_TexelSize;
+                float _isOpacue;
 
                 fixed4 frag(v2f IN) : SV_Target
                 {
                     fixed4 c = SampleSpriteTexture(IN.texcoord) * IN.color;
+
 
                 // If outline is enabled and there is a pixel, try to draw an outline.
                 if (_Outline > 0 && c.a != 0) {
@@ -67,7 +70,16 @@ Shader "Unlit/OutlineShader"
                     }
 
                     if (totalAlpha == 0) {
-                        c.rgba = fixed4(1, 1, 1, 1) * _OutlineColor;
+                        if (_isOpacue == 1) {
+                            c.rgba = c.rgba * fixed4(1, 1, 1, 0.5);
+                        }
+                        else {
+                            c.rgba = c.rgba * fixed4(1, 1, 1, 0);
+                        }
+                            
+                        
+                            //fixed4(1, 1, 1, 0.5);
+                            //fixed4(1, 1, 1, 1) * _OutlineColor;
                     }
                 }
 

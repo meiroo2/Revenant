@@ -81,7 +81,7 @@ public class EnemyA : Human, IAttacked
 
         curStun = stunStack;
 
-        m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
+        //m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
 
         parts = GetComponentInChildren<Parts>();
 
@@ -109,13 +109,13 @@ public class EnemyA : Human, IAttacked
             damage *= 2;
             stun *= 2;
 
-            m_SFXMgr.playAttackedSound(MatType.Target_Head, _AttackedInfo.m_ContactPoint);
+           // m_SFXMgr.playAttackedSound(MatType.Target_Head, _AttackedInfo.m_ContactPoint);
         }
         else if (_AttackedInfo.m_HitPoint == HitPoints.BODY)
         {
             Debug.Log("Body Hit");
 
-            m_SFXMgr.playAttackedSound(MatType.Target_Body, _AttackedInfo.m_ContactPoint);
+            //m_SFXMgr.playAttackedSound(MatType.Target_Body, _AttackedInfo.m_ContactPoint);
         }
         if(isAlive)
         {

@@ -61,11 +61,13 @@ public class AimCursor : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // 충돌한 히트박스의 정보를 리스트에 담음
         m_AimedObjs.Add(new AimedObjInfo(collision.gameObject.GetInstanceID(), collision.transform.position));
     }
     
     private void OnTriggerStay2D(Collider2D collision)
     {
+        // 실시간으로 가장 가까운 히트박스를 계산
         if(m_AimedObjs.Count > 0)
         {
             m_ShortestId = m_AimedObjs[0].m_ObjID;
@@ -86,6 +88,7 @@ public class AimCursor : MonoBehaviour
     
     private void OnTriggerExit2D(Collider2D collision)
     {
+        // Exit 시 Exit한 히트박스는 리스트에서 제거
         if(m_AimedObjs.Count > 0)
         {
             for(int i = 0; i < m_AimedObjs.Count; i++)

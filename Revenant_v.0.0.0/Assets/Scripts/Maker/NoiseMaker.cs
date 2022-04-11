@@ -24,14 +24,7 @@ public class NoiseMaker : MonoBehaviour
     }
 
     // Updates
-    private void Update()
-    {
 
-    }
-    private void FixedUpdate()
-    {
-
-    }
 
     // Physics
 

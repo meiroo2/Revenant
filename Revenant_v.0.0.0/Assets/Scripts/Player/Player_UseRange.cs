@@ -22,39 +22,63 @@ public class Player_UseRange : MonoBehaviour
 
 
     // Member Variables
+    private bool isPressedUpKey = false;
+    private bool isPressedDownKey = false;
     private bool isPressedFKey = false;
-    private float Timer = 0.1f;
+    private float FTimer = 0.1f;
+    private float UTimer = 0.1f;
+    private float DTimer = 0.1f;
 
     private List<UseableObjInfo> m_UseableObjs = new List<UseableObjInfo>();
     private int m_ShortestIDX = -1;
     private float m_ShortestLength = 999f;
 
     // Constructors
-    private void Awake()
-    {
-
-    }
-    private void Start()
-    {
-
-    }
 
     // Updates
     private void Update()
     {
         if (isPressedFKey)
         {
-            Timer -= Time.deltaTime;
-            if (Timer <= 0f)
+            FTimer -= Time.deltaTime;
+            if (FTimer <= 0f)
             {
-                Timer = 0.1f;
+                FTimer = 0.1f;
                 isPressedFKey = false;
             }
         }
-
-
         if (Input.GetKeyDown(KeyCode.F))
             isPressedFKey = true;
+
+        if (isPressedUpKey)
+        {
+            UTimer -= Time.deltaTime;
+            if (UTimer <= 0f)
+            {
+                UTimer = 0.1f;
+                isPressedUpKey = false;
+            }
+        }
+        if (Input.GetKey(KeyCode.W))
+        {
+            isPressedUpKey = true;
+            UTimer = 0.1f;
+        }
+
+        if (isPressedDownKey)
+        {
+            DTimer -= Time.deltaTime;
+            if (DTimer <= 0f)
+            {
+                DTimer = 0.1f;
+                isPressedDownKey = false;
+            }
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            isPressedDownKey = true;
+            DTimer = 0.1f;
+        }
     }
     private void FixedUpdate()
     {
@@ -68,36 +92,36 @@ public class Player_UseRange : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
+        if (m_UseableObjs.Count > 0)
+        {
+            m_ShortestLength = 999f;
+
+            for (int i = 0; i < m_UseableObjs.Count; i++)
+            {
+                if (m_ShortestLength > ((Vector2)transform.position - m_UseableObjs[i].m_ObjPos).sqrMagnitude)
+                {
+                    m_ShortestLength = ((Vector2)transform.position - m_UseableObjs[i].m_ObjPos).sqrMagnitude;
+                    m_ShortestIDX = i;
+                }
+            }
+        }
+
         if (isPressedFKey)
         {
-            if (m_UseableObjs.Count > 0)
+            if (m_ShortestLength <= 0.05f)
             {
-                m_ShortestLength = 999f;
-
-                for (int i = 0; i < m_UseableObjs.Count; i++)
+                switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
                 {
-                    if (m_ShortestLength > ((Vector2)transform.position - m_UseableObjs[i].m_ObjPos).sqrMagnitude)
-                    {
-                        m_ShortestLength = ((Vector2)transform.position - m_UseableObjs[i].m_ObjPos).sqrMagnitude;
-                        m_ShortestIDX = i;
-                    }
-                }
+                    case UseableObjList.OBJECT:
+                        m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj();
+                        break;
 
-                if (m_ShortestLength <= 0.05f)
-                {
-                    switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
-                    {
-                        case UseableObjList.OBJECT:
+                    case UseableObjList.HIDEPOS:
+                        if (Vector2.Distance(transform.position, collision.transform.position) < 0.4f)
+                        {
                             m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj();
-                            break;
-
-                        case UseableObjList.HIDEPOS:
-                            if (Vector2.Distance(transform.position, collision.transform.position) < 0.4f)
-                            {
-                                m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj();
-                            }
-                            break;
-                    }
+                        }
+                        break;
                 }
             }
             isPressedFKey = false;

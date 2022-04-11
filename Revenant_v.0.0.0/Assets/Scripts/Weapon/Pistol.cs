@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pistol : BASEWEAPON
+public class Pistol : WEAPON_Player
 {
     // Visible Member Variables
     public ObjectPuller m_ObjPullerForMuzFlash;
@@ -58,7 +58,7 @@ public class Pistol : BASEWEAPON
         }
         return 0;
     }
-    public override bool Reload()
+    public override int Reload()
     {
         if (m_LeftMag > 0)
         {
@@ -67,20 +67,20 @@ public class Pistol : BASEWEAPON
                 m_LeftMag--;
                 m_LeftBullet = m_BulletPerMag + 1;
                 m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
-                return true;
+                return 1;
             }
             else if (m_LeftBullet == 0)
             {
                 m_LeftMag--;
                 m_LeftBullet = m_BulletPerMag;
                 m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
-                return true;
+                return 1;
             }
             else
-                return false;
+                return 0;
         }
         else
-            return false;
+            return 0;
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
@@ -99,7 +99,7 @@ public class Pistol : BASEWEAPON
 
         m_ReflectionAnimator.Play("Rifle_Reflection", -1, 0f);
 
-        GameObject InstancedBullet = Instantiate(m_BulletPrefab);
+        GameObject InstancedBullet = Instantiate(m_bulletPrefab);
         Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
 
         if (m_Player.m_isRightHeaded)
@@ -108,6 +108,8 @@ public class Pistol : BASEWEAPON
             InstancedBullet_Script.InitBullet(-m_BulletSpeed, m_BulletDamage);
 
         InstancedBullet.transform.SetPositionAndRotation(transform.position, m_Player_Arm.rotation);
+
+        // 에임이 가리키고 있는 가장 가까운 히트박스의 고유값을 총알한테 넘겨줌
         InstancedBullet_Script.m_aimedObjId = m_aimCursor.AimedObjid;
 
         GameObject InstancedShell = Instantiate(m_Shell);
