@@ -14,7 +14,7 @@ public enum playerState
     DEAD
 }
 
-public class Player : Human, IAttacked
+public class Player : Human
 {
     // Member Variables
     public playerState m_curPlayerState { get; private set; } = playerState.IDLE;
@@ -246,20 +246,26 @@ public class Player : Human, IAttacked
     }
 
     // Functions
-    public void Attacked(AttackedInfo _AttackedInfo)
+    public void GoToStairLayer(bool _input)
     {
-        if (m_curHumanState != humanState.Dead)
+        if (_input)
+            gameObject.layer = 10;
+        else
+            gameObject.layer = 12;
+    }
+    public void Attacked(IHotBoxParam _param)
+    {
+        if (m_curPlayerState != playerState.DEAD)
         {
-            Debug.Log(_AttackedInfo.m_Damage + "데미지 총알이 플레이어한테 박힘");
+            Debug.Log(_param.m_Damage + "데미지 총알이 플레이어한테 박힘");
 
-            humanAttacked(_AttackedInfo.m_Damage);
             if (m_Hp == -1)
             {
                 changePlayerFSM(playerState.DEAD);
                 m_UIMgr.m_GameOverUI.SetActive(true);
             }
 
-            m_SFXMgr.playAttackedSound(MatType.Normal, _AttackedInfo.m_ContactPoint);
+            m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
             m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Hp / 10f));
         }
     }

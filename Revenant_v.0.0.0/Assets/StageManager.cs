@@ -9,7 +9,7 @@ public class StageManager : MonoBehaviour
     // Member Variables
     private static StageManager m_stagemgrInstance = null;
 
-    private List<BASEWEAPON> m_Weapons;
+    private List<WEAPON> m_Weapons;
     private int leftHp = 0;
     private int leftRoll = 0;
 

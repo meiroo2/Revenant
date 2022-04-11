@@ -11,6 +11,10 @@ public class Jacket : MonoBehaviour, IPlayerAnimator
         m_Animator = GetComponent<Animator>();
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
+    private void Start()
+    {
+        m_Animator.enabled = false;
+    }
 
     public void PlayPlayerPartAni(PlayerPartAniParam _inputParam)
     {

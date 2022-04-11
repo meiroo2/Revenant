@@ -9,13 +9,6 @@ public enum HitPoints
     OTHER
 }
 
-public enum WeaponType
-{
-    BULLET,
-    GRENADE,
-    KNIFE
-}
-
 public class AttackedInfo
 {
     public bool m_IsPlayer;

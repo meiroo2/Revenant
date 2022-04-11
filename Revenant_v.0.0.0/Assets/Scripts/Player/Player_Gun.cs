@@ -5,9 +5,9 @@ using UnityEngine;
 public class Player_Gun : MonoBehaviour
 {
     // Visible Member Variables
-    public BASEWEAPON[] m_MainWeapons;
-    public BASEWEAPON[] m_SubWeapons;
-    public BASEWEAPON[] m_Throwables;
+    public WEAPON_Player[] m_MainWeapons;
+    public WEAPON_Player[] m_SubWeapons;
+    public WEAPON_Player[] m_Throwables;
 
     [Space(30f)]
     [Header("For IK")]
@@ -29,11 +29,11 @@ public class Player_Gun : MonoBehaviour
     private Player m_Player;
     private Transform m_Player_Arm;
 
-    private BASEWEAPON m_curMainWeapon;
-    private BASEWEAPON m_curSubWeapon;
-    private BASEWEAPON m_curThrowable;
+    private WEAPON_Player m_curMainWeapon;
+    private WEAPON_Player m_curSubWeapon;
+    private WEAPON_Player m_curThrowable;
 
-    private BASEWEAPON m_ActiveWeapon;
+    private WEAPON_Player m_ActiveWeapon;
 
     private bool doRecoil = false;
     private bool m_isCastingThrow = false;
@@ -51,7 +51,7 @@ public class Player_Gun : MonoBehaviour
 
         if (m_MainWeapons.Length != 0)
         {
-            foreach (BASEWEAPON element in m_MainWeapons)
+            foreach (WEAPON_Player element in m_MainWeapons)
             {
                 element.gameObject.SetActive(false);
             }
@@ -60,7 +60,7 @@ public class Player_Gun : MonoBehaviour
 
         if (m_SubWeapons.Length != 0)
         {
-            foreach (BASEWEAPON element in m_SubWeapons)
+            foreach (WEAPON_Player element in m_SubWeapons)
             {
                 element.gameObject.SetActive(false);
             }
@@ -69,7 +69,7 @@ public class Player_Gun : MonoBehaviour
 
         if (m_Throwables.Length != 0)
         {
-            foreach (BASEWEAPON element in m_Throwables)
+            foreach (WEAPON_Player element in m_Throwables)
             {
                 element.gameObject.SetActive(false);
             }

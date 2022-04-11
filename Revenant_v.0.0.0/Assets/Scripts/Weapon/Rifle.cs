@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rifle : BASEWEAPON
+public class Rifle : WEAPON_Player
 {
+    /*
     // Visible Member Variables
     public int FireCount = 3;
     public float ContinuousFireDelay = 0.1f;
@@ -113,4 +114,5 @@ public class Rifle : BASEWEAPON
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
+    */
 }

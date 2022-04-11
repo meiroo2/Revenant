@@ -7,14 +7,16 @@ public enum TargetBoardState
     CANHIT,
     DEAD
 }
-
-
-public class TargetBoard : MonoBehaviour, IAttacked
+public enum PARTS
 {
-    float Hp = 1;
-    public TargetBoardState targetBoardState { get; set; }
+    NONE, HEAD, BODY
+}
 
-    HitPoints hitPoint;
+public class TargetBoard : Enemy
+{
+    public PARTS hitParts { get; set; } = PARTS.NONE;
+    //float Hp = 1;
+    public TargetBoardState targetBoardState { get; set; }
 
     Animator animator;
     Rigidbody2D rigid;
@@ -29,7 +31,6 @@ public class TargetBoard : MonoBehaviour, IAttacked
     private void Awake()
     {
         //targetBoardState = TargetBoardState.SPAWN;
-        hitPoint = HitPoints.OTHER;
         animator = GetComponent<Animator>();
         animSet("isAlive", true);
 
@@ -38,39 +39,18 @@ public class TargetBoard : MonoBehaviour, IAttacked
         m_TargetMgr = GameObject.Find("TargetGameMgr").GetComponent<TargetGameMgr>();
     }
 
-    private void Update()
+
+    public void Attacked()
     {
-
-    }
-    
-    public void Attacked(AttackedInfo _AttackedInfo)
-    {
-        hitPoint = _AttackedInfo.m_HitPoint;
-        if (hitPoint == HitPoints.HEAD)
+        if(hitParts == PARTS.HEAD)
         {
-            animator.SetTrigger("isHead");
-
-            //HJTEST
-            m_SoundMgr.playAttackedSound(MatType.Target_Head, _AttackedInfo.m_ContactPoint);
-            if (m_SoundMgr.m_isEnd == false)
-                m_TargetMgr.getScore(true);
+            Debug.Log("head");
         }
-        else if (hitPoint == HitPoints.BODY)
+        else if(hitParts == PARTS.BODY)
         {
-            animator.SetTrigger("isBody");
-
-            //HJTEST
-            m_SoundMgr.playAttackedSound(MatType.Target_Body, _AttackedInfo.m_ContactPoint);
-            if (m_SoundMgr.m_isEnd == false)
-                m_TargetMgr.getScore(false);
+            Debug.Log("body");
         }
-
-        //animSet("isAlive", false);
-        hitColliders[0].enabled = false;
-        hitColliders[1].enabled = false;
-
-        Invoke(nameof(setAliveToTrue), 1.5f);
-        
+        hitParts = PARTS.NONE;
     }
     
     public void setAliveToTrue()

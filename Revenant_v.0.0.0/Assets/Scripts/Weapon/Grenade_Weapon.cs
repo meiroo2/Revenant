@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grenade_Weapon : BASEWEAPON
+public class Grenade_Weapon : WEAPON_Player
 {
     // Visible Member Variables
     public GameObject m_GrenadePrefab;

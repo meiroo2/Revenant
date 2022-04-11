@@ -6,7 +6,9 @@ public class SpriteOutline : MonoBehaviour
     public Color color = Color.white;
 
     [Range(0, 16)]
-    public float outlineSize = 1;
+    public int outlineSize = 1;
+
+    public int isOpacue = 0;
 
     private SpriteRenderer spriteRenderer;
 
@@ -33,7 +35,8 @@ public class SpriteOutline : MonoBehaviour
         spriteRenderer.GetPropertyBlock(mpb);
         mpb.SetFloat("_Outline", outline ? 1f : 0);
         mpb.SetColor("_OutlineColor", color);
-        mpb.SetFloat("_OutlineSize", outlineSize);
+        mpb.SetInt("_OutlineSize", outlineSize);
+        mpb.SetInt("_isOpacue", isOpacue);
         spriteRenderer.SetPropertyBlock(mpb);
     }
 }

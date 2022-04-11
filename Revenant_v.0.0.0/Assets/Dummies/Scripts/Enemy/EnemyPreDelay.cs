@@ -62,7 +62,7 @@ public class EnemyPreDelay : MonoBehaviour
 
         foreach (SpriteOutline element in m_Objs)
         {
-            element.outlineSize = m_outSize;
+           // element.outlineSize = m_outSize;
         }
     }
 }
