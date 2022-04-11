@@ -15,12 +15,14 @@ public class Stair : MonoBehaviour
         {
             if(m_OnStairObjNum[i] == _ObjID)
             {
+                Debug.Log("Stair에서 1 더함");
                 m_OnStairObjCount[i]++;
-                if(m_OnStairObjCount[i] == 2)
+                if(m_OnStairObjCount[i] == 1)
                 {
+                    Debug.Log("Stair에서 나가리");
                     m_OnStairObjCount.RemoveAt(i);
                     m_OnStairObjNum.RemoveAt(i);
-                    return 1;
+                    return 0;
                 }
                 isFind = true;
                 break;
@@ -28,9 +30,10 @@ public class Stair : MonoBehaviour
         }
         if (!isFind)
         {
+            Debug.Log("Stair에서 처음 발견");
             m_OnStairObjNum.Add(_ObjID);
             m_OnStairObjCount.Add(0);
         }
-        return 0;
+        return 1;
     }
 }

@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player_Bullet : MonoBehaviour
+public class Player_Bullet : Bullet
 {
     // Visible Member Variables
+    private int m_Damage = 0;
+    private float m_Speed = 0f;
+    private int m_stunValue = 0;
 
     // Member Variables
-    private float m_Speed = 0f;
     private float m_Timer = 0f;
-    private int m_Damage = 0;
-    private HitPoints m_HitPoint = HitPoints.OTHER;
     public int m_aimedObjId { get; set; } = 0;
     private HitSFXMaker m_HitSFXMaker;
     private SoundMgr_SFX m_SoundMgrSFX;
@@ -43,40 +43,23 @@ public class Player_Bullet : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.gameObject.CompareTag("Player"))
-        {
-            if (collision.gameObject.CompareTag("Head"))
-                m_HitPoint = HitPoints.HEAD;
-            else if (collision.gameObject.CompareTag("Body"))
-                m_HitPoint = HitPoints.BODY;
-            else
-                m_HitPoint = HitPoints.OTHER;
-
-
-            if (m_aimedObjId == collision.gameObject.GetInstanceID() && m_HitPoint != HitPoints.OTHER)
+        IHotBox TempHotBox = collision.GetComponent<IHotBox>();
+            if(m_aimedObjId == collision.gameObject.GetInstanceID())
             {
-                collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
-
-                if (m_HitPoint == HitPoints.HEAD)
-                    m_HitSFXMaker.EnableNewObj(0, transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
-                else if (m_HitPoint == HitPoints.BODY)
-                    m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
-
-                Destroy(this.gameObject);
-            }
-            else if (m_HitPoint == HitPoints.OTHER)
-            {
-                collision.gameObject.GetComponentInParent<IAttacked>().Attacked(new AttackedInfo(true, m_Damage, 1, transform.position, m_HitPoint, WeaponType.BULLET));
-
+                TempHotBox.HitHotBox(new IHotBoxParam(m_Damage, m_stunValue, transform.position, WeaponType.BULLET));
                 m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
-
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
-        }
+            else
+            {
+            TempHotBox.HitHotBox(new IHotBoxParam(m_Damage, m_stunValue, transform.position, WeaponType.BULLET));
+            m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
+                Destroy(gameObject);
+            }
     }
 
     // Functions
-
+    // m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
 
     // 기타 분류하고 싶은 것이 있을 경우
 }

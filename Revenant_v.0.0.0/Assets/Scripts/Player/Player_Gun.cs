@@ -81,64 +81,37 @@ public class Player_Gun : MonoBehaviour
         m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
 
         GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>().setLeftBulletUI(m_curMainWeapon.m_LeftBullet, m_curMainWeapon.m_LeftMag, 0);
-        //GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>().setLeftBulletUI(m_curSubWeapon.m_LeftBullet, m_curSubWeapon.m_LeftMag, 0);
     }
 
     // Updates
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if(m_Player.m_canChangeWeapon)
         {
-            if (m_ActiveWeapon.m_WeaponType == 0)
-            {   // To Sub
-                /*
-                m_PlayerUIMgr.changeWeapon(1);
-                m_ActiveWeapon.gameObject.SetActive(false);
-                m_ActiveWeapon = m_curSubWeapon;
-                m_ActiveWeapon.gameObject.SetActive(true);
-                m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
-                */
-                changeWeapon(1);
-            }
-            else if (m_ActiveWeapon.m_WeaponType == 1)
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                // To Main
-                /*
-                m_PlayerUIMgr.changeWeapon(0);
-                m_ActiveWeapon.gameObject.SetActive(false);
-                m_ActiveWeapon = m_curMainWeapon;
-                m_ActiveWeapon.gameObject.SetActive(true);
-                m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
-                */
-                changeWeapon(0);
+                if (m_ActiveWeapon.m_WeaponType == 0)
+                {
+                    changeWeapon(1);
+                }
+                else if (m_ActiveWeapon.m_WeaponType == 1)
+                {
+                    changeWeapon(0);
+                }
+                else
+                {
+                    changeWeapon(1);
+                }
             }
-            else
+            else if (Input.GetKeyDown(KeyCode.G))
             {
-                // To Sub
-                /*
-                m_PlayerUIMgr.changeWeapon(1);
-                m_ActiveWeapon.gameObject.SetActive(false);
-                m_ActiveWeapon = m_curSubWeapon;
-                m_ActiveWeapon.gameObject.SetActive(true);
-                m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
-                */
-                changeWeapon(1);
+                changeWeapon(2);
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.G))
-        {
-            /*
-            m_ActiveWeapon.gameObject.SetActive(false);
-            m_ActiveWeapon = m_curThrowable;
-            m_ActiveWeapon.gameObject.SetActive(true);
-            m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
-            */
-            changeWeapon(2);
         }
 
         if (m_Player.m_canShot)
         {
-            if (Input.GetMouseButton(0) && !m_isCastingThrow)
+            if (Input.GetMouseButtonDown(0) && !m_isCastingThrow)
             {
                 switch (m_ActiveWeapon.Fire())
                 {
