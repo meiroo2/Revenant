@@ -22,6 +22,7 @@ public class Player : Human
     public bool m_canRoll { get; private set; } = true;
     public bool m_canShot { get; private set; } = true;
     public bool m_canChangeWeapon { get; private set; } = false;
+    [field: SerializeField] public float m_RollSpeedRatio { get; private set; } = 1.3f;
     [field: SerializeField] public float m_BackWalkSpeedRatio { get; private set; } = 0.7f;
     [field: SerializeField] public float m_RunSpeedRatio { get; private set; } = 1.5f;
     [field: SerializeField] public int m_LeftRollCount { get; private set; } = 3;
@@ -43,6 +44,7 @@ public class Player : Human
 
     private bool m_isRecoveringRollCount = false;
     private IEnumerator m_FootStep;
+    Vector2 collisionNormalVec;
 
     // For Player_Managers
 
@@ -90,7 +92,8 @@ public class Player : Human
                 {
                     if ((m_isRightHeaded ? 1 : -1) == (int)m_playerMoveVec.x)
                     {
-                        m_playerRigid.velocity = m_playerMoveVec * m_Speed;
+                        m_playerRigid.velocity = m_playerMoveVec * -new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_Speed;
+                        //m_playerRigid.velocity = m_playerMoveVec * m_Speed;
 
                         if (Input.GetKeyDown(KeyCode.LeftShift))
                             changePlayerFSM(playerState.RUN);
@@ -117,11 +120,14 @@ public class Player : Human
             case playerState.ROLL:
                 if (m_isRightHeaded)
                 {
-                    m_playerRigid.MovePosition(new Vector2(transform.position.x + 0.045f, transform.position.y));
+                    m_playerRigid.velocity = -new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_RollSpeedRatio;
+                    //m_playerRigid.MovePosition(new Vector2(transform.position.x + 0.045f, transform.position.y));
                 }
                 else
                 {
-                    m_playerRigid.MovePosition(new Vector2(transform.position.x - 0.045f, transform.position.y));
+                    //m_playerRigid.MovePosition(new Vector2(transform.position.x - 0.045f, transform.position.y));
+                    //m_playerRigid.velocity = new Vector2(-m_Speed * m_RollSpeedRatio, 0f);
+                    m_playerRigid.velocity = new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_RollSpeedRatio;
                 }
                 if (m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                     changePlayerFSM(playerState.WALK);
@@ -296,5 +302,13 @@ public class Player : Human
     private void changeRolltoWalk()
     {
         changePlayerFSM(playerState.WALK);
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        collisionNormalVec = collision.contacts[0].normal;
+        //Physics2D.gravity = -collisionNormalVec;
+        //Debug.Log(collisionNormalVec);
     }
 }

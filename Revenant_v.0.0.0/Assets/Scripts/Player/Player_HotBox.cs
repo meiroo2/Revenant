@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player_HotBox : MonoBehaviour, IHotBox
 {
     private Player m_Player;
+    public int m_hotBoxType { get; set; } = 0;
 
     private void Start()
     {

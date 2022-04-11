@@ -44,18 +44,21 @@ public class Player_Bullet : Bullet
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IHotBox TempHotBox = collision.GetComponent<IHotBox>();
-            if(m_aimedObjId == collision.gameObject.GetInstanceID())
+        if(TempHotBox.m_hotBoxType == 0)
+        {
+            if (m_aimedObjId == collision.gameObject.GetInstanceID())
             {
                 TempHotBox.HitHotBox(new IHotBoxParam(m_Damage, m_stunValue, transform.position, WeaponType.BULLET));
                 m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
                 Destroy(gameObject);
             }
-            else
-            {
+        }
+        else
+        {
             TempHotBox.HitHotBox(new IHotBoxParam(m_Damage, m_stunValue, transform.position, WeaponType.BULLET));
             m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
-                Destroy(gameObject);
-            }
+            Destroy(gameObject);
+        }
     }
 
     // Functions
