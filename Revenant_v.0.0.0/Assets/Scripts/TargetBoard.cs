@@ -31,12 +31,12 @@ public class TargetBoard : Enemy
     private void Awake()
     {
         //targetBoardState = TargetBoardState.SPAWN;
-        animator = GetComponent<Animator>();
-        animSet("isAlive", true);
+        //animator = GetComponent<Animator>();
+        //animSet("isAlive", true);
 
         //HJETST
-        m_SoundMgr = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr>();
-        m_TargetMgr = GameObject.Find("TargetGameMgr").GetComponent<TargetGameMgr>();
+        //m_SoundMgr = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr>();
+        //m_TargetMgr = GameObject.Find("TargetGameMgr").GetComponent<TargetGameMgr>();
     }
 
 
