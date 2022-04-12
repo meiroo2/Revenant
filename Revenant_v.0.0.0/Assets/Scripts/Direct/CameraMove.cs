@@ -32,10 +32,6 @@ public class CameraMove : MonoBehaviour
     */
 
     // Updates
-    private void Update()
-    {
-        
-    }
     private void FixedUpdate()
     {
         m_cameraPos = Vector3.Lerp(m_cameraPos, m_Player.transform.position, Time.deltaTime * m_cameraSpeed);
