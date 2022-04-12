@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Drone : Enemy
+public class Enemy : Human
 {
-    public void Attacked()
+    EnemyState m_enemyState;
+
+    public virtual void Idle()
     {
-        Debug.Log("drone");
+
     }
+
+    
 }
