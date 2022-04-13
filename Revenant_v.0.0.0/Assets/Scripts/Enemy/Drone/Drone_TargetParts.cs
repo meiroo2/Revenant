@@ -39,6 +39,6 @@ public class Drone_TargetParts : MonoBehaviour
         }
 
         yield return new WaitForSeconds(1);
-        
+        gameObject.SetActive(false);
     }
 }

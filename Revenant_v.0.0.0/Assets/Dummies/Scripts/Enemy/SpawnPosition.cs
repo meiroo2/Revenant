@@ -21,6 +21,7 @@ public class SpawnPosition : MonoBehaviour
             Invoke(nameof(spawnFirstEnemy), 3f);
         }
         
+        
     }
 
     void spawnFirstEnemy()

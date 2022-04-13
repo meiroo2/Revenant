@@ -7,8 +7,8 @@ public class Enemy : Human
     EnemyState m_enemyState;
 
     public virtual void Idle() { }
-
-    protected void Init()
+    public virtual void Attack() { }
+    protected void HumanInit()
     {
         if (transform.localScale.x < 0)
             setisRightHeaded(false);

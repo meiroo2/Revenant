@@ -9,21 +9,27 @@ public class Turret_Controller : Enemy
 
     private void Awake()
     {
-        Init();
+        HumanInit();
+        Attack_1();
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-            Attack();
-    }
-
 
     public override void Idle()
     {
-
+        //등장
+        //1초 대기
+        //
     }
 
+    public void Attack_1()
+    {
+        // 1회 발사
+        m_weapon.Fire();
+    }
+    public void Attack_3()
+    {
+        // 3회 발사
+
+    }
 
 
     public void Attacked()
@@ -31,9 +37,5 @@ public class Turret_Controller : Enemy
         Debug.Log("turret");
     }
 
-    public void Attack()
-    {
-
-        m_weapon.Fire();
-    }
+    
 }
