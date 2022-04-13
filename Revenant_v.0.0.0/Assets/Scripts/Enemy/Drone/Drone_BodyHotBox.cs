@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Drone_BodyHotBox : MonoBehaviour, IHotBox
 {
+    public bool m_isEnemys { get; set; } = true;
     public int m_hotBoxType { get; set; } = 0;
     Drone_Controller drone;
 

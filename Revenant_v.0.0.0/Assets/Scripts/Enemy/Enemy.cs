@@ -8,5 +8,11 @@ public class Enemy : Human
 
     public virtual void Idle() { }
 
-    
+    protected void Init()
+    {
+        if (transform.localScale.x < 0)
+            setisRightHeaded(false);
+        else
+            setisRightHeaded(true);
+    }
 }
