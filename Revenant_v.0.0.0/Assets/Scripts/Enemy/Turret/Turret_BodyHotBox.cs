@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Turret_BodyHotBox : MonoBehaviour, IHotBox
 {
+    public bool m_isEnemys { get; set; } = true;
     public int m_hotBoxType { get; set; }
     Turret_Controller turret;
 
