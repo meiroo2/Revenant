@@ -31,21 +31,6 @@ public class IUIParam
     }
     public IUIParam(Vector2 _pinPos, bool _isPin)
     {
-        if (m_Modifiedcount == 0)
-        {
-            m_ToActive = true;
-            m_AnimatorParam = "";
-            m_AnimatorParamValue = 0;
-            m_Position = _pinPos;
-            m_isPinned = _isPin;
-        }
-        else
-        {
-            m_Position = _pinPos;
-            m_isPinned = _isPin;
-        }
-
-        m_Modifiedcount++;
     }
     public IUIParam(bool _toActive, string _aniParam, int _aniParamValue, Vector2 _pinPos, bool _isPin)
     {
@@ -54,8 +39,6 @@ public class IUIParam
         m_AnimatorParamValue = _aniParamValue;
         m_Position = _pinPos;
         m_isPinned = _isPin;
-
-        m_Modifiedcount++;
     }
 }
 
