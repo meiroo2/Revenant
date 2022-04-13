@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : Enemy
+public class Turret_Controller : Enemy
 {
     [SerializeField]
     WEAPON weapon;
@@ -17,6 +17,8 @@ public class Turret : Enemy
     {
 
     }
+
+
 
     public void Attacked()
     {

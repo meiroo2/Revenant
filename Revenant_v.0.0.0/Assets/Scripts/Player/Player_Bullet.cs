@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player_Bullet : Bullet
+public class Player_Bullet : BULLET
 {
     // Visible Member Variables
     private int m_Damage = 0;

@@ -6,10 +6,7 @@ public class Enemy : Human
 {
     EnemyState m_enemyState;
 
-    public virtual void Idle()
-    {
-
-    }
+    public virtual void Idle() { }
 
     
 }

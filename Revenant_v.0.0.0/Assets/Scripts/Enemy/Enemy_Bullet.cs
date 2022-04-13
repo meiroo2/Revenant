@@ -4,15 +4,35 @@ using UnityEngine;
 
 public class Enemy_Bullet : BULLET
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    float speed = 0.1f;
+
+    public int damage { get; set; } = 10;
+
+    [SerializeField]
+    int stun = 3;
+
+
+    private void Awake()
     {
-        
+        Init();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        //transform.position = new Vector2(transform.position.x- speed, transform.position.y);
+    }
+
+    public void Init()
+    {
+        m_isPlayers = false;
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        IHotBox hotbox = collision.GetComponent<IHotBox>();
         
+        hotbox.HitHotBox(new IHotBoxParam(damage, stun, transform.position, WeaponType.BULLET));
+
+        Destroy(gameObject);
     }
 }

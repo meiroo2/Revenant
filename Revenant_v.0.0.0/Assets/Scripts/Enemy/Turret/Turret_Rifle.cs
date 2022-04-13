@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret_Rifle : WEAPON
+public class Turret_Rifle : Enemy_Gun
 {
     private void Awake()
     {
-        m_isPlayers = false;
+        
     }
-
+    private void Update()
+    {
+        
+    }
     public override int Fire()
     {
         Debug.Log("turret fire");
