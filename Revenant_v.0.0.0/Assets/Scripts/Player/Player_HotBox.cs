@@ -6,6 +6,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
 {
     private Player m_Player;
     public int m_hotBoxType { get; set; } = 0;
+    public bool m_isEnemys { get; set; } = false;
 
     private void Start()
     {

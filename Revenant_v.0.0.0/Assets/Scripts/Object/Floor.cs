@@ -8,6 +8,7 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     [field: SerializeField] public MatType m_matType { get; set; } = MatType.Normal;
 
     // Member Variables
+    public bool m_isEnemys { get; set; } = false;
     public int m_hotBoxType { get; set; } = 1;
     private SoundMgr_SFX m_SoundMgrSFX;
 
