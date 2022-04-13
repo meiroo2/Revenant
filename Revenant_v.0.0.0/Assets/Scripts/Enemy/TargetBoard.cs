@@ -23,20 +23,9 @@ public class TargetBoard : Enemy
     [SerializeField]
     PolygonCollider2D[] hitColliders;
 
-    //HJTEST
-    private SoundMgr m_SoundMgr;
-    private TargetGameMgr m_TargetMgr;
-
-
-    private void Awake()
+    public override void Idle()
     {
-        //targetBoardState = TargetBoardState.SPAWN;
-        //animator = GetComponent<Animator>();
-        //animSet("isAlive", true);
 
-        //HJETST
-        //m_SoundMgr = GameObject.FindWithTag("SoundMgr").GetComponent<SoundMgr>();
-        //m_TargetMgr = GameObject.Find("TargetGameMgr").GetComponent<TargetGameMgr>();
     }
 
 

@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Drone_BodyHotBox : MonoBehaviour, IHotBox
+public class Turret_BodyHotBox : MonoBehaviour, IHotBox
 {
     public int m_hotBoxType { get; set; }
-    Drone drone;
+    Turret_Controller turret;
 
     private void Awake()
     {
-        drone = GetComponentInParent<Drone>();
+        turret = GetComponentInParent<Turret_Controller>();
     }
 
     public void HitHotBox(IHotBoxParam _param)
     {
-        drone.Attacked();
+        turret.Attacked();
     }
 }

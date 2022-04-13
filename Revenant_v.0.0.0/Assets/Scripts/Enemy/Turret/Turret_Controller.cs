@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : MonoBehaviour
+public class Turret_Controller : Enemy
 {
     [SerializeField]
     WEAPON weapon;
@@ -12,6 +12,13 @@ public class Turret : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
             Attack();
     }
+
+    public override void Idle()
+    {
+
+    }
+
+
 
     public void Attacked()
     {

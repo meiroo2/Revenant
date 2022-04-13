@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_Bullet : BULLET
+public class Enemy_Gun : WEAPON
 {
-    // Start is called before the first frame update
-    void Start()
+    public Enemy_Gun()
     {
-        
+        m_isPlayers = false;
     }
 
     // Update is called once per frame

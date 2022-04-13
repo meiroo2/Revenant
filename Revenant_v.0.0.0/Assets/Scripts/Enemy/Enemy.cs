@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Enemy : Human
 {
-    
+    EnemyState m_enemyState;
+
+    public virtual void Idle() { }
 
     
 }
