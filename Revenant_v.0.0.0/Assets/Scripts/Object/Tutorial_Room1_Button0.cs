@@ -1,0 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Tutorial_Room1_Button0 : MonoBehaviour, IUseableObj
+{
+    private GameObject m_ProgressMgr;
+
+    private void Awake()
+    {
+        m_ProgressMgr = GameObject.FindGameObjectWithTag("ProgressMgr");
+    }
+
+    public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
+    public bool m_isOn { get; set; } = false;
+    public bool useObj()
+    {
+        m_ProgressMgr.SendMessage("NextProgress");
+        gameObject.SetActive(false);
+        return true;
+    }
+}

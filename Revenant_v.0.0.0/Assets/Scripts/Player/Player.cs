@@ -46,6 +46,11 @@ public class Player : Human
     private IEnumerator m_FootStep;
     Vector2 collisionNormalVec;
 
+    private bool m_isStairLerping = false;
+    private float m_StairLerpTimer = 0.5f;
+    private Vector2 m_StairTelePos;
+    private RaycastHit2D m_FloorRay;
+
     // For Player_Managers
 
     // Constructor
@@ -71,6 +76,16 @@ public class Player : Human
     private void Update()
     {
         updatePlayerFSM();
+        if (m_isStairLerping)
+        {
+            m_StairLerpTimer -= 0.1f;
+            transform.position = Vector2.Lerp(transform.position, m_StairTelePos, Time.deltaTime * 3f);
+            if (m_StairLerpTimer <= 0f)
+            {
+                m_StairLerpTimer = 0.5f;
+                m_isStairLerping = false;
+            }
+        }
     }
 
     // Player FSM Functions
@@ -258,10 +273,14 @@ public class Player : Human
     }
 
     // Functions
-    public void GoToStairLayer(bool _input)
+    public void GoToStairLayer(bool _input, Vector2 _movePos)
     {
         if (_input)
+        {
             gameObject.layer = 10;
+            m_isStairLerping = true;
+            m_StairTelePos = _movePos;
+        }
         else
             gameObject.layer = 12;
     }
@@ -307,8 +326,13 @@ public class Player : Human
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        collisionNormalVec = collision.contacts[0].normal;
-        //Physics2D.gravity = -collisionNormalVec;
-        //Debug.Log(collisionNormalVec);
+        if (collision.gameObject.CompareTag("Stair"))
+        {
+            collisionNormalVec = collision.contacts[0].normal;
+        }
+        else
+        {
+            collisionNormalVec = Vector2.up;
+        }
     }
 }

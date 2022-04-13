@@ -51,10 +51,9 @@ public class Player_StairMgr : MonoBehaviour
             if(temp == 1)
             {
                 m_isOnStair = true;
-                m_Player.GoToStairLayer(true);
                 m_jumpPos = collision.transform.position;
                 m_jumpPos.y += 0.1f;
-                m_Player.transform.position = m_jumpPos;
+                m_Player.GoToStairLayer(true, m_jumpPos);
             }
         }
         else if (isStairDownKey && !m_isOnStair)
@@ -72,7 +71,7 @@ public class Player_StairMgr : MonoBehaviour
             {
                 case 0:
                     m_isOnStair = false;
-                    m_Player.GoToStairLayer(false);
+                    m_Player.GoToStairLayer(false, Vector2.zero);
                     break;
             }
         }
