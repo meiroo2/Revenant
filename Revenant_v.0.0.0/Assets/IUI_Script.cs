@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class IUI_Script : MonoBehaviour, IUI
 {
     public string[] m_Scripts;
-    public bool m_isOn { get; set; } = false;
+    public bool m_isActive { get; set; } = false;
 
     public float m_PTxtTimer = 2.5f;
 
@@ -37,7 +37,7 @@ public class IUI_Script : MonoBehaviour, IUI
                 {
                     if (m_Idx < m_Phases[m_curPhase])
                     {
-                        ActivateUI(new IUIParam(1));
+                        ActivateUI(new IUIParam(true));
                     }
                     else
                     {
@@ -62,7 +62,7 @@ public class IUI_Script : MonoBehaviour, IUI
 
     public int ActivateUI(IUIParam _input)
     {
-        if (_input.m_ToActive == 1)
+        if (_input.m_ToActive == true)
         {
             if (m_Idx < m_Scripts.Length)
             {
