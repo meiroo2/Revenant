@@ -4,15 +4,44 @@ using UnityEngine;
 
 public class TuRoom02_ProgressMgr : ProgressMgr
 {
-    // Start is called before the first frame update
-    void Start()
+    // Visible Member Variables
+
+
+    // Member Variables
+
+
+    // Constructors
+    private void Awake()
     {
-        
+
+    }
+    private void Start()
+    {
+
+    }
+    /*
+    <커스텀 초기화 함수가 필요할 경우>
+    public void Init()
+    {
+
+    }
+    */
+
+    // Updates
+    private void Update()
+    {
+
+    }
+    private void FixedUpdate()
+    {
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Physics
+
+
+    // Functions
+
+
+    // 기타 분류하고 싶은 것이 있을 경우
 }

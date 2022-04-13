@@ -22,13 +22,7 @@ public class UIMgr : MonoBehaviour
     {
         m_GameOverUI.SetActive(false);
     }
-    /*
-    <커스텀 초기화 함수가 필요할 경우>
-    public void Init()
-    {
 
-    }
-    */
 
     // Updates
     private void Update()

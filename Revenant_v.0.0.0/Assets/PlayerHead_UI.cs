@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerHead_UI : MonoBehaviour, IUI
 {
-    public bool m_isOn { get; set; } = false;
+    public bool m_isActive { get; set; } = false;
     private GameObject m_Player;
     private bool isFollowing = false;
     private Image m_Image;
@@ -37,12 +37,12 @@ public class PlayerHead_UI : MonoBehaviour, IUI
 
     public int ActivateUI(IUIParam _input)
     {
-        if(_input.m_ToActive == 0)
+        if(_input.m_ToActive == false)
         {
             isFollowing = false;
             m_Image.enabled = false;
         }
-        else if(_input.m_ToActive == 1)
+        else if(_input.m_ToActive == true)
         {
             isFollowing = true;
             m_Image.enabled = true;
