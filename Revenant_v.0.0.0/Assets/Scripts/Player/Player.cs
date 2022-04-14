@@ -203,11 +203,11 @@ public class Player : Human
                 break;
 
             case playerState.HIDDEN:
-                m_playerSoundnAni.setSprites(false, false, true, true, true);
                 m_curPlayerState = playerState.HIDDEN;
-                m_playerRotation.m_doRotate = true;
-                m_canMove = false;
+                m_playerSoundnAni.setSprites(true, false, false, false, false);
+                m_playerRotation.m_doRotate = false;
                 m_canShot = false;
+                m_canMove = false;
                 break;
 
             case playerState.HIDDEN_STAND:
@@ -257,8 +257,9 @@ public class Player : Human
             case playerState.HIDDEN:
                 m_playerSoundnAni.setSprites(false, true, true, true, true);
                 m_playerRotation.m_doRotate = true;
-                m_canMove = true;
                 m_canShot = true;
+                m_canMove = true;
+                m_playerSoundnAni.setSprites(false, true, true, true, true);
                 break;
 
             case playerState.HIDDEN_STAND:

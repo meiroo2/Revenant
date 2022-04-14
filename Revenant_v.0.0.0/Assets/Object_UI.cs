@@ -28,7 +28,7 @@ public class Object_UI : MonoBehaviour, IUI
     }
 
 
-    public int ActivateUI(IUIParam _input)
+    public int ActivateIUI(IUIParam _input)
     {
         if (_input.m_ToActive == false)
         {

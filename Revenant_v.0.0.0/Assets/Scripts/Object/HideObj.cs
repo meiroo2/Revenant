@@ -5,7 +5,7 @@ using UnityEngine;
 public class HideObj : MonoBehaviour, IAttacked
 {
     // Visible Member Variables
-    public Player m_Player;
+    public Player m_Player { get; private set; }
     public bool m_isOn = false;
     public bool m_isPlayerHide = false;
 
@@ -22,7 +22,7 @@ public class HideObj : MonoBehaviour, IAttacked
     }
     private void Start()
     {
-
+        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
     /*
     <Ä¿½ºÅÒ ÃÊ±âÈ­ ÇÔ¼ö°¡ ÇÊ¿äÇÒ °æ¿ì>
@@ -65,7 +65,6 @@ public class HideObj : MonoBehaviour, IAttacked
         else
         {
             m_Player.changePlayerFSM(playerState.IDLE);
-            Debug.Log("¼ûÀ½");
             // ¼û´Â OBJ ÄÝ¶óÀÌ´õ ²¨Áü
             m_HideCollider.enabled = false;
             m_isOn = false;

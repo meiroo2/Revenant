@@ -20,8 +20,9 @@ public class WorldUI : MonoBehaviour, IUI
     {
         m_SpriteRenderers = GetComponentsInChildren<SpriteRenderer>();
         m_Animators = GetComponentsInChildren<Animator>();
+        for (int i = 0; i < m_SpriteRenderers.Length; i++)
+            m_SpriteRenderers[i].enabled = false;
     }
-
     // Updates
     private void Update()
     {
@@ -34,7 +35,7 @@ public class WorldUI : MonoBehaviour, IUI
     // Physics
 
     // Functions
-    public int ActivateUI(IUIParam _input)
+    public int ActivateIUI(IUIParam _input)
     {
         if (_input.m_ToActive)
         {
@@ -42,9 +43,8 @@ public class WorldUI : MonoBehaviour, IUI
             {
                 m_isActive = true;
                 for (int i = 0; i < m_SpriteRenderers.Length; i++)
-                    m_SpriteRenderers[i].gameObject.SetActive(true);
+                    m_SpriteRenderers[i].enabled = true;
             }
-            m_isPinned = _input.m_isPinned;
         }
         else
         {
@@ -52,10 +52,30 @@ public class WorldUI : MonoBehaviour, IUI
             {
                 m_isActive = false;
                 for (int i = 0; i < m_SpriteRenderers.Length; i++)
-                    m_SpriteRenderers[i].gameObject.SetActive(false);
+                    m_SpriteRenderers[i].enabled = false;
             }
         }
-
+        return 0;
+    }
+    public int AniSetIUI(IUIParam _input)
+    { 
+        if(m_Animators.Length > 0)
+        {
+            for(int i = 0; i < m_Animators.Length; i++)
+            {
+                m_Animators[i].SetInteger(_input.m_AnimatorParam, _input.m_AnimatorParamValue);
+            }
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    public int PosSetIUI(IUIParam _input)
+    {
+        m_isPinned = true;
+        m_PinVec = _input.m_Position.position;
         return 0;
     }
 
