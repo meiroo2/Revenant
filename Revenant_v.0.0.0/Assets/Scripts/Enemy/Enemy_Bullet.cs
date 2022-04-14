@@ -39,9 +39,12 @@ public class Enemy_Bullet : BULLET
     private void OnTriggerEnter2D(Collider2D collision)
     {
         IHotBox hotbox = collision.GetComponent<IHotBox>();
+        if (!hotbox.m_isEnemys)
+        {
+            hotbox.HitHotBox(new IHotBoxParam(damage, stun, transform.position, WeaponType.BULLET));
 
-        hotbox.HitHotBox(new IHotBoxParam(damage, stun, transform.position, WeaponType.BULLET));
-
-        Destroy(gameObject);
+            Destroy(gameObject);
+        }
+        
     }
 }
