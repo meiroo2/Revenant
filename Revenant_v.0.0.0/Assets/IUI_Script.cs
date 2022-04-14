@@ -37,7 +37,7 @@ public class IUI_Script : MonoBehaviour, IUI
                 {
                     if (m_Idx < m_Phases[m_curPhase])
                     {
-                        ActivateUI(new IUIParam(true));
+                        ActivateIUI(new IUIParam(true));
                     }
                     else
                     {
@@ -60,7 +60,7 @@ public class IUI_Script : MonoBehaviour, IUI
             m_curPhase = 0;
     }
 
-    public int ActivateUI(IUIParam _input)
+    public int ActivateIUI(IUIParam _input)
     {
         if (_input.m_ToActive == true)
         {

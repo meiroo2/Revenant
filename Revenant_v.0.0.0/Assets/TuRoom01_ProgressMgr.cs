@@ -23,7 +23,7 @@ public class TuRoom01_ProgressMgr : ProgressMgr
         m_ProgressUIArr = m_ProgressUI.GetComponentsInChildren<IUI>();
         for (int i = 0; i < m_ProgressUIArr.Length; i++)
         {
-            m_ProgressUIArr[i].ActivateUI(new IUIParam(false));
+            //m_ProgressUIArr[i].ActivateIUI(new IUIParam(false));
         }
     }
 
@@ -51,7 +51,7 @@ public class TuRoom01_ProgressMgr : ProgressMgr
 
         if (Input.GetKeyDown(KeyCode.I))
         {
-            m_ProgressScriptUI.ActivateUI(new IUIParam(true));
+            //m_ProgressScriptUI.ActivateIUI(new IUIParam(true));
         }
     }
     private void FixedUpdate()
@@ -65,7 +65,7 @@ public class TuRoom01_ProgressMgr : ProgressMgr
                     if (m_KeyPushTimer <= 0f)
                     {
                         m_KeyPushTimer = 2f;
-                        m_ProgressUIArr[m_ProgressValue].ActivateUI(new IUIParam(false));
+                        //m_ProgressUIArr[m_ProgressValue].ActivateIUI(new IUIParam(false));
                         NextProgress();
                     }
                 }
@@ -79,7 +79,7 @@ public class TuRoom01_ProgressMgr : ProgressMgr
                     if (m_KeyPushTimer <= 0f)
                     {
                         m_KeyPushTimer = 2f;
-                        m_ProgressUIArr[m_ProgressValue].ActivateUI(new IUIParam(false));
+                        //m_ProgressUIArr[m_ProgressValue].ActivateIUI(new IUIParam(false));
                         NextProgress();
                     }
                 }
@@ -94,33 +94,33 @@ public class TuRoom01_ProgressMgr : ProgressMgr
         switch (m_ProgressValue)
         {
             case 0:
-                m_ProgressScriptUI.ActivateUI(new IUIParam(true));
-                m_ProgressUIArr[m_ProgressValue].ActivateUI(new IUIParam(true));
+                //m_ProgressScriptUI.ActivateIUI(new IUIParam(true));
+                //m_ProgressUIArr[m_ProgressValue].ActivateIUI(new IUIParam(true));
                 break;
             case 1:
-                m_ProgressUIArr[m_ProgressValue].ActivateUI(new IUIParam(true));
+                //m_ProgressUIArr[m_ProgressValue].ActivateIUI(new IUIParam(true));
                 break;
             case 2:
                 break;
             case 3:
-                m_ProgressUIArr[2].ActivateUI(new IUIParam(true));
+                //m_ProgressUIArr[2].ActivateIUI(new IUIParam(true));
                 break;
             case 4:
-                m_ProgressUIArr[2].ActivateUI(new IUIParam(false));
+                //m_ProgressUIArr[2].ActivateIUI(new IUIParam(false));
                 m_CenterDoor.GetComponent<IDirect>().NextDirect();
                 break;
             case 5:
                 m_Stair.gameObject.SetActive(true);
-                m_ProgressUIArr[3].ActivateUI(new IUIParam(true));
+                //m_ProgressUIArr[3].ActivateIUI(new IUIParam(true));
                 break;
             case 6:
-                m_ProgressScriptUI.ActivateUI(new IUIParam(true));
+                //m_ProgressScriptUI.ActivateIUI(new IUIParam(true));
 
-                m_ProgressUIArr[3].ActivateUI(new IUIParam(true));
+                //m_ProgressUIArr[3].ActivateIUI(new IUIParam(true));
                 m_Stair.SetBool("isPush", true);
-                m_ProgressUIArr[4].ActivateUI(new IUIParam(true));
-                m_ProgressUIArr[5].ActivateUI(new IUIParam(true));
-                m_ProgressUIArr[6].ActivateUI(new IUIParam(true));
+                //m_ProgressUIArr[4].ActivateIUI(new IUIParam(true));
+                //m_ProgressUIArr[5].ActivateIUI(new IUIParam(true));
+                //m_ProgressUIArr[6].ActivateIUI(new IUIParam(true));
                 m_PhysicsStair.SetActive(true);
                 break;
         }

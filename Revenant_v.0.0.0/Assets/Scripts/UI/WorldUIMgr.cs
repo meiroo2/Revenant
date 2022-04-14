@@ -8,15 +8,15 @@ public class WorldUIMgr : MonoBehaviour
     public GameObject[] P_WorldUIObjs;
 
     // Member Variables
-    private IUI[] m_WorldIUIs;
+    private WorldUI[] m_WorldIUIs;
 
     // Constructors
     private void Awake()
     {
-        m_WorldIUIs = new IUI[P_WorldUIObjs.Length];
+        m_WorldIUIs = new WorldUI[P_WorldUIObjs.Length];
         for(int i = 0; i < P_WorldUIObjs.Length; i++)
         {
-            m_WorldIUIs[i] = P_WorldUIObjs[i].GetComponent<IUI>();
+            m_WorldIUIs[i] = P_WorldUIObjs[i].GetComponent<WorldUI>();
         }
     }
 
@@ -27,17 +27,16 @@ public class WorldUIMgr : MonoBehaviour
 
 
     // Functions
-    public int SetWorldUI(int _idx, IUIParam _param)
+    public WorldUI getWorldUI(int _idx)
     {
         if (_idx >= 0 && _idx < m_WorldIUIs.Length)
         {
-            m_WorldIUIs[_idx].ActivateUI(_param);
-            return 1;
+            return m_WorldIUIs[_idx];
         }
         else
         {
             Debug.Log("WorldUIMgr에서 Array 크기 벗어남");
-            return 0;
+            return null;
         }
     }
 

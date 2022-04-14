@@ -128,6 +128,7 @@ public class PlayerSoundnAni : MonoBehaviour
                     break;
 
                 case playerState.HIDDEN:
+                    m_PlayerAnimator.SetInteger("DoHide", 1);
                     break;
 
                 case playerState.HIDDEN_STAND:
@@ -165,6 +166,7 @@ public class PlayerSoundnAni : MonoBehaviour
                     break;
 
                 case playerState.HIDDEN:
+                    m_PlayerAnimator.SetInteger("DoHide", 0);
                     break;
 
                 case playerState.HIDDEN_STAND:
