@@ -5,19 +5,16 @@ using UnityEngine;
 
 public class TutoEnemyMgr : MonoBehaviour
 {
-    [SerializeField]
-    GameObject[] m_TargetBoards;
+
+    GameObject[] m_TargetBoard;
 
     [SerializeField]
     GameObject m_Drone;
 
-    [SerializeField]
-    GameObject m_Turret;
-
 
     private void Awake()
     {
-
+        
     }
     private void Update()
     {
@@ -31,16 +28,13 @@ public class TutoEnemyMgr : MonoBehaviour
 
     public void TargetBoardToggle(bool _input)
     {
-        foreach (var i in m_TargetBoards)
-        {
-            i.SetActive(_input);
-        }
+        //foreach (var i in m_TargetBoards)
+        //{
+        //    i.SetActive(_input);
+        //}
                 
         
     }
 
-    public void TurretToggle(bool _input)
-    {
-        m_Turret.SetActive(_input);
-    }
+    
 }

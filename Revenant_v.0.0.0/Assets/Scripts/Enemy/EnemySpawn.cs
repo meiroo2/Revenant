@@ -1,22 +1,30 @@
 using System.Collections;
 using UnityEngine;
 
-public class TargetSpawn : MonoBehaviour
+public class EnemySpawn : MonoBehaviour
 {
+    [SerializeField]
+    TutoEnemyMgr m_tutoEnemyMgr;
+
     [SerializeField]
     GameObject targetPrefab;
 
     [SerializeField]
     GameObject[] targetSpawnPoints;
 
-    void Start()
+    void Awake()
     {
-        foreach(var target in targetSpawnPoints)
+        Init();
+        
+
+    }
+
+    public void Init()
+    {
+        foreach (var target in targetSpawnPoints)
         {
             Instantiate(targetPrefab, target.transform);
         }
-        
-
     }
 
     void Update()
