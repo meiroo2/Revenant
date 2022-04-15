@@ -5,36 +5,68 @@ using UnityEngine;
 
 public class TutoEnemyMgr : MonoBehaviour
 {
-
-    GameObject[] m_TargetBoard;
+    TuRoom02_ProgressMgr m_room2ProgressMgr;
 
     [SerializeField]
     GameObject m_Drone;
 
+    int m_allDieCount = 0;
 
-    private void Awake()
-    {
-        
-    }
+    // trigger counts
+    int m_targetCount = 3;
+    int m_droneCount = 4;
+
     private void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            TargetBoardToggle(true);
+            DroneToggle(true);
+        }
+
     }
 
-    public void DroneToggle(bool _input)
-    {
-        m_Drone.SetActive(_input);
-    }
+    public List<TargetBoard> m_TargetList { get; set; }= new List<TargetBoard>();
+    public List<Drone_Controller> m_droneList { get; set; } = new List<Drone_Controller>();
+    public List<Turret_Controller> m_turretList { get; set; } = new List<Turret_Controller>();
 
+    // 1. 필요한 타겟을 생성하는 함수(5번)
     public void TargetBoardToggle(bool _input)
     {
-        //foreach (var i in m_TargetBoards)
-        //{
-        //    i.SetActive(_input);
-        //}
-                
-        
+        foreach (var t in m_TargetList)
+        {
+            t.gameObject.SetActive(_input);
+        }
     }
 
-    
+    // 2. 과녁 위치(Position)을 알 수 있는 get 함수(5번)
+    public Vector2 GetFirstTargetPos()
+    {
+        Debug.Log(m_TargetList[0].transform.position);
+        return m_TargetList[0].transform.position;
+    }
+
+    // 3. 과녁 3개 파괴 시 (6번)
+    // 5. 드론 파괴 시 (8번)
+    public void PlusDieCount()
+    {
+        m_allDieCount++;
+        if(m_allDieCount == m_targetCount)
+        {
+            m_room2ProgressMgr.SendMessage("NextProgress");
+        }
+        else if(m_allDieCount == m_droneCount)
+        {
+            m_room2ProgressMgr.SendMessage("NextProgress");
+        }
+
+    }
+
+    // 4. 드론을 생성하는 함수(7번)
+    // !!아직!! 과녁을 부활&자동으로 리스폰을 하게 해주는 함수- - - - - - - - - - - - - - - - - 
+    public void DroneToggle(bool _input)
+    {
+        m_droneList[0].gameObject.SetActive(_input);
+    }
+
 }

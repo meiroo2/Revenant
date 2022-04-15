@@ -23,6 +23,8 @@ public class TargetBoard : Enemy
     [SerializeField]
     PolygonCollider2D[] hitColliders;
 
+    
+
     public override void Idle()
     {
 
