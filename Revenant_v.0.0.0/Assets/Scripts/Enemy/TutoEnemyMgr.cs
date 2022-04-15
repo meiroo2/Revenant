@@ -16,6 +16,10 @@ public class TutoEnemyMgr : MonoBehaviour
     int m_targetCount = 3;
     int m_droneCount = 4;
 
+    private void Awake()
+    {
+        //m_room2ProgressMgr = GameObject.Find("ProgressMgr").GetComponent<TuRoom02_ProgressMgr>();
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
@@ -26,7 +30,7 @@ public class TutoEnemyMgr : MonoBehaviour
 
     }
 
-    public List<TargetBoard> m_TargetList { get; set; }= new List<TargetBoard>();
+    public List<TargetBoard_Controller> m_TargetList { get; set; }= new List<TargetBoard_Controller>();
     public List<Drone_Controller> m_droneList { get; set; } = new List<Drone_Controller>();
     public List<Turret_Controller> m_turretList { get; set; } = new List<Turret_Controller>();
 
@@ -40,10 +44,10 @@ public class TutoEnemyMgr : MonoBehaviour
     }
 
     // 2. 과녁 위치(Position)을 알 수 있는 get 함수(5번)
-    public Vector2 GetFirstTargetPos()
+    public Transform GetFirstTargetPos()
     {
-        Debug.Log(m_TargetList[0].transform.position);
-        return m_TargetList[0].transform.position;
+        Debug.Log(m_TargetList[0].transform);
+        return m_TargetList[0].transform;
     }
 
     // 3. 과녁 3개 파괴 시 (6번)
@@ -53,10 +57,12 @@ public class TutoEnemyMgr : MonoBehaviour
         m_allDieCount++;
         if(m_allDieCount == m_targetCount)
         {
+            Debug.Log("Target 3 die");
             m_room2ProgressMgr.SendMessage("NextProgress");
         }
         else if(m_allDieCount == m_droneCount)
         {
+            Debug.Log("Drone 1 die");
             m_room2ProgressMgr.SendMessage("NextProgress");
         }
 
@@ -67,6 +73,10 @@ public class TutoEnemyMgr : MonoBehaviour
     public void DroneToggle(bool _input)
     {
         m_droneList[0].gameObject.SetActive(_input);
+        foreach (var t in m_TargetList)
+        {
+            //t.gameObject.SetActive(_input);
+        }
     }
 
 }

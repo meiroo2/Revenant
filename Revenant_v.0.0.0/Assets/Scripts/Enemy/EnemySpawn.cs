@@ -41,7 +41,7 @@ public class EnemySpawn : MonoBehaviour
                 switch (m_enemyType.m_tutorialEnemyType)
                 {
                     case TUTORIAL.TARGETBOARD:
-                        m_tutoEnemyMgr.m_TargetList.Add(enemy.GetComponent<TargetBoard>());
+                        m_tutoEnemyMgr.m_TargetList.Add(enemy.GetComponent<TargetBoard_Controller>());
                         break;
                     case TUTORIAL.DRONE:
                         m_tutoEnemyMgr.m_droneList.Add(enemy.GetComponent<Drone_Controller>());
