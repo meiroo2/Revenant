@@ -15,13 +15,11 @@ public class CameraMove : MonoBehaviour
     private Vector2 m_MousePos;
 
     // Constructors
-    private void Awake()
-    {
-        m_cameraPos = transform.position;
-    }
     private void Start()
     {
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
+        m_cameraPos = m_Player.transform.position;
+        transform.position = m_Player.transform.position;
     }
     /*
     <커스텀 초기화 함수가 필요할 경우>

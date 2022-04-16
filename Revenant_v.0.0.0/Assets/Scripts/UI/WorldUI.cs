@@ -12,8 +12,10 @@ public class WorldUI : MonoBehaviour, IUI
     private Animator[] m_Animators;
 
     public bool m_isActive { get; set; }
-    private Vector2 m_PinVec;
+    private Transform m_PinVec;
     private bool m_isPinned = false;
+
+    private Vector2 m_WorldUIPos;
 
     // Constructors
     private void Awake()
@@ -28,7 +30,9 @@ public class WorldUI : MonoBehaviour, IUI
     {
         if (m_isPinned)
         {
-            transform.position = m_PinVec;
+            m_WorldUIPos = m_PinVec.position;
+            m_WorldUIPos.y += 0.5f;
+            transform.position = m_WorldUIPos;
         }
     }
 
@@ -74,8 +78,13 @@ public class WorldUI : MonoBehaviour, IUI
     }
     public int PosSetIUI(IUIParam _input)
     {
+        if(_input.m_Position == null)
+        {
+            m_isPinned = false;
+            return 0;
+        }
         m_isPinned = true;
-        m_PinVec = _input.m_Position.position;
+        m_PinVec = _input.m_Position;
         return 0;
     }
 

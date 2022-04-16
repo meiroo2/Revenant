@@ -68,6 +68,12 @@ public class PlayerAnimTestCS : MonoBehaviour
                         m_HaveToChangeScale = false;
                     }
             }
+            else
+            {
+                m_curDirection = 0;
+                m_Animator.SetInteger("isTurn", 0);
+                m_HaveToChangeScale = false;
+            }
         }
     }
     private void FixedUpdate()
