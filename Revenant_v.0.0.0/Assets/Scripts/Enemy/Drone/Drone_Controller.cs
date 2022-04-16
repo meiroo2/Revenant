@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Drone_Controller : Enemy
 {
-    [SerializeField]
     TutoEnemyMgr m_tutoEnemyMgr;
 
     [SerializeField]
@@ -25,6 +24,8 @@ public class Drone_Controller : Enemy
 
     private void Awake()
     {
+        gameObject.SetActive(false);
+
         m_tutoEnemyMgr = GameObject.Find("TutoEnemyMgr").GetComponent<TutoEnemyMgr>();
         rigid = GetComponent<Rigidbody2D>();
         // move -> stop -> change

@@ -14,5 +14,7 @@ public class Enemy : Human
             setisRightHeaded(false);
         else
             setisRightHeaded(true);
+        
+        
     }
 }
