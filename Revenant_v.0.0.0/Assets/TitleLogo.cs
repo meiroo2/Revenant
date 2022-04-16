@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TitleLogo : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class TitleLogo : MonoBehaviour
     private Color m_BlackBoxColor;
 
     private Animator m_TitleAnimator;
+
+    private float m_Timer = 3f;
 
     private void Awake()
     {
@@ -34,9 +37,18 @@ public class TitleLogo : MonoBehaviour
                     TitlePhase++;
                 }
                 break;
+
             case 1:
                 m_TitleAnimator.SetInteger("isStart", 1);
                 TitlePhase++;
+                break;
+
+            case 2:
+                m_Timer -= Time.deltaTime;
+                if(m_Timer <= 0f)
+                {
+                    SceneManager.LoadScene("CutScene0");
+                }
                 break;
         }
     }

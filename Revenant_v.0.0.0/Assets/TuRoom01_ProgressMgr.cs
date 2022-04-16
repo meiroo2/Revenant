@@ -6,35 +6,17 @@ public class TuRoom01_ProgressMgr : ProgressMgr
 {
     private bool m_isPushA = false;
     private bool m_isPushD = false;
-    private float m_KeyPushTimer = 2f;
-    public GameObject m_CenterDoor;
-    public Animator m_Stair;
-    public GameObject m_PhysicsStair;
+    private float m_KeyPushTimer = 1f;
+    // Visible Member Variables
+    public WorldUIMgr m_worldUIMgr;
 
-    public GameObject m_ProgressUI;
-    public GameObject P_ProgressScriptUI;
+    public Transform m_TargetTransform;
 
-    public IUI m_ProgressScriptUI;
-    public IUI[] m_ProgressUIArr;
-    protected bool[] m_ProgressCheck;
-
-    protected void InitProgressMgr()
-    {
-        m_ProgressUIArr = m_ProgressUI.GetComponentsInChildren<IUI>();
-        for (int i = 0; i < m_ProgressUIArr.Length; i++)
-        {
-            //m_ProgressUIArr[i].ActivateIUI(new IUIParam(false));
-        }
-    }
+    // Member Variables
+    public ScriptUIMgr m_ScriptUIMgr;
 
     private void Start()
     {
-        m_ProgressScriptUI = P_ProgressScriptUI.GetComponent<IUI>();
-
-        m_ProgressCheck = new bool[10];
-        InitProgressMgr();
-
-        m_ProgressValue = -1;
         NextProgress();
     }
     private void Update()
@@ -49,10 +31,8 @@ public class TuRoom01_ProgressMgr : ProgressMgr
         else if (Input.GetKeyUp(KeyCode.D))
             m_isPushD = false;
 
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            //m_ProgressScriptUI.ActivateIUI(new IUIParam(true));
-        }
+        if (Input.GetKeyDown(KeyCode.M))
+            NextProgress();
     }
     private void FixedUpdate()
     {
@@ -64,27 +44,26 @@ public class TuRoom01_ProgressMgr : ProgressMgr
                     m_KeyPushTimer -= Time.deltaTime;
                     if (m_KeyPushTimer <= 0f)
                     {
-                        m_KeyPushTimer = 2f;
-                        //m_ProgressUIArr[m_ProgressValue].ActivateIUI(new IUIParam(false));
+                        m_KeyPushTimer = 1f;
                         NextProgress();
                     }
                 }
                 else
-                    m_KeyPushTimer = 2f;
+                    m_KeyPushTimer = 1f;
                 break;
+
             case 1:
                 if (m_isPushD)
                 {
                     m_KeyPushTimer -= Time.deltaTime;
                     if (m_KeyPushTimer <= 0f)
                     {
-                        m_KeyPushTimer = 2f;
-                        //m_ProgressUIArr[m_ProgressValue].ActivateIUI(new IUIParam(false));
+                        m_KeyPushTimer = 1f;
                         NextProgress();
                     }
                 }
                 else
-                    m_KeyPushTimer = 2f;
+                    m_KeyPushTimer = 1f;
                 break;
         }
     }
@@ -94,34 +73,49 @@ public class TuRoom01_ProgressMgr : ProgressMgr
         switch (m_ProgressValue)
         {
             case 0:
-                //m_ProgressScriptUI.ActivateIUI(new IUIParam(true));
-                //m_ProgressUIArr[m_ProgressValue].ActivateIUI(new IUIParam(true));
-                break;
-            case 1:
-                //m_ProgressUIArr[m_ProgressValue].ActivateIUI(new IUIParam(true));
-                break;
-            case 2:
-                break;
-            case 3:
-                //m_ProgressUIArr[2].ActivateIUI(new IUIParam(true));
-                break;
-            case 4:
-                //m_ProgressUIArr[2].ActivateIUI(new IUIParam(false));
-                m_CenterDoor.GetComponent<IDirect>().NextDirect();
-                break;
-            case 5:
-                m_Stair.gameObject.SetActive(true);
-                //m_ProgressUIArr[3].ActivateIUI(new IUIParam(true));
-                break;
-            case 6:
-                //m_ProgressScriptUI.ActivateIUI(new IUIParam(true));
+                m_worldUIMgr.getWorldUI(3).ActivateIUI(new IUIParam(true));
+                m_worldUIMgr.getWorldUI(5).ActivateIUI(new IUIParam(true));
 
-                //m_ProgressUIArr[3].ActivateIUI(new IUIParam(true));
-                m_Stair.SetBool("isPush", true);
-                //m_ProgressUIArr[4].ActivateIUI(new IUIParam(true));
-                //m_ProgressUIArr[5].ActivateIUI(new IUIParam(true));
-                //m_ProgressUIArr[6].ActivateIUI(new IUIParam(true));
-                m_PhysicsStair.SetActive(true);
+
+                m_ScriptUIMgr.NextScript(2);
+                m_worldUIMgr.getWorldUI(0).ActivateIUI(new IUIParam(true));
+                m_worldUIMgr.getWorldUI(0).PosSetIUI(new IUIParam(GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform));
+                break;
+
+            case 1:
+                m_worldUIMgr.getWorldUI(0).ActivateIUI(new IUIParam(false));
+                m_worldUIMgr.getWorldUI(1).ActivateIUI(new IUIParam(true));
+                m_worldUIMgr.getWorldUI(1).PosSetIUI(new IUIParam(GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform));
+                break;
+
+            case 2:
+                m_worldUIMgr.getWorldUI(1).ActivateIUI(new IUIParam(false));
+                break;
+
+            case 3:
+                // Active F UI over CenterDoor
+                m_worldUIMgr.getWorldUI(2).ActivateIUI(new IUIParam(true));
+                break;
+
+            case 4:
+                // Deactive F UI over CenterDoor
+                m_worldUIMgr.getWorldUI(2).ActivateIUI(new IUIParam(false));
+                break;
+
+            case 5:
+                // Active F UI over Button, Animation Play(Button Appear)
+                m_worldUIMgr.getWorldUI(4).ActivateIUI(new IUIParam(true));
+                m_worldUIMgr.getWorldUI(5).AniSetIUI(new IUIParam("isAppear", 1));
+                break;
+
+            case 6:
+                // Animation Play(Stair Appear)
+                m_ScriptUIMgr.NextScript(2);
+                m_worldUIMgr.getWorldUI(4).ActivateIUI(new IUIParam(false));
+                m_worldUIMgr.getWorldUI(6).ActivateIUI(new IUIParam(true));
+                m_worldUIMgr.getWorldUI(7).ActivateIUI(new IUIParam(true));
+
+                m_worldUIMgr.getWorldUI(5).AniSetIUI(new IUIParam("isAppear", 2));
                 break;
         }
     }

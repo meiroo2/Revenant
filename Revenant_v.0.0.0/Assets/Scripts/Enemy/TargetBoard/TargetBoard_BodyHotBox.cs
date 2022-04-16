@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TargetBoard_BodyHotBox : MonoBehaviour, IHotBox
 {
+    [SerializeField]
+    TutoEnemyMgr m_tutoEnemyMgr;
+
     TargetBoard_Controller targetBoard;
 
     public bool m_isEnemys { get; set; } = true;
@@ -17,10 +20,9 @@ public class TargetBoard_BodyHotBox : MonoBehaviour, IHotBox
     public void HitHotBox(IHotBoxParam _param)
     {
         targetBoard.m_targetboard_animator.HitBodyAni();
-        targetBoard.HotBoxToggle(false);
-
-
-        targetBoard.Attacked();
+        m_tutoEnemyMgr.PlusDieCount();
+        foreach (var h in targetBoard.m_hotboxes)
+            h.enabled = false;
     }
 
 }

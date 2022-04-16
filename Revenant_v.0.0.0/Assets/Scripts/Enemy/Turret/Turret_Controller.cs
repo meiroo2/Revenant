@@ -9,8 +9,6 @@ public class Turret_Controller : Enemy
 
     private void Awake()
     {
-        gameObject.SetActive(false);
-
         HumanInit();
         Attack_1();
     }
