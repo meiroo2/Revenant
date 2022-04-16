@@ -5,13 +5,15 @@ using UnityEngine;
 public class StairPos : MonoBehaviour
 {
     public bool m_isGoingUp;
+    public Vector2 m_StairNormalVec;
     private Player m_Player;
     public Stair m_ParentStair;
 
     private void Start()
     {
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
-       // m_ParentStair = GetComponentInParent<Stair>();
+        // m_ParentStair = GetComponentInParent<Stair>();
+        m_StairNormalVec = m_ParentStair.transform.up;
     }
 
     public int StairDetectorDetected(int _objID)

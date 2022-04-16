@@ -97,6 +97,8 @@ public class Player : Human
                 m_playerMoveVec = new Vector2(Input.GetAxisRaw("Horizontal"), m_playerMoveVec.y);
                 if (m_playerMoveVec.x != 0)
                     changePlayerFSM(playerState.WALK);
+                if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
+                    changePlayerFSM(playerState.ROLL);
                 break;
 
             case playerState.WALK:
@@ -107,7 +109,10 @@ public class Player : Human
                 {
                     if ((m_isRightHeaded ? 1 : -1) == (int)m_playerMoveVec.x)
                     {
-                        m_playerRigid.velocity = m_playerMoveVec * -new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_Speed;
+                        if (m_isRightHeaded)
+                            m_playerRigid.velocity = -new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_Speed;
+                        else
+                            m_playerRigid.velocity = new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_Speed;
                         //m_playerRigid.velocity = m_playerMoveVec * m_Speed;
 
                         if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -116,7 +121,13 @@ public class Player : Human
                             changePlayerFSM(playerState.ROLL);
                     }
                     else
-                        m_playerRigid.velocity = m_playerMoveVec * m_Speed * m_BackWalkSpeedRatio;
+                    {
+                        if (m_isRightHeaded)
+                            m_playerRigid.velocity = new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_Speed * m_BackWalkSpeedRatio;
+                        else
+                            m_playerRigid.velocity = -new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_Speed * m_BackWalkSpeedRatio;
+                    }
+                       
                 }
                 break;
 
@@ -136,12 +147,9 @@ public class Player : Human
                 if (m_isRightHeaded)
                 {
                     m_playerRigid.velocity = -new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_RollSpeedRatio;
-                    //m_playerRigid.MovePosition(new Vector2(transform.position.x + 0.045f, transform.position.y));
                 }
                 else
                 {
-                    //m_playerRigid.MovePosition(new Vector2(transform.position.x - 0.045f, transform.position.y));
-                    //m_playerRigid.velocity = new Vector2(-m_Speed * m_RollSpeedRatio, 0f);
                     m_playerRigid.velocity = new Vector2(-collisionNormalVec.y, collisionNormalVec.x) * m_RollSpeedRatio;
                 }
                 if (m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
@@ -179,11 +187,13 @@ public class Player : Human
                 break;
 
             case playerState.RUN:
+                /*
                 m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f));
                 StartCoroutine(m_FootStep);
                 m_curPlayerState = playerState.RUN;
                 m_playerRotation.m_doRotate = false;
                 m_canShot = false;
+                */
                 break;
 
             case playerState.ROLL:
@@ -274,16 +284,21 @@ public class Player : Human
     }
 
     // Functions
-    public void GoToStairLayer(bool _input, Vector2 _movePos)
+    public void GoToStairLayer(bool _input, Vector2 _movePos, Vector2 _normal)
     {
         if (_input)
         {
             gameObject.layer = 10;
             m_isStairLerping = true;
             m_StairTelePos = _movePos;
+            collisionNormalVec = _normal;
         }
         else
+        {
+            collisionNormalVec = Vector2.up;
             gameObject.layer = 12;
+        }
+        Debug.Log("받아온 벡터 " + collisionNormalVec);
     }
     public void Attacked(IHotBoxParam _param)
     {
@@ -329,9 +344,18 @@ public class Player : Human
     {
         if (collision.gameObject.CompareTag("Stair"))
         {
-            collisionNormalVec = collision.contacts[0].normal;
+            //collisionNormalVec = collision.contacts[0].normal;
+            Debug.Log( "직접 측정 "+collisionNormalVec);
         }
         else
+        {
+            collisionNormalVec = Vector2.up;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Stair"))
         {
             collisionNormalVec = Vector2.up;
         }
