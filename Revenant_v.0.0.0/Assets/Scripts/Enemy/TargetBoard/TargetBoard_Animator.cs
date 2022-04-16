@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TargetBoard_Animator : MonoBehaviour
 {
+    [SerializeField]
+    TargetBoard_Controller m_targetboard;
     Animator animator;
     private void Awake()
     {
@@ -21,5 +23,14 @@ public class TargetBoard_Animator : MonoBehaviour
         animator.SetBool("isAlive", false);
         animator.SetTrigger("isHead");
         
+    }
+    public void RespawnAni()
+    {
+        animator.SetBool("isAlive", true);
+    }
+
+    public void HotBoxOn()
+    {
+        m_targetboard.HotBoxToggle(true);
     }
 }
