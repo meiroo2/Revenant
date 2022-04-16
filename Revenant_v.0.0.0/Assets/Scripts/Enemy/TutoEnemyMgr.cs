@@ -5,42 +5,78 @@ using UnityEngine;
 
 public class TutoEnemyMgr : MonoBehaviour
 {
-    [SerializeField]
-    GameObject[] m_TargetBoards;
+    TuRoom02_ProgressMgr m_room2ProgressMgr;
 
     [SerializeField]
     GameObject m_Drone;
 
-    [SerializeField]
-    GameObject m_Turret;
+    int m_allDieCount = 0;
 
+    // trigger counts
+    int m_targetCount = 3;
+    int m_droneCount = 4;
 
     private void Awake()
     {
-
+        //m_room2ProgressMgr = GameObject.Find("ProgressMgr").GetComponent<TuRoom02_ProgressMgr>();
     }
     private void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            TargetBoardToggle(true);
+            DroneToggle(true);
+        }
+
     }
 
-    public void DroneToggle(bool _input)
-    {
-        m_Drone.SetActive(_input);
-    }
+    public List<TargetBoard_Controller> m_TargetList { get; set; }= new List<TargetBoard_Controller>();
+    public List<Drone_Controller> m_droneList { get; set; } = new List<Drone_Controller>();
+    public List<Turret_Controller> m_turretList { get; set; } = new List<Turret_Controller>();
 
+    // 1. 필요한 타겟을 생성하는 함수(5번)
     public void TargetBoardToggle(bool _input)
     {
-        foreach (var i in m_TargetBoards)
+        foreach (var t in m_TargetList)
         {
-            i.SetActive(_input);
+            t.gameObject.SetActive(_input);
         }
-                
-        
     }
 
-    public void TurretToggle(bool _input)
+    // 2. 과녁 위치(Position)을 알 수 있는 get 함수(5번)
+    public Transform GetFirstTargetPos()
     {
-        m_Turret.SetActive(_input);
+        Debug.Log(m_TargetList[0].transform);
+        return m_TargetList[0].transform;
     }
+
+    // 3. 과녁 3개 파괴 시 (6번)
+    // 5. 드론 파괴 시 (8번)
+    public void PlusDieCount()
+    {
+        m_allDieCount++;
+        if(m_allDieCount == m_targetCount)
+        {
+            Debug.Log("Target 3 die");
+            m_room2ProgressMgr.SendMessage("NextProgress");
+        }
+        else if(m_allDieCount == m_droneCount)
+        {
+            Debug.Log("Drone 1 die");
+            m_room2ProgressMgr.SendMessage("NextProgress");
+        }
+
+    }
+
+    // 4. 드론을 생성하는 함수(7번)
+    // !!아직!! 과녁을 부활&자동으로 리스폰을 하게 해주는 함수- - - - - - - - - - - - - - - - - 
+    public void DroneToggle(bool _input)
+    {
+        m_droneList[0].gameObject.SetActive(_input);
+        foreach (var t in m_TargetList)
+        {
+            //t.gameObject.SetActive(_input);
+        }
+    }
+
 }

@@ -5,13 +5,13 @@ using UnityEngine;
 public class Drone_Controller : Enemy
 {
     [SerializeField]
+    TutoEnemyMgr m_tutoEnemyMgr;
+
+    [SerializeField]
     Drone_Animator drone_animator;
     
     Rigidbody2D rigid;
 
-    
-    //[SerializeField]
-    //float m_stopTime = 0.1f;
     Vector2 m_moveDir;
     int m_dir = 0;
     float fixedvalue = 0.05f;
@@ -21,12 +21,13 @@ public class Drone_Controller : Enemy
     [SerializeField]
     float m_moveSpeed = 1;
 
+    bool m_isClear = false;
 
     private void Awake()
     {
+        m_tutoEnemyMgr = GameObject.Find("TutoEnemyMgr").GetComponent<TutoEnemyMgr>();
         rigid = GetComponent<Rigidbody2D>();
         // move -> stop -> change
-        //Invoke(nameof(Stop), m_moveTime);
         Invoke(nameof(ChangeDir), m_moveTime);
         m_moveDir = Vector2.up;
     }
@@ -52,7 +53,6 @@ public class Drone_Controller : Enemy
         // stop -> change
         rigid.velocity = Vector2.zero;
         m_moveDir = Vector2.zero;
-        //Invoke(nameof(ChangeDir), m_stopTime);
     }
 
     //_dir = 0: up, 1: down, 2: left, 3: right
@@ -89,14 +89,25 @@ public class Drone_Controller : Enemy
     {
         CancelInvoke(nameof(ChangeDir));
         Stop();
-        drone_animator.HitBody();
+        drone_animator.HitBodyAni();
 
+        if(!m_isClear)
+        {
+            m_isClear = true;
+            m_tutoEnemyMgr.PlusDieCount();
+        }
+        
     }
 
     // Hit Effects: Target - no die
     public void TargetAttacked()
     {
-        drone_animator.HitTarget();
+        drone_animator.HitTargetAni();
 
+        if (!m_isClear)
+        {
+            m_isClear = true;
+            m_tutoEnemyMgr.PlusDieCount();
+        }
     }
 }
