@@ -53,12 +53,23 @@ public class Player_StairMgr : MonoBehaviour
                 m_isOnStair = true;
                 m_jumpPos = collision.transform.position;
                 m_jumpPos.y += 0.1f;
-                m_Player.GoToStairLayer(true, m_jumpPos);
+                m_Player.GoToStairLayer(true, m_jumpPos, m_stairPos.m_StairNormalVec);
             }
         }
         else if (isStairDownKey && !m_isOnStair)
         {
+            m_stairPos = null;
             isStairDownKey = false;
+            m_stairPos = collision.GetComponent<StairPos>();
+
+            int temp = m_stairPos.StairDetectorDetected(gameObject.GetInstanceID());
+            if (temp == 1)
+            {
+                m_isOnStair = true;
+                m_jumpPos = collision.transform.position;
+                m_jumpPos.y += 0.1f;
+                m_Player.GoToStairLayer(true, m_jumpPos, m_stairPos.m_StairNormalVec);
+            }
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -71,7 +82,7 @@ public class Player_StairMgr : MonoBehaviour
             {
                 case 0:
                     m_isOnStair = false;
-                    m_Player.GoToStairLayer(false, Vector2.zero);
+                    m_Player.GoToStairLayer(false, Vector2.zero, Vector2.zero);
                     break;
             }
         }
