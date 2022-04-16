@@ -10,11 +10,11 @@ public class Drone_Animator : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    public void HitBody()
+    public void HitBodyAni()
     {
         animator.SetTrigger("hitBody");
     }
-    public void HitTarget()
+    public void HitTargetAni()
     {
         animator.SetTrigger("hitTarget");
     }

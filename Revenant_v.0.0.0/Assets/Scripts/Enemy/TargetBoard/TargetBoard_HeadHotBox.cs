@@ -6,17 +6,22 @@ using UnityEngine;
 
 public class TargetBoard_HeadHotBox : MonoBehaviour, IHotBox
 {
+
+    TutoEnemyMgr m_tutoEnemyMgr;
     public bool m_isEnemys { get; set; } = true;
     public int m_hotBoxType { get; set; }
-    TargetBoard targetBoard;
+    TargetBoard_Controller targetBoard;
+
     private void Awake()
     {
-        targetBoard = GetComponentInParent<TargetBoard>();
+        targetBoard = GetComponentInParent<TargetBoard_Controller>();
+        m_tutoEnemyMgr = GameObject.Find("TutoEnemyMgr").GetComponent<TutoEnemyMgr>();
     }
 
     public void HitHotBox(IHotBoxParam _param)
     {
-        targetBoard.hitParts = PARTS.HEAD;
-        targetBoard.Attacked();
+        targetBoard.m_targetboard_animator.HitHeadAni();
+        m_tutoEnemyMgr.PlusDieCount();
     }
+
 }
