@@ -18,7 +18,7 @@ public class TutoEnemyMgr : MonoBehaviour
 
     private void Awake()
     {
-        //m_room2ProgressMgr = GameObject.Find("ProgressMgr").GetComponent<TuRoom02_ProgressMgr>();
+        m_room2ProgressMgr = GameObject.Find("ProgressMgr").GetComponent<TuRoom02_ProgressMgr>();
     }
     private void Update()
     {
