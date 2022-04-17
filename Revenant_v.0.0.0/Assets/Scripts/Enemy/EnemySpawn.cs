@@ -12,6 +12,9 @@ public class EnemySpawn : MonoBehaviour
     TutoEnemyMgr m_tutoEnemyMgr;
 
     [SerializeField]
+    TutoRoom03EnemyMgr m_tuto3EnemyMgr;
+
+    [SerializeField]
     GameObject m_enemyPrefab;
 
     [SerializeField]
@@ -47,7 +50,7 @@ public class EnemySpawn : MonoBehaviour
                         m_tutoEnemyMgr.m_droneList.Add(enemy.GetComponent<Drone_Controller>());
                         break;
                     case TUTORIAL.TURRET:
-                        m_tutoEnemyMgr.m_turretList.Add(enemy.GetComponent<Turret_Controller>());
+                        m_tuto3EnemyMgr.m_turretList.Add(enemy.GetComponent<Turret_Controller>());
                         break;
                 }
             }
