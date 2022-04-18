@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class Wdn : MonoBehaviour
 {
+    public GameObject m_WhiteBox;
+    public GameObject m_WdnEffect;
+    public ScriptUIMgr m_ScriptUIMgr;
     public SpriteRenderer m_BlackSquare;
     public float SpeedVal = 2f;
 
@@ -70,13 +73,12 @@ public class Wdn : MonoBehaviour
 
             case 3:
                 m_Timer -= Time.deltaTime;
-                if (m_Timer <= 0f)
-                {
+
                     Phase++;
                     m_BlackColor.a = 1;
                     m_BlackSquare.color = m_BlackColor;
                     m_Timer = 1.05f;
-                }
+  
                 break;
 
             case 4:
@@ -94,6 +96,35 @@ public class Wdn : MonoBehaviour
             case 5:
                 m_Animator.SetInteger("Phase", 2);
                 Phase++;
+                break;
+
+            case 6:
+                m_ScriptUIMgr.NextScript(0, true);
+                m_WdnEffect.SetActive(true);
+                Phase++;
+                break;
+
+            case 7:
+                if(m_ScriptUIMgr.m_isPlaying == false)
+                {
+                    Phase++;
+                }
+                break;
+
+            case 8:
+                m_WhiteBox.SetActive(true);
+                Phase++;
+                m_Timer = 3f;
+                break;
+
+            case 9:
+                m_Timer -= Time.deltaTime;
+                if (m_Timer <= 0f)
+                    Phase++;
+                break;
+
+            case 10:
+                SceneManager.LoadScene("CutScene2");
                 break;
         }
 

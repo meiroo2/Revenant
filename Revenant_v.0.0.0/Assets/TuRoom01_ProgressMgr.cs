@@ -77,7 +77,7 @@ public class TuRoom01_ProgressMgr : ProgressMgr
                 m_worldUIMgr.getWorldUI(5).ActivateIUI(new IUIParam(true));
 
 
-                m_ScriptUIMgr.NextScript(2);
+                m_ScriptUIMgr.NextScript(2, true);
                 m_worldUIMgr.getWorldUI(0).ActivateIUI(new IUIParam(true));
                 m_worldUIMgr.getWorldUI(0).PosSetIUI(new IUIParam(GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform));
                 break;
@@ -110,7 +110,7 @@ public class TuRoom01_ProgressMgr : ProgressMgr
 
             case 6:
                 // Animation Play(Stair Appear)
-                m_ScriptUIMgr.NextScript(2);
+                m_ScriptUIMgr.NextScript(2, true);
                 m_worldUIMgr.getWorldUI(4).ActivateIUI(new IUIParam(false));
                 m_worldUIMgr.getWorldUI(6).ActivateIUI(new IUIParam(true));
                 m_worldUIMgr.getWorldUI(7).ActivateIUI(new IUIParam(true));

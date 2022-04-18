@@ -39,12 +39,12 @@ public class TuRoom03_ProgressMgr : ProgressMgr
                 break;
 
             case 1:
-                m_ScriptUIMgr.NextScript(0, false);
+                m_ScriptUIMgr.NextScript(0, true);
                 // Turret Init Animation
                 break;
 
             case 2:
-                m_ScriptUIMgr.NextScript(0, false);
+                m_ScriptUIMgr.NextScript(0, true);
                 // Turret Fire Once
                 break;
 
