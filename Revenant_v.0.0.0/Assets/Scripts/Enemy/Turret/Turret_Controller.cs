@@ -41,7 +41,7 @@ public class Turret_Controller : Enemy
         // 3È¸ ¹ß»ç
         m_gun.m_autoMaxCount = 3;
         m_gun.Fire();
-        //Invoke(nameof(Attack_1), m_firePreDelay);
+
     }
 
     public void WaitToAttack(int i)

@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class TutoRoom03EnemyMgr : MonoBehaviour
 {
+
+    TuRoom03_ProgressMgr m_room3ProgressMgr;
+
+    [SerializeField]
+    float m_waitTime = 0.5f;
     public List<Turret_Controller> m_turretList { get; set; } = new List<Turret_Controller>();
 
     [field: SerializeField]
     public Transform m_first_bullet { get; set; }
-
+    private void Awake()
+    {
+        m_room3ProgressMgr = GameObject.Find("ProgressMgr").GetComponent<TuRoom03_ProgressMgr>();
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
@@ -19,23 +27,31 @@ public class TutoRoom03EnemyMgr : MonoBehaviour
         {
             TurretFire_3();
         }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            TurretExit();
+        }
     }
 
-    // 1. 터렛 등장, 1회 사격
+    // ============================유환진이 필요한 기능==================================
+    // 1. 터렛 등장
     public void TurretToggle(bool _input)
     {
         m_turretList[0].gameObject.SetActive(_input);
-        m_turretList[0].WaitToAttack(1);
+        Invoke(nameof(SendToProgress), m_waitTime);
     }
-    // 2. 난사
-    public void TurretFire_3()
-    {
-        m_turretList[0].Attack_3();
-    }
-    // 3. 일정 시간 후 터렛 1회 사격
+    
+
+    // 2, 4. 일정 시간 후 터렛 1회 사격
     public void TurretFire_1()
     {
         m_turretList[0].WaitToAttack(1);
+    }
+
+    // 3. 난사
+    public void TurretFire_3()
+    {
+        m_turretList[0].Attack_3();
     }
 
     // 4. 1번째 총알 Transform
@@ -49,5 +65,14 @@ public class TutoRoom03EnemyMgr : MonoBehaviour
     public void TurretExit()
     {
         m_turretList[0].m_turretAnimator.ExitAnim();
+        Invoke(nameof(SendToProgress), m_waitTime);
+    }
+    // ======================================================================================
+
+    // 샌드메시지
+    public void SendToProgress()
+    {
+        Debug.Log("sendtoprogress");
+        m_room3ProgressMgr.SendMessage("NextProgress");
     }
 }

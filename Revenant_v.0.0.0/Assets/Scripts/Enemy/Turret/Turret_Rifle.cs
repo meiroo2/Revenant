@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Turret_Rifle : Enemy_Gun
 {
+    TutoRoom03EnemyMgr m_tutoEnemyMgr;
+
     [SerializeField]
     Turret_Controller turret_controller;
 
     private void Awake()
     {
-        //turret_controller = GetComponentInParent<Turret_Controller>();
+        m_tutoEnemyMgr = GameObject.Find("TutoRoom3EnemyMgr").GetComponent<TutoRoom03EnemyMgr>();
         Init();
     }
     public override int Fire()
@@ -56,6 +58,10 @@ public class Turret_Rifle : Enemy_Gun
             if (m_autoMaxCount > 1)
             {
                 AutoBullet();
+            }
+            if(m_autoCount == 0) // 3점사 3회 완료
+            {
+                m_tutoEnemyMgr.SendToProgress();
             }
         }
 
