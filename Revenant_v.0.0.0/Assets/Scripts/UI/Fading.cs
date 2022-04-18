@@ -20,7 +20,7 @@ public class Fading : MonoBehaviour
     {
         switch(m_value)
         {
-            case 0:
+            case 0: // fade in
                 a -= m_changeAlpha;
                 alpha = new Color(0, 0, 0, a);
                 m_black.color = alpha;
@@ -36,7 +36,7 @@ public class Fading : MonoBehaviour
                     Time.timeScale = 0;
                 }
                 break;
-            case 2:
+            case 2: // fade out
                 a += m_changeAlpha;
                 alpha = new Color(0, 0, 0, a);
                 m_black.color = alpha;
@@ -44,7 +44,7 @@ public class Fading : MonoBehaviour
                 {
                     m_value++;
                     Time.timeScale = 1;
-                    SceneManager.LoadScene("Tutorial_Room01");
+                    SceneManager.LoadScene(0);
                 }
                 break;
         }
