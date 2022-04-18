@@ -12,10 +12,6 @@ public class Turret_Rifle : Enemy_Gun
         //turret_controller = GetComponentInParent<Turret_Controller>();
         Init();
     }
-    private void Update()
-    {
-
-    }
     public override int Fire()
     {
         Debug.Log("turret fire");
