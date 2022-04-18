@@ -8,6 +8,7 @@ public class TitleLogo : MonoBehaviour
 {
     public Image m_BlackBoxImg;
     public GameObject Title;
+    public string m_NextSceneName;
     private float timer = 2f;
     private int TitlePhase;
 
@@ -47,7 +48,7 @@ public class TitleLogo : MonoBehaviour
                 m_Timer -= Time.deltaTime;
                 if(m_Timer <= 0f)
                 {
-                    SceneManager.LoadScene("CutScene0");
+                    SceneManager.LoadScene(m_NextSceneName);
                 }
                 break;
         }

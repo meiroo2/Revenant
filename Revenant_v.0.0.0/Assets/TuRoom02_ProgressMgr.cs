@@ -8,6 +8,7 @@ public class TuRoom02_ProgressMgr : ProgressMgr
     public WorldUIMgr m_worldUIMgr;
 
     public Transform m_TargetTransform;
+    public TutoEnemyMgr m_TutoEnemyMgr;
 
     // Member Variables
     public ScriptUIMgr m_ScriptUIMgr;
@@ -58,8 +59,11 @@ public class TuRoom02_ProgressMgr : ProgressMgr
                 break;
 
             case 4: // F WorldIUI Erase
+                m_worldUIMgr.getWorldUI(2).AniSetIUI(new IUIParam("isOpen", 2));
                 m_worldUIMgr.getWorldUI(3).ActivateIUI(new IUIParam(false));
                 m_ScriptUIMgr.NextScript(0);
+
+                m_TutoEnemyMgr.TargetBoardToggle(true);
                 // Player Gets Gun
                 // Ingame UI Print
                 // Gen Target
@@ -76,16 +80,17 @@ public class TuRoom02_ProgressMgr : ProgressMgr
                 // Speaker Ani
                 // Print Script('Eliminate Drone')
                 m_ScriptUIMgr.NextScript(1);
+                m_TutoEnemyMgr.DroneToggle(true);
                 break;
 
             case 6:
                 // Spawn Drone
-                Debug.Log("Drone Spawned");
+                m_worldUIMgr.getWorldUI(4).AniSetIUI(new IUIParam("isOpen", 1));
                 break;
 
             case 7:
                 // Open Right Door
-                m_worldUIMgr.getWorldUI(4).AniSetIUI(new IUIParam("isOpen", 1));
+                //m_worldUIMgr.getWorldUI(4).AniSetIUI(new IUIParam("isOpen", 1));
                 break;
         }
     }

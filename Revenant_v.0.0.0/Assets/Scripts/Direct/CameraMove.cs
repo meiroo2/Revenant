@@ -10,6 +10,8 @@ public class CameraMove : MonoBehaviour
     public bool m_FollowMouse = true;
     public float m_OffSet;
 
+    public bool m_InitFollow = true;
+
     // Member Variables
     private Vector3 m_cameraPos;
     private Vector2 m_MousePos;
@@ -19,7 +21,11 @@ public class CameraMove : MonoBehaviour
     {
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
         m_cameraPos = m_Player.transform.position;
-        transform.position = m_Player.transform.position;
+
+        if (m_InitFollow)
+            transform.position = m_Player.transform.position;
+        else
+            m_cameraPos = transform.position;
     }
     /*
     <커스텀 초기화 함수가 필요할 경우>

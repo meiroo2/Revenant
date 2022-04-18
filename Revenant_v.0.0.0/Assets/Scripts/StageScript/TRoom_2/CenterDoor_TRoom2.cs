@@ -18,10 +18,13 @@ public class CenterDoor_TRoom2 : MonoBehaviour
     {
         if (!m_isOpen)
         {
-            if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+            if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("CenterDoor_ani"))
             {
-                m_isOpen = true;
-                m_BoxCollider.enabled = false;
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    m_isOpen = true;
+                    m_BoxCollider.enabled = false;
+                }
             }
         }
     }

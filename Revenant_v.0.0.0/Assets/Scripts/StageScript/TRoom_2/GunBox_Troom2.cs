@@ -18,7 +18,7 @@ public class GunBox_Troom2 : MonoBehaviour
     {
         if (!m_isOpen)
         {
-            if ( m_Animator.GetCurrentAnimatorStateInfo(0).IsName("GunBox_Open_ani") &&m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+            if ( m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Gunbox_Giveani") &&m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             {
                 m_isOpen = true;
                 m_ProgressMgrObj.SendMessage("NextProgress");

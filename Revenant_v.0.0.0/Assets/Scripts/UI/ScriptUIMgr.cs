@@ -11,6 +11,8 @@ public class ScriptUIMgr : MonoBehaviour
 
     public float m_PTxtTimer = 2.5f;
 
+    public bool m_isPlaying = false;
+
     private float m_TxtTimer;
     private bool m_DoTimerCheck = false;
 
@@ -20,6 +22,8 @@ public class ScriptUIMgr : MonoBehaviour
 
     private string m_EmptyTxt = "";
 
+    private bool m_isItalic = false;
+
     private void Update()
     {
         if (m_DoTimerCheck)
@@ -28,15 +32,18 @@ public class ScriptUIMgr : MonoBehaviour
             if (m_TxtTimer <= 0f)
             {
                 m_TxtTimer = m_PTxtTimer;
-                m_DoTimerCheck = false;
 
                 if (m_count > 0)
                 {
                     m_count--;
-                    NextScript(m_count);
+                    NextScript(m_count, m_isItalic);
                 }
                 else
+                {
+                    m_DoTimerCheck = false;
+                    m_isPlaying = false;
                     m_Text.text = m_EmptyTxt;
+                }
             }
         }
     }
@@ -48,16 +55,25 @@ public class ScriptUIMgr : MonoBehaviour
         m_Text.text = m_EmptyTxt;
     }
 
-    public int NextScript(int _count)
+    public int NextScript(int _count, bool isItalic = false)
     {
+        Debug.Log("호출됨");
         m_count = _count;
         if (m_Idx < m_Scripts.Length)
         {
             m_TxtTimer = m_PTxtTimer;
             m_Text.enabled = true;
             m_Text.text = m_Scripts[m_Idx];
+
+            m_isItalic = isItalic;
+            if (m_isItalic)
+                m_Text.fontStyle = FontStyle.Italic;
+            else
+                m_Text.fontStyle = FontStyle.Normal;
+
             m_Idx++;
             m_DoTimerCheck = true;
+            m_isPlaying = true;
         }
         else
             Debug.Log("스크립트 끝");
