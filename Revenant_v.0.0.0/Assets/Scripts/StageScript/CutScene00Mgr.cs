@@ -10,6 +10,8 @@ public class CutScene00Mgr : MonoBehaviour
     private int m_Phase = 0;
     public SpriteRenderer m_BlackBox;
 
+    public string m_NextSceneName;
+
     private Color m_BlackBoxColor;
 
     private void Awake()
@@ -40,9 +42,8 @@ public class CutScene00Mgr : MonoBehaviour
 
             case 2:
                 m_BlackBoxColor.a += Time.deltaTime * 0.5f;
-                m_BlackBox.color = m_BlackBoxColor;
                 if (m_BlackBoxColor.a >= 1f)
-                    SceneManager.LoadScene("Tutorial_Room01");
+                    SceneManager.LoadScene(m_NextSceneName);
                 break;
         }
     }

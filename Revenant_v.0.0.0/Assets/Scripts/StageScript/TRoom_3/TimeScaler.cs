@@ -32,7 +32,8 @@ public class TimeScaler : MonoBehaviour
         if((Vector2.Distance(m_Player.transform.position, transform.position) <= 0.8f) && m_isBulletTime == 0)
         {
             m_isBulletTime = 1;
-            Time.timeScale = 0.01f;
+            Time.timeScale = 0f;
+            
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && m_isBulletTime == 1)
@@ -57,7 +58,11 @@ public class TimeScaler : MonoBehaviour
         }
 
         if (m_isBulletTime == 1)
-            transform.Translate(Vector2.left * Time.unscaledDeltaTime * 0.1f);
+        {
+            if (Vector2.Distance(m_Player.transform.position, transform.position) >= 0.3f){
+                transform.Translate(Vector2.left * Time.unscaledDeltaTime * 0.3f);
+            }
+        }
         else
             transform.Translate(Vector2.left * Time.deltaTime * 6f);
     }
