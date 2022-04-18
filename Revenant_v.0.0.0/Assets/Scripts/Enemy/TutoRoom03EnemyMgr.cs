@@ -19,10 +19,6 @@ public class TutoRoom03EnemyMgr : MonoBehaviour
         {
             TurretFire_3();
         }
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            TurretExit();
-        }
     }
 
     // 1. 터렛 등장, 1회 사격
@@ -45,7 +41,7 @@ public class TutoRoom03EnemyMgr : MonoBehaviour
     // 4. 1번째 총알 Transform
     public Transform GetFirstBulletPos()
     {
-        Debug.Log(m_first_bullet);
+        Debug.Log(m_first_bullet.position);
         return m_first_bullet;
     }
 

@@ -39,8 +39,8 @@ public class Gun : MonoBehaviour
         //Debug.Log("Fire");
         GameObject gameObject = Instantiate(bulletPrefab);
         Enemy_Bullet bullet = gameObject.GetComponent<Enemy_Bullet>();
-        bullet.damage = bulletdamage;
-        bullet.speed = bulletspeed;
+        bullet.m_damage = bulletdamage;
+        bullet.m_speed = bulletspeed;
 
         gameObject.transform.position = transform.position;
 

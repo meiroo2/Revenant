@@ -20,10 +20,17 @@ public class EnemySpawn : MonoBehaviour
     [SerializeField]
     GameObject[] m_enemySpawnPoints;
 
-    
+    [SerializeField]
+    SpriteRenderer[] m_spawnSprites;
 
     void Awake()
     {
+        foreach(var s in m_spawnSprites)
+        {
+            if (s)
+                s.enabled = false;
+        }
+        
         Init();
         
     }
