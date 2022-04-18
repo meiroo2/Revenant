@@ -12,13 +12,15 @@ public class HideObj : MonoBehaviour, IAttacked
     // Member Variables
     private BoxCollider2D m_HideCollider;
     private SoundMgr_SFX m_SFXMgr;
+    private SpriteRenderer m_SpriteRenderer;
 
     // Constructors
     private void Awake()
     {
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_HideCollider = GetComponent<BoxCollider2D>();
         m_HideCollider.enabled = false;
-        m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
+        //m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
     }
     private void Start()
     {
@@ -59,6 +61,7 @@ public class HideObj : MonoBehaviour, IAttacked
             // ¼û´Â OBJ ÄÝ¶óÀÌ´õ ÄÑÁü
             m_HideCollider.enabled = true;
             m_isOn = true;
+            m_SpriteRenderer.sortingLayerName = "Stair";
 
             return true;
         }
@@ -68,6 +71,7 @@ public class HideObj : MonoBehaviour, IAttacked
             // ¼û´Â OBJ ÄÝ¶óÀÌ´õ ²¨Áü
             m_HideCollider.enabled = false;
             m_isOn = false;
+            m_SpriteRenderer.sortingLayerName = "Object";
 
             return false;
         }

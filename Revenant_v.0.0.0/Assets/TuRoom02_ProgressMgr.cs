@@ -85,7 +85,9 @@ public class TuRoom02_ProgressMgr : ProgressMgr
 
             case 6:
                 // Spawn Drone
+                m_TutoEnemyMgr.RespawnTarget();
                 m_worldUIMgr.getWorldUI(4).AniSetIUI(new IUIParam("isOpen", 1));
+                m_worldUIMgr.getWorldUI(5).ActivateIUI(new IUIParam(true));
                 break;
 
             case 7:

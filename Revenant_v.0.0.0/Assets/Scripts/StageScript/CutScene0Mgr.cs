@@ -70,8 +70,19 @@ public class CutScene0Mgr : MonoBehaviour
                 m_Timer -= Time.deltaTime;
                 if(m_Timer <= 0f)
                 {
-                    SceneManager.LoadScene(m_NextSceneName);
+                    Phase++;
+                    m_Timer = 3f;
                 }
+                break;
+
+            case 6:
+                m_Timer -= Time.deltaTime;
+                if (m_Timer <= 0f)
+                    Phase++;
+                break;
+
+            case 7:
+                SceneManager.LoadScene(m_NextSceneName);
                 break;
         }
     }
