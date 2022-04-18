@@ -50,10 +50,11 @@ public class TuRoom03_ProgressMgr : ProgressMgr
         switch (m_isBulletTime)
         {
             case 1:
+                m_FirstBulletTransform = m_EnemeyTutoMgr.GetFirstBulletPos();
                 if (Vector2.Distance(m_Player.transform.position, m_FirstBulletTransform.position) < 0.3f)
                 {
-                    m_worldUIMgr.getWorldUI(1).ActivateIUI(new IUIParam(true));
-                    m_worldUIMgr.getWorldUI(1).PosSetIUI(new IUIParam(m_Player.transform));
+                    m_worldUIMgr.getWorldUI(2).ActivateIUI(new IUIParam(true));
+                    m_worldUIMgr.getWorldUI(2).PosSetIUI(new IUIParam(m_Player.transform));
                     m_BlackBoxSpriteRenderer.color = new Color(0, 0, 0, 1);
                     Time.timeScale = 0f;
                     m_isBulletTime++;
@@ -64,8 +65,22 @@ public class TuRoom03_ProgressMgr : ProgressMgr
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     NextProgress();
+                    Time.timeScale = 1f;
+                    m_Player.GetComponentInChildren<Player_HotBox>().m_isEnemys = true;
                 }
                 break;
+        }
+
+        if(m_ProgressValue == 3)
+        {
+            if (m_Player.m_curPlayerState == playerState.HIDDEN)
+                NextProgress();
+        }
+
+        if(m_ProgressValue == 5)
+        {
+            if (m_Player.m_curPlayerState != playerState.HIDDEN)
+                NextProgress();
         }
     }
 
@@ -84,6 +99,7 @@ public class TuRoom03_ProgressMgr : ProgressMgr
 
             case 1:
                 m_ScriptUIMgr.NextScript(0, true);
+                m_EnemeyTutoMgr.TurretToggle(true);
                 // Turret Init -> Auto Sendmessage
                 break;
 
@@ -91,7 +107,7 @@ public class TuRoom03_ProgressMgr : ProgressMgr
                 if (!m_isTimerOn)
                 {
                     m_ScriptUIMgr.NextScript(0, true);
-                    // Turret Fire Once
+                    m_EnemeyTutoMgr.TurretFire_1();
                     Debug.Log("Å¸´Ù´ç");
                     m_isTimerOn = true;
                 }
@@ -106,6 +122,7 @@ public class TuRoom03_ProgressMgr : ProgressMgr
             case 4:
                 // ÇÃ·¹ÀÌ¾î°¡ ¼ûÀ¸¸é È£ÃâÇÔ
                 // ÅÍ·¿ ³­»ç + ³¡³ª¸é »÷µå¸Þ½ÃÁö
+                m_EnemeyTutoMgr.TurretFire_3();
                 break;
 
             case 5:
@@ -117,6 +134,7 @@ public class TuRoom03_ProgressMgr : ProgressMgr
                 // ¾öÆó¹° ÅðÀå ¾Ö´Ï
                 m_worldUIMgr.getWorldUI(0).ActivateIUI(new IUIParam(false));
                 m_worldUIMgr.getWorldUI(1).AniSetIUI(new IUIParam("isOn", 2));
+                NextProgress();
                 break;
 
             case 7:
@@ -127,17 +145,13 @@ public class TuRoom03_ProgressMgr : ProgressMgr
                 break;
 
             case 8:
-                if (!m_isTimerOn)
-                {
-                    // ÅÍ·¿ »ç°Ý
-                    // Æ®·£½ºÆû ¹Þ¾Æ¿È
-                    m_isBulletTime = 1;
-                    NextProgress();
-                }
+                // ÅÍ·¿ »ç°Ý
+                m_isBulletTime = 1;
+                m_FirstBulletTransform = m_EnemeyTutoMgr.GetFirstBulletPos();
                 break;
 
             case 9:
-                
+                m_EnemeyTutoMgr.TurretFire_3();
                 break;
 
             case 10:
@@ -148,10 +162,15 @@ public class TuRoom03_ProgressMgr : ProgressMgr
 
             case 11:
                 // ÅÍ·¿ ÅðÀå
-
+                m_EnemeyTutoMgr.TurretExit();
                 break;
 
             case 12:
+                m_ScriptUIMgr.NextScript(0, true);
+                Invoke("NextProgress", 6f);
+                break;
+
+            case 13:
                 SceneManager.LoadScene("T_Warden");
                 break;
         }
