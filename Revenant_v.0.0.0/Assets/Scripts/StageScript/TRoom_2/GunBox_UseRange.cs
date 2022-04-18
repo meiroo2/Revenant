@@ -1,0 +1,24 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GunBox_UseRange : MonoBehaviour, IUseableObj
+{
+    public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
+    public bool m_isOn { get; set; } = false;
+    private GameObject m_ProgressMgr;
+
+    private void Awake()
+    {
+        m_ProgressMgr = GameObject.FindGameObjectWithTag("ProgressMgr");
+    }
+
+    public bool useObj()
+    {
+        if (m_isOn == false)
+            m_ProgressMgr.SendMessage("NextProgress");
+
+        m_isOn = true;
+        return true;
+    }
+}
