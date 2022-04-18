@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Turret_Controller : Enemy
 {
+
+    [field: SerializeField]
+    public Turret_Animator m_turretAnimator { get; set; }
+
     [SerializeField]
     Enemy_Gun m_gun;
 
@@ -16,6 +20,7 @@ public class Turret_Controller : Enemy
     private void Awake()
     {
         gameObject.SetActive(false);
+        
 
         HumanInit();
     }
@@ -35,6 +40,7 @@ public class Turret_Controller : Enemy
     {
         // 3È¸ ¹ß»ç
         m_gun.m_autoMaxCount = 3;
+        m_gun.Fire();
         //Invoke(nameof(Attack_1), m_firePreDelay);
     }
 
@@ -55,5 +61,4 @@ public class Turret_Controller : Enemy
         Debug.Log("turret");
     }
 
-    
 }

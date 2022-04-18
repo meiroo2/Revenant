@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Turret_Rifle : Enemy_Gun
 {
-    //public float m_firePreDelay { get; set; } = 1.0f;
-
-    //public int m_fireCount { get; set; } = 0;//첫발은 딜레이가 없다
+    [SerializeField]
+    Turret_Controller turret_controller;
 
     private void Awake()
     {
+        //turret_controller = GetComponentInParent<Turret_Controller>();
         Init();
     }
     private void Update()
@@ -19,14 +19,52 @@ public class Turret_Rifle : Enemy_Gun
     public override int Fire()
     {
         Debug.Log("turret fire");
-
-        //if(m_fireCount < 0)//첫발은 딜레이가 없다
-        //else
-        //{
-            //Invoke(nameof(BulletCreate), m_firePreDelay);
-        //}
+        FireBullet();
         return 1;
     }
+
+    public void FireBullet()
+    {
+        BulletBurst();
+    }
+
+    void AutoBullet()
+    {
+        m_autoCount++;
+        if (m_autoCount < m_autoMaxCount)
+        {
+            Debug.Log("Auto: " + m_autoCount);
+            Invoke(nameof(FireBullet), m_autoTime);
+        }
+        else
+        {
+            m_autoCount = 0;
+        }
+    }
+
+    void BulletBurst()
+    {
+        m_burstCount++;
+
+        if (m_burstCount <= m_burstMaxCount)
+        {
+            
+            //Debug.Log("Fire: " + m_burstCount);
+            
+            BulletFire();
+            Invoke(nameof(FireBullet), m_burstTime);
+        }
+        else
+        {
+            m_burstCount = 0;
+            if (m_autoMaxCount > 1)
+            {
+                AutoBullet();
+            }
+        }
+
+    }
+
 
     public override int Reload()
     {
