@@ -7,7 +7,7 @@ public class TutoRoom03EnemyMgr : MonoBehaviour
     public List<Turret_Controller> m_turretList { get; set; } = new List<Turret_Controller>();
 
     [field: SerializeField]
-    public Transform m_fisrt_bullet { get; set; }
+    public Transform m_first_bullet { get; set; }
 
     private void Update()
     {
@@ -15,9 +15,13 @@ public class TutoRoom03EnemyMgr : MonoBehaviour
         {
             TurretToggle(true);
         }
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            TurretFire_3();
+        }
         if(Input.GetKeyDown(KeyCode.E))
         {
-            TurretFire_1();
+            TurretExit();
         }
     }
 
@@ -41,7 +45,13 @@ public class TutoRoom03EnemyMgr : MonoBehaviour
     // 4. 1¹øÂ° ÃÑ¾Ë Transform
     public Transform GetFirstBulletPos()
     {
-        Debug.Log(m_fisrt_bullet);
-        return m_fisrt_bullet;
+        Debug.Log(m_first_bullet);
+        return m_first_bullet;
+    }
+
+    // 5. ÅÍ·¿ ÅðÀå
+    public void TurretExit()
+    {
+        m_turretList[0].m_turretAnimator.ExitAnim();
     }
 }

@@ -10,5 +10,12 @@ public class Turret_Animator : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-
+    public void AttackAnim()
+    {
+        animator.SetTrigger("isAttack");
+    }
+    public void ExitAnim()
+    {
+        animator.SetBool("isAlive", false);
+    }
 }
