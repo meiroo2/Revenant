@@ -1,20 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TuRoom03_ProgressMgr : ProgressMgr
 {
     // Visible Member Variables
     public WorldUIMgr m_worldUIMgr;
+    public TutoRoom03EnemyMgr m_EnemeyTutoMgr;
 
-    public Transform m_TargetTransform;
+    public SpriteRenderer m_BlackBoxSpriteRenderer;
+
+    private Transform m_FirstBulletTransform;
+
+    private Player m_Player;
 
     // Member Variables
     public ScriptUIMgr m_ScriptUIMgr;
 
+    private float Timer = 3f;
+    private bool m_isTimerOn = false;
+
+    private int m_isBulletTime = 0;
+
     // Constructors
     private void Start()
     {
+        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
         NextProgress();
     }
 
@@ -23,6 +35,38 @@ public class TuRoom03_ProgressMgr : ProgressMgr
     {
         if (Input.GetKeyDown(KeyCode.M))
             NextProgress();
+
+        if (m_isTimerOn)
+        {
+            Timer -= Time.deltaTime;
+            if(Timer <= 0f)
+            {
+                NextProgress();
+                m_isTimerOn = false;
+                Timer = 3f;
+            }
+        }
+
+        switch (m_isBulletTime)
+        {
+            case 1:
+                if (Vector2.Distance(m_Player.transform.position, m_FirstBulletTransform.position) < 0.3f)
+                {
+                    m_worldUIMgr.getWorldUI(1).ActivateIUI(new IUIParam(true));
+                    m_worldUIMgr.getWorldUI(1).PosSetIUI(new IUIParam(m_Player.transform));
+                    m_BlackBoxSpriteRenderer.color = new Color(0, 0, 0, 1);
+                    Time.timeScale = 0f;
+                    m_isBulletTime++;
+                }
+                break;
+
+            case 2:
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    NextProgress();
+                }
+                break;
+        }
     }
 
     // Physics
@@ -40,58 +84,75 @@ public class TuRoom03_ProgressMgr : ProgressMgr
 
             case 1:
                 m_ScriptUIMgr.NextScript(0, true);
-                // Turret Init Animation
+                // Turret Init -> Auto Sendmessage
                 break;
 
             case 2:
-                m_ScriptUIMgr.NextScript(0, true);
-                // Turret Fire Once
+                if (!m_isTimerOn)
+                {
+                    m_ScriptUIMgr.NextScript(0, true);
+                    // Turret Fire Once
+                    Debug.Log("타다당");
+                    m_isTimerOn = true;
+                }
                 break;
 
             case 3:
+                // 엄폐물 등장 및 F키 UI
                 m_worldUIMgr.getWorldUI(0).ActivateIUI(new IUIParam(true));
                 m_worldUIMgr.getWorldUI(1).AniSetIUI(new IUIParam("isOn", 1));
                 break;
 
             case 4:
-                // If(PlayerState == HIDE)
-                // Turret Fires toward Cover
+                // 플레이어가 숨으면 호출함
+                // 터렛 난사 + 끝나면 샌드메시지
                 break;
 
             case 5:
                 // Script("엄폐 해제해")
+                m_ScriptUIMgr.NextScript(0, true);
                 break;
 
             case 6:
+                // 엄폐물 퇴장 애니
                 m_worldUIMgr.getWorldUI(0).ActivateIUI(new IUIParam(false));
                 m_worldUIMgr.getWorldUI(1).AniSetIUI(new IUIParam("isOn", 2));
                 break;
 
             case 7:
                 // Script("공겨그이 허점")
+                m_ScriptUIMgr.NextScript(0, true);
+                m_isTimerOn = true;
+                NextProgress();
                 break;
 
             case 8:
-                // Turret Fires toward Player
+                if (!m_isTimerOn)
+                {
+                    // 터렛 사격
+                    // 트랜스폼 받아옴
+                    m_isBulletTime = 1;
+                    NextProgress();
+                }
                 break;
 
             case 9:
-                // bool Timescale else.... 
-                // if length 0.2f < Timescale 0.001f else
-                // Print Space UI
+                
                 break;
 
             case 10:
-                // if hit space
-                // timescale reload
+                Time.timeScale = 1f;
+                m_BlackBoxSpriteRenderer.color = new Color(0, 0, 0, 0);
+                m_worldUIMgr.getWorldUI(1).ActivateIUI(new IUIParam(false));
                 break;
 
             case 11:
-                // turret goes off
+                // 터렛 퇴장
+
                 break;
 
             case 12:
-                // Go to CutScene
+                SceneManager.LoadScene("T_Warden");
                 break;
         }
     }
