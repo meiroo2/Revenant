@@ -61,7 +61,7 @@ public class TuRoom02_ProgressMgr : ProgressMgr
             case 4: // F WorldIUI Erase
                 m_worldUIMgr.getWorldUI(2).AniSetIUI(new IUIParam("isOpen", 2));
                 m_worldUIMgr.getWorldUI(3).ActivateIUI(new IUIParam(false));
-                m_ScriptUIMgr.NextScript(0);
+                m_ScriptUIMgr.NextScript(0, true);
 
                 m_TutoEnemyMgr.TargetBoardToggle(true);
                 // Player Gets Gun
@@ -79,7 +79,7 @@ public class TuRoom02_ProgressMgr : ProgressMgr
             case 5:
                 // Speaker Ani
                 // Print Script('Eliminate Drone')
-                m_ScriptUIMgr.NextScript(1);
+                m_ScriptUIMgr.NextScript(1, true);
                 m_TutoEnemyMgr.DroneToggle(true);
                 break;
 

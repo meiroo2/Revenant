@@ -57,7 +57,7 @@ public class ScriptUIMgr : MonoBehaviour
 
     public int NextScript(int _count, bool isItalic = false)
     {
-        Debug.Log("»£√‚µ ");
+        //Debug.Log("»£√‚µ ");
         m_count = _count;
         if (m_Idx < m_Scripts.Length)
         {
