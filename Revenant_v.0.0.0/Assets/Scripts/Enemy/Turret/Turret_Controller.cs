@@ -5,34 +5,50 @@ using UnityEngine;
 public class Turret_Controller : Enemy
 {
     [SerializeField]
-    WEAPON m_weapon;
+    Enemy_Gun m_gun;
+
+    [field: SerializeField]
+    public float m_firePreDelay { get; set; } = 1.0f;
+
+    [field: SerializeField]
+    public float m_waitTime { get; set; } = 1.0f;// 사격하기 전 기다릴 시간
 
     private void Awake()
     {
         gameObject.SetActive(false);
 
         HumanInit();
-        Attack_1();
     }
-
-    public override void Idle()
+    public override void Attack()
     {
-        //등장
-        //1초 대기
-        //
+        
     }
 
     public void Attack_1()
     {
         // 1회 발사
-        m_weapon.Fire();
+        m_gun.m_autoMaxCount = 1;
+        m_gun.Fire();
+        
     }
     public void Attack_3()
     {
         // 3회 발사
-
+        m_gun.m_autoMaxCount = 3;
+        //Invoke(nameof(Attack_1), m_firePreDelay);
     }
 
+    public void WaitToAttack(int i)
+    {
+        if(i == 1)
+        {
+            Invoke(nameof(Attack_1), m_waitTime);
+        }
+        else if(i == 3)
+        {
+            Invoke(nameof(Attack_3), m_waitTime);
+        }
+    }
 
     public void Attacked()
     {
