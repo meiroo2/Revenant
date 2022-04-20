@@ -51,6 +51,8 @@ public class Player : Human
     private Vector2 m_StairTelePos;
     private RaycastHit2D m_FloorRay;
 
+    private Vector2 m_PlayerPosVec;
+
     // For Player_Managers
 
     // Constructor
@@ -168,6 +170,14 @@ public class Player : Human
             case playerState.DEAD:
                 break;
         }
+
+        m_PlayerPosVec = transform.position;
+        m_PlayerPosVec.x = Mathf.RoundToInt(m_PlayerPosVec.x * 100);
+        m_PlayerPosVec.y = Mathf.RoundToInt(m_PlayerPosVec.y * 100);
+
+        m_PlayerPosVec.x = m_PlayerPosVec.x / 100;
+        m_PlayerPosVec.y = m_PlayerPosVec.y / 100;
+        transform.position = m_PlayerPosVec;
     }
     public void changePlayerFSM(playerState _inputPlayerState)
     {

@@ -56,16 +56,17 @@ public class CameraMove : MonoBehaviour
                 m_cameraPos.y += m_OffSet;
             }
 
+            m_cameraPos.x = Mathf.RoundToInt(m_cameraPos.x * 100);
+            m_cameraPos.y = Mathf.RoundToInt(m_cameraPos.y * 100);
+
+            m_cameraPos.x = m_cameraPos.x / 100;
+            m_cameraPos.y = m_cameraPos.y / 100;
 
             transform.position = m_cameraPos;
         }
-        /*
-        m_cameraPos.x = Mathf.RoundToInt(m_cameraPos.x * 100);
-        m_cameraPos.y = Mathf.RoundToInt(m_cameraPos.y * 100);
-
-        m_cameraPos.x = m_cameraPos.x / 100;
-        m_cameraPos.y = m_cameraPos.y / 100;
-        */
+        
+        
+        
     }
 
     // Physics
