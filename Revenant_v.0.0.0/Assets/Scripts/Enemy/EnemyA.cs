@@ -7,7 +7,7 @@ public enum DIR
 {
     LEFT, RIGHT, UP, DOWN, STOP
 }
-public class EnemyA : Human, IAttacked
+public class EnemyA : Enemy
 {
     Parts parts;
 
