@@ -8,43 +8,39 @@ public class EnemyMgr_DefenseMap : MonoBehaviour
     // 조 단위로 진행되어야 함.
     // 조가 모두 사망할 경우 다음 조를 토글
 
+    // 특정 키를 누르면 다음 스폰을 진행해야 함
 
     // 배열 관리를 위해 인터페이스화를 해봐도 좋을 듯
-    public List<Enemy00> m_enemy00List { get; set; } = new List<Enemy00>();
-    public List<Enemy01> m_enemy01List { get; set; } = new List<Enemy01>();
-    public List<Enemy02> m_enemy02List { get; set; } = new List<Enemy02>();
 
+    public List<IEnemyType> m_Wave1 { get; set; } = new List<IEnemyType>();
+
+    
+    public List<IEnemyType> m_Wave2 { get; set; } = new List<IEnemyType>();
 
     [SerializeField]
     float m_spawnWaitTime = 3.0f; // 시작 후 스폰 대기 시간
 
     int m_groupIndex = 0; // 스폰 순서
-    public void ToggleEnemyList() // 맨 처음엔 0, 1을 둘다 스폰
-                                  // 그 다음엔 하나씩 스폰(리스폰)
+    public void ToggleEnemyList()
     {
-        switch(m_groupIndex)
+
+        
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.I))
         {
-            case 0:
-                foreach(var e in m_enemy00List)
-                {
-                    e.enabled = true;
-                }
-                break;
-            case 1:
-                foreach (var e in m_enemy01List)
-                {
-                    e.enabled = true;
-                }
-                break;
-            case 2:
-                foreach (var e in m_enemy02List)
-                {
-                    e.enabled = true;
-                }
-                break;
-            default:
-                Debug.Log("<Error> Group Index");
-                break;
+            Debug.Log("- WAVE 1 -");
+            foreach(var e in m_Wave1)
+            {
+                e.getInfo();
+            }
+            Debug.Log("- WAVE 2 -");
+            foreach(var e in m_Wave2)
+            {
+                e.getInfo();
+            }
         }
     }
 }
