@@ -5,5 +5,6 @@ using UnityEngine;
 
 public interface IEnemyType
 {
+    void setActive();
     void getInfo();
 }

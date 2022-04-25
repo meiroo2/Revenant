@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SpawnPos : MonoBehaviour
 {
-    [SerializeField]
-    GameObject m_enemyPrefab;
 
     [SerializeField]
     GameObject m_wave1Prefab;
@@ -13,7 +11,17 @@ public class SpawnPos : MonoBehaviour
     [SerializeField]
     GameObject m_wave2Prefab;
 
+    [SerializeField]
+    GameObject m_wave3Prefab;
 
+    [SerializeField]
+    GameObject m_wave4Prefab;
+
+    [SerializeField]
+    GameObject m_wave5Prefab;
+
+    [SerializeField]
+    GameObject m_wave6Prefab;
 
     [SerializeField]
     EnemyMgr_DefenseMap m_enemyMgr;
@@ -22,11 +30,12 @@ public class SpawnPos : MonoBehaviour
 
     private void Awake()
     {
+        // Square Áö¿ì±â
         m_sprite = GetComponent<SpriteRenderer>();
         m_sprite.enabled = false;
     }
 
-    public void AllWaveInit()
+    public void InitAll()
     {
         //wave 1 ~ 2 spawn
         GameObject prefab;
@@ -38,6 +47,8 @@ public class SpawnPos : MonoBehaviour
             prefab.transform.position = transform.position;
 
             m_enemyMgr.m_Wave1.Add(prefab.GetComponent<IEnemyType>());
+
+            prefab.SetActive(false);
         }
 
         if (m_wave2Prefab)
@@ -46,8 +57,18 @@ public class SpawnPos : MonoBehaviour
             prefab.transform.position = transform.position;
 
             m_enemyMgr.m_Wave2.Add(prefab.GetComponent<IEnemyType>());
+
+            prefab.SetActive(false);
         }
-            
+        if(m_wave3Prefab)
+        {
+            prefab = Instantiate(m_wave3Prefab);
+            prefab.transform.position = transform.position;
+
+            m_enemyMgr.m_Wave3.Add(prefab.GetComponent<IEnemyType>());
+
+            prefab.SetActive(false);
+        }
 
 
     }

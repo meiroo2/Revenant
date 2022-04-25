@@ -16,7 +16,7 @@ public class EnemySpawn_0 : MonoBehaviour
         foreach(var p in m_spawnPositions)
         {
             if(p)
-                p.AllWaveInit();
+                p.InitAll();
         }
 
         
