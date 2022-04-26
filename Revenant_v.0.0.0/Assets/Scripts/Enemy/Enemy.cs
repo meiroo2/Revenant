@@ -6,6 +6,8 @@ public class Enemy : Human
 {
     EnemyState m_enemyState;
 
+    public virtual void Damaged(float stun, float damage) { }
+
     public virtual void Idle() { }
     public virtual void Attack() { }
     protected void HumanInit()

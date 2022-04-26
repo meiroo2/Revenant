@@ -7,7 +7,7 @@ public enum DIR
 {
     LEFT, RIGHT, UP, DOWN, STOP
 }
-public class EnemyA : Human, IAttacked
+public class EnemyA : Enemy
 {
     Parts parts;
 
@@ -66,7 +66,8 @@ public class EnemyA : Human, IAttacked
     public EnemyState curEnemyState { get; set; }
     EnemyState nextEnemyState;
 
-    Gun gun;
+    [SerializeField]
+    Enemy_Gun m_gun;
 
     private SoundMgr_SFX m_SFXMgr;
 
@@ -77,7 +78,6 @@ public class EnemyA : Human, IAttacked
         //enemyAnimator.GetComponent<EnemyAnimatior>();
         animator = GetComponent<Animator>();
 
-        gun = GetComponentInChildren<Gun>();
 
         curStun = stunStack;
 
@@ -98,34 +98,8 @@ public class EnemyA : Human, IAttacked
         AI();
     }
 
-    public void Attacked(AttackedInfo _AttackedInfo)
+    public override void Damaged(float stun, float damage)
     {
-        float damage = _AttackedInfo.m_Damage;
-        float stun = _AttackedInfo.m_StunValue;
-
-        if (_AttackedInfo.m_HitPoint == HitPoints.HEAD)
-        {
-            Debug.Log("Head Hit");
-            damage *= 2;
-            stun *= 2;
-
-           // m_SFXMgr.playAttackedSound(MatType.Target_Head, _AttackedInfo.m_ContactPoint);
-        }
-        else if (_AttackedInfo.m_HitPoint == HitPoints.BODY)
-        {
-            Debug.Log("Body Hit");
-
-            //m_SFXMgr.playAttackedSound(MatType.Target_Body, _AttackedInfo.m_ContactPoint);
-        }
-        if(isAlive)
-        {
-            Damaged(stun, damage);
-        }
-    }
-    
-    public void Damaged(float stun, float damage)
-    {
-
         // 피격 센서 자극 위치
         if (enemyManager)
             sensorPos = enemyManager.player.transform.position;
@@ -135,7 +109,7 @@ public class EnemyA : Human, IAttacked
         // 사망
         if (m_Hp - damage <= 0)
         {
-            Debug.Log(name + " Die");
+            //Debug.Log(name + " Die");
             isAlive = false;
 
             if(enemyManager)
@@ -147,7 +121,7 @@ public class EnemyA : Human, IAttacked
         else if(curStun - stun <= 0)
         {
             m_Hp -= damage;
-            Debug.Log(name + " stunned ");
+            //Debug.Log(name + " stunned ");
             
             StunAIState();
             curStun = stunStack; // 스택 초기화
@@ -157,7 +131,7 @@ public class EnemyA : Human, IAttacked
         {
             //Debug.Log(name + " damaged: " + damage);
             m_Hp -= damage;
-            Debug.Log(name + " stun damage: " + stun);
+            //Debug.Log(name + " stun damage: " + stun);
             curStun -= stun;
         }
     }
@@ -357,7 +331,6 @@ public class EnemyA : Human, IAttacked
     {
         if (!isStun)
         {
-
             rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
 
             // 선딜 (전투 상태 돌입 딜레이)
@@ -401,9 +374,8 @@ public class EnemyA : Human, IAttacked
                 
                 if (isReady == false)    // 준비 동작 끝나면
                 {
-                    Debug.Log("I'mReady");
                     rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 멈춤 해제
-                    gun.Fire();
+                    m_gun.Fire();
                     Sensor();
 
                 }

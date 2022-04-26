@@ -10,10 +10,10 @@ public class Enemy_Gun : WEAPON
     
 
     [SerializeField]
-    float m_bulletspeed = 1.0f;
+    float m_bulletspeed = 0.2f;
 
     [SerializeField]
-    int m_bulletdamage = 50;
+    int m_bulletdamage = 10;
 
     TutoRoom03EnemyMgr m_enemyMgr;
 
@@ -29,7 +29,7 @@ public class Enemy_Gun : WEAPON
 
 
     [field: SerializeField]
-    public int m_burstMaxCount { get; set; } = 3;
+    public int m_burstMaxCount { get; set; } = 1;
 
     protected void Init()
     {
@@ -45,7 +45,7 @@ public class Enemy_Gun : WEAPON
         bullet.m_speed = m_bulletspeed;
         bullet.goVector = (enemy.m_isRightHeaded) ? Vector2.right : Vector2.left;
         gameObject.transform.position = transform.position;
-        if(m_burstCount == 1)
+        if(m_burstCount == 1&&m_enemyMgr)
             m_enemyMgr.m_first_bullet = gameObject.transform;
     }
 }
