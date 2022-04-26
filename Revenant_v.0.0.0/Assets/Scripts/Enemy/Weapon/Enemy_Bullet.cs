@@ -23,6 +23,8 @@ public class Enemy_Bullet : BULLET
     {
         
         Init();
+        // 총알이 생성된 지 5초가 지나면 강제 파괴
+        Invoke(nameof(Destroy), 5f);
     }
     private void Start()
     {
@@ -58,5 +60,8 @@ public class Enemy_Bullet : BULLET
         }
 
     }
-
+    void Destroy()
+    {
+        Destroy(gameObject);
+    }
 }

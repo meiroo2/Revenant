@@ -22,7 +22,7 @@ public class Gun : MonoBehaviour
         // 수정할거 첫발을 쏜 후에 딜레이가 생기도록, 맨 처음 준비 동작 딜레이는 Enemy 스크립트에서 따로
         if(canfire)
         {
-            Debug.Log("Fire");
+            //Debug.Log("Fire");
             BulletCreate();
             Invoke(nameof(firePredelay), firepredelay);
             canfire = false;
