@@ -15,8 +15,9 @@ public class Enemy_BodyHotBox : MonoBehaviour,IHotBox
         m_enemy = GetComponentInParent<Enemy>();
     }
 
-    public void HitHotBox(IHotBoxParam _param)
+    public int HitHotBox(IHotBoxParam _param)
     {
         m_enemy.Damaged(_param.m_stunValue, _param.m_Damage);
+        return 1;
     }
 }

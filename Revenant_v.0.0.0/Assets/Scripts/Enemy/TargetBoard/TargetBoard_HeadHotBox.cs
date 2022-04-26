@@ -17,12 +17,14 @@ public class TargetBoard_HeadHotBox : MonoBehaviour, IHotBox
         targetBoard = GetComponentInParent<TargetBoard_Controller>();
     }
 
-    public void HitHotBox(IHotBoxParam _param)
+    public int HitHotBox(IHotBoxParam _param)
     {
         targetBoard.m_targetboard_animator.HitHeadAni();
         targetBoard.HotBoxToggle(false);
 
         targetBoard.Attacked();
+
+        return 1;
     }
 
 }

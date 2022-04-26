@@ -29,5 +29,6 @@ public interface IHotBox
     public int m_hotBoxType { get; set; }
     public bool m_isEnemys { get; set; }
 
-    public void HitHotBox(IHotBoxParam _param);
+    // 0 = No Hit, 1 = Hit
+    public int HitHotBox(IHotBoxParam _param);
 }

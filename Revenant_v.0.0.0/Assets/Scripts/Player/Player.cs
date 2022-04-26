@@ -125,7 +125,8 @@ public class Player : Human
 
         if (gameObject.layer == 12)
         {
-            m_PlayerPosVec.y = m_FootRay.point.y + 0.32f;
+            if (m_PlayerPosVec.y - m_FootRay.point.y >= 0.33f)
+                m_PlayerPosVec.y = m_FootRay.point.y + 0.32f;
         }
         else if (gameObject.layer == 10)
         {
@@ -373,7 +374,9 @@ public class Player : Human
 
             Debug.Log(_param.m_Damage + "데미지 총알이 플레이어한테 박힘");
 
-            if (m_Hp == -1)
+            m_Hp -= _param.m_Damage;
+
+            if (m_Hp <= 0)
             {
                 changePlayerFSM(playerState.DEAD);
                 m_UIMgr.m_GameOverUI.SetActive(true);

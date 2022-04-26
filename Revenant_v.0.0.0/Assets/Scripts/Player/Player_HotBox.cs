@@ -13,8 +13,9 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
 
-    public void HitHotBox(IHotBoxParam _param)
+    public int HitHotBox(IHotBoxParam _param)
     {
         m_Player.Attacked(_param);
+        return 1;
     }
 }

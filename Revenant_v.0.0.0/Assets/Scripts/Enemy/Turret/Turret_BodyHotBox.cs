@@ -13,8 +13,10 @@ public class Turret_BodyHotBox : MonoBehaviour, IHotBox
         turret = GetComponentInParent<Turret_Controller>();
     }
 
-    public void HitHotBox(IHotBoxParam _param)
+    public int HitHotBox(IHotBoxParam _param)
     {
         turret.Attacked();
+
+        return 1;
     }
 }

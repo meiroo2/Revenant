@@ -18,11 +18,13 @@ public class Drone_TargetHotBox : MonoBehaviour, IHotBox
         targetCollider = GetComponent<BoxCollider2D>();
     }
 
-    public void HitHotBox(IHotBoxParam _param)
+    public int HitHotBox(IHotBoxParam _param)
     {
         drone.TargetAttacked();
         targetParts.SetActive(true);
 
         targetCollider.enabled = false;
+
+        return 1;
     }
 }

@@ -22,7 +22,7 @@ public class Drone_BodyHotBox : MonoBehaviour, IHotBox
         bodyCollider = GetComponent<BoxCollider2D>();
     }
 
-    public void HitHotBox(IHotBoxParam _param)
+    public int HitHotBox(IHotBoxParam _param)
     {
         
         drone.BodyAttacked();
@@ -30,5 +30,6 @@ public class Drone_BodyHotBox : MonoBehaviour, IHotBox
         bodyCollider.enabled = false;
         targetCollider.enabled = false;
 
+        return 1;
     }
 }

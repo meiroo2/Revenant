@@ -138,10 +138,12 @@ public class PlayerSoundnAni : MonoBehaviour
                     break;
 
                 case playerState.DEAD:
+                    /*
                     foreach (Animator element in m_Animators)
                     {
                         element.SetInteger("isWalk", 0);
                     }
+                    */
                     break;
             }
         }

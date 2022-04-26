@@ -29,9 +29,11 @@ public class Floor : ObjectDefine, IMatType, IHotBox
 
 
     // Functions
-    public void HitHotBox(IHotBoxParam _param)
+    public int HitHotBox(IHotBoxParam _param)
     {
         m_SoundMgrSFX.playAttackedSound(m_matType, _param.m_contactPoint);
+
+        return 1;
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
