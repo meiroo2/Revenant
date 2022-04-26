@@ -4,8 +4,19 @@ using UnityEngine;
 
 public class Stair : MonoBehaviour
 {
+    [field: SerializeField] public bool m_isRightUp { get; private set; } = true;
+
+    public Transform P_StairNormalObj;
+    [Space(20f)]
     public List<int> m_OnStairObjNum = new List<int>();
     public List<int> m_OnStairObjCount = new List<int>();
+
+    public Vector2 m_StairNormalVec { get; private set; }
+
+    private void Awake()
+    {
+        m_StairNormalVec = P_StairNormalObj.up;
+    }
 
     public int isOnStair(int _ObjID)
     {

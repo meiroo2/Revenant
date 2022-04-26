@@ -226,7 +226,6 @@ public class PlayerSoundnAni : MonoBehaviour
     }
     public void changeArmMode(bool _isBasic)
     {
-        Debug.Log("호출추리");
         if (_isBasic)
         {
             m_isArmBasic = true;
