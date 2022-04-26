@@ -9,12 +9,18 @@ public class Player_StairMgr : MonoBehaviour
 
     private Player m_Player;
     private StairPos m_stairPos;
+    private StairPos m_NullStairPos;
 
     private bool m_isOnStair = false;
     private Vector2 m_jumpPos;
 
+    public Vector2 m_PlayerNormal { get; private set; }
+
     private void Start()
     {
+        m_NullStairPos = null;
+
+        m_PlayerNormal = Vector2.up;
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
 
@@ -39,36 +45,67 @@ public class Player_StairMgr : MonoBehaviour
         }
     }
 
+    public void ChangePlayerNormal(Vector2 _normal)
+    {
+        m_PlayerNormal = _normal;
+    }
+
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (isStairUpKey && !m_isOnStair)
+        if (!m_isOnStair && (isStairUpKey || isStairDownKey))
         {
             m_stairPos = null;
-            isStairUpKey = false;
             m_stairPos = collision.GetComponent<StairPos>();
 
-            int temp = m_stairPos.StairDetectorDetected(gameObject.GetInstanceID());
-            if(temp == 1)
+            if (m_stairPos.m_ParentStair.m_isRightUp)   // 우상향 계단
             {
-                m_isOnStair = true;
-                m_jumpPos = collision.transform.position;
-                m_jumpPos.y += 0.1f;
-                m_Player.GoToStairLayer(true, m_jumpPos, m_stairPos.m_StairNormalVec);
+                // 우상향 계단에서 올라갈 때
+                if (isStairUpKey && m_stairPos.m_isGoingUp && m_stairPos.m_isInitDetector &&
+                    (transform.position.x < m_stairPos.transform.position.x) &&
+                    (m_Player.m_playerMoveVec.x >= 0) &&
+                    m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()) == 1)
+                {
+                    m_isOnStair = true;
+                    m_jumpPos = collision.transform.position;
+                    m_jumpPos.y += 0.1f;
+                    m_Player.GoToStairLayer(true, m_jumpPos, m_stairPos.m_ParentStair.m_StairNormalVec);
+                }
+                // 우상향 계단에서 내려갈 때
+                else if (isStairDownKey && !m_stairPos.m_isGoingUp && m_stairPos.m_isInitDetector &&
+                   (transform.position.x > m_stairPos.transform.position.x) &&
+                   (m_Player.m_playerMoveVec.x <= 0) &&
+                   m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()) == 1)
+                {
+                    m_isOnStair = true;
+                    m_jumpPos = collision.transform.position;
+                    m_jumpPos.y += 0.1f;
+                    m_Player.GoToStairLayer(true, m_jumpPos, m_stairPos.m_ParentStair.m_StairNormalVec);
+                }
             }
-        }
-        else if (isStairDownKey && !m_isOnStair)
-        {
-            m_stairPos = null;
-            isStairDownKey = false;
-            m_stairPos = collision.GetComponent<StairPos>();
-
-            int temp = m_stairPos.StairDetectorDetected(gameObject.GetInstanceID());
-            if (temp == 1)
+            else if (!m_stairPos.m_ParentStair.m_isRightUp)  // 좌상향 계단
             {
-                m_isOnStair = true;
-                m_jumpPos = collision.transform.position;
-                m_jumpPos.y += 0.1f;
-                m_Player.GoToStairLayer(true, m_jumpPos, m_stairPos.m_StairNormalVec);
+                // 좌상향 계단에서 올라갈 때
+                if (isStairUpKey && m_stairPos.m_isGoingUp && m_stairPos.m_isInitDetector &&
+                    (transform.position.x > m_stairPos.transform.position.x) && 
+                    (m_Player.m_playerMoveVec.x <= 0) &&
+                    m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()) == 1)
+                {
+                    m_isOnStair = true;
+                    m_jumpPos = collision.transform.position;
+                    m_jumpPos.y += 0.1f;
+                    m_Player.GoToStairLayer(true, m_jumpPos, m_stairPos.m_ParentStair.m_StairNormalVec);
+                }
+                // 좌상향 계단에서 내려갈 때
+                else if (isStairDownKey && !m_stairPos.m_isGoingUp && m_stairPos.m_isInitDetector &&
+                    (transform.position.x < m_stairPos.transform.position.x) &&
+                    (m_Player.m_playerMoveVec.x >= 0) &&
+                    m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()) == 1)
+                {
+                    m_isOnStair = true;
+                    m_jumpPos = collision.transform.position;
+                    m_jumpPos.y += 0.1f;
+                    m_Player.GoToStairLayer(true, m_jumpPos, m_stairPos.m_ParentStair.m_StairNormalVec);
+                }
             }
         }
     }
@@ -76,15 +113,16 @@ public class Player_StairMgr : MonoBehaviour
     {
         if (m_isOnStair)
         {
-            m_stairPos = null;
+            m_stairPos = m_NullStairPos;
             m_stairPos = collision.GetComponent<StairPos>();
-            switch (m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()))
-            {
-                case 0:
-                    m_isOnStair = false;
-                    m_Player.GoToStairLayer(false, Vector2.zero, Vector2.zero);
-                    break;
-            }
+            if(!m_stairPos.m_isInitDetector)
+                switch (m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()))
+                {
+                    case 0:
+                        m_isOnStair = false;
+                        m_Player.GoToStairLayer(false, Vector2.zero, Vector2.zero);
+                        break;
+                }
         }
     }
 }
