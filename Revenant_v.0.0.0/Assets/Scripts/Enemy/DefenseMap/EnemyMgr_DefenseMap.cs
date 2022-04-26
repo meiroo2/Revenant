@@ -11,16 +11,18 @@ public class EnemyMgr_DefenseMap : MonoBehaviour
 
     // 배열 관리를 위해 인터페이스화를 해봐도 좋을 듯
 
-    public List<IEnemyType> m_Wave1 { get; set; } = new List<IEnemyType>();
+    public List<IEnemySpawn> m_Wave1 { get; set; } = new List<IEnemySpawn>();
 
     
-    public List<IEnemyType> m_Wave2 { get; set; } = new List<IEnemyType>();
+    public List<IEnemySpawn> m_Wave2 { get; set; } = new List<IEnemySpawn>();
 
-    public List<IEnemyType> m_Wave3 { get; set; } = new List<IEnemyType>();
+    public List<IEnemySpawn> m_Wave3 { get; set; } = new List<IEnemySpawn>();
 
-    public List<IEnemyType> m_Wave4 { get; set; } = new List<IEnemyType>();
-    public List<IEnemyType> m_Wave5 { get; set; } = new List<IEnemyType>();
-    public List<IEnemyType> m_Wave6 { get; set; } = new List<IEnemyType>();
+    public List<IEnemySpawn> m_Wave4 { get; set; } = new List<IEnemySpawn>();
+    public List<IEnemySpawn> m_Wave5 { get; set; } = new List<IEnemySpawn>();
+    public List<IEnemySpawn> m_Wave6 { get; set; } = new List<IEnemySpawn>();
+
+    public List<EnemyDefenseActivate> m_defenseList = new List<EnemyDefenseActivate>();
 
     [SerializeField]
     float m_spawnWaitTime = 3.0f; // 시작 후 스폰 대기 시간
@@ -28,11 +30,6 @@ public class EnemyMgr_DefenseMap : MonoBehaviour
     int m_waveIndex = 0; // 웨이브 수
 
     bool m_spawnActive = false;
-
-    private void Awake()
-    {
-        
-    }
 
 
     private void Update()
@@ -60,6 +57,7 @@ public class EnemyMgr_DefenseMap : MonoBehaviour
     {
         if(m_waveIndex < 6)
         {
+
             Debug.Log("- WAVE "+(m_waveIndex + 1)+ " -");
             switch(m_waveIndex)
             {
@@ -72,6 +70,7 @@ public class EnemyMgr_DefenseMap : MonoBehaviour
                     foreach (var e in m_Wave1)
                     {
                         //e.getInfo();
+                        
                         e.setActive();
                     }
                 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public interface IEnemyType
+public interface IEnemySpawn
 {
     void setActive();
     void getInfo();

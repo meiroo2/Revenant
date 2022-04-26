@@ -9,6 +9,7 @@ public enum DIR
 }
 public class EnemyA : Enemy
 {
+    [SerializeField]
     Parts parts;
 
     [field: SerializeField]
@@ -19,7 +20,7 @@ public class EnemyA : Enemy
     bool isAlive = true;
     Rigidbody2D rigid;
     Animator animator;
-    
+
     CircleCollider2D guardHearCollider;
 
     // 이동 방향
@@ -27,8 +28,8 @@ public class EnemyA : Enemy
     DIR curDir;
 
     // 이동 위치
-    [field:SerializeField]
-    public Vector2 sensorPos { get; set; }
+    [field: SerializeField]
+    public Vector2 m_sensorPos { get; set; }
     Vector2 originalPos { get; set; }
 
     // 경직정도
@@ -66,8 +67,8 @@ public class EnemyA : Enemy
     public EnemyState curEnemyState { get; set; }
     EnemyState nextEnemyState;
 
-    [SerializeField]
-    Enemy_Gun m_gun;
+    [field: SerializeField]
+    public Enemy_Gun m_gun{get;set;}
 
     private SoundMgr_SFX m_SFXMgr;
 
@@ -102,7 +103,7 @@ public class EnemyA : Enemy
     {
         // 피격 센서 자극 위치
         if (enemyManager)
-            sensorPos = enemyManager.player.transform.position;
+            m_sensorPos = enemyManager.player.transform.position;
         else Debug.Log("there is no enemyManager");
         GuardAIState();
 
@@ -159,13 +160,13 @@ public class EnemyA : Enemy
     public void Rotation()
     {
         // 음수: 좌, 양수: 우
-        if (sensorPos.x - transform.position.x < SAFE_DISTANCE)
+        if (m_sensorPos.x - transform.position.x < SAFE_DISTANCE)
         {
             if (m_isRightHeaded)
                 setisRightHeaded(false);
 
         }
-        else if (sensorPos.x - transform.position.x > SAFE_DISTANCE)
+        else if (m_sensorPos.x - transform.position.x > SAFE_DISTANCE)
         {
             if (!m_isRightHeaded)
                 setisRightHeaded(true);
@@ -200,12 +201,12 @@ public class EnemyA : Enemy
     {
         if(m_isRightHeaded)
         {
-            if (sensorPos.x - transform.position.x < SAFE_DISTANCE)
+            if (m_sensorPos.x - transform.position.x < SAFE_DISTANCE)
                 return true;
         }
         else
         {
-            if ((sensorPos.x - transform.position.x) * -1 < SAFE_DISTANCE)
+            if ((m_sensorPos.x - transform.position.x) * -1 < SAFE_DISTANCE)
                 return true;
         }
         return false;
@@ -247,14 +248,14 @@ public class EnemyA : Enemy
             // 무방비 / 추격-> 전투
             if (fightRayHit2D)
             {
-                sensorPos = fightRayHit2D.collider.transform.position;
+                m_sensorPos = fightRayHit2D.collider.transform.position;
 
                 FightAIState();
             }
             // 무방비 / 전투 -> 추격
             else if (guardRayHit2D)
             {
-                sensorPos = guardRayHit2D.collider.transform.position;
+                m_sensorPos = guardRayHit2D.collider.transform.position;
                 GuardAIState();
             }
         }

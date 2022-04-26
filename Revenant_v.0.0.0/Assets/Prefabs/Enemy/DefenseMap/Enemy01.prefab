@@ -56,9 +56,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3544300810851462079}
-  - component: {fileID: 619806752736866462}
+  - component: {fileID: 7989587693278375223}
   m_Layer: 0
-  m_Name: Gun Pos
+  m_Name: Enemy_Pistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,9 +77,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8154578449663496184}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &619806752736866462
+--- !u!114 &7989587693278375223
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 138701747778427271}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a545fb5237fff1f43935ccd510289334, type: 3}
+  m_Script: {fileID: 11500000, guid: f003e911431868a4ebec843cf81f0d58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_bulletPrefab: {fileID: 8704810453878243624, guid: 73eadf95fbbd63147b488cad71601950, type: 3}
@@ -126,7 +126,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8154578449663496184}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &698553631412113645
 SpriteRenderer:
@@ -167,7 +167,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ce52e64e5c473e24c9b7f5553252b8f8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -311,9 +311,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3544300810851462079}
   - {fileID: 1251291852894781213}
   - {fileID: 2235972745300642210}
-  - {fileID: 3544300810851462079}
   m_Father: {fileID: 871865843478910489}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -356,10 +356,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 53dfc137b3cda1b4da4c81a95fec9ec5, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -518,8 +518,8 @@ GameObject:
   - component: {fileID: 5062277878219029382}
   - component: {fileID: 5062277878219029381}
   - component: {fileID: 5062277878219029380}
-  - component: {fileID: 6177077154943775543}
   - component: {fileID: 8769913694144189723}
+  - component: {fileID: 1284916059198701837}
   m_Layer: 11
   m_Name: Enemy01
   m_TagString: Enemy
@@ -631,7 +631,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: -1683129471, guid: 3ebba551addac4a42859ab895fb7a9b1, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
@@ -676,18 +676,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95c90071b3d4c84458c415ea892dc1ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6177077154943775543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5062277878219029379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbdafa3ca10394b41851047b9613c187, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8769913694144189723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -703,10 +691,11 @@ MonoBehaviour:
   <m_Hp>k__BackingField: 20
   <m_Speed>k__BackingField: 1
   <m_stunTime>k__BackingField: 0
+  parts: {fileID: 2957108722241706960}
   <SAFE_DISTANCE>k__BackingField: 0.1
   textForTest: {fileID: 0}
   defaultDir: 0
-  <sensorPos>k__BackingField: {x: 0, y: 0}
+  <m_sensorPos>k__BackingField: {x: 0, y: 0}
   <stunStack>k__BackingField: 0
   stunMark: {fileID: 0}
   <m_preIdleTime>k__BackingField: 1
@@ -717,6 +706,20 @@ MonoBehaviour:
   <m_preFightTime>k__BackingField: 0
   enemyManager: {fileID: 0}
   <curEnemyState>k__BackingField: 0
+  <m_gun>k__BackingField: {fileID: 7989587693278375223}
+--- !u!114 &1284916059198701837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062277878219029379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 726725fdf7ad90d4bae7fed70b0bda1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defensePos: {x: 0, y: 0}
 --- !u!1 &6335137002463248260
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,10 +793,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: a1b765d302711fe4a8bef5b65aeeee6b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -914,10 +917,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4b44209921b6b554aa711b1ccc109af3, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -995,7 +998,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8154578449663496184}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2901503158672123178
 SpriteRenderer:
@@ -1036,7 +1039,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9822a886f9bc9864c96d69225aab92aa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
