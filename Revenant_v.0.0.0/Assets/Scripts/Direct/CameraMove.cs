@@ -5,12 +5,15 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour
 {
     // Visible Member Variables
-    public float m_cameraSpeed = 1f;
+    public CamBoundMgr m_CamBoundMgr;
     private GameObject m_Player;
-    public bool m_FollowMouse = true;
-    public float m_OffSet;
-
+    public bool m_EffectedByCamBound = false;
     public bool m_InitFollow = true;
+    public float m_yOffSet = 0.03f;
+
+    private bool m_isCamStuck = false;
+    private bool m_FollowMouse = false;
+
 
     // Member Variables
     private Vector3 m_cameraPos;
@@ -45,9 +48,12 @@ public class CameraMove : MonoBehaviour
             m_cameraPos.x += (m_MousePos.x - 960) / 1100f;
             m_cameraPos.y += (m_MousePos.y - 540) / 1100f;
 
-            m_cameraPos.y += m_OffSet;
+            m_cameraPos.y += m_yOffSet;
             m_cameraPos.z = -10f;
-
+        }
+        
+        if (!m_isCamStuck)
+        {
             transform.position = Vector3.Lerp(transform.position, m_cameraPos, Time.deltaTime * 4f);
             transform.position = StaticMethods.getPixelPerfectPos(transform.position);
         }
@@ -56,11 +62,20 @@ public class CameraMove : MonoBehaviour
     {
         m_cameraPos = m_Player.transform.position;
 
-        if(!m_FollowMouse)
+        if (m_EffectedByCamBound)
+        {
+            if (m_CamBoundMgr.canCamMove(m_cameraPos) == true)
+                m_isCamStuck = false;
+            else
+                m_isCamStuck = true;
+        }
+
+        if (!m_FollowMouse)
         {
             m_cameraPos.z = -10f;
-            transform.position = m_cameraPos;
+            //transform.position = m_cameraPos;
         }
+
 
         if (Input.GetMouseButtonDown(1))
             PreciseMode(1);
