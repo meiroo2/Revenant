@@ -33,17 +33,17 @@ public class Player : Human
     public bool m_canShot { get; private set; } = true;
     public bool m_canChangeWeapon { get; private set; } = false;
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
+    public bool m_isPlayerBlinking { get; private set; } = false;
 
     public PlayerSoundnAni m_playerSoundnAni { get; private set; }
     public PlayerRotation m_playerRotation { get; private set; }
     public Player_Gun m_playerGun { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
 
-    private Player_UIMgr m_PlayerUIMgr;
-    private UIMgr m_UIMgr;
+    //private Player_UIMgr m_PlayerUIMgr;
     private NoiseMaker m_NoiseMaker;
     private Rigidbody2D m_playerRigid;
-    private SoundMgr_SFX m_SFXMgr;
+    //private SoundMgr_SFX m_SFXMgr;
     private Animator m_PlayerAnimator;
     private Player_StairMgr m_PlayerStairMgr;
 
@@ -77,9 +77,8 @@ public class Player : Human
     private void Start()
     {
         m_NoiseMaker = GameManager.GetInstance().GetComponentInChildren<NoiseMaker>();
-        m_UIMgr = GameManager.GetInstance().GetComponentInChildren<UIMgr>();
-        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
-        m_SFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        //m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
+        //m_SFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
@@ -125,7 +124,7 @@ public class Player : Human
 
         if (gameObject.layer == 12)
         {
-            if (m_PlayerPosVec.y - m_FootRay.point.y >= 0.33f)
+            if (m_FootRay && m_PlayerPosVec.y - m_FootRay.point.y >= 0.33f)
                 m_PlayerPosVec.y = m_FootRay.point.y + 0.32f;
         }
         else if (gameObject.layer == 10)
@@ -266,10 +265,6 @@ public class Player : Human
                 if (!m_isRecoveringRollCount)
                     StartCoroutine(RecoverRollCount());
 
-                if (!m_canAttacked)
-                    CancelInvoke(nameof(SetPlayerCanAttacked));
-                m_canAttacked = false;
-
                 m_curPlayerState = playerState.ROLL;
                 m_playerRotation.m_doRotate = false;
                 m_canShot = false;
@@ -365,27 +360,6 @@ public class Player : Human
             m_PlayerStairMgr.ChangePlayerNormal(Vector2.up);
         }
     }
-    public void Attacked(IHotBoxParam _param)
-    {
-        if (m_canAttacked && m_curPlayerState != playerState.DEAD)
-        {
-            m_canAttacked = false;
-            Invoke(nameof(SetPlayerCanAttacked), m_stunTime);
-
-            Debug.Log(_param.m_Damage + "데미지 총알이 플레이어한테 박힘");
-
-            m_Hp -= _param.m_Damage;
-
-            if (m_Hp <= 0)
-            {
-                changePlayerFSM(playerState.DEAD);
-                m_UIMgr.m_GameOverUI.SetActive(true);
-            }
-
-            m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
-            m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Hp / 10f));
-        }
-    }
     private IEnumerator RecoverRollCount()
     {
         m_isRecoveringRollCount = true;
@@ -404,8 +378,21 @@ public class Player : Human
             yield return new WaitForSeconds(0.1f);
         }
     }
-    private void SetPlayerCanAttacked() { m_canAttacked = true; } 
 
+    public void setPlayerHp(int _value)
+    {
+        m_Hp = _value;
+    }
+    public void DoPlayerBlink() 
+    {
+        if(m_stunTime > 0f)
+        {
+            m_isPlayerBlinking = true;
+            CancelInvoke(nameof(setPlayerBlinkFalse));
+            Invoke(nameof(setPlayerBlinkFalse), m_stunTime);
+        }
+    }
+    private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
