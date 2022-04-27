@@ -309,8 +309,8 @@ GameObject:
   - component: {fileID: 5062277878219029382}
   - component: {fileID: 5062277878219029381}
   - component: {fileID: 5062277878219029380}
-  - component: {fileID: 6115141795090748407}
   - component: {fileID: 8920533970346335620}
+  - component: {fileID: -1636500964843077638}
   m_Layer: 11
   m_Name: Enemy00
   m_TagString: Enemy
@@ -467,7 +467,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95c90071b3d4c84458c415ea892dc1ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6115141795090748407
+--- !u!114 &8920533970346335620
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -476,7 +476,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 5062277878219029379}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ff613844ea41b44880568e1684397e7, type: 3}
+  m_Script: {fileID: 11500000, guid: 726725fdf7ad90d4bae7fed70b0bda1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defensePos: {x: 0, y: 0}
+--- !u!114 &-1636500964843077638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062277878219029379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96aff5eb354ec114599452e9ac48c206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   <m_Hp>k__BackingField: 20
@@ -497,20 +510,7 @@ MonoBehaviour:
   <m_preFightTime>k__BackingField: 0
   enemyManager: {fileID: 0}
   <curEnemyState>k__BackingField: 0
-  <m_gun>k__BackingField: {fileID: 5575673158160670784}
---- !u!114 &8920533970346335620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5062277878219029379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 726725fdf7ad90d4bae7fed70b0bda1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defensePos: {x: 0, y: 0}
+  <m_gun>k__BackingField: {fileID: 0}
 --- !u!1 &5062277878432510716
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,7 +1101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_bulletPrefab: {fileID: 8704810453878243624, guid: 73eadf95fbbd63147b488cad71601950, type: 3}
-  enemy: {fileID: 6115141795090748407}
+  enemy: {fileID: 0}
   m_bulletspeed: 0.2
   m_bulletdamage: 10
   <m_burstMaxCount>k__BackingField: 1
