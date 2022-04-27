@@ -8,16 +8,21 @@ public class EnemyDefenseActivate : MonoBehaviour, IEnemySpawn
     Vector2 defensePos = new Vector2(0, 0);
 
     bool isActive = false;
-    EnemyA m_enemy;
+    DefenseEnemy m_enemy;
 
 
     private void Awake()
     {
-        m_enemy = GetComponent<EnemyA>();
+        m_enemy = GetComponent<DefenseEnemy>();
 
     }
+
+
+    
     public void setActive()
     {
+        DefenseMode();
+
         if (isActive)
             Debug.Log("Already Active == True");
         else
@@ -26,10 +31,7 @@ public class EnemyDefenseActivate : MonoBehaviour, IEnemySpawn
             isActive = true;
         }
     }
-    public void getInfo()
-    {
-        Debug.Log(gameObject.name);
-    }
+
     // Enemy_DefenseMap
     // 처음 = 맵 중간
     public void DefenseMode()
@@ -38,6 +40,12 @@ public class EnemyDefenseActivate : MonoBehaviour, IEnemySpawn
         m_enemy.GuardAIState();
         m_enemy.curEnemyState = EnemyState.GUARD;
     }
-    
+
+
+    // 확인용 로그
+    public void getInfo()
+    {
+        Debug.Log(gameObject.name);
+    }
 }
 

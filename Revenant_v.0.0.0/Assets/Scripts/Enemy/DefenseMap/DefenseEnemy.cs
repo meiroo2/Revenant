@@ -12,7 +12,7 @@ public class DefenseEnemy : Enemy
     [field: SerializeField]
     public float SAFE_DISTANCE { get; set; } = 0.1f;
 
-    public TextMeshProUGUI textForTest;
+    TextMeshProUGUI textForTest;
 
     bool isAlive = true;
     Rigidbody2D rigid;
@@ -20,14 +20,15 @@ public class DefenseEnemy : Enemy
 
     CircleCollider2D guardHearCollider;
 
-    // 이동 방향
-    public DIR defaultDir;
-    DIR curDir;
+    public bool m_canSensor { get; set; } = false;
 
-    // 이동 위치
-    [field: SerializeField]
+   // 이동 위치
+   [field: SerializeField]
     public Vector2 m_sensorPos { get; set; }
     Vector2 originalPos { get; set; }
+
+    public Transform m_playerTransform { get; set; }
+
 
     // 경직정도
     [field: SerializeField]
@@ -42,10 +43,10 @@ public class DefenseEnemy : Enemy
 
     // 추격 선딜
     [field: SerializeField]
-    public float m_preGuardTime { get; set; } = 1.0f;
+    public float m_preGuardTime { get; set; } = 3.0f;
     // 추격 시야 거리 - 시각
     [field: SerializeField]
-    public float guardSightDistance { get; set; }    // 추격 거리
+    public float guardSightDistance { get; set; } = 2.0f;    // 추격 거리
 
     // 전투 거리
     [field: SerializeField]
@@ -57,11 +58,8 @@ public class DefenseEnemy : Enemy
     public float m_preFightTime { get; set; }
     bool isReady = false; // true 시 사격 불가
 
-    [SerializeField]
-    EnemyManager enemyManager;
 
-    [field: SerializeField]
-    public EnemyState curEnemyState { get; set; }
+    
     EnemyState nextEnemyState;
 
     [field: SerializeField]
@@ -73,16 +71,9 @@ public class DefenseEnemy : Enemy
     {
         setisRightHeaded(false);
         rigid = GetComponent<Rigidbody2D>();
-        //enemyAnimator.GetComponent<EnemyAnimatior>();
         animator = GetComponent<Animator>();
 
-
         curStun = stunStack;
-
-        //m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
-
-        parts = GetComponentInChildren<Parts>();
-
         originalPos = transform.position;
     }
     private void Update()
@@ -93,15 +84,13 @@ public class DefenseEnemy : Enemy
 
     private void FixedUpdate()
     {
-        AI();
+        if (isAlive)
+            AI();
     }
 
     public override void Damaged(float stun, float damage)
     {
-        // 피격 센서 자극 위치
-        if (enemyManager)
-            m_sensorPos = enemyManager.player.transform.position;
-        else Debug.Log("there is no enemyManager");
+        
         GuardAIState();
 
         // 사망
@@ -110,10 +99,10 @@ public class DefenseEnemy : Enemy
             //Debug.Log(name + " Die");
             isAlive = false;
 
-            if (enemyManager)
-                enemyManager.PlusDieCount();
+            EnemyMgr_DefenseMap.Instance.PlusDieCount();
 
-            Destroy(gameObject);
+            gameObject.SetActive(false);
+            isAlive = false;
         }
         // 경직
         else if (curStun - stun <= 0)
@@ -134,23 +123,6 @@ public class DefenseEnemy : Enemy
         }
     }
 
-
-    // 추격 - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    public void AutoMove()
-    {
-        switch (curDir)
-        {
-            case DIR.LEFT:
-                rigid.velocity = new Vector2(-1, 0);
-                break;
-            case DIR.RIGHT:
-                rigid.velocity = new Vector2(1, 0);
-                break;
-            default:
-                //Debug.Log("There is No Dir Move Code");
-                break;
-        }
-    }
     // 이동 전 몸체 회전
     // 좌우 회전만 있음
 
@@ -213,49 +185,72 @@ public class DefenseEnemy : Enemy
     // * 자극 받은 위치를 저장
     public void Sensor()
     {
-        // 추격 자극
-        RaycastHit2D guardRayHit2D;
-
-        // 전투 자극
-        RaycastHit2D fightRayHit2D;
-        if (m_isRightHeaded)
+        if(m_canSensor)
         {
-            // 추격 센서
-            Debug.DrawRay(transform.position, Vector3.right * guardSightDistance, Color.magenta);
-            guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, guardSightDistance, LayerMask.GetMask("Player"));
+            m_sensorPos = m_playerTransform.position;
+            // 추격 자극
+            RaycastHit2D guardRayHit2D;
 
-            // 전투 센서
-            Debug.DrawRay(transform.position, Vector3.right * fightSightDistance, Color.yellow);
-            fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, fightSightDistance, LayerMask.GetMask("Player"));
-
-        }
-        else
-        {
-
-            Debug.DrawRay(transform.position, Vector3.left * guardSightDistance, Color.magenta);
-            guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, guardSightDistance, LayerMask.GetMask("Player"));
-
-
-            Debug.DrawRay(transform.position, Vector3.left * fightSightDistance, Color.yellow);
-            fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, fightSightDistance, LayerMask.GetMask("Player"));
-
-        }
-        if (!isStun)
-        {
-            // 무방비 / 추격-> 전투
-            if (fightRayHit2D)
+            // 전투 자극
+            RaycastHit2D fightRayHit2D;
+            if (m_isRightHeaded)
             {
-                m_sensorPos = fightRayHit2D.collider.transform.position;
+                // 추격 센서
+                Debug.DrawRay(transform.position, Vector3.right * guardSightDistance, Color.magenta);
+                guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, guardSightDistance, LayerMask.GetMask("Player"));
 
-                FightAIState();
+                // 전투 센서
+                Debug.DrawRay(transform.position, Vector3.right * fightSightDistance, Color.yellow);
+                fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, fightSightDistance, LayerMask.GetMask("Player"));
+
             }
-            // 무방비 / 전투 -> 추격
-            else if (guardRayHit2D)
+            else
             {
-                m_sensorPos = guardRayHit2D.collider.transform.position;
-                GuardAIState();
+
+                Debug.DrawRay(transform.position, Vector3.left * guardSightDistance, Color.magenta);
+                guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, guardSightDistance, LayerMask.GetMask("Player"));
+
+
+                Debug.DrawRay(transform.position, Vector3.left * fightSightDistance, Color.yellow);
+                fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, fightSightDistance, LayerMask.GetMask("Player"));
+
+            }
+            if (!isStun)
+            {
+                // 사정 거리에 플레이어
+                // 무방비 / 추격-> 전투
+                if (fightRayHit2D)
+                {
+                    //m_sensorPos = fightRayHit2D.collider.transform.position;
+
+                    // 랜덤 돌리기(0 ~ 2초)
+                    // 랜덤 초수 후에 FightAIState 하셈
+
+                    if (curEnemyState != EnemyState.FIGHT)
+                        FightAIState();
+                }
+                // 전투 -> 추격
+                else
+                {
+                    if (curEnemyState == EnemyState.FIGHT)
+                    {
+                        PreGuardComplete();
+                        //GuardAIState();
+                    }
+                }
+                //else if(guardRayHit2D)
+                //{
+                    //m_sensorPos = guardRayHit2D.collider.transform.position;
+                    //if (curEnemyState == EnemyState.IDLE)
+                    //{
+                        //GuardAIState();
+                    //}
+                    
+                //}
+                
             }
         }
+        
 
     }
 
@@ -301,7 +296,7 @@ public class DefenseEnemy : Enemy
     {
         if (!isStun)
         {
-            rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 전투 시 그 자리에 바로 멈춤
+            rigid.constraints = RigidbodyConstraints2D.FreezeAll;
 
             animator.SetBool("isFight", false);
             animator.SetBool("isWalk", true);
@@ -319,6 +314,7 @@ public class DefenseEnemy : Enemy
 
     void PreGuardComplete()
     {
+        rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
         // 애니메이션
         animator.SetBool("isReady", true);
         curEnemyState = EnemyState.GUARD;
@@ -372,7 +368,7 @@ public class DefenseEnemy : Enemy
 
                 if (isReady == false)    // 준비 동작 끝나면
                 {
-                    rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 멈춤 해제
+                    //rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 멈춤 해제
                     m_gun.Fire();
                     Sensor();
 
@@ -402,30 +398,6 @@ public class DefenseEnemy : Enemy
     {
         //Debug.Log("ReadyComplete");
         isReady = false;
-    }
-
-    // 겹침 현상
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            OverLap();
-        }
-    }
-
-    void OverLap()
-    {
-
-
-
-        Debug.Log("Dir = Stop");
-        curDir = DIR.STOP; // 현재 이동방향값 STOP
-
-    }
-
-    void unOverLap()
-    {
-        rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
 }
