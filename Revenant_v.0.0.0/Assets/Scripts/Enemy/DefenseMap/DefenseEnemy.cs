@@ -1,14 +1,11 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+public class DefenseEnemy : Enemy
+{
 
-public enum DIR
-{
-    LEFT, RIGHT, UP, DOWN, STOP
-}
-public class EnemyA : Enemy
-{
     [SerializeField]
     Parts parts;
 
@@ -23,42 +20,42 @@ public class EnemyA : Enemy
 
     CircleCollider2D guardHearCollider;
 
-    // ì´ë™ ë°©í–¥
+    // ÀÌµ¿ ¹æÇâ
     public DIR defaultDir;
     DIR curDir;
 
-    // ì´ë™ ìœ„ì¹˜
+    // ÀÌµ¿ À§Ä¡
     [field: SerializeField]
     public Vector2 m_sensorPos { get; set; }
     Vector2 originalPos { get; set; }
 
-    // ê²½ì§ì •ë„
+    // °æÁ÷Á¤µµ
     [field: SerializeField]
     public float stunStack { get; set; }
     float curStun;
     bool isStun = false;
     public GameObject stunMark;
 
-    // ë¬´ë°©ë¹„ ì„ ë”œ
+    // ¹«¹æºñ ¼±µô
     [field: SerializeField]
     public float m_preIdleTime { get; set; } = 1.0f;
 
-    // ì¶”ê²© ì„ ë”œ
+    // Ãß°İ ¼±µô
     [field: SerializeField]
     public float m_preGuardTime { get; set; } = 1.0f;
-    // ì¶”ê²© ì‹œì•¼ ê±°ë¦¬ - ì‹œê°
+    // Ãß°İ ½Ã¾ß °Å¸® - ½Ã°¢
     [field: SerializeField]
-    public float guardSightDistance { get; set; }    // ì¶”ê²© ê±°ë¦¬
+    public float guardSightDistance { get; set; }    // Ãß°İ °Å¸®
 
-    // ì „íˆ¬ ê±°ë¦¬
+    // ÀüÅõ °Å¸®
     [field: SerializeField]
-    public float fightSightDistance { get; set; } = 1.5f;   // ê³µê²© ê±°ë¦¬
+    public float fightSightDistance { get; set; } = 1.5f;   // °ø°İ °Å¸®
     public GameObject detectMark;
 
-    // ì‚¬ê²© ì„ ë”œ
+    // »ç°İ ¼±µô
     [field: SerializeField]
     public float m_preFightTime { get; set; }
-    bool isReady = false; // true ì‹œ ì‚¬ê²© ë¶ˆê°€
+    bool isReady = false; // true ½Ã »ç°İ ºÒ°¡
 
     [SerializeField]
     EnemyManager enemyManager;
@@ -68,7 +65,7 @@ public class EnemyA : Enemy
     EnemyState nextEnemyState;
 
     [field: SerializeField]
-    public Enemy_Gun m_gun{get;set;}
+    public Enemy_Gun m_gun { get; set; }
 
     private SoundMgr_SFX m_SFXMgr;
 
@@ -90,7 +87,7 @@ public class EnemyA : Enemy
     }
     private void Update()
     {
-        if(textForTest)
+        if (textForTest)
             textForTest.text = curEnemyState.ToString();
     }
 
@@ -101,33 +98,33 @@ public class EnemyA : Enemy
 
     public override void Damaged(float stun, float damage)
     {
-        // í”¼ê²© ì„¼ì„œ ìê·¹ ìœ„ì¹˜
+        // ÇÇ°İ ¼¾¼­ ÀÚ±Ø À§Ä¡
         if (enemyManager)
             m_sensorPos = enemyManager.player.transform.position;
         else Debug.Log("there is no enemyManager");
         GuardAIState();
 
-        // ì‚¬ë§
+        // »ç¸Á
         if (m_Hp - damage <= 0)
         {
             //Debug.Log(name + " Die");
             isAlive = false;
 
-            if(enemyManager)
+            if (enemyManager)
                 enemyManager.PlusDieCount();
 
             Destroy(gameObject);
         }
-        // ê²½ì§
-        else if(curStun - stun <= 0)
+        // °æÁ÷
+        else if (curStun - stun <= 0)
         {
             m_Hp -= damage;
             //Debug.Log(name + " stunned ");
-            
+
             StunAIState();
-            curStun = stunStack; // ìŠ¤íƒ ì´ˆê¸°í™”
+            curStun = stunStack; // ½ºÅÃ ÃÊ±âÈ­
         }
-        // í”¼ê²©
+        // ÇÇ°İ
         else
         {
             //Debug.Log(name + " damaged: " + damage);
@@ -138,7 +135,7 @@ public class EnemyA : Enemy
     }
 
 
-    // ì¶”ê²© - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Ãß°İ - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public void AutoMove()
     {
         switch (curDir)
@@ -154,12 +151,12 @@ public class EnemyA : Enemy
                 break;
         }
     }
-    // ì´ë™ ì „ ëª¸ì²´ íšŒì „
-    // ì¢Œìš° íšŒì „ë§Œ ìˆìŒ
+    // ÀÌµ¿ Àü ¸öÃ¼ È¸Àü
+    // ÁÂ¿ì È¸Àü¸¸ ÀÖÀ½
 
     public void Rotation()
     {
-        // ìŒìˆ˜: ì¢Œ, ì–‘ìˆ˜: ìš°
+        // À½¼ö: ÁÂ, ¾ç¼ö: ¿ì
         if (m_sensorPos.x - transform.position.x < SAFE_DISTANCE)
         {
             if (m_isRightHeaded)
@@ -174,32 +171,32 @@ public class EnemyA : Enemy
         else { }//no rotation
     }
 
-    // ì´ë™
+    // ÀÌµ¿
 
     public void Move()
     {
         Rotation();
-        // ë„ì°©í• ë•Œê¹Œì§€ ì´ë™
+        // µµÂøÇÒ¶§±îÁö ÀÌµ¿
         if (!Destination())
         {
-            // ì• ë‹ˆë©”ì´ì…˜
+            // ¾Ö´Ï¸ŞÀÌ¼Ç
             animator.SetBool("isWalk", true);
             if (m_isRightHeaded)
                 rigid.velocity = new Vector2(1, 0);
             else
                 rigid.velocity = new Vector2(-1, 0);
         }
-        // ë„ì°©
+        // µµÂø
         else
         {
             animator.SetBool("isWalk", false);
         }
     }
 
-    // ë„ì°©
+    // µµÂø
     bool Destination()
     {
-        if(m_isRightHeaded)
+        if (m_isRightHeaded)
         {
             if (m_sensorPos.x - transform.position.x < SAFE_DISTANCE)
                 return true;
@@ -212,25 +209,25 @@ public class EnemyA : Enemy
         return false;
     }
 
-    // ì„¼ì„œ í‘œì‹œ
-    // * ìê·¹ ë°›ì€ ìœ„ì¹˜ë¥¼ ì €ì¥
+    // ¼¾¼­ Ç¥½Ã
+    // * ÀÚ±Ø ¹ŞÀº À§Ä¡¸¦ ÀúÀå
     public void Sensor()
     {
-        // ì¶”ê²© ìê·¹
+        // Ãß°İ ÀÚ±Ø
         RaycastHit2D guardRayHit2D;
 
-        // ì „íˆ¬ ìê·¹
+        // ÀüÅõ ÀÚ±Ø
         RaycastHit2D fightRayHit2D;
         if (m_isRightHeaded)
         {
-            // ì¶”ê²© ì„¼ì„œ
+            // Ãß°İ ¼¾¼­
             Debug.DrawRay(transform.position, Vector3.right * guardSightDistance, Color.magenta);
             guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, guardSightDistance, LayerMask.GetMask("Player"));
 
-            // ì „íˆ¬ ì„¼ì„œ
+            // ÀüÅõ ¼¾¼­
             Debug.DrawRay(transform.position, Vector3.right * fightSightDistance, Color.yellow);
             fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, fightSightDistance, LayerMask.GetMask("Player"));
-            
+
         }
         else
         {
@@ -243,45 +240,45 @@ public class EnemyA : Enemy
             fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, fightSightDistance, LayerMask.GetMask("Player"));
 
         }
-        if(!isStun)
+        if (!isStun)
         {
-            // ë¬´ë°©ë¹„ / ì¶”ê²©-> ì „íˆ¬
+            // ¹«¹æºñ / Ãß°İ-> ÀüÅõ
             if (fightRayHit2D)
             {
                 m_sensorPos = fightRayHit2D.collider.transform.position;
 
                 FightAIState();
             }
-            // ë¬´ë°©ë¹„ / ì „íˆ¬ -> ì¶”ê²©
+            // ¹«¹æºñ / ÀüÅõ -> Ãß°İ
             else if (guardRayHit2D)
             {
                 m_sensorPos = guardRayHit2D.collider.transform.position;
                 GuardAIState();
             }
         }
-            
+
     }
 
 
     void StunAIState()
     {
         Debug.Log("stunState");
-        //rigid.velocity = new Vector2(0, 0);// ì´ë™ ë©ˆì¶¤
-        rigid.constraints = RigidbodyConstraints2D.FreezeAll;// ì „íˆ¬ ì‹œ ê·¸ ìë¦¬ì— ë°”ë¡œ ë©ˆì¶¤
+        //rigid.velocity = new Vector2(0, 0);// ÀÌµ¿ ¸ØÃã
+        rigid.constraints = RigidbodyConstraints2D.FreezeAll;// ÀüÅõ ½Ã ±× ÀÚ¸®¿¡ ¹Ù·Î ¸ØÃã
 
-        // ì• ë‹ˆë©”ì´ì…˜
+        // ¾Ö´Ï¸ŞÀÌ¼Ç
         animator.SetTrigger("Stun");
         animator.SetBool("isStun", true);
 
         isStun = true;
-        // â˜…
-        if(detectMark)
+        // ¡Ú
+        if (detectMark)
             detectMark.SetActive(false);
-        if(stunMark)
+        if (stunMark)
             stunMark.SetActive(true);
 
-        // ë‹¤ìŒ ìƒíƒœ: ìŠ¤í„´ ë¨¹ê¸° ì „ ìƒíƒœ
-        if (curEnemyState != EnemyState.STUN) // ìŠ¤í„´ì¼ ë•Œë¥¼ ì €ì¥í•˜ë©´ ë¬´í•œ ìŠ¤í„´ì— ê±¸ë¦´ ê²ƒ
+        // ´ÙÀ½ »óÅÂ: ½ºÅÏ ¸Ô±â Àü »óÅÂ
+        if (curEnemyState != EnemyState.STUN) // ½ºÅÏÀÏ ¶§¸¦ ÀúÀåÇÏ¸é ¹«ÇÑ ½ºÅÏ¿¡ °É¸± °Í
             nextEnemyState = curEnemyState;
         curEnemyState = EnemyState.STUN;
 
@@ -291,58 +288,58 @@ public class EnemyA : Enemy
     void StunComplete()
     {
         Debug.Log("stunComplete");
-        rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// ì „íˆ¬ ì‹œ ê·¸ ìë¦¬ì— ë°”ë¡œ ë©ˆì¶¤
-        // ì• ë‹ˆë©”ì´ì…˜
+        rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// ÀüÅõ ½Ã ±× ÀÚ¸®¿¡ ¹Ù·Î ¸ØÃã
+        // ¾Ö´Ï¸ŞÀÌ¼Ç
         animator.SetBool("isStun", false);
 
         isStun = false;
-        if(stunMark)
+        if (stunMark)
             stunMark.SetActive(false);
     }
 
     public void GuardAIState()
     {
-        if(!isStun)
+        if (!isStun)
         {
-            rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// ì „íˆ¬ ì‹œ ê·¸ ìë¦¬ì— ë°”ë¡œ ë©ˆì¶¤
+            rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// ÀüÅõ ½Ã ±× ÀÚ¸®¿¡ ¹Ù·Î ¸ØÃã
 
             animator.SetBool("isFight", false);
             animator.SetBool("isWalk", true);
-            // ì• ë‹ˆë©”ì´ì…˜
+            // ¾Ö´Ï¸ŞÀÌ¼Ç
             animator.SetBool("isReady", false);
 
-            // íŒŒì¸  ë„ê¸°
+            // ÆÄÃ÷ ²ô±â
             parts.setSpriteParts(false);
 
-            // ì„ ë”œ (ì „íˆ¬ ìƒíƒœ ëŒì… ë”œë ˆì´)
+            // ¼±µô (ÀüÅõ »óÅÂ µ¹ÀÔ µô·¹ÀÌ)
             Invoke(nameof(PreGuardComplete), m_preGuardTime);
         }
-        
+
     }
 
     void PreGuardComplete()
     {
-        // ì• ë‹ˆë©”ì´ì…˜
+        // ¾Ö´Ï¸ŞÀÌ¼Ç
         animator.SetBool("isReady", true);
         curEnemyState = EnemyState.GUARD;
-        
+
     }
 
     void FightAIState()
     {
         if (!isStun)
         {
-            rigid.constraints = RigidbodyConstraints2D.FreezeAll;// ì „íˆ¬ ì‹œ ê·¸ ìë¦¬ì— ë°”ë¡œ ë©ˆì¶¤
+            rigid.constraints = RigidbodyConstraints2D.FreezeAll;// ÀüÅõ ½Ã ±× ÀÚ¸®¿¡ ¹Ù·Î ¸ØÃã
 
-            // ì„ ë”œ (ì „íˆ¬ ìƒíƒœ ëŒì… ë”œë ˆì´)
+            // ¼±µô (ÀüÅõ »óÅÂ µ¹ÀÔ µô·¹ÀÌ)
             isReady = true;
             Invoke(nameof(ReadyComplete), m_preFightTime);
 
-            // ì• ë‹ˆë©”ì´ì…˜
+            // ¾Ö´Ï¸ŞÀÌ¼Ç
             animator.SetBool("isWalk", false);
             animator.SetBool("isFight", true);
 
-            // íŒŒì¸  í‹€ê¸°
+            // ÆÄÃ÷ Æ²±â
             parts.setSpriteParts(true);
 
             //Debug.Log("FightAnim");
@@ -350,7 +347,7 @@ public class EnemyA : Enemy
             if (detectMark)
                 detectMark.SetActive(true);
 
-            // ê³µê²© ìƒíƒœ
+            // °ø°İ »óÅÂ
             curEnemyState = EnemyState.FIGHT;
         }
 
@@ -358,45 +355,45 @@ public class EnemyA : Enemy
 
     public void AI()
     {
-        switch(curEnemyState)
+        switch (curEnemyState)
         {
-            case EnemyState.IDLE:// ëŒ€ê¸°
-                // í”Œë ˆì´ì–´ ë§Œë‚˜ë©´ ì¶”ê²©
+            case EnemyState.IDLE:// ´ë±â
+                // ÇÃ·¹ÀÌ¾î ¸¸³ª¸é Ãß°İ
                 Sensor();
                 break;
 
-            case EnemyState.GUARD:// ì¶”ê²©
+            case EnemyState.GUARD:// Ãß°İ
                 Sensor();
-                // ì´ë™
+                // ÀÌµ¿
                 Move();
                 break;
 
-            case EnemyState.FIGHT:// ì „íˆ¬
-                
-                if (isReady == false)    // ì¤€ë¹„ ë™ì‘ ëë‚˜ë©´
+            case EnemyState.FIGHT:// ÀüÅõ
+
+                if (isReady == false)    // ÁØºñ µ¿ÀÛ ³¡³ª¸é
                 {
-                    rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// ë©ˆì¶¤ í•´ì œ
+                    rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// ¸ØÃã ÇØÁ¦
                     m_gun.Fire();
                     Sensor();
 
                 }
-                    
-                break;
-            case EnemyState.STUN:// ìŠ¤í„´
 
-                if (isStun == false) // ìŠ¤í„´ ì™„ë£Œ
+                break;
+            case EnemyState.STUN:// ½ºÅÏ
+
+                if (isStun == false) // ½ºÅÏ ¿Ï·á
                 {
                     if (nextEnemyState == EnemyState.FIGHT)
                     {
                         FightAIState();
                     }
-                        
+
                     else
-                        curEnemyState = nextEnemyState; // ë‹¤ìŒ ìƒíƒœ: ìŠ¤í„´ ë¨¹ê¸° ì „ ìƒíƒœ
-                    
+                        curEnemyState = nextEnemyState; // ´ÙÀ½ »óÅÂ: ½ºÅÏ ¸Ô±â Àü »óÅÂ
+
                 }
                 break;
-            case EnemyState.DEAD: // ì‹œì²´
+            case EnemyState.DEAD: // ½ÃÃ¼
                 break;
         }
     }
@@ -407,10 +404,10 @@ public class EnemyA : Enemy
         isReady = false;
     }
 
-    // ê²¹ì¹¨ í˜„ìƒ
+    // °ãÄ§ Çö»ó
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             OverLap();
         }
@@ -418,12 +415,12 @@ public class EnemyA : Enemy
 
     void OverLap()
     {
-        
-        
+
+
 
         Debug.Log("Dir = Stop");
-        curDir = DIR.STOP; // í˜„ì¬ ì´ë™ë°©í–¥ê°’ STOP
-        
+        curDir = DIR.STOP; // ÇöÀç ÀÌµ¿¹æÇâ°ª STOP
+
     }
 
     void unOverLap()
@@ -431,5 +428,4 @@ public class EnemyA : Enemy
         rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
-    
 }

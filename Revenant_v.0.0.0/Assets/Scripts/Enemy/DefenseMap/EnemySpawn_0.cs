@@ -17,6 +17,7 @@ public class EnemySpawn_0 : MonoBehaviour
         {
             if(p)
                 p.InitAll();
+
         }
 
         

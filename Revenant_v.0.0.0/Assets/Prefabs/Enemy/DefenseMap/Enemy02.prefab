@@ -29,9 +29,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6500847573532739241}
   - {fileID: 9204230181287638201}
   - {fileID: 8293258161304344043}
-  - {fileID: 6500847573532739241}
   m_Father: {fileID: 7003132597401564047}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -74,10 +74,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 53dfc137b3cda1b4da4c81a95fec9ec5, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.98039216, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -160,10 +160,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: a1b765d302711fe4a8bef5b65aeeee6b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.98039216, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -284,10 +284,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4b44209921b6b554aa711b1ccc109af3, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.98039216, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -526,9 +526,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6500847573532739241}
-  - component: {fileID: 9009942716712875240}
+  - component: {fileID: 2031821743282411280}
   m_Layer: 0
-  m_Name: Gun Pos
+  m_Name: Enemy_Pistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -547,9 +547,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1305888264074253704}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9009942716712875240
+--- !u!114 &2031821743282411280
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -558,7 +558,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2690384770156555069}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a545fb5237fff1f43935ccd510289334, type: 3}
+  m_Script: {fileID: 11500000, guid: f003e911431868a4ebec843cf81f0d58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_bulletPrefab: {fileID: 8704810453878243624, guid: 73eadf95fbbd63147b488cad71601950, type: 3}
@@ -596,7 +596,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1305888264074253704}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4358734642526899623
 SpriteRenderer:
@@ -637,7 +637,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9822a886f9bc9864c96d69225aab92aa, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -666,6 +666,7 @@ GameObject:
   - component: {fileID: 5062277878219029380}
   - component: {fileID: 649631824416713310}
   - component: {fileID: 6899837093848256732}
+  - component: {fileID: 485395734802291711}
   m_Layer: 11
   m_Name: Enemy02
   m_TagString: Enemy
@@ -777,7 +778,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: -1683129471, guid: 3ebba551addac4a42859ab895fb7a9b1, type: 3}
   m_Color: {r: 0, g: 1, b: 0.98099947, a: 1}
@@ -849,10 +850,11 @@ MonoBehaviour:
   <m_Hp>k__BackingField: 20
   <m_Speed>k__BackingField: 1
   <m_stunTime>k__BackingField: 0
+  parts: {fileID: 5784605777281783318}
   <SAFE_DISTANCE>k__BackingField: 0.1
   textForTest: {fileID: 0}
   defaultDir: 0
-  <sensorPos>k__BackingField: {x: 0, y: 0}
+  <m_sensorPos>k__BackingField: {x: 0, y: 0}
   <stunStack>k__BackingField: 0
   stunMark: {fileID: 0}
   <m_preIdleTime>k__BackingField: 1
@@ -863,6 +865,20 @@ MonoBehaviour:
   <m_preFightTime>k__BackingField: 0
   enemyManager: {fileID: 0}
   <curEnemyState>k__BackingField: 0
+  <m_gun>k__BackingField: {fileID: 2031821743282411280}
+--- !u!114 &485395734802291711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062277878219029379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 726725fdf7ad90d4bae7fed70b0bda1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defensePos: {x: 0, y: 0}
 --- !u!1 &7159256178615554184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1030,7 +1046,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1305888264074253704}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3150520644125124851
 SpriteRenderer:
@@ -1071,7 +1087,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1196833629
-  m_SortingLayer: 4
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ce52e64e5c473e24c9b7f5553252b8f8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
