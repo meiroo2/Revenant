@@ -43,7 +43,8 @@ public class DefenseEnemy : Enemy
 
     // 추격 선딜
     [field: SerializeField]
-    public float m_preGuardTime { get; set; } = 3.0f;
+    public float m_preGuardTime { get; set; } = 1.0f;
+
     // 추격 시야 거리 - 시각
     [field: SerializeField]
     public float guardSightDistance { get; set; } = 2.0f;    // 추격 거리
@@ -147,7 +148,7 @@ public class DefenseEnemy : Enemy
 
     public void Move()
     {
-        Rotation();
+        //Rotation();
         // 도착할때까지 이동
         if (!Destination())
         {
@@ -227,15 +228,19 @@ public class DefenseEnemy : Enemy
                     // 랜덤 초수 후에 FightAIState 하셈
 
                     if (curEnemyState != EnemyState.FIGHT)
-                        FightAIState();
+                    {
+                        Invoke(nameof(FightAIState), Random.Range(0f, 2.0f));
+                    }
+                        
                 }
                 // 전투 -> 추격
                 else
                 {
                     if (curEnemyState == EnemyState.FIGHT)
                     {
-                        PreGuardComplete();
-                        //GuardAIState();
+                        //Rotation();
+                        //PreGuardComplete();
+                        GuardAIState();
                     }
                 }
                 //else if(guardRayHit2D)
@@ -296,6 +301,7 @@ public class DefenseEnemy : Enemy
     {
         if (!isStun)
         {
+            Rotation();
             rigid.constraints = RigidbodyConstraints2D.FreezeAll;
 
             animator.SetBool("isFight", false);
@@ -325,6 +331,7 @@ public class DefenseEnemy : Enemy
     {
         if (!isStun)
         {
+            Rotation();
             rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
 
             // 선딜 (전투 상태 돌입 딜레이)

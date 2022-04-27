@@ -7,7 +7,7 @@ public class Enemy : Human
     [field: SerializeField]
     public EnemyState curEnemyState { get; set; }
 
-    EnemyState m_enemyState;
+    //EnemyState m_enemyState;
 
     public virtual void Damaged(float stun, float damage) { }
 
