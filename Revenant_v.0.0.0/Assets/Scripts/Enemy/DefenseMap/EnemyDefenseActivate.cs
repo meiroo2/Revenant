@@ -8,12 +8,12 @@ public class EnemyDefenseActivate : MonoBehaviour, IEnemySpawn
     Vector2 defensePos = new Vector2(0, 0);
 
     bool isActive = false;
-    DefenseEnemy m_enemy;
+    DefenseEnemy_Controller m_enemy;
 
 
     private void Awake()
     {
-        m_enemy = GetComponent<DefenseEnemy>();
+        m_enemy = GetComponent<DefenseEnemy_Controller>();
 
     }
 

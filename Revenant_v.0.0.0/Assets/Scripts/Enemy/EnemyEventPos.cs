@@ -21,8 +21,8 @@ public class EnemyEventPos : MonoBehaviour
             case PosType.DefenseMap:
                 if (collision.CompareTag("Enemy"))
                 {
-                    DefenseEnemy d =
-                    collision.GetComponent<DefenseEnemy>();
+                    DefenseEnemy_Controller d =
+                    collision.GetComponent<DefenseEnemy_Controller>();
                     d.m_canSensor = true;
                     d.m_playerTransform = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
                 }

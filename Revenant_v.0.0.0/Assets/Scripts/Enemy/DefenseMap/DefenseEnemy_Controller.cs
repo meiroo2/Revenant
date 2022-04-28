@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class DefenseEnemy : Enemy
+public class DefenseEnemy_Controller : Enemy
 {
 
     [SerializeField]
