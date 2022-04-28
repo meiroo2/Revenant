@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class Enemy : Human
 {
-    EnemyState m_enemyState;
+    [field: SerializeField]
+    public EnemyState curEnemyState { get; set; }
+
+    //EnemyState m_enemyState;
 
     public virtual void Damaged(float stun, float damage) { }
 
@@ -17,6 +20,13 @@ public class Enemy : Human
         else
             setisRightHeaded(true);
         
+        
+    }
+
+    public void OverLap()
+    {
+        //∞„√∆¥Ÿ
+
         
     }
 }
