@@ -12,9 +12,9 @@ public class Human : ObjectDefine
 {
     // Member Variables
     public humanState m_curHumanState { get; private set; } = humanState.Active;
-    [field: SerializeField] public float m_Hp { get; protected set; } = 10;
-    [field: SerializeField] public float m_Speed { get; protected set; } = 1f;
-    [field: SerializeField] public float m_stunTime { get; protected set; } = 0f;
+    [field: SerializeField] public float m_Hp { get; set; } = 10;
+    [field: SerializeField] public float m_Speed { get; set; } = 1f;
+    [field: SerializeField] public float m_stunTime { get; set; } = 0f;
     public bool m_isRightHeaded { get; private set; } = true;
     public MapInfo m_curPos { get; set; } = new MapInfo(0, 0, 0, 0, 0);
 

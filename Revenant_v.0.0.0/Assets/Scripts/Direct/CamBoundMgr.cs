@@ -10,7 +10,6 @@ public class CamBoundMgr : MonoBehaviour
     private Transform[] m_BoundTransforms;
 
     private bool m_canMove = true;
-    private Vector3 m_NearCamPos;
 
     private void Awake()
     {
@@ -31,6 +30,8 @@ public class CamBoundMgr : MonoBehaviour
                 case 0:
                     if (_pos.y > m_BoundTransforms[0].position.y)
                     {
+                        Debug.Log("카메라 상 걸림");
+
                         m_canMove = false;
                     }
                     break;
@@ -38,6 +39,8 @@ public class CamBoundMgr : MonoBehaviour
                 case 1:
                     if (_pos.y < m_BoundTransforms[1].position.y)
                     {
+                        Debug.Log("카메라 하 걸림");
+
                         m_canMove = false;
                     }
                     break;
@@ -45,6 +48,8 @@ public class CamBoundMgr : MonoBehaviour
                 case 2:
                     if (_pos.x < m_BoundTransforms[2].position.x)
                     {
+                        Debug.Log("카메라 좌 걸림");
+
                         m_canMove = false;
                     }
                     break;
@@ -52,6 +57,8 @@ public class CamBoundMgr : MonoBehaviour
                 case 3:
                     if (_pos.x > m_BoundTransforms[3].position.x)
                     {
+                        Debug.Log("카메라 우 걸림");
+
                         m_canMove = false;
                     }
                     break;
@@ -59,43 +66,5 @@ public class CamBoundMgr : MonoBehaviour
         }
         return m_canMove;
     }
-    public Vector3 getNearCamPos(Vector3 _pos)
-    {
-        m_NearCamPos = _pos;
 
-        for (int i = 0; i < 4; i++)
-        {
-            switch (i)
-            {
-                case 0:
-                    if (m_NearCamPos.y > m_BoundTransforms[0].position.y)
-                    {
-                        m_NearCamPos.y = m_BoundTransforms[0].position.y - 0.01f;
-                    }
-                    break;
-
-                case 1:
-                    if (m_NearCamPos.y < m_BoundTransforms[1].position.y)
-                    {
-                        m_NearCamPos.y = m_BoundTransforms[1].position.y + 0.01f;
-                    }
-                    break;
-
-                case 2:
-                    if (m_NearCamPos.x < m_BoundTransforms[2].position.x)
-                    {
-                        m_NearCamPos.x = m_BoundTransforms[2].position.x + 0.01f;
-                    }
-                    break;
-
-                case 3:
-                    if (m_NearCamPos.x > m_BoundTransforms[3].position.x)
-                    {
-                        m_NearCamPos.x = m_BoundTransforms[3].position.x - 0.01f;
-                    }
-                    break;
-            }
-        }
-        return m_NearCamPos;
-    }
 }

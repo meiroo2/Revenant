@@ -5,82 +5,71 @@ using TMPro;
 
 public class DefenseEnemy_Controller : Enemy
 {
+    EnemyState nextEnemyState;
 
     [SerializeField]
     Parts parts;
 
+    DefenseEnemy_Status status;
+
+
+    // 위치 도달을 위한 오차 범위
     [field: SerializeField]
     public float SAFE_DISTANCE { get; set; } = 0.1f;
-
-    TextMeshProUGUI textForTest;
 
     bool isAlive = true;
     Rigidbody2D rigid;
     Animator animator;
 
-    CircleCollider2D guardHearCollider;
-
-    public bool m_canSensor { get; set; } = false;
-
-   // 이동 위치
-   [field: SerializeField]
-    public Vector2 m_sensorPos { get; set; }
-    Vector2 originalPos { get; set; }
-
-    public Transform m_playerTransform { get; set; }
-
-
-    // 경직정도
-    [field: SerializeField]
-    public float stunStack { get; set; }
-    float curStun;
-    bool isStun = false;
-    public GameObject stunMark;
-
-    // 무방비 선딜
-    [field: SerializeField]
-    public float m_preIdleTime { get; set; } = 1.0f;
-
-    // 추격 선딜
-    [field: SerializeField]
-    public float m_preGuardTime { get; set; } = 1.0f;
-
-    // 추격 시야 거리 - 시각
-    [field: SerializeField]
-    public float guardSightDistance { get; set; } = 2.0f;    // 추격 거리
-
-    // 전투 거리
-    [field: SerializeField]
-    public float fightSightDistance { get; set; } = 1.5f;   // 공격 거리
-    public GameObject detectMark;
-
-    // 사격 선딜
-    [field: SerializeField]
-    public float m_preFightTime { get; set; }
-    bool isReady = false; // true 시 사격 불가
-
-
-    
-    EnemyState nextEnemyState;
+    CircleCollider2D guardHearCollider; // 청음 범위
 
     [field: SerializeField]
     public Enemy_Gun m_gun { get; set; }
 
     private SoundMgr_SFX m_SFXMgr;
 
+    // 감지
+    public bool m_canSensor { get; set; } = false;
+
+    // 이동
+   [field: SerializeField]
+    public Vector2 m_sensorPos { get; set; } // 감지된 위치
+    Vector2 originalPos { get; set; } // 원 위치
+
+    public Transform m_playerTransform { get; set; } // 플레이어 실시간 위치
+
+    // 전투
+    bool isReady = false; // true 시 사격 불가
+
+    // 경직
+    float curStun = 0;
+    bool isStun = false;
+
+    
+
+    // UI
+    public GameObject stunMark;
+    public GameObject detectMark;
+
+    // 무방비 선딜
+    //[field: SerializeField]
+    //public float m_preIdleTime { get; set; } = 1.0f;
+
+    // 추격 선딜
+    //[field: SerializeField]
+    //public float m_preChaseTime { get; set; } = 1.0f;
+
+
+
     private void Awake()
     {
         setisRightHeaded(false);
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        status = GetComponent<DefenseEnemy_Status>();
 
-        curStun = stunStack;
+        curStun = status.m_stunStack;
         originalPos = transform.position;
-    }
-    private void Update()
-    {
-        if (textForTest)
-            textForTest.text = curEnemyState.ToString();
     }
 
     private void FixedUpdate()
@@ -95,7 +84,7 @@ public class DefenseEnemy_Controller : Enemy
         GuardAIState();
 
         // 사망
-        if (m_Hp - damage <= 0)
+        if (status.m_Hp - damage <= 0)
         {
             //Debug.Log(name + " Die");
             isAlive = false;
@@ -108,17 +97,17 @@ public class DefenseEnemy_Controller : Enemy
         // 경직
         else if (curStun - stun <= 0)
         {
-            m_Hp -= damage;
+            status.m_Hp -= damage;
             //Debug.Log(name + " stunned ");
 
             StunAIState();
-            curStun = stunStack; // 스택 초기화
+            curStun = status.m_stunStack; // 스택 초기화
         }
         // 피격
         else
         {
             //Debug.Log(name + " damaged: " + damage);
-            m_Hp -= damage;
+            status.m_Hp -= damage;
             //Debug.Log(name + " stun damage: " + stun);
             curStun -= stun;
         }
@@ -155,9 +144,9 @@ public class DefenseEnemy_Controller : Enemy
             // 애니메이션
             animator.SetBool("isWalk", true);
             if (m_isRightHeaded)
-                rigid.velocity = new Vector2(1, 0);
+                rigid.velocity = new Vector2(1, 0) * status.m_Speed;
             else
-                rigid.velocity = new Vector2(-1, 0);
+                rigid.velocity = new Vector2(-1, 0) * status.m_Speed;
         }
         // 도착
         else
@@ -197,23 +186,23 @@ public class DefenseEnemy_Controller : Enemy
             if (m_isRightHeaded)
             {
                 // 추격 센서
-                Debug.DrawRay(transform.position, Vector3.right * guardSightDistance, Color.magenta);
-                guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, guardSightDistance, LayerMask.GetMask("Player"));
+                Debug.DrawRay(transform.position, Vector3.right * status.m_guardSightDistance, Color.magenta);
+                guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, status.m_guardSightDistance, LayerMask.GetMask("Player"));
 
                 // 전투 센서
-                Debug.DrawRay(transform.position, Vector3.right * fightSightDistance, Color.yellow);
-                fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, fightSightDistance, LayerMask.GetMask("Player"));
+                Debug.DrawRay(transform.position, Vector3.right * status.m_fightSightDistance, Color.yellow);
+                fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.right, status.m_fightSightDistance, LayerMask.GetMask("Player"));
 
             }
             else
             {
 
-                Debug.DrawRay(transform.position, Vector3.left * guardSightDistance, Color.magenta);
-                guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, guardSightDistance, LayerMask.GetMask("Player"));
+                Debug.DrawRay(transform.position, Vector3.left * status.m_guardSightDistance, Color.magenta);
+                guardRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, status.m_guardSightDistance, LayerMask.GetMask("Player"));
 
 
-                Debug.DrawRay(transform.position, Vector3.left * fightSightDistance, Color.yellow);
-                fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, fightSightDistance, LayerMask.GetMask("Player"));
+                Debug.DrawRay(transform.position, Vector3.left * status.m_fightSightDistance, Color.yellow);
+                fightRayHit2D = Physics2D.Raycast(transform.position, Vector3.left, status.m_fightSightDistance, LayerMask.GetMask("Player"));
 
             }
             if (!isStun)
@@ -262,7 +251,7 @@ public class DefenseEnemy_Controller : Enemy
 
     void StunAIState()
     {
-        Debug.Log("stunState");
+        //Debug.Log("stunState");
         //rigid.velocity = new Vector2(0, 0);// 이동 멈춤
         rigid.constraints = RigidbodyConstraints2D.FreezeAll;// 전투 시 그 자리에 바로 멈춤
 
@@ -282,12 +271,12 @@ public class DefenseEnemy_Controller : Enemy
             nextEnemyState = curEnemyState;
         curEnemyState = EnemyState.STUN;
 
-        Invoke(nameof(StunComplete), m_stunTime);
+        Invoke(nameof(StunComplete), status.m_stunTime);
     }
 
     void StunComplete()
     {
-        Debug.Log("stunComplete");
+        //Debug.Log("stunComplete");
         rigid.constraints = RigidbodyConstraints2D.FreezeRotation;// 전투 시 그 자리에 바로 멈춤
         // 애니메이션
         animator.SetBool("isStun", false);
@@ -313,7 +302,7 @@ public class DefenseEnemy_Controller : Enemy
             parts.setSpriteParts(false);
 
             // 선딜 (전투 상태 돌입 딜레이)
-            Invoke(nameof(PreGuardComplete), m_preGuardTime);
+            Invoke(nameof(PreGuardComplete), status.m_preChaseTime);
         }
 
     }
@@ -336,7 +325,7 @@ public class DefenseEnemy_Controller : Enemy
 
             // 선딜 (전투 상태 돌입 딜레이)
             isReady = true;
-            Invoke(nameof(ReadyComplete), m_preFightTime);
+            Invoke(nameof(ReadyComplete), status.m_preFightTime);
 
             // 애니메이션
             animator.SetBool("isWalk", false);
