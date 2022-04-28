@@ -16,19 +16,19 @@ public class DefenseEnemy_Editor : Editor
     //Color m_colorPalete;
 
 
-    //public DefenseEnemy selected;
+    public DefenseEnemy_Status selected;
 
-    //private void OnEnable()
-    //{
-    //    if(AssetDatabase.Contains(target))
-    //    {
-    //        selected = null;
-    //    }
-    //    else
-    //    {
-    //        selected = (DefenseEnemy_Status)target;
-    //    }
-    //}
+    private void OnEnable()
+    {
+        if (AssetDatabase.Contains(target))
+        {
+            selected = null;
+        }
+        else
+        {
+            selected = (DefenseEnemy_Status)target;
+        }
+    }
 
     //public override void OnInspectorGUI()
     //{

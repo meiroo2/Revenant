@@ -311,6 +311,7 @@ GameObject:
   - component: {fileID: 5062277878219029380}
   - component: {fileID: 8920533970346335620}
   - component: {fileID: -1636500964843077638}
+  - component: {fileID: 5534743029074220945}
   m_Layer: 11
   m_Name: Enemy00
   m_TagString: Enemy
@@ -494,7 +495,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <m_Hp>k__BackingField: 20
-  <m_Speed>k__BackingField: 0.8
+  <m_Speed>k__BackingField: 0.5
   <m_stunTime>k__BackingField: 0
   <curEnemyState>k__BackingField: 0
   parts: {fileID: 5062277878705796699}
@@ -509,6 +510,22 @@ MonoBehaviour:
   detectMark: {fileID: 5062277878466600604}
   <m_preFightTime>k__BackingField: 1
   <m_gun>k__BackingField: {fileID: 5575673158160670784}
+--- !u!114 &5534743029074220945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062277878219029379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20aadffc0cc84d845b595b8ca74b4c93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <m_Hp>k__BackingField: 10
+  <m_Speed>k__BackingField: 1
+  <m_stunTime>k__BackingField: 0
+  <curEnemyState>k__BackingField: 0
 --- !u!1 &5062277878432510716
 GameObject:
   m_ObjectHideFlags: 0

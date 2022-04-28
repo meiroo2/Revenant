@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Enemy : Human
 {
-    [field: SerializeField]
     public EnemyState curEnemyState { get; set; }
 
     //EnemyState m_enemyState;

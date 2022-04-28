@@ -37,7 +37,7 @@ public class EnemyMgr_DefenseMap : EnemyMgr
     {
         if(null == Instance)
         {
-            Debug.Log("new DefenseMap Instance");
+            //Debug.Log("new DefenseMap Instance");
             Instance = this;
         }
     }

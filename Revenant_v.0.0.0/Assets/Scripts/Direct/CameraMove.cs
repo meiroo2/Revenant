@@ -11,97 +11,71 @@ public class CameraMove : MonoBehaviour
     public bool m_InitFollow = true;
     public float m_yOffSet = 0.03f;
 
-    private bool m_CamStuckOnce = false;
+    private bool m_isCamStuck = false;
     private bool m_FollowMouse = false;
 
 
     // Member Variables
-    private Vector3 m_CameraPos;
-    private Vector3 m_CameraTempPos;
+    private Vector3 m_cameraPos;
     private Vector2 m_MousePos;
 
     // Constructors
     private void Start()
     {
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
-
-        m_CameraPos = transform.position;
+        m_cameraPos = m_Player.transform.position;
 
         if (m_InitFollow)
-            m_CameraPos = m_Player.transform.position;
+            transform.position = m_Player.transform.position;
+        else
+            m_cameraPos = transform.position;
 
-        transform.position = m_CameraPos;
     }
+    /*
+    <커스텀 초기화 함수가 필요할 경우>
+    public void Init()
+    {
+
+    }
+    */
 
     // Updates
     private void FixedUpdate()
     {
-        if (m_EffectedByCamBound)
+        if (m_FollowMouse)
         {
-            if (!m_FollowMouse)
-            {
-                m_CameraPos.z = -10f;
-                if (m_CamStuckOnce)
-                {
-                    m_CamStuckOnce = false;
-                    m_CameraPos = m_CameraTempPos;
-                }
-                m_CameraPos = Vector3.Lerp(m_CameraPos, m_Player.transform.position, Time.deltaTime * 4f);
-                if (m_CamBoundMgr.canCamMove(m_CameraPos))
-                {
-                    transform.position = m_CameraPos;
-                }
-                else
-                {
-                    transform.position = m_CamBoundMgr.getNearCamPos(m_CameraPos);
-                }
-            }
-            else
-            {
-                m_CameraPos.z = -10f;
-                m_CameraPos = Vector3.Lerp(m_CameraPos, m_Player.transform.position, Time.deltaTime * 6f);
+            m_MousePos = Input.mousePosition;
+            m_cameraPos.x += (m_MousePos.x - 960) / 1100f;
+            m_cameraPos.y += (m_MousePos.y - 540) / 1100f;
 
-                m_MousePos = Input.mousePosition;
-                m_CameraPos.x += (m_MousePos.x - 960) / 6000f;
-                m_CameraPos.y += (m_MousePos.y - 540) / 6000f;
-                m_CameraPos.y += m_yOffSet;
-
-                if (m_CamBoundMgr.canCamMove(m_CameraPos))
-                {
-                    transform.position = m_CameraPos;
-                }
-                else
-                {
-                    transform.position = m_CamBoundMgr.getNearCamPos(m_CameraPos);
-                    m_CameraTempPos = transform.position;
-                    m_CamStuckOnce = true;
-                }
-            }
+            m_cameraPos.y += m_yOffSet;
+            m_cameraPos.z = -10f;
         }
-        else
+        
+        if (!m_isCamStuck)
         {
-            if (!m_FollowMouse)
-            {
-                m_CameraPos.z = -10f;
-                m_CameraPos = Vector3.Lerp(m_CameraPos, m_Player.transform.position, Time.deltaTime * 4f);
-            }
-            else
-            {
-                m_CameraPos.z = -10f;
-
-                m_MousePos = Input.mousePosition;
-                m_CameraPos.x += (m_MousePos.x - 960) / 6000f;
-                m_CameraPos.y += (m_MousePos.y - 540) / 6000f;
-                m_CameraPos.y += m_yOffSet;
-
-                m_CameraPos = Vector3.Lerp(m_CameraPos, m_Player.transform.position, Time.deltaTime * 6f);
-            }
-            transform.position = m_CameraPos;
+            transform.position = Vector3.Lerp(transform.position, m_cameraPos, Time.deltaTime * 4f);
+            transform.position = StaticMethods.getPixelPerfectPos(transform.position);
         }
     }
     private void Update()
     {
-        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
+        m_cameraPos = m_Player.transform.position;
+
+        if (m_EffectedByCamBound)
+        {
+            if (m_CamBoundMgr.canCamMove(m_cameraPos) == true)
+                m_isCamStuck = false;
+            else
+                m_isCamStuck = true;
+        }
+
+        if (!m_FollowMouse)
+        {
+            m_cameraPos.z = -10f;
+            //transform.position = m_cameraPos;
+        }
+
 
         if (Input.GetMouseButtonDown(1))
             PreciseMode(1);
