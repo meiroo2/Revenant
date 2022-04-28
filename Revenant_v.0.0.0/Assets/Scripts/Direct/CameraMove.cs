@@ -100,6 +100,20 @@ public class CameraMove : MonoBehaviour
                 break;
         }
     }
+    public void InstantMoveToPlayer(Vector2 _playerOriginPos, Vector2 _PlayerMovePos)
+    {
+        float Relativex = _playerOriginPos.x - transform.position.x;
+        float Relativey = _playerOriginPos.y - transform.position.y;
+
+        m_CameraPos = _PlayerMovePos;
+        m_CameraPos.z = -10f;
+
+        m_CameraPos.x -= Relativex;
+        m_CameraPos.y -= Relativey;
+
+        m_CameraTempPos = m_CameraPos;
+        transform.position = m_CameraPos;
+    }
 
     // 기타 분류하고 싶은 것이 있을 경우
 }

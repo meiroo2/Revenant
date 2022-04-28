@@ -23,10 +23,10 @@ public class ScenePortal : MonoBehaviour, IUseableObj
 
 
     // Functions
-    public bool useObj()
+    public int useObj(IUseableObjParam _param)
     {
         SceneManager.LoadScene(m_LoadSceneString);
-        return true;
+        return 1;
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

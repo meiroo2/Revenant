@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tutorial_Room1_Button0 : MonoBehaviour, IUseableObj
+public class Ch_Portal_LayerRoom : MonoBehaviour, IUseableObj
 {
-    private GameObject m_ProgressMgr;
+    private Portal_LayerRoom m_Pa_Portal;
 
     private void Awake()
     {
-        m_ProgressMgr = GameObject.FindGameObjectWithTag("ProgressMgr");
+        m_Pa_Portal = GetComponentInParent<Portal_LayerRoom>();
     }
 
     public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
     public bool m_isOn { get; set; } = false;
     public int useObj(IUseableObjParam _param)
     {
-        m_ProgressMgr.SendMessage("NextProgress");
-        gameObject.SetActive(false);
+        m_Pa_Portal.moveObjToOtherSide(_param.m_UserTransform, _param.m_isPlayer);
         return 1;
     }
 }

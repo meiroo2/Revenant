@@ -42,13 +42,13 @@ public class HidePos : MonoBehaviour, IUseableObj
 
 
     // Functions
-    public bool useObj()
+    public int useObj(IUseableObjParam _param)
     {
         if (!m_HideObj.m_isOn)  // 后 决企拱
         {
             m_HideObj.m_isPlayerHide = true;
             m_HideObj.setPlayerStateToHide();   // 见绰促
-            return true;    // 见扁 己傍
+            return 1;    // 见扁 己傍
         }
         else
         {       // 穿焙啊 见绢 乐绰 决企拱
@@ -57,10 +57,10 @@ public class HidePos : MonoBehaviour, IUseableObj
             {
                 m_HideObj.m_isPlayerHide = false;
                 m_HideObj.setPlayerStateToHide();
-                return true;
+                return 1;
             }
             else
-                return false;
+                return 0;
         }
     }
 

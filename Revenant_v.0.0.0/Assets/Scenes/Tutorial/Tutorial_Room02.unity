@@ -4950,10 +4950,12 @@ MonoBehaviour:
   <m_Hp>k__BackingField: 2000
   <m_Speed>k__BackingField: 1
   <m_stunTime>k__BackingField: 0.35
+  <curEnemyState>k__BackingField: 0
+  parts: {fileID: 0}
   <SAFE_DISTANCE>k__BackingField: 0.1
   textForTest: {fileID: 0}
   defaultDir: 0
-  <sensorPos>k__BackingField: {x: 0, y: 0}
+  <m_sensorPos>k__BackingField: {x: 0, y: 0}
   <stunStack>k__BackingField: 1
   stunMark: {fileID: 0}
   <m_preIdleTime>k__BackingField: 1
@@ -4964,6 +4966,7 @@ MonoBehaviour:
   <m_preFightTime>k__BackingField: 0.5
   enemyManager: {fileID: 0}
   <curEnemyState>k__BackingField: 0
+  <m_gun>k__BackingField: {fileID: 0}
 --- !u!61 &1608938140
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6237,10 +6240,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9da79ad08452354ebf33c9d58485ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_cameraSpeed: 5
-  m_FollowMouse: 1
-  m_OffSet: 0.03
+  m_CamBoundMgr: {fileID: 0}
+  m_EffectedByCamBound: 0
   m_InitFollow: 1
+  m_yOffSet: 0.03
 --- !u!114 &1827924195
 MonoBehaviour:
   m_ObjectHideFlags: 0

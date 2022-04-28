@@ -124,15 +124,21 @@ public class Player : Human
 
         if (gameObject.layer == 12)
         {
-            if (m_FootRay && m_PlayerPosVec.y - m_FootRay.point.y >= 0.33f)
-                m_PlayerPosVec.y = m_FootRay.point.y + 0.32f;
+            if (m_FootRay && m_PlayerPosVec.y - m_FootRay.point.y >= 0.34f)
+                m_PlayerPosVec.y = m_FootRay.point.y + 0.33f;
         }
         else if (gameObject.layer == 10)
         {
-            //m_PlayerPosVec.y = m_FootRay.point.y + 0.39f;
+            if (m_FootRay && m_PlayerPosVec.y - m_FootRay.point.y >= 0.34f)
+                m_PlayerPosVec.y = m_FootRay.point.y + 0.33f;
         }
 
         transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
+
+        if (gameObject.layer == 12 && m_FootRay)
+        {
+            m_PlayerStairMgr.ChangePlayerNormal(m_FootRay.normal);
+        }
     }
 
     // Player FSM Functions
@@ -393,31 +399,4 @@ public class Player : Human
         }
     }
     private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        /*
-        if (collision.gameObject.CompareTag("Stair"))
-        {
-            //m_PlayerStairMgr.m_PlayerNormal = collision.contacts[0].normal;
-
-            Debug.Log( collision.gameObject.name+"직접 측정 "+m_PlayerStairMgr.m_PlayerNormal);
-        }
-        else
-        {
-            Debug.Log(collision.gameObject.name + "직접 측정 " + m_PlayerStairMgr.m_PlayerNormal);
-            m_PlayerStairMgr.m_PlayerNormal = Vector2.up;
-        }
-        */
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        /*
-        if (collision.gameObject.CompareTag("Stair"))
-        {
-            GoToStairLayer(false, Vector2.zero, Vector2.zero);
-        }
-        */
-    }
 }

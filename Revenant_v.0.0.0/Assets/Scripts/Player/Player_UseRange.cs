@@ -22,18 +22,22 @@ public class Player_UseRange : MonoBehaviour
 
 
     // Member Variables
-    private bool isPressedUpKey = false;
-    private bool isPressedDownKey = false;
     private bool isPressedFKey = false;
     private float FTimer = 0.1f;
-    private float UTimer = 0.1f;
-    private float DTimer = 0.1f;
 
     private List<UseableObjInfo> m_UseableObjs = new List<UseableObjInfo>();
     private int m_ShortestIDX = -1;
     private float m_ShortestLength = 999f;
+    private Player m_Player;
+
+    private IUseableObjParam m_UseableObjParam;
 
     // Constructors
+    private void Awake()
+    {
+        m_Player = GetComponentInParent<Player>();
+        m_UseableObjParam = new IUseableObjParam(m_Player.transform, true);
+    }
 
     // Updates
     private void Update()
@@ -49,36 +53,6 @@ public class Player_UseRange : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.F))
             isPressedFKey = true;
-
-        if (isPressedUpKey)
-        {
-            UTimer -= Time.deltaTime;
-            if (UTimer <= 0f)
-            {
-                UTimer = 0.1f;
-                isPressedUpKey = false;
-            }
-        }
-        if (Input.GetKey(KeyCode.W))
-        {
-            isPressedUpKey = true;
-            UTimer = 0.1f;
-        }
-
-        if (isPressedDownKey)
-        {
-            DTimer -= Time.deltaTime;
-            if (DTimer <= 0f)
-            {
-                DTimer = 0.1f;
-                isPressedDownKey = false;
-            }
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            isPressedDownKey = true;
-            DTimer = 0.1f;
-        }
     }
     private void FixedUpdate()
     {
@@ -108,18 +82,18 @@ public class Player_UseRange : MonoBehaviour
 
         if (isPressedFKey)
         {
-            if (m_ShortestLength <= 0.05f)
+            if (m_ShortestLength < 999f)
             {
                 switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
                 {
                     case UseableObjList.OBJECT:
-                        m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj();
+                        m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
                         break;
 
                     case UseableObjList.HIDEPOS:
                         if (Vector2.Distance(transform.position, collision.transform.position) < 0.4f)
                         {
-                            m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj();
+                            m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
                         }
                         break;
                 }

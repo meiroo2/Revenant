@@ -2,54 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Door : MonoBehaviour, IUseableObj
+public class Door : MonoBehaviour
 {
-    // Visible Member Variables
-    [field: SerializeField] public bool canUse { get; set; } = true;
-    [field: SerializeField] private bool isOpen = false;
+    public BoxCollider2D m_DoorCollision { get; set; }
 
-    // Member Variables
-    public UseableObjList m_ObjProperty { get; set; }
-    public bool m_isOn { get; set; } = false;
+    private Animator m_DoorAnimator;
+    private bool m_isOpen = false;
 
-    // Constructors
     private void Awake()
     {
-        
-    }
-    private void Start()
-    {
-
+        m_DoorAnimator = GetComponentInChildren<Animator>();
     }
 
-    // Updates
-    private void Update()
+    public void useDoor()
     {
-
-    }
-    private void FixedUpdate()
-    {
-
-    }
-
-    // Physics
-
-
-    // Functions
-    public bool useObj()
-    {
-        if (isOpen)
+        if(m_DoorAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
-            isOpen = false;
-            GetComponent<SpriteRenderer>().color = new Color32(255, 0, 0, 255);
+            if (m_isOpen)
+            {
+                m_isOpen = false;
+                m_DoorCollision.enabled = true;
+                m_DoorAnimator.SetInteger("isOpen", 0);
+            }
+            else
+            {
+                m_isOpen = true;
+                m_DoorCollision.enabled = false;
+                m_DoorAnimator.SetInteger("isOpen", 1);
+            }
         }
-        else
-        {
-            isOpen = true;
-            GetComponent<SpriteRenderer>().color = new Color32(0, 0, 255, 255);
-        }
-
-        return true;
     }
-
 }
