@@ -31,7 +31,7 @@ public class Room1_PillarDoor : MonoBehaviour, IUseableObj
         }
     }
 
-    public bool useObj()
+    public int useObj(IUseableObjParam _param)
     {
         if(m_Idx == 0)
         {
@@ -39,6 +39,6 @@ public class Room1_PillarDoor : MonoBehaviour, IUseableObj
             GetComponentInParent<WorldUI>().AniSetIUI(new IUIParam("isOpen", 1));
             m_Idx++;
         }
-        return true;
+        return 1;
     }
 }

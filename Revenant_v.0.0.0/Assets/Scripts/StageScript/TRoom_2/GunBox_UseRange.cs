@@ -13,12 +13,12 @@ public class GunBox_UseRange : MonoBehaviour, IUseableObj
         m_ProgressMgr = GameObject.FindGameObjectWithTag("ProgressMgr");
     }
 
-    public bool useObj()
+    public int useObj(IUseableObjParam _param)
     {
         if (m_isOn == false)
             m_ProgressMgr.SendMessage("NextProgress");
 
         m_isOn = true;
-        return true;
+        return 1;
     }
 }
