@@ -497,19 +497,12 @@ MonoBehaviour:
   <m_Hp>k__BackingField: 20
   <m_Speed>k__BackingField: 0.5
   <m_stunTime>k__BackingField: 0
-  <curEnemyState>k__BackingField: 0
   parts: {fileID: 5062277878705796699}
   <SAFE_DISTANCE>k__BackingField: 0.1
-  <m_sensorPos>k__BackingField: {x: 0, y: 0}
-  <stunStack>k__BackingField: 0
-  stunMark: {fileID: 5062277878432510716}
-  <m_preIdleTime>k__BackingField: 1
-  <m_preGuardTime>k__BackingField: 1
-  <guardSightDistance>k__BackingField: 0
-  <fightSightDistance>k__BackingField: 1.5
-  detectMark: {fileID: 5062277878466600604}
-  <m_preFightTime>k__BackingField: 1
   <m_gun>k__BackingField: {fileID: 5575673158160670784}
+  <m_sensorPos>k__BackingField: {x: 0, y: 0}
+  stunMark: {fileID: 5062277878432510716}
+  detectMark: {fileID: 5062277878466600604}
 --- !u!114 &5534743029074220945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -525,7 +518,8 @@ MonoBehaviour:
   <m_Hp>k__BackingField: 10
   <m_Speed>k__BackingField: 1
   <m_stunTime>k__BackingField: 0
-  <curEnemyState>k__BackingField: 0
+  <m_fightSightDistance>k__BackingField: 1.5
+  <m_preFightTime>k__BackingField: 1
 --- !u!1 &5062277878432510716
 GameObject:
   m_ObjectHideFlags: 0
