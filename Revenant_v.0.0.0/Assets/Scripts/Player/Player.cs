@@ -45,6 +45,7 @@ public class Player : Human
     private Animator m_PlayerAnimator;
     private Player_StairMgr m_PlayerStairMgr;
     private Player_HotBox m_PlayerHotBox;
+    private Player_UIMgr m_PlayerUIMgr;
 
     private bool m_isRecoveringRollCount = false;
     private IEnumerator m_FootStep;
@@ -79,7 +80,7 @@ public class Player : Human
     private void Start()
     {
         m_NoiseMaker = GameManager.GetInstance().GetComponentInChildren<NoiseMaker>();
-        //m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
+        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
         //m_SFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
     public void InitPlayerValue(Player_ValueManipulator _input)
@@ -93,6 +94,12 @@ public class Player : Human
         m_MaxRollCount = _input.RollCountMax;
         m_LeftRollCount = m_MaxRollCount;
         m_RollRecoverTime = _input.RollRecoverTime;
+
+        m_playerGun.m_MainWeapons[0].setPlayerWeaponValue(new WEAPON_PlayerParam(
+            _input.BulletSpeed, _input.BulletDamage, _input.StunValue, _input.MinimumShotDelay,
+            _input.BulletCount, _input.MagCount));
+
+        m_PlayerUIMgr.setLeftBulletUI(_input.BulletCount, _input.MagCount, 0);
     }
 
 

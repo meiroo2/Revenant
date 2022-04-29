@@ -14,6 +14,15 @@ public class Player_ValueManipulator : MonoBehaviour
     public int RollCountMax = 3;
     public float RollRecoverTime = 2f;
 
+    [Space(20f)]
+    [Header("±ÇÃÑ ¼³Á¤°ª")]
+    public float BulletSpeed = 15;
+    public int BulletDamage = 10;
+    public int StunValue = 1;
+    public float MinimumShotDelay = 0.1f;
+    public int BulletCount = 150;
+    public int MagCount = 10;
+
     private void Start()
     {
         GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.InitPlayerValue(this);

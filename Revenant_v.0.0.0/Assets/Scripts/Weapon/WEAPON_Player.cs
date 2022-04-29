@@ -2,6 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class WEAPON_PlayerParam
+{
+    public float BulletSpeed { get; private set; }
+    public int BulletDamage { get; private set; }
+    public int StunValue { get; private set; }
+
+    public float ShotDelay { get; private set; }
+    public int BulletPerMag { get; private set; }
+    public int MagCount { get; private set; }
+    public WEAPON_PlayerParam(float _speed, int _damage, int _stunV, float _delay, int _bullet, int _mag)
+    {
+        BulletSpeed = _speed;
+        BulletDamage = _damage;
+        StunValue = _stunV;
+        ShotDelay = _delay;
+        BulletPerMag = _bullet;
+        MagCount = _mag;
+    }
+}
+
 public class WEAPON_Player : WEAPON
 {
     // Visible Member Variables
@@ -39,19 +59,24 @@ public class WEAPON_Player : WEAPON
     }
 
     // Updates
-    private void Update()
-    {
 
-    }
-    private void FixedUpdate()
-    {
-
-    }
 
     // Physics
 
 
     // Functions
+    public void setPlayerWeaponValue(WEAPON_PlayerParam _param)
+    {
+        m_BulletSpeed = _param.BulletSpeed;
+        m_BulletDamage = _param.BulletDamage;
+        m_StunValue = _param.StunValue;
+        m_ShotDelay = _param.ShotDelay;
+        m_BulletPerMag = _param.BulletPerMag;
+        m_Magcount = _param.MagCount;
+
+        m_LeftBullet = m_BulletPerMag;
+        m_LeftMag = m_Magcount;
+    }
     protected void setisDelayEndToTrue() { m_isDelayEnd = true; }
 
     // 기타 분류하고 싶은 것이 있을 경우
