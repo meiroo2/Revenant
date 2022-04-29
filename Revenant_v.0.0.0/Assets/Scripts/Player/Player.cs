@@ -252,7 +252,7 @@ public class Player : Human
         {
             case playerState.IDLE:
                 m_curPlayerState = playerState.IDLE;
-                m_playerRigid.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
+                m_playerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
                 m_canAttacked = true;
                 break;
 
