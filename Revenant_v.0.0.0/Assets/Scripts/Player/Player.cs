@@ -40,12 +40,11 @@ public class Player : Human
     public Player_Gun m_playerGun { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
 
-    //private Player_UIMgr m_PlayerUIMgr;
     private NoiseMaker m_NoiseMaker;
     private Rigidbody2D m_playerRigid;
-    //private SoundMgr_SFX m_SFXMgr;
     private Animator m_PlayerAnimator;
     private Player_StairMgr m_PlayerStairMgr;
+    private Player_HotBox m_PlayerHotBox;
 
     private bool m_isRecoveringRollCount = false;
     private IEnumerator m_FootStep;
@@ -63,6 +62,7 @@ public class Player : Human
     // Constructor
     private void Awake()
     {
+        m_PlayerHotBox = GetComponentInChildren<Player_HotBox>();
         m_PlayerStairMgr = GetComponentInChildren<Player_StairMgr>();
         m_playerSoundnAni = GetComponentInChildren<PlayerSoundnAni>();
         m_playerRotation = GetComponentInChildren<PlayerRotation>();
@@ -73,6 +73,8 @@ public class Player : Human
         m_playerRigid = GetComponent<Rigidbody2D>();
 
         m_LeftRollCount = m_MaxRollCount;
+
+        m_canAttacked = true;
     }
     private void Start()
     {
@@ -267,6 +269,8 @@ public class Player : Human
                 m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f));
                 StartCoroutine(m_FootStep);
 
+                m_PlayerHotBox.setPlayerHotBoxCol(false);
+
                 m_LeftRollCount -= 1;
                 if (!m_isRecoveringRollCount)
                     StartCoroutine(RecoverRollCount());
@@ -324,6 +328,7 @@ public class Player : Human
                 break;
 
             case playerState.ROLL:
+                m_PlayerHotBox.setPlayerHotBoxCol(true);
                 StopCoroutine(m_FootStep);
                 m_playerRotation.m_doRotate = true;
                 m_canShot = true;

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player_HotBox : MonoBehaviour, IHotBox
 {
     // Member Variables
+    private BoxCollider2D m_PlayerHotBoxCol;
     private UIMgr m_UIMgr;
     private Player_UIMgr m_PlayerUIMgr;
     private Player m_Player;
@@ -12,12 +13,25 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     public int m_hotBoxType { get; set; } = 0;
     public bool m_isEnemys { get; set; } = false;
 
+    private void Awake()
+    {
+        m_PlayerHotBoxCol = GetComponent<BoxCollider2D>();
+    }
+
     private void Start()
     {
         m_UIMgr = GameManager.GetInstance().GetComponentInChildren<UIMgr>();
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
         m_SFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+    }
+
+    public void setPlayerHotBoxCol(bool _isOn)
+    {
+        if (_isOn)
+            m_PlayerHotBoxCol.enabled = true;
+        else
+            m_PlayerHotBoxCol.enabled = false;
     }
 
     public int HitHotBox(IHotBoxParam _param)

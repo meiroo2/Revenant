@@ -43,7 +43,7 @@ public class Player_Bullet : BULLET
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.name);
+        //Debug.Log(collision.name);
         IHotBox TempHotBox = collision.GetComponent<IHotBox>();
         if(TempHotBox.m_hotBoxType == 0)
         {
