@@ -15,7 +15,7 @@ public class Human : ObjectDefine
     [field: SerializeField] public float m_Hp { get; set; } = 10;
     [field: SerializeField] public float m_Speed { get; set; } = 1f;
     [field: SerializeField] public float m_stunTime { get; set; } = 0f;
-    public bool m_isRightHeaded { get; private set; } = true;
+    public bool m_isRightHeaded { get; protected set; } = true;
     public MapInfo m_curPos { get; set; } = new MapInfo(0, 0, 0, 0, 0);
 
     // 오브젝트의 원래 위치
@@ -25,7 +25,7 @@ public class Human : ObjectDefine
 
     // Functions
 
-    public void setisRightHeaded(bool _isRightHeaded)
+    public virtual void setisRightHeaded(bool _isRightHeaded)
     {
         m_isRightHeaded = _isRightHeaded;
         if (m_isRightHeaded)

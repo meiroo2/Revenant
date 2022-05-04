@@ -17,8 +17,10 @@ public class AimedObjInfo
 public class AimCursor : MonoBehaviour
 {
     // Visible Member Variables
+    [field: SerializeField] public float p_FireMinimumDistance { get; private set; } = 0.2f;
 
     // Member Variables
+    public bool m_canAimCursorShot { get; private set; } = true;
     public int AimedObjid { get; private set; } = -1;
     private Collider2D m_AimedCollider;
     private Vector2 m_CursorPos;
@@ -29,27 +31,33 @@ public class AimCursor : MonoBehaviour
     private float m_ShortestLength = 0f;
 
     private Camera m_MainCamera;
+    private AimImageCanvas m_ImageofAim;
+    private Player_Gun m_PlayerGun;
 
     // Constructors
     private void Awake()
     {
         m_MainCamera = Camera.main;
+        m_ImageofAim = GameObject.FindGameObjectWithTag("AimImage").GetComponent<AimImageCanvas>();
     }
     private void Start()
     {
-
+        m_PlayerGun = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerGun;
     }
-    /*
-    <커스텀 초기화 함수가 필요할 경우>
-    public void Init()
-    {
-
-    }
-    */
 
     // Updates
     private void Update()
     {
+        if (m_canAimCursorShot && Vector2.SqrMagnitude(transform.position - m_PlayerGun.transform.position) < p_FireMinimumDistance)
+        {
+            m_canAimCursorShot = false;
+            m_ImageofAim.changeAimImage(1);
+        }
+        else if(!m_canAimCursorShot && Vector2.SqrMagnitude(transform.position - m_PlayerGun.transform.position) > p_FireMinimumDistance)
+        {
+            m_canAimCursorShot = true;
+            m_ImageofAim.changeAimImage(0);
+        }
         
     }
     private void FixedUpdate()
@@ -106,7 +114,4 @@ public class AimCursor : MonoBehaviour
     }
 
     // Functions
-
-
-    // 기타 분류하고 싶은 것이 있을 경우
 }

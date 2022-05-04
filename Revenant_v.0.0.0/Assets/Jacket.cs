@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Jacket : MonoBehaviour, IPlayerAnimator
+public class Jacket : MonoBehaviour, IPlayerVisualPart
 {
     private Player m_Player;
     private Animator m_Animator;
@@ -16,6 +16,7 @@ public class Jacket : MonoBehaviour, IPlayerAnimator
         m_Animator.enabled = false;
     }
 
+    /*
     public void PlayPlayerPartAni(PlayerPartAniParam _inputParam)
     {
         switch (_inputParam.m_PlayerState)
@@ -30,4 +31,9 @@ public class Jacket : MonoBehaviour, IPlayerAnimator
                 break;
         }
     }
+    */
+    public void SetVisible(bool _isVisible) { }
+    public void SetAnim(string _ParamName, int _value) { }
+    public void SetSprite(int _inputIdx) { }
+    public void SetAniVisible(bool _isVisible) { }
 }
