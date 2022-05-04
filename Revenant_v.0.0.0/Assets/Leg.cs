@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Leg : MonoBehaviour, IPlayerAnimator
+public class Leg : MonoBehaviour, IPlayerVisualPart
 {
     private Player m_Player;
     private Animator m_Animator;
@@ -14,7 +14,7 @@ public class Leg : MonoBehaviour, IPlayerAnimator
     {
         m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
-
+    /*
     public void PlayPlayerPartAni(PlayerPartAniParam _inputParam)
     {
         switch (_inputParam.m_PlayerState)
@@ -30,4 +30,9 @@ public class Leg : MonoBehaviour, IPlayerAnimator
                 break;
         }
     }
+    */
+    public void SetVisible(bool _isVisible) { }
+    public void SetAnim(string _ParamName, int _value) { }
+    public void SetSprite(int _inputIdx) { }
+    public void SetAniVisible(bool _isVisible) { }
 }
