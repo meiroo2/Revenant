@@ -16,12 +16,6 @@ public class Player_VisualPartMgr : MonoBehaviour
         m_EachPart = GetComponentsInChildren<IPlayerVisualPart>();
         m_curVisiblePartIdx = 0;
     }
-    private void Start()
-    {
-        m_setPartVisible(false);
-        m_setPartAniVisible(false);
-        m_EachPart[0].SetVisible(true);
-    }
 
     public virtual void m_setPartVisible(int _idx, bool _isVisible)
     {

@@ -35,7 +35,6 @@ public class Player_Gun : MonoBehaviour
 
     private WEAPON_Player m_ActiveWeapon;
 
-    private bool doRecoil = false;
     private bool m_isCastingThrow = false;
     public int m_ActiveWeaponType { get; private set; } = 0; // 0 == Main, 1 == Sub, 2 == Throwable
 
@@ -109,49 +108,9 @@ public class Player_Gun : MonoBehaviour
             }
         }
 
-        if (m_Player.m_canShot)
-        {
-            if (Input.GetMouseButtonDown(0) && !m_isCastingThrow && m_aimCursor.m_canAimCursorShot)
-            {
-                switch (m_ActiveWeapon.Fire())
-                {
-                    case 0: // 발사 실패(딜레이)
-                        break;
-                    case 1: // 발사 성공
-                        //m_Player_AniMgr.playShotAni();
-
-                        if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.05f)
-                        {
-                            m_OutArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
-                            m_InArmEffectorPos.Translate(new Vector2(-0.04f, 0f));
-                            m_GunPos.Translate(new Vector2(-0.04f, 0f));
-                        }
-                        doRecoil = true;
-
-                        // 소음 발생
-                        m_NoiseMaker.MakeNoise(NoiseType.FIREARM, new Vector2(7f, 1.5f), m_Player.transform.position, true);
-                        break;
-                    case 2: // 총알 없음
-                        break;
-                }
-            }
-        }
-
         if (Input.GetKeyDown(KeyCode.R))
         {
             m_ActiveWeapon.Reload();
-        }
-    }
-    private void FixedUpdate()
-    {
-        if (doRecoil)
-        {
-            m_OutArmEffectorPos.position = Vector2.Lerp(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position, Time.deltaTime * 6f);
-            m_InArmEffectorPos.position = Vector2.Lerp(m_InArmEffectorPos.position, m_InArmEffectorOriginPos.position, Time.deltaTime * 6f);
-            m_GunPos.position = Vector2.Lerp(m_GunPos.position, m_GunOriginPos.position, Time.deltaTime * 6f);
-
-            if (Vector2.Distance(m_OutArmEffectorPos.position, m_OutArmEffectorOriginPos.position) <= 0.0005f)
-                doRecoil = false;
         }
     }
 
@@ -159,6 +118,30 @@ public class Player_Gun : MonoBehaviour
 
 
     // Functions
+    public int Fire_PlayerGun()
+    {
+        if (m_Player.m_canShot && !m_isCastingThrow && m_aimCursor.m_canAimCursorShot)
+        {
+            switch (m_ActiveWeapon.Fire())
+            {
+                case 0: // 발사 실패(딜레이)
+                    return 0;
+
+                case 1: // 발사 성공
+                    // 소음 발생
+                    m_NoiseMaker.MakeNoise(NoiseType.FIREARM, new Vector2(7f, 1.5f), m_Player.transform.position, true);
+                    return 1;
+
+                case 2: // 총알 없음
+                    return 2;
+
+                default:
+                    return 0;
+            }
+        }
+        else
+            return 0;
+    }
 
 
     // 기타 분류하고 싶은 것이 있을 경우
