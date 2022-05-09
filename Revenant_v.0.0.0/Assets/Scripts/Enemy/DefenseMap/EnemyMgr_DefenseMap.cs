@@ -8,16 +8,8 @@ public class EnemyMgr_DefenseMap : EnemyMgr
 
     public static EnemyMgr_DefenseMap Instance { get; private set; } = null;
 
-    // 웨이브 단위로 진행
-    // 조가 모두 사망할 경우 다음 조를 활성화
-
-    // 특정 키를 누르면 다음 스폰을 진행해야 함
-
-    // 배열 관리를 위해 인터페이스화를 해봐도 좋을 듯
-
     public List<IEnemySpawn> m_Wave1 { get; set; } = new List<IEnemySpawn>();
 
-    
     public List<IEnemySpawn> m_Wave2 { get; set; } = new List<IEnemySpawn>();
 
     public List<IEnemySpawn> m_Wave3 { get; set; } = new List<IEnemySpawn>();
@@ -47,7 +39,7 @@ public class EnemyMgr_DefenseMap : EnemyMgr
         {
             m_spawnActive = true;
             //Spawn();
-            Invoke(nameof(Spawn), m_spawnWaitTime);
+            Spawn();
         }
         if(Input.GetKeyDown(KeyCode.W))
         {
@@ -55,7 +47,6 @@ public class EnemyMgr_DefenseMap : EnemyMgr
             {
                 // 강제 웨이브 스폰
                 Spawn();
-                
             }
             else
             {
@@ -82,7 +73,6 @@ public class EnemyMgr_DefenseMap : EnemyMgr
     public void Spawn()
     {
         CancelInvoke(nameof(Spawn));
-        //Debug.Log("spawn");
         if(m_waveIndex < 6)
         {
 
