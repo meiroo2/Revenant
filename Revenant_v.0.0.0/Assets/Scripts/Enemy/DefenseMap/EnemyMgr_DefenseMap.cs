@@ -26,8 +26,8 @@ public class EnemyMgr_DefenseMap : EnemyMgr
     public List<IEnemySpawn> m_Wave5 { get; set; } = new List<IEnemySpawn>();
     public List<IEnemySpawn> m_Wave6 { get; set; } = new List<IEnemySpawn>();
 
-    [SerializeField]
-    float m_spawnWaitTime = 3.0f; // 시작 후 스폰 대기 시간
+    [field:SerializeField]
+    public float m_spawnWaitTime { get; set; } = 3.0f; // 시작 후 스폰 대기 시간
 
     int m_waveIndex = 0; // 웨이브 수
 
@@ -47,14 +47,16 @@ public class EnemyMgr_DefenseMap : EnemyMgr
         if(Input.GetKeyDown(KeyCode.Q)&& !m_spawnActive)
         {
             m_spawnActive = true;
-            Spawn();
+            //Spawn();
+            Invoke(nameof(Spawn), m_spawnWaitTime);
         }
         if(Input.GetKeyDown(KeyCode.W))
         {
             if(m_spawnActive)
             {
                 // 강제 웨이브 스폰
-                Spawn();
+                //Spawn();
+                Invoke(nameof(Spawn), m_spawnWaitTime);
             }
             else
             {
@@ -71,7 +73,8 @@ public class EnemyMgr_DefenseMap : EnemyMgr
             if (m_dieCount >= m_dieMaxCount)
             {
                 Debug.Log("All Kill");
-                Spawn();
+                Invoke(nameof(Spawn), m_spawnWaitTime);
+                //Spawn();
             }
         }
 
