@@ -7,8 +7,8 @@ public class PlayerRotation : MonoBehaviour
     // Visible Member Variables
     [Header("회전 각도는 총 5단위로 나누어집니다.")]
     public bool m_doRotate = true;
-    public float m_rotationHighLimitAngle = 65f;
-    public float m_rotationLowLimitAngle = -45f;
+    public float m_rotationHighLimitAngle { get; private set; } = 65f;
+    public float m_rotationLowLimitAngle { get; private set; } = -45f;
 
     [field: SerializeField] public float m_curActualAngle { get; private set; }
     [field: SerializeField] public float m_curAnglewithLimit { get; private set; }
@@ -111,5 +111,19 @@ public class PlayerRotation : MonoBehaviour
                 m_HeadIKPos.localPosition = new Vector2(m_OriginalHeadIKPos.x + rotateDegree / 400f, m_OriginalHeadIKPos.y);
         }
         */
+    }
+
+    public void changeAngleLimit(float _HighLimit, float _LowLimit)
+    {
+        Debug.Log("Sans");
+        if (_HighLimit > 0 && _LowLimit < 0)
+        {
+            m_rotationHighLimitAngle = _HighLimit;
+            m_rotationLowLimitAngle = _LowLimit;
+
+            m_PhaseAngle = (Mathf.Abs(m_rotationHighLimitAngle) + Mathf.Abs(m_rotationLowLimitAngle)) / 5;
+        }
+        else
+            Debug.Log("PlayerRotation Angle Param Error");
     }
 }

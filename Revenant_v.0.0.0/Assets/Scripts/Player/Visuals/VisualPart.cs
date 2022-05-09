@@ -5,10 +5,14 @@ using UnityEngine;
 public class VisualPart : MonoBehaviour, IPlayerVisualPart
 {
     public Sprite[] m_Sprites;
+    public bool m_InitSpriteOn = false;
+    public bool m_InitAnimatorOn = false;
+
     private SpriteRenderer m_SpriteRenderer;
     private Animator m_Animator;
 
-    private bool m_isVisible = false;
+    public bool m_isVisible { get; private set; } = false;
+    public bool m_isAniVisible { get; private set; } = false;
     private int m_CurSpriteIdx = 0;
 
     private void Awake()
@@ -16,9 +20,9 @@ public class VisualPart : MonoBehaviour, IPlayerVisualPart
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_Animator = GetComponent<Animator>();
 
-        m_SpriteRenderer.enabled = true;
+        m_SpriteRenderer.enabled = m_InitSpriteOn;
         if (m_Animator)
-            m_Animator.enabled = true;
+            m_Animator.enabled = m_InitAnimatorOn;
     }
 
     public void SetVisible(bool _isVisible) 
@@ -33,9 +37,6 @@ public class VisualPart : MonoBehaviour, IPlayerVisualPart
     }
     public void SetAnim(string _ParamName, int _value)
     {
-        if (m_Animator.enabled == false)
-            m_Animator.enabled = true;
-
         if (m_Animator)
             m_Animator.SetInteger(_ParamName, _value);
         else
@@ -43,9 +44,6 @@ public class VisualPart : MonoBehaviour, IPlayerVisualPart
     }
     public void SetSprite(int _inputIdx)
     {
-        if (m_Animator.enabled == true)
-            m_Animator.enabled = false;
-
         if (_inputIdx >= 0 && _inputIdx < m_Sprites.Length)
         {
             if (m_CurSpriteIdx != _inputIdx)
