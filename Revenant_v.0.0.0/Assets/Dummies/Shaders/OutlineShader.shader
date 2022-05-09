@@ -74,7 +74,8 @@ Shader "Unlit/OutlineShader"
                             c.rgba = c.rgba * fixed4(1, 1, 1, 0.5);
                         }
                         else {
-                            c.rgba = c.rgba * fixed4(1, 1, 1, 0);
+                            //c.rgba = c.rgba * _OutlineColor;
+                            c.rgba = fixed4(1, 0, 0, 1);
                         }
                             
                         

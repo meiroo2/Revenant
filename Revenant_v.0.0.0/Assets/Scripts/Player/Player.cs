@@ -35,16 +35,18 @@ public class Player : Human
     public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
     public bool m_isPlayerBlinking { get; private set; } = false;
 
-    public PlayerSoundnAni m_playerSoundnAni { get; private set; }
+    public Player_AniMgr m_Player_AniMgr { get; private set; }
     public PlayerRotation m_playerRotation { get; private set; }
     public Player_Gun m_playerGun { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
+    public Player_AniMgr m_PlayerAniMgr { get; private set; }
 
     private NoiseMaker m_NoiseMaker;
     private Rigidbody2D m_playerRigid;
     private Animator m_PlayerAnimator;
     private Player_StairMgr m_PlayerStairMgr;
     private Player_HotBox m_PlayerHotBox;
+    private Player_UIMgr m_PlayerUIMgr;
 
     private bool m_isRecoveringRollCount = false;
     private IEnumerator m_FootStep;
@@ -62,9 +64,10 @@ public class Player : Human
     // Constructor
     private void Awake()
     {
+        m_PlayerAniMgr = GetComponentInChildren<Player_AniMgr>();
         m_PlayerHotBox = GetComponentInChildren<Player_HotBox>();
         m_PlayerStairMgr = GetComponentInChildren<Player_StairMgr>();
-        m_playerSoundnAni = GetComponentInChildren<PlayerSoundnAni>();
+        m_Player_AniMgr = GetComponentInChildren<Player_AniMgr>();
         m_playerRotation = GetComponentInChildren<PlayerRotation>();
         m_playerGun = GetComponentInChildren<Player_Gun>();
         m_useRange = GetComponentInChildren<Player_UseRange>();
@@ -79,7 +82,7 @@ public class Player : Human
     private void Start()
     {
         m_NoiseMaker = GameManager.GetInstance().GetComponentInChildren<NoiseMaker>();
-        //m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
+        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
         //m_SFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
     public void InitPlayerValue(Player_ValueManipulator _input)
@@ -93,6 +96,12 @@ public class Player : Human
         m_MaxRollCount = _input.RollCountMax;
         m_LeftRollCount = m_MaxRollCount;
         m_RollRecoverTime = _input.RollRecoverTime;
+
+        m_playerGun.m_MainWeapons[0].setPlayerWeaponValue(new WEAPON_PlayerParam(
+            _input.BulletSpeed, _input.BulletDamage, _input.StunValue, _input.MinimumShotDelay,
+            _input.BulletCount, _input.MagCount));
+
+        m_PlayerUIMgr.setLeftBulletUI(_input.BulletCount, _input.MagCount, 0);
     }
 
 
@@ -135,12 +144,11 @@ public class Player : Human
                 m_PlayerPosVec.y = m_FootRay.point.y + 0.33f;
         }
 
-        transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
-
         if (gameObject.layer == 12 && m_FootRay)
         {
             m_PlayerStairMgr.ChangePlayerNormal(m_FootRay.normal);
         }
+        transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
     }
 
     // Player FSM Functions
@@ -245,7 +253,7 @@ public class Player : Human
         {
             case playerState.IDLE:
                 m_curPlayerState = playerState.IDLE;
-                m_playerRigid.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
+                m_playerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
                 m_canAttacked = true;
                 break;
 
@@ -280,12 +288,12 @@ public class Player : Human
                 m_canShot = false;
                 m_canMove = false;
 
-                m_playerSoundnAni.setSprites(true, false, false, false, false);
+                m_Player_AniMgr.setSprites(true, false, false, false, false);
                 break;
 
             case playerState.HIDDEN:
                 m_curPlayerState = playerState.HIDDEN;
-                m_playerSoundnAni.setSprites(true, false, false, false, false);
+                m_Player_AniMgr.setSprites(true, false, false, false, false);
                 m_playerRotation.m_doRotate = false;
                 m_canShot = false;
                 m_canMove = false;
@@ -305,11 +313,11 @@ public class Player : Human
                 break;
         }
 
-        m_playerSoundnAni.playplayerAnim();
+        m_Player_AniMgr.playplayerAnim();
     }
     private void exitPlayerFSM()
     {
-        m_playerSoundnAni.exitplayerAnim();
+        m_Player_AniMgr.exitplayerAnim();
         switch (m_curPlayerState)
         {
             case playerState.IDLE:
@@ -333,15 +341,15 @@ public class Player : Human
                 m_playerRotation.m_doRotate = true;
                 m_canShot = true;
                 m_canMove = true;
-                m_playerSoundnAni.setSprites(false, true, true, true, true);
+                m_Player_AniMgr.setSprites(false, true, true, true, true);
                 break;
 
             case playerState.HIDDEN:
-                m_playerSoundnAni.setSprites(false, true, true, true, true);
+                m_Player_AniMgr.setSprites(false, true, true, true, true);
                 m_playerRotation.m_doRotate = true;
                 m_canShot = true;
                 m_canMove = true;
-                m_playerSoundnAni.setSprites(false, true, true, true, true);
+                m_Player_AniMgr.setSprites(false, true, true, true, true);
                 break;
 
             case playerState.HIDDEN_STAND:
@@ -390,6 +398,21 @@ public class Player : Human
         }
     }
 
+    public override void setisRightHeaded(bool _isRightHeaded)
+    {
+        m_isRightHeaded = _isRightHeaded;
+        if (m_isRightHeaded)
+        {
+            if (transform.localScale.x < 0)
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+        else
+        {
+            if (transform.localScale.x > 0)
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+        m_Player_AniMgr.playplayerAnim();
+    }
     public void setPlayerHp(int _value)
     {
         m_Hp = _value;
@@ -404,4 +427,11 @@ public class Player : Human
         }
     }
     private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
+    public bool getIsPlayerWalkStraight()
+    {
+        if ((m_isRightHeaded && m_playerMoveVec.x > 0) || (!m_isRightHeaded && m_playerMoveVec.x < 0))
+            return true;
+        else
+            return false;
+    }
 }

@@ -98,11 +98,11 @@ public class CameraMove : MonoBehaviour
             }
             transform.position = m_CameraPos;
         }
+
+        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
     }
     private void Update()
     {
-        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
-
         if (Input.GetMouseButtonDown(1))
             PreciseMode(1);
         else if (Input.GetMouseButtonUp(1))
