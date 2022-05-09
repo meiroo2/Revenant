@@ -69,6 +69,7 @@ public class Player_ArmMgr : MonoBehaviour
 
                 case 1:
                     // 발사 성공
+                    m_RecoilTimer = 1f;
                     doRecoil();
                     m_isRecoilLerping = true;
                     break;

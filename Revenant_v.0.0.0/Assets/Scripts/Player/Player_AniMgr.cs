@@ -35,6 +35,7 @@ public class Player_AniMgr : MonoBehaviour
 
     private Player_ArmMgr m_PlayerArmMgr;
     public int m_curArmIdx { get; private set; } = 0;
+    public bool[] m_curActivePartState = new bool[5];
 
 
     // Constructors
@@ -164,6 +165,12 @@ public class Player_AniMgr : MonoBehaviour
     }
     public void setSprites(bool _Player, bool _Head, bool _Body, bool _Leg, bool _Arm)
     {
+        m_curActivePartState[0] = _Player;
+        m_curActivePartState[1] = _Head;
+        m_curActivePartState[2] = _Body;
+        m_curActivePartState[3] = _Leg;
+        m_curActivePartState[4] = _Arm;
+
         if (_Player) m_PlayerSpriteRenderer.enabled = true;
         else m_PlayerSpriteRenderer.enabled = false;
 
@@ -211,6 +218,17 @@ public class Player_AniMgr : MonoBehaviour
 
         m_cur_IArm.gameObject.SetActive(true);
         m_cur_OArm.gameObject.SetActive(true);
+
+        if (m_curActivePartState[4] == true)
+        {
+            m_cur_IArm.m_setFullVisible(true);
+            m_cur_OArm.m_setFullVisible(true);
+        }
+        else
+        {
+            m_cur_IArm.m_setFullVisible(false);
+            m_cur_OArm.m_setFullVisible(false);
+        }
 
         m_PlayerArmMgr.changeArmPartPos(m_curArmIdx);
     }
