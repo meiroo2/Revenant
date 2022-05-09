@@ -120,7 +120,7 @@ public class Player_Gun : MonoBehaviour
     // Functions
     public int Fire_PlayerGun()
     {
-        if (m_Player.m_canShot && !m_isCastingThrow && m_aimCursor.m_canAimCursorShot)
+        if (m_Player.m_canShot && !m_isCastingThrow) //&& m_aimCursor.m_canAimCursorShot)
         {
             switch (m_ActiveWeapon.Fire())
             {

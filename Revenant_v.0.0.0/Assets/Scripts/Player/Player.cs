@@ -39,6 +39,7 @@ public class Player : Human
     public PlayerRotation m_playerRotation { get; private set; }
     public Player_Gun m_playerGun { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
+    public Player_AniMgr m_PlayerAniMgr { get; private set; }
 
     private NoiseMaker m_NoiseMaker;
     private Rigidbody2D m_playerRigid;
@@ -63,6 +64,7 @@ public class Player : Human
     // Constructor
     private void Awake()
     {
+        m_PlayerAniMgr = GetComponentInChildren<Player_AniMgr>();
         m_PlayerHotBox = GetComponentInChildren<Player_HotBox>();
         m_PlayerStairMgr = GetComponentInChildren<Player_StairMgr>();
         m_Player_AniMgr = GetComponentInChildren<Player_AniMgr>();

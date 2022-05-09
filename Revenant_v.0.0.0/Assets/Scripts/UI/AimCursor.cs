@@ -20,6 +20,8 @@ public class AimCursor : MonoBehaviour
     [field: SerializeField] public float p_FireMinimumDistance { get; private set; } = 0.2f;
 
     // Member Variables
+    [field: SerializeField] public float m_Dist_Aim_Player { get; private set; } = 0f;
+
     public bool m_canAimCursorShot { get; private set; } = true;
     public int AimedObjid { get; private set; } = -1;
     private Collider2D m_AimedCollider;
@@ -32,7 +34,8 @@ public class AimCursor : MonoBehaviour
 
     private Camera m_MainCamera;
     private AimImageCanvas m_ImageofAim;
-    private Player_Gun m_PlayerGun;
+    private Transform m_PlayerTransform;
+    private Player_AniMgr m_PlayerAniMgr;
 
     // Constructors
     private void Awake()
@@ -42,20 +45,25 @@ public class AimCursor : MonoBehaviour
     }
     private void Start()
     {
-        m_PlayerGun = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerGun;
+        m_PlayerTransform = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
+        m_PlayerAniMgr = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
     }
 
     // Updates
     private void Update()
     {
-        if (m_canAimCursorShot && Vector2.SqrMagnitude(transform.position - m_PlayerGun.transform.position) < p_FireMinimumDistance)
+        m_Dist_Aim_Player = Vector2.SqrMagnitude(transform.position - m_PlayerTransform.position);
+
+        if (m_canAimCursorShot && m_Dist_Aim_Player < p_FireMinimumDistance)
         {
             m_canAimCursorShot = false;
+            m_PlayerAniMgr.changeArm(1);
             m_ImageofAim.changeAimImage(1);
         }
-        else if(!m_canAimCursorShot && Vector2.SqrMagnitude(transform.position - m_PlayerGun.transform.position) > p_FireMinimumDistance)
+        else if(!m_canAimCursorShot && m_Dist_Aim_Player > p_FireMinimumDistance)
         {
             m_canAimCursorShot = true;
+            m_PlayerAniMgr.changeArm(0);
             m_ImageofAim.changeAimImage(0);
         }
         

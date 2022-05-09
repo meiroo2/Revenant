@@ -33,6 +33,9 @@ public class Player_AniMgr : MonoBehaviour
     private Player_VisualPartMgr m_cur_OArm;
     private Player_VisualPartMgr m_cur_IArm;
 
+    private Player_ArmMgr m_PlayerArmMgr;
+    public int m_curArmIdx { get; private set; } = 0;
+
 
     // Constructors
     private void Awake()
@@ -55,6 +58,7 @@ public class Player_AniMgr : MonoBehaviour
         m_PlayerAnimator = m_Player.GetComponent<Animator>();
         m_PlayerSpriteRenderer = m_Player.GetComponent<SpriteRenderer>();
         m_PlayerGun = m_Player.m_playerGun;
+        m_PlayerArmMgr = m_PlayerRotation.gameObject.GetComponent<Player_ArmMgr>();
     }
 
     // Updates
@@ -194,5 +198,20 @@ public class Player_AniMgr : MonoBehaviour
             m_cur_OArm.m_setFullVisible(false);
             m_cur_IArm.m_setFullVisible(false);
         }
+    }
+    public void changeArm(int _idx)
+    {
+        m_cur_IArm.gameObject.SetActive(false);
+        m_cur_OArm.gameObject.SetActive(false);
+
+        m_curArmIdx = _idx;
+
+        m_cur_IArm = p_IArm[m_curArmIdx];
+        m_cur_OArm = p_OArm[m_curArmIdx];
+
+        m_cur_IArm.gameObject.SetActive(true);
+        m_cur_OArm.gameObject.SetActive(true);
+
+        m_PlayerArmMgr.changeArmPartPos(m_curArmIdx);
     }
 }
