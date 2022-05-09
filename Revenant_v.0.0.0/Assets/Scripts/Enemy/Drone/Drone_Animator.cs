@@ -18,4 +18,22 @@ public class Drone_Animator : MonoBehaviour
     {
         animator.SetTrigger("hitTarget");
     }
+
+    public void HitMainBodyAni()
+    {
+        Debug.Log("no º»Ã¼ ÆÄ±« Animation File");
+        //animator.SetTrigger("hitBody");
+    }
+    public void HitBombAni()
+    {
+        Debug.Log("no °øÁß Æø¹ß Animation File");
+        HitBodyAni();
+        //animator.SetTrigger("hitBomb");
+    }
+    public void GroundBombAni() 
+    {
+        Debug.Log("no Áö¸é Æø¹ß Animation File");
+        HitBodyAni();
+    }
 }
+

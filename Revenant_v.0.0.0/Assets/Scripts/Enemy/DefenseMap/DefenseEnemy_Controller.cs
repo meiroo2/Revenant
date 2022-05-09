@@ -28,15 +28,12 @@ public class DefenseEnemy_Controller : Enemy
 
     private SoundMgr_SFX m_SFXMgr;
 
-    // 감지
-    public bool m_canSensor { get; set; } = false;
 
     // 이동
    [field: SerializeField]
     public Vector2 m_sensorPos { get; set; } // 감지된 위치
     Vector2 originalPos { get; set; } // 원 위치
 
-    public Transform m_playerTransform { get; set; } // 플레이어 실시간 위치
 
     // 전투
     bool isReady = false; // true 시 사격 불가
@@ -177,7 +174,8 @@ public class DefenseEnemy_Controller : Enemy
     {
         if(m_canSensor)
         {
-            m_sensorPos = m_playerTransform.position;
+            if(m_playerTransform)
+                m_sensorPos = m_playerTransform.position;
             // 추격 자극
             RaycastHit2D guardRayHit2D;
 
