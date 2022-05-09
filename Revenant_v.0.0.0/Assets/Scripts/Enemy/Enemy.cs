@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class Enemy : Human
 {
+
+    public Transform m_playerTransform { get; set; } // 플레이어 실시간 위치
+
     public EnemyState curEnemyState { get; set; }
 
     //EnemyState m_enemyState;
+
+    // 감지 가능한지 ( 특정 위치에 도달해야 감지 가능 )
+    public bool m_canSensor { get; set; } = false;
 
     public virtual void Damaged(float stun, float damage) { }
 

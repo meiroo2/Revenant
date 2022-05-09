@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class DefenseEnemy_Controller : Enemy
+public class Gang_Controller : Enemy
 {
     EnemyState nextEnemyState;
 
@@ -60,6 +60,7 @@ public class DefenseEnemy_Controller : Enemy
 
     private void Awake()
     {
+        m_canSensor = true;
         setisRightHeaded(false);
         rigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
