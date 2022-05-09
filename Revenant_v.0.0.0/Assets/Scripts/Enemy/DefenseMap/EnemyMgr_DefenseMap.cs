@@ -86,86 +86,53 @@ public class EnemyMgr_DefenseMap : EnemyMgr
             switch(m_waveIndex)
             {
                 case 0:
-                    if(m_Wave1.Count==0)
-                    {
-                        Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
-                    }
+                    if(m_Wave1.Count==0) Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
 
                     m_dieMaxCount += m_Wave1.Count;
-                    foreach (var e in m_Wave1)
-                    {
-                        //e.getInfo();
-                        
-                        e.setActive();
-                    }
-                
+
+                    foreach (var e in m_Wave1) e.setActive();
+
                     break;
                 case 1:
-                    if (m_Wave2.Count == 0)
-                    {
-                        Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
-                    }
+                    if (m_Wave2.Count == 0) Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
                     
                     m_dieMaxCount += m_Wave2.Count;
-                    foreach (var e in m_Wave2)
-                    {
-                        
-                        //e.getInfo();
-                        e.setActive();
-                    }
+
+                    foreach (var e in m_Wave2) e.setActive();
+
                     break;
                 case 2:
-                    if (m_Wave3.Count == 0)
-                    {
-                        Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
-                    }
+                    if (m_Wave3.Count == 0) Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
 
                     m_dieMaxCount += m_Wave3.Count;
-                    foreach (var e in m_Wave3)
-                    {
-                        //e.getInfo();
-                        e.setActive();
-                    }
+
+                    foreach (var e in m_Wave3) e.setActive();
+
                     break;
 
                 case 3:
-                    if (m_Wave4.Count == 0)
-                    {
-                        Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
-                    }
+                    if (m_Wave4.Count == 0) Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
 
                     m_dieMaxCount += m_Wave4.Count;
-                    foreach (var e in m_Wave4)
-                    {
-                        //e.getInfo();
-                        e.setActive();
-                    }
+
+                    foreach (var e in m_Wave4) e.setActive();
+
                     break;
 
                 case 4:
-                    if (m_Wave5.Count == 0)
-                    {
-                        Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
-                    }
+                    if (m_Wave5.Count == 0) Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
 
                     m_dieMaxCount += m_Wave5.Count;
-                    foreach (var e in m_Wave5)
-                    {
-                        //e.getInfo();
-                        e.setActive();
-                    }
+
+                    foreach (var e in m_Wave5) e.setActive();
+
                     break;
                 case 5:
-                    if (m_Wave6.Count == 0)
-                    {
-                        Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
-                    }
+                    if (m_Wave6.Count == 0) Debug.Log("<error> 웨이브에 적이 없습니다!! 프리팹을 드래그해주세요!");
+
                     m_dieMaxCount += m_Wave6.Count;
-                    foreach (var e in m_Wave6)
-                    {
-                        //e.getInfo();
-                        e.setActive();
-                    }
+
+                    foreach (var e in m_Wave6) e.setActive();
                     break;
             }
             m_waveIndex++;

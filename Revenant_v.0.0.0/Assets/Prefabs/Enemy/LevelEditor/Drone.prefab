@@ -31,6 +31,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 311914230364022340}
   - {fileID: 365231279162911187}
   m_Father: {fileID: 365231278667651751}
   m_RootOrder: 0
@@ -204,7 +205,7 @@ GameObject:
   - component: {fileID: 2654228559711892413}
   - component: {fileID: 3623053467466121813}
   m_Layer: 11
-  m_Name: Drone00
+  m_Name: Drone
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -310,11 +311,7 @@ MonoBehaviour:
   <m_Hp>k__BackingField: 10
   <m_Speed>k__BackingField: 1
   <m_stunTime>k__BackingField: 0
-  <m_damage>k__BackingField: 20
-  <m_explodeDelayTime>k__BackingField: 0.25
-  <m_explosionRange>k__BackingField: 0.5
-  <m_rushDelayTime>k__BackingField: 0.75
-  <m_detectRange>k__BackingField: 1.2
+  <m_attackRange>k__BackingField: 1.5
 --- !u!1 &365231278834716216
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,5 +414,49 @@ Transform:
   - {fileID: 365231278834716217}
   - {fileID: 365231278350798388}
   m_Father: {fileID: 365231277842978441}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2586276652158928503
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 311914230364022340}
+  - component: {fileID: 1854936879490957585}
+  m_Layer: 11
+  m_Name: boxCollider
+  m_TagString: Enemy
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &311914230364022340
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2586276652158928503}
+  m_LocalRotation: {x: -0, y: -0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 365231277842978441}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1854936879490957585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2586276652158928503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff88616de64482848b9190817e31d84f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

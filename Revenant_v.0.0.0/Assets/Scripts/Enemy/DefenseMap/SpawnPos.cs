@@ -69,8 +69,33 @@ public class SpawnPos : MonoBehaviour
 
             prefab.SetActive(false);
         }
+        if (m_wave4Prefab)
+        {
+            prefab = Instantiate(m_wave4Prefab);
+            prefab.transform.position = transform.position;
 
+            m_enemyMgr.m_Wave4.Add(prefab.GetComponent<IEnemySpawn>());
 
+            prefab.SetActive(false);
+        }
+        if (m_wave5Prefab)
+        {
+            prefab = Instantiate(m_wave5Prefab);
+            prefab.transform.position = transform.position;
+
+            m_enemyMgr.m_Wave5.Add(prefab.GetComponent<IEnemySpawn>());
+
+            prefab.SetActive(false);
+        }
+        if (m_wave6Prefab)
+        {
+            prefab = Instantiate(m_wave6Prefab);
+            prefab.transform.position = transform.position;
+
+            m_enemyMgr.m_Wave6.Add(prefab.GetComponent<IEnemySpawn>());
+
+            prefab.SetActive(false);
+        }
     }
 
     public void Init()
