@@ -11,6 +11,7 @@ public class Player_ArmMgr : MonoBehaviour
     public float LowLimitAngle_Short = -10f;
     [Space(5f)]
     public float RecoilDistance = 0.05f;
+    public float RecoilSpeed = 20f;
 
     [Space(20f)]
     [Header("For Publics")]
@@ -132,15 +133,15 @@ public class Player_ArmMgr : MonoBehaviour
         switch (m_PlayerAniMgr.m_curArmIdx)
         {
             case 0:
-                p_GunTransform.localPosition = Vector2.Lerp(p_GunTransform.localPosition, p_LongGunPos.localPosition, Time.deltaTime * 20f);
-                p_LongOutArmEffectorPos.localPosition = Vector2.Lerp(p_LongOutArmEffectorPos.localPosition, m_LongArmEffectorOriginPos[0], Time.deltaTime * 20f);
-                p_LongInArmEffectorPos.localPosition = Vector2.Lerp(p_LongInArmEffectorPos.localPosition, m_LongArmEffectorOriginPos[1], Time.deltaTime * 20f);
+                p_GunTransform.localPosition = Vector2.Lerp(p_GunTransform.localPosition, p_LongGunPos.localPosition, Time.deltaTime * RecoilSpeed);
+                p_LongOutArmEffectorPos.localPosition = Vector2.Lerp(p_LongOutArmEffectorPos.localPosition, m_LongArmEffectorOriginPos[0], Time.deltaTime * RecoilSpeed);
+                p_LongInArmEffectorPos.localPosition = Vector2.Lerp(p_LongInArmEffectorPos.localPosition, m_LongArmEffectorOriginPos[1], Time.deltaTime * RecoilSpeed);
                 break;
 
             case 1:
-                p_GunTransform.localPosition = Vector2.Lerp(p_GunTransform.localPosition, p_ShortGunPos.localPosition, Time.deltaTime * 20f);
-                p_ShortOutArmEffectorPos.localPosition = Vector2.Lerp(p_ShortOutArmEffectorPos.localPosition, m_ShortArmEffectorOriginPos[0], Time.deltaTime * 20f);
-                p_ShortInArmEffectorPos.localPosition = Vector2.Lerp(p_ShortInArmEffectorPos.localPosition, m_ShortArmEffectorOriginPos[1], Time.deltaTime * 20f);
+                p_GunTransform.localPosition = Vector2.Lerp(p_GunTransform.localPosition, p_ShortGunPos.localPosition, Time.deltaTime * RecoilSpeed);
+                p_ShortOutArmEffectorPos.localPosition = Vector2.Lerp(p_ShortOutArmEffectorPos.localPosition, m_ShortArmEffectorOriginPos[0], Time.deltaTime * RecoilSpeed);
+                p_ShortInArmEffectorPos.localPosition = Vector2.Lerp(p_ShortInArmEffectorPos.localPosition, m_ShortArmEffectorOriginPos[1], Time.deltaTime * RecoilSpeed);
                 break;
         }
         m_RecoilTimer -= Time.deltaTime;
