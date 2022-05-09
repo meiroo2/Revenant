@@ -37,7 +37,6 @@ public class EnemyMgr_DefenseMap : EnemyMgr
     {
         if(null == Instance)
         {
-            //Debug.Log("new DefenseMap Instance");
             Instance = this;
         }
     }
@@ -55,8 +54,8 @@ public class EnemyMgr_DefenseMap : EnemyMgr
             if(m_spawnActive)
             {
                 // 강제 웨이브 스폰
-                //Spawn();
-                Invoke(nameof(Spawn), m_spawnWaitTime);
+                Spawn();
+                
             }
             else
             {
@@ -82,6 +81,8 @@ public class EnemyMgr_DefenseMap : EnemyMgr
 
     public void Spawn()
     {
+        CancelInvoke(nameof(Spawn));
+        //Debug.Log("spawn");
         if(m_waveIndex < 6)
         {
 
