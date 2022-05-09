@@ -39,6 +39,9 @@ public class PlayerRotation : MonoBehaviour
     // Updates
     private void Update()
     {
+        if (!m_doRotate)
+            return;
+
         if (m_curActualAngle > 90f || m_curActualAngle < -90f)
         {
             if (m_Player.m_isRightHeaded)
@@ -47,9 +50,7 @@ public class PlayerRotation : MonoBehaviour
                 m_Player.setisRightHeaded(true);
         }
         getAngle();
-
-        if (m_doRotate)
-            doRotate();
+        doRotate();
     }
 
 
