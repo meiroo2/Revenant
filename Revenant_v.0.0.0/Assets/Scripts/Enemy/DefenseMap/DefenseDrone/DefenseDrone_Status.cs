@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class DefenseDrone_Status : Enemy
 {
+    // 돌진 이동속도
+    [field: Header("돌진 이동속도")]
+    [field: SerializeField]
+    public float m_rushSpeed { get; set; } = 0.8f;
 
     // 폭파 데미지
     [field: Header("폭파 데미지")]

@@ -83,7 +83,7 @@ public class DefenseDrone_Controller : Enemy, IEnemySpawn
     void Rush()
     {
         rigid.bodyType = RigidbodyType2D.Dynamic;
-        rigid.velocity = m_rushVec * m_Speed;
+        rigid.velocity = m_rushVec * status.m_rushSpeed;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
