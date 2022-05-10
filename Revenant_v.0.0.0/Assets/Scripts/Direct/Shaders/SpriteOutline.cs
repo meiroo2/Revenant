@@ -6,7 +6,7 @@ public class SpriteOutline : MonoBehaviour
     public Color color = Color.white;
 
     [Range(0, 16)]
-    public int outlineSize = 1;
+    public int outlineSize = 16;
 
     public int isOpacue = 0;
 

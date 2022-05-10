@@ -35,7 +35,7 @@ public class Player_AniMgr : MonoBehaviour
 
     private Player_ArmMgr m_PlayerArmMgr;
     public int m_curArmIdx { get; private set; } = 0;
-    public bool[] m_curActivePartState = new bool[5];
+    public bool[] m_curActivePartState { get; private set; } = { false, true, true, true, true };
 
 
     // Constructors
@@ -229,6 +229,7 @@ public class Player_AniMgr : MonoBehaviour
             m_cur_IArm.m_setFullVisible(false);
             m_cur_OArm.m_setFullVisible(false);
         }
+
 
         m_PlayerArmMgr.changeArmPartPos(m_curArmIdx);
     }

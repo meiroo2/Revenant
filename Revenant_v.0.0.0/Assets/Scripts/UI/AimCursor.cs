@@ -18,24 +18,25 @@ public class AimCursor : MonoBehaviour
 {
     // Visible Member Variables
     [field: SerializeField] public float p_FireMinimumDistance { get; private set; } = 0.2f;
-
-    // Member Variables
     [field: SerializeField] public float m_Dist_Aim_Player { get; private set; } = 0f;
 
-    public bool m_canAimCursorShot { get; private set; } = true;
-    public int AimedObjid { get; private set; } = -1;
-    private Collider2D m_AimedCollider;
-    private Vector2 m_CursorPos;
 
-    private List<AimedObjInfo> m_AimedObjs = new List<AimedObjInfo>();
 
-    private int m_ShortestId = 0;
-    private float m_ShortestLength = 0f;
-
+    // Member Variables
     private Camera m_MainCamera;
     private AimImageCanvas m_ImageofAim;
     private Transform m_PlayerTransform;
     private Player_AniMgr m_PlayerAniMgr;
+
+    public bool m_canAimCursorShot { get; private set; } = true;
+    public int AimedObjid { get; private set; } = -1;
+
+    private List<AimedObjInfo> m_AimedObjs = new List<AimedObjInfo>();
+    private Vector2 m_CursorPos;
+    private int m_ShortestId = 0;
+    private float m_ShortestLength = 0f;
+
+
 
     // Constructors
     private void Awake()
@@ -48,6 +49,8 @@ public class AimCursor : MonoBehaviour
         m_PlayerTransform = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
         m_PlayerAniMgr = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
     }
+
+
 
     // Updates
     private void Update()
@@ -77,7 +80,7 @@ public class AimCursor : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 충돌한 히트박스의 정보를 리스트에 담음
+        // 충돌한 히트박스의 오브젝트 정보(InstanceID, Position)를 리스트에 담음
         m_AimedObjs.Add(new AimedObjInfo(collision.gameObject.GetInstanceID(), collision.transform.position));
     }
     
@@ -116,6 +119,7 @@ public class AimCursor : MonoBehaviour
                 }
             }
 
+            // 만약 LIst 비었으면 조준한 오브젝트 Id를 -1로 재할당
             if (m_AimedObjs.Count == 0)
                 AimedObjid = -1;
         }
