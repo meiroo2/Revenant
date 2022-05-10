@@ -2,79 +2,80 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HideObj : MonoBehaviour, IAttacked
+public class HideObj : MonoBehaviour, IHotBox
 {
     // Visible Member Variables
-    public Player m_Player { get; private set; }
-    public bool m_isOn = false;
-    public bool m_isPlayerHide = false;
+    public HideSlot p_LSlot;
+    public HideSlot p_RSlot;
 
     // Member Variables
-    private BoxCollider2D m_HideCollider;
-    private SoundMgr_SFX m_SFXMgr;
-    private SpriteRenderer m_SpriteRenderer;
+    public int m_hotBoxType { get; set; } = 1;
+    public bool m_isEnemys { get; set; } = false;
+    private BoxCollider2D m_HitBox;
+    private bool[] m_isSlotOn_States = new bool[2];
+    private int m_SlotCount = 0;
+
 
     // Constructors
     private void Awake()
     {
-        m_SpriteRenderer = GetComponent<SpriteRenderer>();
-        m_HideCollider = GetComponent<BoxCollider2D>();
-        m_HideCollider.enabled = false;
-        //m_SFXMgr = GameObject.FindGameObjectWithTag("SoundMgr").GetComponent<SoundMgr_SFX>();
-    }
-    private void Start()
-    {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
-    }
-    /*
-    <커스텀 초기화 함수가 필요할 경우>
-    public void Init()
-    {
+        m_HitBox = GetComponent<BoxCollider2D>();
+        m_HitBox.enabled = false;
 
+        m_isSlotOn_States.Initialize();
+
+        if (p_LSlot)
+        {
+            m_SlotCount++;
+            p_LSlot.m_isLeftSlot = true;
+            p_LSlot.m_HideObj = this;
+        }
+        if (p_RSlot)
+        {
+            m_SlotCount++;
+            p_RSlot.m_isLeftSlot = false;
+            p_RSlot.m_HideObj = this;
+        }
     }
-    */
+
 
     // Updates
-    private void Update()
-    {
 
-    }
-    private void FixedUpdate()
-    {
-
-    }
 
     // Physics
 
 
     // Functions
-    public void Attacked(AttackedInfo _AttackedInfo)
-    {
-        m_SFXMgr.playAttackedSound(MatType.Target_Body, _AttackedInfo.m_ContactPoint);
+    public int HitHotBox(IHotBoxParam _param) 
+    { 
+        return 1; 
     }
-    public bool setPlayerStateToHide()
+    public void getHideSlotInfo(bool _isOn, bool _isLeftSlot)
     {
-        
-        if ((m_Player.m_curPlayerState != playerState.HIDDEN) && (m_Player.m_curPlayerState != playerState.HIDDEN_STAND))
-        {
-            m_Player.changePlayerFSM(playerState.HIDDEN);
-            // 숨는 OBJ 콜라이더 켜짐
-            m_HideCollider.enabled = true;
-            m_isOn = true;
-            m_SpriteRenderer.sortingLayerName = "Stair";
-
-            return true;
-        }
+        if (_isLeftSlot)
+            m_isSlotOn_States[0] = _isOn;
         else
-        {
-            m_Player.changePlayerFSM(playerState.IDLE);
-            // 숨는 OBJ 콜라이더 꺼짐
-            m_HideCollider.enabled = false;
-            m_isOn = false;
-            m_SpriteRenderer.sortingLayerName = "Object";
+            m_isSlotOn_States[1] = _isOn;
 
-            return false;
+        if (m_isSlotFullOff() == true)
+            m_HitBox.enabled = false;
+        else
+            m_HitBox.enabled = true;
+    }
+    private bool m_isSlotFullOff()
+    {
+        bool isFullOff = true;
+
+        for(int i = 0; i < m_isSlotOn_States.Length; i++)
+        {
+            if(m_isSlotOn_States[i] == true)
+            {
+                isFullOff = false;
+                break;
+            }
         }
+
+        return isFullOff;
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
