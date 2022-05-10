@@ -8,15 +8,14 @@ public class SuperArmorMgr : MonoBehaviour
     public float p_SuperArmorSpeed = 20f;
     public float p_DistanceBetweenOriginPos = 0.08f;
 
-    [Space(20f)]
-    public Material m_SuperArmorMat;
+    [Space(30f)]
+    [Header("¶£Áã ±ÝÁö")]
     public GameObject m_ChildObj;
     private GameObject m_ParentObj;
 
     private Transform m_InstantiatedTransform;
 
     private bool m_isSuperArmorOn = false;
-    private float m_Timer = 1f;
 
     private void Awake()
     {
@@ -42,15 +41,13 @@ public class SuperArmorMgr : MonoBehaviour
         if (!m_isSuperArmorOn)
             return;
 
-        m_Timer -= Time.deltaTime;
         m_InstantiatedTransform.localScale = Vector2.Lerp(m_InstantiatedTransform.localScale, Vector2.one, Time.deltaTime * p_SuperArmorSpeed);
         m_InstantiatedTransform.localPosition = Vector2.Lerp(m_InstantiatedTransform.localPosition, Vector2.zero, Time.deltaTime * p_SuperArmorSpeed);
         
-        if(m_Timer <= 0f)
+        if(m_InstantiatedTransform.localScale.x <= 1.03f)
         {
             m_InstantiatedTransform.localScale = Vector2.one;
             m_InstantiatedTransform.localPosition = Vector2.zero;
-            m_Timer = 1f;
             m_isSuperArmorOn = false;
 
             m_InstantiatedTransform.gameObject.SetActive(false);
