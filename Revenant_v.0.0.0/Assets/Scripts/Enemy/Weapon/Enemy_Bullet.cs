@@ -28,7 +28,7 @@ public class Enemy_Bullet : BULLET
     }
     private void Start()
     {
-        m_HitSFXMaker = GameManager.GetInstance().GetComponentInChildren<HitSFXMaker>();
+        m_HitSFXMaker = InstanceMgr.GetInstance().GetComponentInChildren<HitSFXMaker>();
     }
     void FixedUpdate()
     {

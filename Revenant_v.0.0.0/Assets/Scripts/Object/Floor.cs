@@ -19,7 +19,7 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     }
     private void Start()
     {
-        m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_SoundMgrSFX = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
 
     // Updates

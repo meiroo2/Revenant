@@ -45,7 +45,7 @@ public class WEAPON_Player : WEAPON
     protected Player m_Player;
     protected Player_Gun m_PlayerGun;
 
-    protected Player_UIMgr m_PlayerUIMgr;
+    protected Player_UI m_PlayerUIMgr;
     protected SoundMgr_SFX m_SoundMgrSFX;
 
 
@@ -65,6 +65,13 @@ public class WEAPON_Player : WEAPON
 
 
     // Functions
+    public bool getPlayerWeaponCanReload()
+    {
+        if (m_LeftBullet <= m_BulletPerMag)
+            return true;
+        else
+            return false;
+    }
     public void setPlayerWeaponValue(WEAPON_PlayerParam _param)
     {
         m_BulletSpeed = _param.BulletSpeed;

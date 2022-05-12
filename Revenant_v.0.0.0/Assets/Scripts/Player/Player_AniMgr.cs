@@ -54,8 +54,8 @@ public class Player_AniMgr : MonoBehaviour
     }
     private void Start()
     {
-        m_PlayerRotation = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation;
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_PlayerRotation = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerAnimator = m_Player.GetComponent<Animator>();
         m_PlayerSpriteRenderer = m_Player.GetComponent<SpriteRenderer>();
         m_PlayerGun = m_Player.m_playerGun;

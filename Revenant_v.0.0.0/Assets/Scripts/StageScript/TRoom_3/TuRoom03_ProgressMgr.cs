@@ -26,7 +26,7 @@ public class TuRoom03_ProgressMgr : ProgressMgr
     // Constructors
     private void Start()
     {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
         NextProgress();
     }
 

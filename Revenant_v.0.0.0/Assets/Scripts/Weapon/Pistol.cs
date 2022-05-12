@@ -25,9 +25,9 @@ public class Pistol : WEAPON_Player
     }
     private void Start()
     {
-        m_HitSFXMaker = GameManager.GetInstance().GetComponentInChildren<HitSFXMaker>();
-        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
-        m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_HitSFXMaker = InstanceMgr.GetInstance().GetComponentInChildren<HitSFXMaker>();
+        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_SoundMgrSFX = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
     private void OnEnable()
     {
@@ -110,8 +110,9 @@ public class Pistol : WEAPON_Player
         InstancedBullet.transform.SetPositionAndRotation(m_Player_Arm.transform.position, m_Player_Arm.rotation);
 
         // 에임이 가리키고 있는 가장 가까운 히트박스의 고유값을 총알한테 넘겨줌
+        Debug.Log(m_aimCursor.AimedObjName + ", " + m_aimCursor.AimedObjid + "를 조준");
         InstancedBullet_Script.m_aimedObjId = m_aimCursor.AimedObjid;
-
+        
         GameObject InstancedShell = Instantiate(m_Shell);
         InstancedShell.transform.position = m_ShellPos.transform.position;
 

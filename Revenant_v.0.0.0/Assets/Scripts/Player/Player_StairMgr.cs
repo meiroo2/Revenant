@@ -21,7 +21,7 @@ public class Player_StairMgr : MonoBehaviour
         m_NullStairPos = null;
 
         m_PlayerNormal = Vector2.up;
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
 
     private void Update()
