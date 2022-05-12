@@ -7,7 +7,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     // Member Variables
     private BoxCollider2D m_PlayerHotBoxCol;
     private UIMgr m_UIMgr;
-    private Player_UIMgr m_PlayerUIMgr;
+    private Player_UI m_PlayerUIMgr;
     private Player m_Player;
     private SoundMgr_SFX m_SFXMgr;
     public int m_hotBoxType { get; set; } = 0;
@@ -20,10 +20,10 @@ public class Player_HotBox : MonoBehaviour, IHotBox
 
     private void Start()
     {
-        m_UIMgr = GameManager.GetInstance().GetComponentInChildren<UIMgr>();
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
-        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
-        m_SFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_UIMgr = InstanceMgr.GetInstance().GetComponentInChildren<UIMgr>();
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_SFXMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
 
     public void setPlayerHotBoxCol(bool _isOn)

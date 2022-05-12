@@ -5,12 +5,14 @@ using UnityEngine;
 public class Player_Gun : MonoBehaviour
 {
     // Visible Member Variables
+    private float p_MaxReloadTime = 3f;
+
+    [Space (30f)]
     public WEAPON_Player[] m_MainWeapons;
     public WEAPON_Player[] m_SubWeapons;
     public WEAPON_Player[] m_Throwables;
 
-    [Space(30f)]
-    [Header("For IK")]
+    /*
     public Transform m_OutArmEffectorPos;
     public Transform m_OutArmEffectorOriginPos;
 
@@ -19,10 +21,12 @@ public class Player_Gun : MonoBehaviour
 
     public Transform m_GunPos;
     public Transform m_GunOriginPos;
+    */
 
     // Member Variables
+    public int m_ActiveWeaponType { get; private set; } = 0; // 0 == Main, 1 == Sub, 2 == Throwable
     private NoiseMaker m_NoiseMaker;
-    private Player_UIMgr m_PlayerUIMgr;
+    private Player_UI m_PlayerUIMgr;
     private AimCursor m_aimCursor;
 
     private Player_AniMgr m_Player_AniMgr;
@@ -35,18 +39,23 @@ public class Player_Gun : MonoBehaviour
 
     private WEAPON_Player m_ActiveWeapon;
 
+    private Player_UI m_PlayerUI;
+
     private bool m_isCastingThrow = false;
-    public int m_ActiveWeaponType { get; private set; } = 0; // 0 == Main, 1 == Sub, 2 == Throwable
+    public bool m_isReloading { get; private set; } = false;
+    
+
+
 
     // Constructors
     private void Start()
     {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
-        m_Player_Arm = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation.transform;
-        m_Player_AniMgr = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_Player_AniMgr;
-        m_NoiseMaker = GameManager.GetInstance().GetComponentInChildren<NoiseMaker>();
-        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
-        m_aimCursor = GameManager.GetInstance().GetComponentInChildren<AimCursor>();
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player_Arm = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation.transform;
+        m_Player_AniMgr = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_Player_AniMgr;
+        m_NoiseMaker = InstanceMgr.GetInstance().GetComponentInChildren<NoiseMaker>();
+        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_aimCursor = InstanceMgr.GetInstance().GetComponentInChildren<AimCursor>();
 
         if (m_MainWeapons.Length != 0)
         {
@@ -79,7 +88,7 @@ public class Player_Gun : MonoBehaviour
         m_ActiveWeapon = m_curMainWeapon;
         m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
 
-        GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>().setLeftBulletUI(m_curMainWeapon.m_LeftBullet, m_curMainWeapon.m_LeftMag, 0);
+        m_PlayerUIMgr.setLeftBulletUI(m_curMainWeapon.m_LeftBullet, m_curMainWeapon.m_LeftMag, 0);
     }
 
     // Updates
@@ -108,9 +117,11 @@ public class Player_Gun : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && m_ActiveWeapon.getPlayerWeaponCanReload() &&
+            m_isReloading == false)
         {
-            m_ActiveWeapon.Reload();
+            m_isReloading = true;
+            StartCoroutine(ReloadCoroutine());
         }
     }
 
@@ -118,6 +129,14 @@ public class Player_Gun : MonoBehaviour
 
 
     // Functions
+    private IEnumerator ReloadCoroutine()
+    {
+        Debug.Log(p_MaxReloadTime);
+        m_PlayerUIMgr.UpdateReloadTimer(p_MaxReloadTime);
+        yield return new WaitForSeconds(p_MaxReloadTime);
+        m_ActiveWeapon.Reload();
+        m_isReloading = false;
+    }
     public int Fire_PlayerGun()
     {
         if (m_Player.m_canShot && !m_isCastingThrow) //&& m_aimCursor.m_canAimCursorShot)

@@ -9,7 +9,7 @@ public class WillDestroy : MonoBehaviour
 
     private void Start()
     {
-        m_SoundSFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_SoundSFXMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
 
     private void Update()

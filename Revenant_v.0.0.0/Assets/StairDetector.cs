@@ -11,7 +11,7 @@ public class StairDetector : MonoBehaviour
 
     private void Start()
     {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
     public bool useObj()
     {

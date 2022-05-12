@@ -12,7 +12,7 @@ public class Leg : MonoBehaviour, IPlayerVisualPart
     }
     private void Start()
     {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
     /*
     public void PlayPlayerPartAni(PlayerPartAniParam _inputParam)

@@ -390,6 +390,7 @@ public class DefenseEnemy_Controller : Enemy
 
     void ReadyComplete()
     {
+        GetComponent<SuperArmorMgr>().doSuperArmor();
         //Debug.Log("ReadyComplete");
         isReady = false;
     }

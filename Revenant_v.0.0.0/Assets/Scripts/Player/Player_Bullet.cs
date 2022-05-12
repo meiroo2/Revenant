@@ -16,12 +16,16 @@ public class Player_Bullet : BULLET
     private SoundMgr_SFX m_SoundMgrSFX;
     private PlayerRotation m_PlayerRotation;
 
+    private IHotBox m_BulletHitHotBox;
+
+    private bool m_ShouldDestroy = false;
+
     // Constructors
     private void Start()
     {
-        m_HitSFXMaker = GameManager.GetInstance().GetComponentInChildren<HitSFXMaker>();
-        m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
-        m_PlayerRotation = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation;
+        m_HitSFXMaker = InstanceMgr.GetInstance().GetComponentInChildren<HitSFXMaker>();
+        m_SoundMgrSFX = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_PlayerRotation = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation;
     }
     public void InitBullet(float _speed, int _damage)
     {
@@ -43,23 +47,34 @@ public class Player_Bullet : BULLET
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Debug.Log(collision.name);
-        IHotBox TempHotBox = collision.GetComponent<IHotBox>();
-        if(TempHotBox.m_hotBoxType == 0)
+        m_BulletHitHotBox = collision.GetComponent<IHotBox>();
+
+        switch (m_BulletHitHotBox.m_hotBoxType)
         {
-            if (m_aimedObjId == collision.gameObject.GetInstanceID())
-            {
-                TempHotBox.HitHotBox(new IHotBoxParam(m_Damage, m_stunValue, transform.position, WeaponType.BULLET));
+            case 0:
+                if (m_aimedObjId != collision.gameObject.GetInstanceID())
+                {
+                    Debug.Log("지나감 : " + collision.name + " " + collision.gameObject.GetInstanceID());
+                    break;
+                }
+
+                Debug.Log("충돌 : " + collision.name + " " + collision.gameObject.GetInstanceID());
+                m_BulletHitHotBox.HitHotBox(new IHotBoxParam(m_Damage, m_stunValue, transform.position, WeaponType.BULLET));
                 m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
-                Destroy(gameObject);
-            }
+                m_ShouldDestroy = true;
+                break;
+
+            case 1:
+                Debug.Log("반충돌 : " + collision.name + " " + collision.gameObject.GetInstanceID());
+
+                m_BulletHitHotBox.HitHotBox(new IHotBoxParam(m_Damage, m_stunValue, transform.position, WeaponType.BULLET));
+                m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
+                m_ShouldDestroy = true;
+                break;
         }
-        else
-        {
-            TempHotBox.HitHotBox(new IHotBoxParam(m_Damage, m_stunValue, transform.position, WeaponType.BULLET));
-            m_HitSFXMaker.EnableNewObj(Random.Range(1, 3), transform.position, transform.rotation, (m_Speed > 0f) ? true : false);
+
+        if (m_ShouldDestroy)
             Destroy(gameObject);
-        }
     }
 
     // Functions

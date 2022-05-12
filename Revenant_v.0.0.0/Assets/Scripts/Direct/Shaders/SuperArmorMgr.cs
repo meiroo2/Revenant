@@ -33,11 +33,6 @@ public class SuperArmorMgr : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            doSuperArmor();
-        }
-
         if (!m_isSuperArmorOn)
             return;
 

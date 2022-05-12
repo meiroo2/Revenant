@@ -15,7 +15,7 @@ public class UIMgr : MonoBehaviour
     // Constructors
     private void Awake()
     {
-        m_GameOverUI = Instantiate(m_GameOverUIPrefab, GameManager.GetInstance().GetComponent<GameManager>().m_MainCanvas.transform);
+        m_GameOverUI = Instantiate(m_GameOverUIPrefab, InstanceMgr.GetInstance().GetComponent<InstanceMgr>().m_MainCanvas.transform);
         Screen.SetResolution(1920, 1080, true);
     }
     private void Start()

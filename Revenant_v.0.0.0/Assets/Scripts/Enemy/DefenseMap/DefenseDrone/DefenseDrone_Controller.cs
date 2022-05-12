@@ -242,7 +242,7 @@ public class DefenseDrone_Controller : Enemy, IEnemySpawn
     // IEnemySpawn
     public void setActive()
     {
-        m_playerTransform = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
+        m_playerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
         gameObject.SetActive(true);
     }
 

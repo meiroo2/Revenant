@@ -9,7 +9,7 @@ public class Jacket : MonoBehaviour, IPlayerVisualPart
     private void Awake()
     {
         m_Animator = GetComponent<Animator>();
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
     private void Start()
     {

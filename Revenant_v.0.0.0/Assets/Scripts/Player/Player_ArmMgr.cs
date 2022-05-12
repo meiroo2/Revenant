@@ -52,7 +52,7 @@ public class Player_ArmMgr : MonoBehaviour
     }
     private void Start()
     {
-        GameObject _instance = GameManager.GetInstance();
+        InstanceMgr _instance = InstanceMgr.GetInstance();
         m_PlayerGun = _instance.GetComponentInChildren<Player_Manager>().m_Player.m_playerGun;
         m_PlayerAniMgr = _instance.GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
     }
@@ -60,7 +60,7 @@ public class Player_ArmMgr : MonoBehaviour
     // Updates
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !m_PlayerGun.m_isReloading)
         {
             switch (m_PlayerGun.Fire_PlayerGun())
             {

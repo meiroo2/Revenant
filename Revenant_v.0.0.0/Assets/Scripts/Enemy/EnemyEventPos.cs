@@ -25,7 +25,7 @@ public class EnemyEventPos : MonoBehaviour
                     //collision.GetComponent<DefenseEnemy_Controller>();
                     Enemy e= collision.GetComponent<Enemy>();
                     e.m_canSensor = true;
-                    e.m_playerTransform = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
+                    e.m_playerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
                 }
             break;
         }

@@ -10,7 +10,7 @@ public class EnemyPosTrigger : MonoBehaviour
 
     private void Start()
     {
-        m_player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
 
     private void Update()

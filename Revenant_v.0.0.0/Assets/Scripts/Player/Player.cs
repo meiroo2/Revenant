@@ -46,7 +46,7 @@ public class Player : Human
     private Animator m_PlayerAnimator;
     private Player_StairMgr m_PlayerStairMgr;
     private Player_HotBox m_PlayerHotBox;
-    private Player_UIMgr m_PlayerUIMgr;
+    private Player_UI m_PlayerUIMgr;
 
     private bool m_isRecoveringRollCount = false;
     private IEnumerator m_FootStep;
@@ -81,9 +81,9 @@ public class Player : Human
     }
     private void Start()
     {
-        m_NoiseMaker = GameManager.GetInstance().GetComponentInChildren<NoiseMaker>();
-        m_PlayerUIMgr = GameManager.GetInstance().GetComponentInChildren<Player_UIMgr>();
-        //m_SFXMgr = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_NoiseMaker = InstanceMgr.GetInstance().GetComponentInChildren<NoiseMaker>();
+        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
+        //m_SFXMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
@@ -100,7 +100,7 @@ public class Player : Human
         m_playerGun.m_MainWeapons[0].setPlayerWeaponValue(new WEAPON_PlayerParam(
             _input.BulletSpeed, _input.BulletDamage, _input.StunValue, _input.MinimumShotDelay,
             _input.BulletCount, _input.MagCount));
-
+        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_PlayerUIMgr.setLeftBulletUI(_input.BulletCount, _input.MagCount, 0);
     }
 
@@ -277,6 +277,8 @@ public class Player : Human
                 m_PlayerHotBox.setPlayerHotBoxCol(false);
 
                 m_LeftRollCount -= 1;
+                m_PlayerUIMgr.UpdateRollCount(m_LeftRollCount);
+
                 if (!m_isRecoveringRollCount)
                     StartCoroutine(RecoverRollCount());
 
@@ -338,6 +340,7 @@ public class Player : Human
                 m_playerRotation.m_doRotate = true;
                 m_canShot = true;
                 m_canMove = true;
+                m_playerRigid.velocity = Vector2.zero;
                 m_Player_AniMgr.setSprites(false, true, true, true, true);
                 break;
 
@@ -378,9 +381,14 @@ public class Player : Human
     }
     private IEnumerator RecoverRollCount()
     {
+        m_PlayerUIMgr.UpdateRollTimer(m_RollRecoverTime);
+
         m_isRecoveringRollCount = true;
         yield return new WaitForSeconds(m_RollRecoverTime);
+
         m_LeftRollCount += 1;
+        m_PlayerUIMgr.UpdateRollCount(m_LeftRollCount);
+
         if (m_LeftRollCount < m_MaxRollCount)
             StartCoroutine(RecoverRollCount());
         else if (m_LeftRollCount == m_MaxRollCount)

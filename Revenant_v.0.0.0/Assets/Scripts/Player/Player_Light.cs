@@ -8,7 +8,7 @@ public class Player_Light : MonoBehaviour
 
     private void Start()
     {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
     }
 
     private void Update()
