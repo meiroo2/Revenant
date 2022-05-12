@@ -119,4 +119,12 @@ public class PlayerRotation : MonoBehaviour
         else
             Debug.Log("PlayerRotation Angle Param Error");
     }
+
+    public bool getIsMouseRight()
+    {
+        if (m_mainCam.ScreenToWorldPoint(Input.mousePosition).x > m_Player.transform.position.x)
+            return true;
+        else
+            return false;
+    }
 }
