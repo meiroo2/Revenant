@@ -241,6 +241,7 @@ public class Player : Human
                     else if (!m_playerRotation.getIsMouseRight())
                         setisRightHeaded(false);
 
+                    m_useRange.ForceExitFromHiddenSlot();
                     changePlayerFSM(playerState.ROLL);
                 }
                 break;

@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(Player_ValueManipulator))]
+[CustomEditor(typeof(LightMgr))]
 
-public class CS_PlayerValueManipulator : Editor
+public class CS_LightMgr : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
 
-        Player_ValueManipulator manipulator = (Player_ValueManipulator)target;
+        LightMgr manipulator = (LightMgr)target;
         if (GUILayout.Button("설정값 적용하기"))
         {
-            manipulator.SetPlayerValues();
+            manipulator.setLightValues();
+            manipulator.setParallaxValues();
         }
+
     }
 }
