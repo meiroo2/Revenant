@@ -11,6 +11,7 @@ public class GameMgr : MonoBehaviour
     // Member Variables
     private static GameMgr s_Instance = null;
     public static GameMgr getInstance() { return s_Instance; }
+    private bool m_isStartTimer = false;
 
 
     // Constructor
@@ -34,10 +35,18 @@ public class GameMgr : MonoBehaviour
     // Updates
     private void Update()
     {
-        m_GameTimer += Time.unscaledDeltaTime;
+        if (Input.GetKeyDown(KeyCode.Q))
+            m_isStartTimer = true;
+
+        if (m_isStartTimer)
+            m_GameTimer += Time.unscaledDeltaTime;
     }
 
     // Functions
-    public void resetTimer() { m_GameTimer = 0f; }
+    public void resetTimer() 
+    {
+        m_isStartTimer = false;
+        m_GameTimer = 0f;
+    }
 
 }

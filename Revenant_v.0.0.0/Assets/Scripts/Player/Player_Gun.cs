@@ -5,7 +5,7 @@ using UnityEngine;
 public class Player_Gun : MonoBehaviour
 {
     // Visible Member Variables
-    private float p_MaxReloadTime = 3f;
+    public float p_MaxReloadTime = 3f;
 
     [Space (30f)]
     public WEAPON_Player[] m_MainWeapons;

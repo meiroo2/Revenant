@@ -230,6 +230,19 @@ public class Player : Human
                 break;
 
             case playerState.HIDDEN:
+                if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
+                {
+                    if (Input.GetKey(KeyCode.A))
+                        setisRightHeaded(false);
+                    else if (Input.GetKey(KeyCode.D))
+                        setisRightHeaded(true);
+                    else if (m_playerRotation.getIsMouseRight())
+                        setisRightHeaded(true);
+                    else if (!m_playerRotation.getIsMouseRight())
+                        setisRightHeaded(false);
+
+                    changePlayerFSM(playerState.ROLL);
+                }
                 break;
 
             case playerState.HIDDEN_STAND:
