@@ -5,7 +5,7 @@ using UnityEngine;
 public class ForObjPull_Once : MonoBehaviour
 {
     // Visible Member Variables
-
+    public SoundMgr_SFX m_SoundSFXMgr;
 
     // Member Variables
     private float m_Timer = 0f;

@@ -9,42 +9,28 @@ public class Player_Gun : MonoBehaviour
 
     [Space (30f)]
     public WEAPON_Player[] m_MainWeapons;
-    public WEAPON_Player[] m_SubWeapons;
     public WEAPON_Player[] m_Throwables;
 
-    /*
-    public Transform m_OutArmEffectorPos;
-    public Transform m_OutArmEffectorOriginPos;
-
-    public Transform m_InArmEffectorPos;
-    public Transform m_InArmEffectorOriginPos;
-
-    public Transform m_GunPos;
-    public Transform m_GunOriginPos;
-    */
 
     // Member Variables
-    public int m_ActiveWeaponType { get; private set; } = 0; // 0 == Main, 1 == Sub, 2 == Throwable
     private NoiseMaker m_NoiseMaker;
     private Player_UI m_PlayerUIMgr;
     private AimCursor m_aimCursor;
-
     private Player_AniMgr m_Player_AniMgr;
     private Player m_Player;
     private Transform m_Player_Arm;
+    private Player_UI m_PlayerUI;
 
+    public int m_ActiveWeaponType { get; private set; } = 0; // 0 == Main, 1 == Throwables
+    
     private WEAPON_Player m_curMainWeapon;
-    private WEAPON_Player m_curSubWeapon;
     private WEAPON_Player m_curThrowable;
 
     private WEAPON_Player m_ActiveWeapon;
 
-    private Player_UI m_PlayerUI;
-
     private bool m_isCastingThrow = false;
     public bool m_isReloading { get; private set; } = false;
     
-
 
 
     // Constructors
@@ -66,15 +52,6 @@ public class Player_Gun : MonoBehaviour
             m_curMainWeapon = m_MainWeapons[0];
         }
 
-        if (m_SubWeapons.Length != 0)
-        {
-            foreach (WEAPON_Player element in m_SubWeapons)
-            {
-                element.gameObject.SetActive(false);
-            }
-            m_curSubWeapon = m_SubWeapons[0];
-        }
-
         if (m_Throwables.Length != 0)
         {
             foreach (WEAPON_Player element in m_Throwables)
@@ -94,26 +71,17 @@ public class Player_Gun : MonoBehaviour
     // Updates
     private void Update()
     {
-        if(m_Player.m_canChangeWeapon)
+        if (Input.GetKeyDown(KeyCode.C) && m_Player.m_canChangeWeapon)
         {
-            if (Input.GetKeyDown(KeyCode.C))
+            switch (m_ActiveWeaponType)
             {
-                if (m_ActiveWeapon.m_WeaponType == 0)
-                {
+                case 0:
                     changeWeapon(1);
-                }
-                else if (m_ActiveWeapon.m_WeaponType == 1)
-                {
+                    break;
+
+                case 1:
                     changeWeapon(0);
-                }
-                else
-                {
-                    changeWeapon(1);
-                }
-            }
-            else if (Input.GetKeyDown(KeyCode.G))
-            {
-                changeWeapon(2);
+                    break;
             }
         }
 
@@ -131,7 +99,6 @@ public class Player_Gun : MonoBehaviour
     // Functions
     private IEnumerator ReloadCoroutine()
     {
-        Debug.Log(p_MaxReloadTime);
         m_PlayerUIMgr.UpdateReloadTimer(p_MaxReloadTime);
         yield return new WaitForSeconds(p_MaxReloadTime);
         m_ActiveWeapon.Reload();
@@ -179,16 +146,9 @@ public class Player_Gun : MonoBehaviour
 
             case 1:
                 m_PlayerUIMgr.changeWeapon(1);
-                m_ActiveWeapon = m_curSubWeapon;
-                m_ActiveWeapon.gameObject.SetActive(true);
-                m_ActiveWeaponType = 1;
-                break;
-
-            case 2:
-                //m_Player_AniMgr.changeArmMode(false);
                 m_ActiveWeapon = m_curThrowable;
                 m_ActiveWeapon.gameObject.SetActive(true);
-                m_ActiveWeaponType = 2;
+                m_ActiveWeaponType = 1;
                 break;
         }
         m_ActiveWeapon.InitWeapon(m_Player_Arm, m_aimCursor, m_Player, this);
@@ -200,11 +160,8 @@ public class Player_Gun : MonoBehaviour
             case 0:
                 m_ActiveWeapon.gameObject.SetActive(false);
                 break;
+
             case 1:
-                m_ActiveWeapon.gameObject.SetActive(false);
-                break;
-            case 2:
-                //m_Player_AniMgr.changeArmMode(true);
                 m_ActiveWeapon.gameObject.SetActive(false);
                 break;
         }

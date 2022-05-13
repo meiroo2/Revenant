@@ -32,6 +32,8 @@ public class Player_UseRange : MonoBehaviour
 
     private IUseableObjParam m_UseableObjParam;
 
+    private IUseableObj m_CurHiddenSlot = null;
+
     // Constructors
     private void Awake()
     {
@@ -97,11 +99,13 @@ public class Player_UseRange : MonoBehaviour
 
                         case 1:
                             // 见扁 己傍
+                            m_CurHiddenSlot = m_UseableObjs[m_ShortestIDX].m_ObjScript;
                             m_Player.changePlayerFSM(playerState.HIDDEN);
                             break;
 
                         case 2:
                             // 见扁 秦力
+                            m_CurHiddenSlot = null;
                             m_Player.changePlayerFSM(playerState.IDLE);
                             break;
                     }
@@ -129,6 +133,13 @@ public class Player_UseRange : MonoBehaviour
     }
 
     // Functions
-
+    public void ForceExitFromHiddenSlot()
+    {
+        if(m_CurHiddenSlot is not null)
+        {
+            m_CurHiddenSlot.useObj(m_UseableObjParam);
+            m_CurHiddenSlot = null;
+        }
+    }
 
 }

@@ -109,42 +109,13 @@ public class Player : Human
     private void Update()
     {
         updatePlayerFSM();
-        if (m_isStairLerping)
-        {
-            m_StairLerpTimer -= 0.1f;
-            transform.position = Vector2.Lerp(transform.position, m_StairTelePos, Time.deltaTime * 3f);
-            if (m_StairLerpTimer <= 0f)
-            {
-                m_StairLerpTimer = 0.5f;
-                m_isStairLerping = false;
-            }
-        }
-
-        m_PlayerPosVec = transform.position;
-
-        if (gameObject.layer == 12)
-            m_FootRay = Physics2D.Raycast(m_PlayerPosVec, -transform.up, 0.5f, LayerMask.GetMask("Floor"));
-        else if(gameObject.layer == 10)
-            m_FootRay = Physics2D.Raycast(m_PlayerPosVec, -transform.up, 0.5f, LayerMask.GetMask("Stair"));
-
-        Debug.DrawRay(m_PlayerPosVec, Vector2.down * 0.5f, new Color(0, 1, 0));
-
-
-        if (gameObject.layer == 12)
-        {
-            if (m_FootRay && m_PlayerPosVec.y - m_FootRay.point.y >= 0.29f)
-                m_PlayerPosVec.y = m_FootRay.point.y + 0.26f;
-        }
-        else if (gameObject.layer == 10)
-        {
-            if (m_FootRay && m_PlayerPosVec.y - m_FootRay.point.y >= 0.29f)
-                m_PlayerPosVec.y = m_FootRay.point.y + 0.26f;
-        }
+        PlayerRayFunc();
 
         if (gameObject.layer == 12 && m_FootRay)
         {
             m_PlayerStairMgr.ChangePlayerNormal(m_FootRay.normal);
         }
+
         transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
     }
 
@@ -241,6 +212,7 @@ public class Player : Human
                     else if (!m_playerRotation.getIsMouseRight())
                         setisRightHeaded(false);
 
+                    m_useRange.ForceExitFromHiddenSlot();
                     changePlayerFSM(playerState.ROLL);
                 }
                 break;
@@ -382,8 +354,6 @@ public class Player : Human
         if (_input)
         {
             gameObject.layer = 10;
-            //m_isStairLerping = true;
-            //m_StairTelePos = _movePos;
             m_PlayerStairMgr.ChangePlayerNormal(_normal);
         }
         else if (_input == false)
@@ -451,5 +421,20 @@ public class Player : Human
             return true;
         else
             return false;
+    }
+
+    private void PlayerRayFunc()
+    {
+        m_PlayerPosVec = transform.position;
+
+        if (gameObject.layer == 12)
+            m_FootRay = Physics2D.Raycast(m_PlayerPosVec, -transform.up, 0.5f, LayerMask.GetMask("Floor"));
+        else if (gameObject.layer == 10)
+            m_FootRay = Physics2D.Raycast(m_PlayerPosVec, -transform.up, 0.5f, LayerMask.GetMask("Stair"));
+
+        Debug.DrawRay(m_PlayerPosVec, Vector2.down * 0.5f, new Color(0, 1, 0));
+
+        if (m_FootRay && m_PlayerPosVec.y - m_FootRay.point.y >= 0.29f)
+            m_PlayerPosVec.y = m_FootRay.point.y + 0.26f;
     }
 }

@@ -11,26 +11,21 @@ public class Player_Bullet : BULLET
 
     // Member Variables
     private float m_Timer = 0f;
-    public int m_aimedObjId { get; set; } = 0;
-    private HitSFXMaker m_HitSFXMaker;
-    private SoundMgr_SFX m_SoundMgrSFX;
-    private PlayerRotation m_PlayerRotation;
+    private int m_aimedObjId = 0;
+    public HitSFXMaker m_HitSFXMaker;
+    public SoundMgr_SFX m_SoundMgrSFX;
 
     private IHotBox m_BulletHitHotBox;
 
     private bool m_ShouldDestroy = false;
 
     // Constructors
-    private void Start()
+    public void InitBullet(float _speed, int _damage, int _aimID)
     {
-        m_HitSFXMaker = InstanceMgr.GetInstance().GetComponentInChildren<HitSFXMaker>();
-        m_SoundMgrSFX = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
-        m_PlayerRotation = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation;
-    }
-    public void InitBullet(float _speed, int _damage)
-    {
+        m_ShouldDestroy = false;
         m_Speed = _speed;
         m_Damage = _damage;
+        m_aimedObjId = _aimID;
     }
 
     // Updates
@@ -39,7 +34,7 @@ public class Player_Bullet : BULLET
         transform.Translate(new Vector2(m_Speed * Time.deltaTime, 0f));
 
         if (m_Timer >= 3f)
-            Destroy(this.gameObject);
+            gameObject.SetActive(false);
         else
             m_Timer += Time.deltaTime;
     }
@@ -74,7 +69,7 @@ public class Player_Bullet : BULLET
         }
 
         if (m_ShouldDestroy)
-            Destroy(gameObject);
+            gameObject.SetActive(false);
     }
 
     // Functions

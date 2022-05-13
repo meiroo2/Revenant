@@ -9,13 +9,12 @@ public class Pistol : WEAPON_Player
 
     [Space(30f)]
     [Header("For Effect")]
-    public Animator m_ReflectionAnimator;
-
-    public GameObject m_Shell;
     public GameObject m_ShellPos;
 
     // Member Variables
     private HitSFXMaker m_HitSFXMaker;
+    private ShellMgr m_ShellMgr;
+    private Player_BulletMgr m_BulletMgr;
 
     // Constructors
     private void Awake()
@@ -28,6 +27,8 @@ public class Pistol : WEAPON_Player
         m_HitSFXMaker = InstanceMgr.GetInstance().GetComponentInChildren<HitSFXMaker>();
         m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_SoundMgrSFX = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_ShellMgr = InstanceMgr.GetInstance().GetComponentInChildren<ShellMgr>();
+        m_BulletMgr = InstanceMgr.GetInstance().GetComponentInChildren<Player_BulletMgr>();
     }
     private void OnEnable()
     {
@@ -93,33 +94,18 @@ public class Pistol : WEAPON_Player
         m_SoundMgrSFX.playGunFireSound(0, m_Player.gameObject);
 
 
-        // 총염 생성
-        //m_GunFireAnimator.SetBool("isFire", true);
-        m_ObjPullerForMuzFlash.EnableNewObj();
-
-        m_ReflectionAnimator.Play("Rifle_Reflection", -1, 0f);
-
-        GameObject InstancedBullet = Instantiate(m_bulletPrefab);
-        Player_Bullet InstancedBullet_Script = InstancedBullet.GetComponent<Player_Bullet>();
-
-        if (m_Player.m_isRightHeaded)
-            InstancedBullet_Script.InitBullet(m_BulletSpeed, m_BulletDamage);
-        else
-            InstancedBullet_Script.InitBullet(-m_BulletSpeed, m_BulletDamage);
-
-        InstancedBullet.transform.SetPositionAndRotation(m_Player_Arm.transform.position, m_Player_Arm.rotation);
+        m_BulletMgr.MakeBullet(m_Player.m_isRightHeaded, m_BulletDamage, m_BulletSpeed,
+            m_Player_Arm.position, m_Player_Arm.rotation);
 
         // 에임이 가리키고 있는 가장 가까운 히트박스의 고유값을 총알한테 넘겨줌
         Debug.Log(m_aimCursor.AimedObjName + ", " + m_aimCursor.AimedObjid + "를 조준");
-        InstancedBullet_Script.m_aimedObjId = m_aimCursor.AimedObjid;
-        
-        GameObject InstancedShell = Instantiate(m_Shell);
-        InstancedShell.transform.position = m_ShellPos.transform.position;
+
+        m_ObjPullerForMuzFlash.EnableNewObj();
 
         if (m_Player.m_isRightHeaded)
-            InstancedShell.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(-0.8f, -1.5f), Random.Range(0.8f, 1.5f)), ForceMode2D.Impulse);
+            m_ShellMgr.MakeShell(m_ShellPos.transform.position, new Vector2(Random.Range(-0.8f, -1.5f), Random.Range(0.8f, 1.5f)));
         else
-            InstancedShell.GetComponent<Rigidbody2D>().AddForce(new Vector2(Random.Range(0.8f, 1.5f), Random.Range(0.8f, 1.5f)), ForceMode2D.Impulse);
+            m_ShellMgr.MakeShell(m_ShellPos.transform.position, new Vector2(Random.Range(0.8f, 1.5f), Random.Range(0.8f, 1.5f)));
 
         m_PlayerUIMgr.setLeftBulletUI(m_LeftBullet, m_LeftMag, m_WeaponType);
     }

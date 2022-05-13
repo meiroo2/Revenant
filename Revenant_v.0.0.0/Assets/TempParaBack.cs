@@ -21,15 +21,15 @@ public class TempParaBack : MonoBehaviour
         m_BackPosVec = m_OriginPos;
 
         m_BackPosVec.x = m_BackPosVec.x + (m_OriginPos.x - mainCam.transform.position.x) * m_ParaValue;
-        m_BackPosVec.y = m_BackPosVec.y + (m_OriginPos.y - mainCam.transform.position.y) * m_ParaValue;
+       // m_BackPosVec.y = m_BackPosVec.y + (m_OriginPos.y - mainCam.transform.position.y) * m_ParaValue;
 
         if(m_isPixelPerfectCam)
         {
             m_BackPosVec.x = Mathf.RoundToInt(m_BackPosVec.x * 100);
-            m_BackPosVec.y = Mathf.RoundToInt(m_BackPosVec.y * 100);
+            //m_BackPosVec.y = Mathf.RoundToInt(m_BackPosVec.y * 100);
 
             m_BackPosVec.x = m_BackPosVec.x / 100;
-            m_BackPosVec.y = m_BackPosVec.y / 100;
+           // m_BackPosVec.y = m_BackPosVec.y / 100;
         }
 
         transform.position = m_BackPosVec;
