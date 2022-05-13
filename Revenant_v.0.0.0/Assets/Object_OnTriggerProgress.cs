@@ -16,7 +16,6 @@ public class Object_OnTriggerProgress : MonoBehaviour
         {
             m_ProgressMgr.SendMessage("NextProgress");
             this.gameObject.SetActive(false);
-
         }
     }
 }
