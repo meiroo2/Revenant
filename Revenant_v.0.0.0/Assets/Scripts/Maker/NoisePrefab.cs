@@ -15,7 +15,11 @@ public class NoisePrefab : MonoBehaviour
     private BoxCollider2D m_NoiseBoxcollider;
 
     // Member Variables
-
+    public int m_curLayer { get; set; }
+    public int m_curRoom { get; set; }
+    public int m_curFloor { get; set; }
+    public Vector2 m_curPos { get; set; }
+    public LocationInfo m_curLocation;
 
     // Constructors
     private void Awake()
@@ -30,12 +34,17 @@ public class NoisePrefab : MonoBehaviour
 
 
     // Functions
-    public void InstantiateNoise(NoiseType _noiseType, Vector2 _noiseSize, Vector2 _noisePos, bool _isPlayer)
+    public void InstantiateNoise(NoiseType _noiseType, Vector2 _noiseSize, LocationInfo _noiseLocation, bool _isPlayer)
     {
         m_NoiseType = _noiseType;
         m_NoiseBoxcollider.size = _noiseSize;
-        transform.position = _noisePos;
         m_isPlayer = _isPlayer;
+
+        m_curLocation = _noiseLocation;
+
+        transform.position = m_curPos;
+
+
         Invoke(nameof(EndNoise), 0.5f);
     }
 

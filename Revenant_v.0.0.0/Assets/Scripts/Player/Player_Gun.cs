@@ -115,7 +115,7 @@ public class Player_Gun : MonoBehaviour
 
                 case 1: // 발사 성공
                     // 소음 발생
-                    m_NoiseMaker.MakeNoise(NoiseType.FIREARM, new Vector2(7f, 1.5f), m_Player.transform.position, true);
+                    m_NoiseMaker.MakeNoise(NoiseType.FIREARM, new Vector2(7f, 1.5f), m_Player.m_curLocation, true);
                     return 1;
 
                 case 2: // 총알 없음

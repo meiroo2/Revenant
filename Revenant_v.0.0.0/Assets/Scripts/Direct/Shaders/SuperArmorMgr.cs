@@ -50,7 +50,8 @@ public class SuperArmorMgr : MonoBehaviour
             m_InstantiatedTransform.localPosition = Vector2.zero;
             m_isSuperArmorOn = false;
 
-            m_Callback();
+            if (m_Callback != null)
+                m_Callback();
 
             m_InstantiatedTransform.gameObject.SetActive(false);
         }
