@@ -23,6 +23,7 @@ public class Player : Human
     [field: SerializeField] public float m_RollRecoverTime { get; private set; } = 2f;
     [field: SerializeField] public int m_MaxRollCount { get; private set; } = 3;
     public int m_LeftRollCount { get; private set; }
+    public LocationInfo m_curLocation;
 
     //[Space(20f)]
     //[Header("Public Player Scripts")]
@@ -78,6 +79,7 @@ public class Player : Human
         m_LeftRollCount = m_MaxRollCount;
 
         m_canAttacked = true;
+        m_curLocation = new LocationInfo(0, 0, 0, transform.position);
     }
     private void Start()
     {
@@ -240,7 +242,7 @@ public class Player : Human
                 break;
 
             case playerState.WALK:
-                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(0.8f, 0.1f));
+                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(0.8f, 0.1f), m_curLocation);
                 StartCoroutine(m_FootStep);
                 m_curPlayerState = playerState.WALK;
                 break;
@@ -256,7 +258,7 @@ public class Player : Human
                 break;
 
             case playerState.ROLL:
-                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f));
+                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f), m_curLocation);
                 StartCoroutine(m_FootStep);
 
                 m_PlayerHotBox.setPlayerHotBoxCol(false);
@@ -377,11 +379,11 @@ public class Player : Human
         else if (m_LeftRollCount == m_MaxRollCount)
             m_isRecoveringRollCount = false;
     }
-    private IEnumerator MakePlayerNoise(NoiseType _noiseType, Vector2 _size)
+    private IEnumerator MakePlayerNoise(NoiseType _noiseType, Vector2 _size, LocationInfo _location)
     {
         while (true)
         {
-            m_NoiseMaker.MakeNoise(_noiseType, _size, transform.position, true);
+            m_NoiseMaker.MakeNoise(_noiseType, _size, _location, true);
             yield return new WaitForSeconds(0.1f);
         }
     }

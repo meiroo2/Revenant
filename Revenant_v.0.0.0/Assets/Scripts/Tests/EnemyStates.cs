@@ -5,6 +5,7 @@ using UnityEngine;
 public interface EnemyStates
 {
     public DaggerEnemy m_Enemy { get; set; }
+    public DaggerEnemyState m_StateEnum { get; set; }
 
     public void StartState(DaggerEnemy _enemy);
     public void UpdateState();
@@ -15,6 +16,7 @@ public interface EnemyStates
 public class IDLE_Dagger : EnemyStates
 {
     public DaggerEnemy m_Enemy { get; set; }
+    public DaggerEnemyState m_StateEnum { get; set; } = DaggerEnemyState.IDLE; 
 
     public void StartState(DaggerEnemy _enemy)
     {
@@ -24,7 +26,6 @@ public class IDLE_Dagger : EnemyStates
     {
         if (m_Enemy.m_VisionHit.collider != null)
         {
-            ExitState();
             m_Enemy.ChangeFSMState(new FOLLOW_Dagger());
         }
     }
@@ -40,6 +41,7 @@ public class FOLLOW_Dagger : EnemyStates
     public DaggerEnemy m_Enemy { get; set; }
     private Transform m_EnemyTransform;
     private Transform m_PlayerTransform;
+    public DaggerEnemyState m_StateEnum { get; set; } = DaggerEnemyState.FOLLOW;
 
     public void StartState(DaggerEnemy _enemy)
     {
@@ -54,7 +56,6 @@ public class FOLLOW_Dagger : EnemyStates
         if(Mathf.Abs(m_Enemy.m_DistanceBetweenPlayer) <= m_Enemy.p_StickDistance)
         {
             // 사정거리 진입
-            ExitState();
             m_Enemy.ChangeFSMState(new Attack_Dagger());
         }
         else
@@ -78,6 +79,7 @@ public class Attack_Dagger : EnemyStates
     public DaggerEnemy m_Enemy { get; set; }
     private Transform m_EnemyTransform;
     private Transform m_PlayerTransform;
+    public DaggerEnemyState m_StateEnum { get; set; } = DaggerEnemyState.ATTACK;
 
     private int m_Phase = 0;
     private float m_Timer = 0.5f;
@@ -105,7 +107,6 @@ public class Attack_Dagger : EnemyStates
                 break;
 
             case 2:
-                ExitState();
                 m_Enemy.m_DistanceBetweenPlayer = m_EnemyTransform.position.x - m_PlayerTransform.position.x;
                 if (Mathf.Abs(m_Enemy.m_DistanceBetweenPlayer) <= m_Enemy.p_StickDistance)
                 {
@@ -135,6 +136,7 @@ public class Attack_Dagger : EnemyStates
 public class Dead_Dagger : EnemyStates
 {
     public DaggerEnemy m_Enemy { get; set; }
+    public DaggerEnemyState m_StateEnum { get; set; } = DaggerEnemyState.DEAD;
 
     public void StartState(DaggerEnemy _enemy)
     {
@@ -151,4 +153,68 @@ public class Dead_Dagger : EnemyStates
     }
 
     public void NextPhase() { }
+}
+
+public class Alert_Dagger : EnemyStates
+{
+    public DaggerEnemy m_Enemy { get; set; }
+    private Transform m_EnemyTransform;
+    private float m_DistBetweenSource = 0f;
+    public DaggerEnemyState m_StateEnum { get; set; } = DaggerEnemyState.ALERT;
+
+    public void StartState(DaggerEnemy _enemy)
+    {
+        m_Enemy = _enemy;
+        m_EnemyTransform = m_Enemy.transform;
+    }
+    public void UpdateState()
+    {
+        if (m_Enemy.m_VisionHit.collider != null)
+        {
+            m_Enemy.ChangeFSMState(new FOLLOW_Dagger());
+        }
+    }
+    public void ExitState()
+    {
+        
+    }
+
+    public void NextPhase() { }
+
+    private void CalculateLocation()
+    {
+        if(m_Enemy.m_curLocation.m_curLayer != m_Enemy.m_NoiseSourceLocation.m_curLayer)
+        {
+            // 레이어가 다름 -> 맞춤
+            return;
+        }
+        if(m_Enemy.m_curLocation.m_curRoom != m_Enemy.m_NoiseSourceLocation.m_curRoom)
+        {
+            // 방이 다름 -> 맞춤
+            return;
+        }
+        if (m_Enemy.m_curLocation.m_curFloor != m_Enemy.m_NoiseSourceLocation.m_curFloor)
+        {
+            // 층이 다름 -> 맞춤
+            return;
+        }
+        if (m_Enemy.m_curLocation.m_curPos != m_Enemy.m_NoiseSourceLocation.m_curPos)
+        {
+            m_DistBetweenSource = m_EnemyTransform.position.x - m_Enemy.m_NoiseSourceLocation.m_curPos.x;
+            // 위치가 다름 -> 맞춤
+            if (Mathf.Abs(m_DistBetweenSource) <= 0.2f)
+            {
+                // 사정거리 진입
+                m_Enemy.ChangeFSMState(new IDLE_Dagger());
+            }
+            else
+            {
+                if (m_DistBetweenSource > 0f)
+                    m_Enemy.MoveByDirection(-1);
+                else
+                    m_Enemy.MoveByDirection(1);
+            }
+            return;
+        }
+    }
 }

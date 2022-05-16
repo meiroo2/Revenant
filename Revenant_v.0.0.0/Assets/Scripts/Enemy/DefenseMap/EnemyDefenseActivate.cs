@@ -10,15 +10,15 @@ public class EnemyDefenseActivate : MonoBehaviour, IEnemySpawn
     bool isActive = false;
     DefenseEnemy_Controller m_enemy;
 
+    private Transform m_PlayerTransform;
 
     private void Awake()
     {
         m_enemy = GetComponent<DefenseEnemy_Controller>();
-
     }
 
 
-    
+
     public void setActive()
     {
         DefenseMode();

@@ -26,19 +26,22 @@ public class ForObjPull_Once : MonoBehaviour
     {
         if (m_isStart)
         {
+            /*
             if(m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.3f)
             {
                 gameObject.SetActive(false);
                 m_isStart = false;
             }
-            /*
+            */
+            
             m_Timer -= Time.deltaTime;
             if (m_Timer <= 0f)
             {
                 m_Timer = 0f;
-                
+                gameObject.SetActive(false);
+                m_isStart = false;
             }
-            */
+            
         }
     }
 

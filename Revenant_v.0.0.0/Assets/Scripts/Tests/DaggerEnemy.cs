@@ -6,8 +6,9 @@ public enum DaggerEnemyState
 {
    IDLE,
    FOLLOW,
-   FIGHT,
-   DEAD
+   ATTACK,
+   DEAD,
+   ALERT
 }
 
 public class DaggerEnemy : Human
@@ -21,6 +22,10 @@ public class DaggerEnemy : Human
     // Member Variables
     private Rigidbody2D m_EnemyRigid;
     private SuperArmorMgr m_SuperArmorMgr;
+
+    public LocationInfo m_NoiseSourceLocation { get; private set; }
+    public LocationInfo m_curLocation { get; private set; }
+
     public Transform m_PlayerTransform { get; private set; } = null;
     public float m_DistanceBetweenPlayer { get; set; } = 0;
     public RaycastHit2D m_VisionHit { get; private set; }
@@ -30,14 +35,17 @@ public class DaggerEnemy : Human
     {
         m_EnemyRigid = GetComponent<Rigidbody2D>();
         m_SuperArmorMgr = GetComponentInChildren<SuperArmorMgr>();
+
+        m_CurState = new IDLE_Dagger();
+        m_CurState.StartState(this);
+
+        m_curLocation = new LocationInfo(0, 0, 0, Vector2.zero);
     }
 
     private void Start()
     {
         if (m_PlayerTransform is null)
             m_PlayerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
-
-        ChangeFSMState(new IDLE_Dagger());
     }
 
     private void Update()
@@ -47,6 +55,7 @@ public class DaggerEnemy : Human
     private void FixedUpdate()
     {
         RaycastVisionCheck();
+        m_curLocation.m_curPos = transform.position;
     }
 
     private void RaycastVisionCheck()
@@ -82,6 +91,7 @@ public class DaggerEnemy : Human
 
     public void ChangeFSMState(EnemyStates _input)
     {
+        m_CurState.ExitState();
         m_CurState = _input;
         m_CurState.StartState(this);
     }
@@ -91,8 +101,11 @@ public class DaggerEnemy : Human
         m_Hp -= _inputDamage;
         if(m_Hp <= 0)
         {
-            m_CurState.ExitState();
             ChangeFSMState(new Dead_Dagger());
+        }
+        else
+        {
+            ChangeFSMState(new FOLLOW_Dagger());
         }
     }
 
@@ -107,6 +120,19 @@ public class DaggerEnemy : Human
         m_SuperArmorMgr.SetCallback(Attack, true);
     }
 
+    public void setNoiseSourceLocation(LocationInfo _location)
+    {
+        m_NoiseSourceLocation = _location;
+        if (m_CurState.m_StateEnum == DaggerEnemyState.IDLE)
+        {
+            ChangeFSMState(new Alert_Dagger());
+            Debug.Log("nnnn");
+        }
+        else
+        {
+            Debug.Log("asda");
+        }
+    }
 
     IEnumerator Internal_Attack(float _AttackTime) 
     {
@@ -114,5 +140,10 @@ public class DaggerEnemy : Human
         yield return new WaitForSeconds(_AttackTime);
         p_Bullet.SetActive(false);
         m_CurState.NextPhase();
+    }
+
+    public void setEntityLocation(LocationInfo _location)
+    {
+        m_curLocation.setLocation(_location);
     }
 }
