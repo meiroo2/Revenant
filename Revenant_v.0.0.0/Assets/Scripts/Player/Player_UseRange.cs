@@ -88,7 +88,7 @@ public class Player_UseRange : MonoBehaviour
                     break;
 
                 case UseableObjList.HIDEPOS:
-                    if (Vector2.Distance(transform.position, collision.transform.position) > 0.4f)
+                    if (Vector2.Distance(transform.position, collision.transform.position) > 0.3f)
                         break;
 
                     switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam))
