@@ -8,6 +8,7 @@ public class UIMgr : MonoBehaviour
     // Visible Member Variables
     [field: SerializeField] private GameObject m_GameOverUIPrefab;
     public GameObject m_GameOverUI { get; private set; }
+    private Scene m_Scene;
 
     // Member Variables
 
@@ -17,6 +18,8 @@ public class UIMgr : MonoBehaviour
     {
         m_GameOverUI = Instantiate(m_GameOverUIPrefab, InstanceMgr.GetInstance().GetComponent<InstanceMgr>().m_MainCanvas.transform);
         Screen.SetResolution(1920, 1080, true);
+
+        m_Scene = SceneManager.GetActiveScene();
     }
     private void Start()
     {
@@ -41,7 +44,7 @@ public class UIMgr : MonoBehaviour
     // Functions
     public void CurSceneReload()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(m_Scene.name);
     }
 
 

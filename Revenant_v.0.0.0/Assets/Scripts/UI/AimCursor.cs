@@ -39,6 +39,8 @@ public class AimCursor : MonoBehaviour
     private int m_ShortestIdx = -1;
     private float m_ShortestLength = 0f;
 
+    private float m_TempLength;
+
 
 
     // Constructors
@@ -59,6 +61,8 @@ public class AimCursor : MonoBehaviour
     private void Update()
     {
         m_Dist_Aim_Player = Vector2.SqrMagnitude(transform.position - m_PlayerTransform.position);
+
+        CalculateNearestHotBox();
 
         if (m_canAimCursorShot && m_Dist_Aim_Player < p_FireMinimumDistance)
         {
@@ -87,28 +91,6 @@ public class AimCursor : MonoBehaviour
         m_AimedObjs.Add(new AimedObjInfo(collision.gameObject.name, collision.gameObject.GetInstanceID(), collision.transform.position));
     }
     
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        // 실시간으로 가장 가까운 히트박스를 계산
-        if(m_AimedObjs.Count > 0)
-        {
-            m_ShortestIdx = 0;
-            m_ShortestLength = ((Vector2)transform.position - m_AimedObjs[0].m_ObjPos).sqrMagnitude;
-
-            for(int i = 1; i < m_AimedObjs.Count; i++)
-            {
-                if(m_ShortestLength > ((Vector2)transform.position - m_AimedObjs[i].m_ObjPos).sqrMagnitude)
-                {
-                    m_ShortestLength = ((Vector2)transform.position - m_AimedObjs[i].m_ObjPos).sqrMagnitude;
-                    m_ShortestIdx = i;
-                }
-            }
-
-            AimedObjid = m_AimedObjs[m_ShortestIdx].m_ObjID;
-            AimedObjName = m_AimedObjs[m_ShortestIdx].m_ObjName;
-        }
-    }
-    
     private void OnTriggerExit2D(Collider2D collision)
     {
         // Exit 시 Exit한 히트박스는 리스트에서 제거
@@ -134,4 +116,25 @@ public class AimCursor : MonoBehaviour
     }
 
     // Functions
+    private void CalculateNearestHotBox()
+    {
+        if (m_AimedObjs.Count > 0)
+        {
+            m_ShortestLength = Vector2.Distance(transform.position, m_AimedObjs[0].m_ObjPos);
+            m_ShortestIdx = 0;
+
+            for (int i = 0; i < m_AimedObjs.Count; i++)
+            {
+                m_TempLength = Vector2.Distance(transform.position, m_AimedObjs[i].m_ObjPos);
+                if (m_TempLength < m_ShortestLength)
+                {
+                    m_ShortestLength = m_TempLength;
+                    m_ShortestIdx = i;
+                }
+            }
+
+            AimedObjid = m_AimedObjs[m_ShortestIdx].m_ObjID;
+            AimedObjName = m_AimedObjs[m_ShortestIdx].m_ObjName;
+        }
+    }
 }

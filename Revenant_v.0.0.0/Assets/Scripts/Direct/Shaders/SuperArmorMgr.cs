@@ -4,18 +4,23 @@ using UnityEngine;
 
 public class SuperArmorMgr : MonoBehaviour
 {
+    public delegate void SuperArmorDelegate();
+    public SuperArmorDelegate m_Callback = null;
+
     public float p_MaxScaleRatio = 1.5f;
     public float p_SuperArmorSpeed = 20f;
     public float p_DistanceBetweenOriginPos = 0.08f;
 
+    private float m_Temp;
+
     [Space(30f)]
     [Header("¶£Áã ±ÝÁö")]
     public GameObject m_ChildObj;
-    private GameObject m_ParentObj;
+    protected GameObject m_ParentObj;
 
-    private Transform m_InstantiatedTransform;
+    protected Transform m_InstantiatedTransform;
 
-    private bool m_isSuperArmorOn = false;
+    protected bool m_isSuperArmorOn = false;
 
     private void Awake()
     {
@@ -45,11 +50,13 @@ public class SuperArmorMgr : MonoBehaviour
             m_InstantiatedTransform.localPosition = Vector2.zero;
             m_isSuperArmorOn = false;
 
+            m_Callback();
+
             m_InstantiatedTransform.gameObject.SetActive(false);
         }
     }
 
-    public void doSuperArmor()
+    public virtual void doSuperArmor()
     {
         if (m_isSuperArmorOn)
             return;
@@ -59,5 +66,13 @@ public class SuperArmorMgr : MonoBehaviour
         m_InstantiatedTransform.localScale = new Vector2(p_MaxScaleRatio, p_MaxScaleRatio);
         m_InstantiatedTransform.localPosition = new Vector2(m_InstantiatedTransform.localPosition.x - p_DistanceBetweenOriginPos,
             m_InstantiatedTransform.localPosition.y + p_DistanceBetweenOriginPos);
+    }
+
+    public void SetCallback(SuperArmorDelegate _input, bool _doReset = false)
+    {
+        if (_doReset)
+            m_Callback = null;
+
+        m_Callback += _input;
     }
 }

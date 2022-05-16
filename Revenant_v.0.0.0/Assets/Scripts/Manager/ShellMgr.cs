@@ -36,7 +36,19 @@ public class ShellMgr : ObjectPuller
         m_PulledObjRigidArr[m_Idx].velocity = Vector2.zero;
 
         m_PulledObjArr[m_Idx].transform.position = _Spawnpos;
+
         EnableNewObj();
-        m_PulledObjRigidArr[m_Idx - 1].AddForce(_PowerDirection, ForceMode2D.Impulse);
+
+        m_PulledObjRigidArr[m_Idx].AddForce(_PowerDirection, ForceMode2D.Impulse);
+
+        m_Idx++;
+        if (m_Idx >= m_ObjPullCount)
+            m_Idx = 0;
+    }
+
+    public override void EnableNewObj()
+    {
+        m_PulledObjArr[m_Idx].gameObject.SetActive(true);
+        m_PulledObjArr[m_Idx].resetTimer(m_DestroyTimer);
     }
 }

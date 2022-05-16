@@ -428,13 +428,15 @@ public class Player : Human
         m_PlayerPosVec = transform.position;
 
         if (gameObject.layer == 12)
-            m_FootRay = Physics2D.Raycast(m_PlayerPosVec, -transform.up, 0.5f, LayerMask.GetMask("Floor"));
+            m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Floor"));
         else if (gameObject.layer == 10)
-            m_FootRay = Physics2D.Raycast(m_PlayerPosVec, -transform.up, 0.5f, LayerMask.GetMask("Stair"));
+            m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Stair"));
 
-        Debug.DrawRay(m_PlayerPosVec, Vector2.down * 0.5f, new Color(0, 1, 0));
+        Debug.DrawRay(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), Vector2.down * 0.5f, new Color(0, 1, 0));
 
-        if (m_FootRay && m_PlayerPosVec.y - m_FootRay.point.y >= 0.29f)
-            m_PlayerPosVec.y = m_FootRay.point.y + 0.26f;
+
+
+        if (m_FootRay && (m_PlayerPosVec.y - 0.36f) - m_FootRay.point.y >= 0.29f)
+            m_PlayerPosVec.y = m_FootRay.point.y + 0.26f + 0.36f;
     }
 }

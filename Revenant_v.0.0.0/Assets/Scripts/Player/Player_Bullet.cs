@@ -26,6 +26,7 @@ public class Player_Bullet : BULLET
         m_Speed = _speed;
         m_Damage = _damage;
         m_aimedObjId = _aimID;
+        m_Timer = 0f;
     }
 
     // Updates
