@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class TuRoom03_ProgressMgr : ProgressMgr
 {
+    /*
+    
     // Visible Member Variables
     public WorldUIMgr m_worldUIMgr;
     public TutoRoom03EnemyMgr m_EnemeyTutoMgr;
@@ -182,4 +184,6 @@ public class TuRoom03_ProgressMgr : ProgressMgr
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
+    
+    */
 }

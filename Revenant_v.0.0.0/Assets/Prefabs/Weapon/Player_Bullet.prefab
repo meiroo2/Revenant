@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 852461890178520732}
-  - component: {fileID: 852461890178520733}
   - component: {fileID: 6774562286770087858}
   - component: {fileID: 6738667646683642031}
+  - component: {fileID: 3566003086000707168}
   m_Layer: 8
   m_Name: Player_Bullet
   m_TagString: Untagged
@@ -36,18 +36,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &852461890178520733
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 852461890178520722}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aea97be7bf67c4848b6fd4ac1d5183c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &6774562286770087858
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -95,6 +83,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 7
+--- !u!114 &3566003086000707168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 852461890178520722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76a5687cf8725994fa29a5914eb6edd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HitSFXMaker: {fileID: 0}
 --- !u!1 &2773202950447164910
 GameObject:
   m_ObjectHideFlags: 0
@@ -105,7 +106,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6920202779756427101}
   - component: {fileID: 505896552245720076}
-  - component: {fileID: 24983537604560928}
   m_Layer: 8
   m_Name: SpriteU
   m_TagString: Untagged
@@ -180,26 +180,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &24983537604560928
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2773202950447164910}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 42021405aa4ed2949a576d74617f6097, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5196673985268004489
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,7 +190,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8904790842375953015}
   - component: {fileID: 6091111038895182032}
-  - component: {fileID: 1900704079452533395}
   m_Layer: 8
   m_Name: SpriteD
   m_TagString: Untagged
@@ -285,23 +264,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &1900704079452533395
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5196673985268004489}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 42021405aa4ed2949a576d74617f6097, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0

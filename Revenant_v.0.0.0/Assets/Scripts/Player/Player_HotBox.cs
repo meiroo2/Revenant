@@ -28,50 +28,35 @@ public class Player_HotBox : MonoBehaviour, IHotBox
 
     public void setPlayerHotBoxCol(bool _isOn)
     {
-        if (_isOn)
-            m_PlayerHotBoxCol.enabled = true;
-        else
-            m_PlayerHotBoxCol.enabled = false;
+        m_PlayerHotBoxCol.enabled = _isOn;
     }
 
     public int HitHotBox(IHotBoxParam _param)
     {
-        if (m_Player.m_canAttacked && m_Player.m_curPlayerState != playerState.DEAD)
-        {
-            if (m_Player.m_isPlayerBlinking)
-            {
-                Debug.Log("플레이어 피격무적상태");
-                return 0;
-            }
-            if(m_Player.m_curPlayerState == playerState.ROLL)
-            {
-                Debug.Log("플레이어 구르기상태");
-                return 0;
-            }
+        if (!m_Player.m_CanAttacked)
+            return 0;
 
-            m_Player.setPlayerHp((int)(m_Player.m_Hp - _param.m_Damage));
-            if(m_Player.m_Hp <= 0)
-            {
-                m_Player.changePlayerFSM(playerState.DEAD);
-                m_UIMgr.m_GameOverUI.SetActive(true);
-                m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Player.m_Hp / 10f));
-                m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
-                Debug.Log("플레이어 사망");
-                return 1;
-            }
-            else
-            {
-                m_Player.DoPlayerBlink();
-                m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Player.m_Hp / 10f));
-                m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
-                Debug.Log("플레이어에게 " + _param.m_Damage + "데미지!");
-                return 1;
-            }
-        }
-        else
+        if (m_Player.m_isPlayerBlinking)
         {
-            Debug.Log("플레이어 피격불가상태");
+            Debug.Log("플레이어 깜빡이상태");
             return 0;
         }
+
+        m_Player.setPlayerHp((m_Player.m_Hp - _param.m_Damage));
+        if (m_Player.m_Hp <= 0)
+        {
+            m_Player.ChangePlayerFSM(PlayerStateName.DEAD);
+            m_UIMgr.m_GameOverUI.SetActive(true);
+            m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Player.m_Hp / 10f));
+            m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
+            Debug.Log("플레이어 사망");
+            return 1;
+        }
+
+        m_Player.DoPlayerBlink();
+        m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Player.m_Hp / 10f));
+        m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
+        Debug.Log("플레이어에게 " + _param.m_Damage + "데미지!");
+        return 1;
     }
 }

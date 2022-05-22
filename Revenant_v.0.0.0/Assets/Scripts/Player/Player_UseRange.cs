@@ -100,13 +100,13 @@ public class Player_UseRange : MonoBehaviour
                         case 1:
                             // 见扁 己傍
                             m_CurHiddenSlot = m_UseableObjs[m_ShortestIDX].m_ObjScript;
-                            m_Player.changePlayerFSM(playerState.HIDDEN);
+                            m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
                             break;
 
                         case 2:
                             // 见扁 秦力
                             m_CurHiddenSlot = null;
-                            m_Player.changePlayerFSM(playerState.IDLE);
+                            m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
                             break;
                     }
                     break;

@@ -126,11 +126,10 @@ public class DaggerEnemy : Human
         if (m_CurState.m_StateEnum == DaggerEnemyState.IDLE)
         {
             ChangeFSMState(new Alert_Dagger());
-            Debug.Log("nnnn");
         }
         else
         {
-            Debug.Log("asda");
+            //Debug.Log("asda");
         }
     }
 

@@ -1,63 +1,52 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum playerState
+public enum PlayerStateName
 {
     IDLE,
     WALK,
-    RUN,
     ROLL,
     HIDDEN,
-    HIDDEN_STAND,
-    INPORTAL,
     DEAD
 }
 
 public class Player : Human
 {
     // Visable Member Variables
-    [field: SerializeField] public float m_RollSpeedRatio { get; private set; } = 1.3f;
-    [field: SerializeField] public float m_BackWalkSpeedRatio { get; private set; } = 0.7f;
-    [field: SerializeField] public float m_RunSpeedRatio { get; private set; } = 1.5f;
-    [field: SerializeField] public float m_RollRecoverTime { get; private set; } = 2f;
-    [field: SerializeField] public int m_MaxRollCount { get; private set; } = 3;
-    public int m_LeftRollCount { get; private set; }
-    public LocationInfo m_curLocation;
-
-    //[Space(20f)]
-    //[Header("Public Player Scripts")]
-
-    public playerState m_curPlayerState { get; private set; } = playerState.IDLE;
-    public bool m_canMove { get; private set; } = true;
+    [field : SerializeField] public float m_RollSpeedRatio { get; private set; } = 1.3f;
+    [field : SerializeField] public float m_BackWalkSpeedRatio { get; private set; } = 0.7f;
+    [field : SerializeField] public float m_RunSpeedRatio { get; private set; } = 1.5f;
+    [field : SerializeField] public float m_RollRecoverTime { get; private set; } = 2f;
+    [field : SerializeField] public int m_MaxRollCount { get; private set; } = 3;
+    public int m_LeftRollCount { get; set; }
     public bool m_canRoll { get; private set; } = true;
-    public bool m_canShot { get; private set; } = true;
-    public bool m_canChangeWeapon { get; private set; } = false;
-    public Vector2 m_playerMoveVec { get; private set; } = new Vector2(0f, 0f);
-    public bool m_isPlayerBlinking { get; private set; } = false;
+    
 
+    // Member Variables
     public Player_AniMgr m_Player_AniMgr { get; private set; }
     public PlayerRotation m_playerRotation { get; private set; }
-    public Player_Gun m_playerGun { get; private set; }
+    public Player_WeaponMgr m_WeaponMgr { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
     public Player_AniMgr m_PlayerAniMgr { get; private set; }
-
+    
     private NoiseMaker m_NoiseMaker;
-    private Rigidbody2D m_playerRigid;
-    private Animator m_PlayerAnimator;
-    private Player_StairMgr m_PlayerStairMgr;
-    private Player_HotBox m_PlayerHotBox;
-    private Player_UI m_PlayerUIMgr;
+    public Rigidbody2D m_PlayerRigid { get; private set; }
+    public Animator m_PlayerAnimator { get; private set; }
+    public Player_StairMgr m_PlayerStairMgr { get; private set; }
+    public Player_HotBox m_PlayerHotBox { get; private set; }
+    public Player_UI m_PlayerUIMgr { get; private set; }
+    private SoundMgr_SFX m_SFXMgr;
+    private Player_InputMgr m_InputMgr;
 
-    private bool m_isRecoveringRollCount = false;
+    private PlayerFSM m_CurPlayerFSM;
+    public PlayerStateName m_CurPlayerFSMName { get; private set; }
+    public bool m_canChangeWeapon { get; private set; } = false;
+    public bool m_isPlayerBlinking { get; private set; } = false;
+    public bool m_isRecoveringRollCount { get; private set; } = false;
     private IEnumerator m_FootStep;
-
-    private bool m_isStairLerping = false;
-    private float m_StairLerpTimer = 0.5f;
-    private Vector2 m_StairTelePos;
-
     private Vector2 m_PlayerPosVec;
-
     private RaycastHit2D m_FootRay;
 
     // For Player_Managers
@@ -70,22 +59,16 @@ public class Player : Human
         m_PlayerStairMgr = GetComponentInChildren<Player_StairMgr>();
         m_Player_AniMgr = GetComponentInChildren<Player_AniMgr>();
         m_playerRotation = GetComponentInChildren<PlayerRotation>();
-        m_playerGun = GetComponentInChildren<Player_Gun>();
+        m_WeaponMgr = GetComponentInChildren<Player_WeaponMgr>();
         m_useRange = GetComponentInChildren<Player_UseRange>();
-
         m_PlayerAnimator = GetComponent<Animator>();
-        m_playerRigid = GetComponent<Rigidbody2D>();
+        m_PlayerRigid = GetComponent<Rigidbody2D>();
 
+        m_ObjectType = ObjectType.Human;
+        m_ObjectState = ObjectState.Active;
         m_LeftRollCount = m_MaxRollCount;
-
-        m_canAttacked = true;
-        m_curLocation = new LocationInfo(0, 0, 0, transform.position);
-    }
-    private void Start()
-    {
-        m_NoiseMaker = InstanceMgr.GetInstance().GetComponentInChildren<NoiseMaker>();
-        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
-        //m_SFXMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_CanAttacked = true;
+        m_curLocation = ScriptableObject.CreateInstance<LocationInfo>();
     }
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
@@ -99,18 +82,26 @@ public class Player : Human
         m_LeftRollCount = m_MaxRollCount;
         m_RollRecoverTime = _input.RollRecoverTime;
 
-        m_playerGun.m_MainWeapons[0].setPlayerWeaponValue(new WEAPON_PlayerParam(
-            _input.BulletSpeed, _input.BulletDamage, _input.StunValue, _input.MinimumShotDelay,
-            _input.BulletCount, _input.MagCount));
-        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_PlayerUIMgr.setLeftBulletUI(_input.BulletCount, _input.MagCount, 0);
     }
-
+    private void Start()
+    {
+        m_InputMgr = InstanceMgr.GetInstance().GetComponentInChildren<Player_InputMgr>();
+        m_CurPlayerFSM = new PlayerIDLE(this, m_InputMgr);
+        m_NoiseMaker = InstanceMgr.GetInstance().GetComponentInChildren<NoiseMaker>();
+        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_SFXMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+    }
+    
 
     // Update
     private void Update()
     {
-        updatePlayerFSM();
+        if (m_ObjectState == ObjectState.Pause)       // Pause면 중지
+            return;
+
+        // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
+        m_CurPlayerFSM.UpdateState();
         PlayerRayFunc();
 
         if (gameObject.layer == 12 && m_FootRay)
@@ -121,31 +112,71 @@ public class Player : Human
         transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
     }
 
+    
     // Player FSM Functions
+    // ReSharper disable Unity.PerformanceAnalysis
+    public void ChangePlayerFSM(PlayerStateName _name)
+    {
+        Debug.Log("상태 전이" + _name);
+        m_PlayerAniMgr.exitplayerAnim();
+        m_CurPlayerFSMName = _name;
+        
+        m_CurPlayerFSM.ExitState();
+        switch (m_CurPlayerFSMName)
+        {
+            case PlayerStateName.IDLE:
+                m_CurPlayerFSM = new PlayerIDLE(this, m_InputMgr);
+                break;
+            
+            case PlayerStateName.WALK:
+                m_CurPlayerFSM = new PlayerWALK(this, m_InputMgr);
+                break;
+            
+            case PlayerStateName.ROLL:
+                m_CurPlayerFSM = new PlayerROLL(this, m_InputMgr);
+                break;
+            
+            case PlayerStateName.HIDDEN:
+                m_CurPlayerFSM = new PlayerHIDDEN(this, m_InputMgr);
+                break;
+            
+            case PlayerStateName.DEAD:
+                m_CurPlayerFSM = new PlayerDEAD(this, m_InputMgr);
+                break;
+            
+            default:
+                Debug.Log("Player->ChangePlayerFSM에서 존재하지 않는 상태 전이 요청");
+                break;
+        }
+        
+        m_CurPlayerFSM.StartState();
+        m_PlayerAniMgr.playplayerAnim();
+    }
+    /*
     private void updatePlayerFSM()
     {
         switch (m_curPlayerState)
         {
             case playerState.IDLE:
-                m_playerMoveVec = new Vector2(Input.GetAxisRaw("Horizontal"), m_playerMoveVec.y);
-                if (m_playerMoveVec.x != 0)
+                m_HumanMoveVec = new Vector2(Input.GetAxisRaw("Horizontal"), m_HumanMoveVec.y);
+                if (m_HumanMoveVec.x != 0)
                     changePlayerFSM(playerState.WALK);
                 if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
                     changePlayerFSM(playerState.ROLL);
                 break;
 
             case playerState.WALK:
-                m_playerMoveVec = new Vector2(Input.GetAxisRaw("Horizontal"), m_playerMoveVec.y);
-                if (m_playerMoveVec.x == 0)
+                m_HumanMoveVec = new Vector2(Input.GetAxisRaw("Horizontal"), m_HumanMoveVec.y);
+                if (m_HumanMoveVec.x == 0)
                     changePlayerFSM(playerState.IDLE);
                 else
                 {
-                    if ((m_isRightHeaded ? 1 : -1) == (int)m_playerMoveVec.x)
+                    if ((m_isRightHeaded ? 1 : -1) == (int)m_HumanMoveVec.x)
                     {
                         if (m_isRightHeaded)
-                            m_playerRigid.velocity = -new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_Speed;
+                            m_PlayerRigid.velocity = -new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_Speed;
                         else
-                            m_playerRigid.velocity = new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_Speed;
+                            m_PlayerRigid.velocity = new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_Speed;
 
                         if (Input.GetKeyDown(KeyCode.LeftShift))
                             changePlayerFSM(playerState.RUN);
@@ -156,7 +187,7 @@ public class Player : Human
                     {
                         if (m_isRightHeaded)
                         {
-                            m_playerRigid.velocity = StaticMethods.getLPerpVec(m_PlayerStairMgr.m_PlayerNormal) * m_Speed * m_BackWalkSpeedRatio;
+                            m_PlayerRigid.velocity = StaticMethods.getLPerpVec(m_PlayerStairMgr.m_PlayerNormal) * m_Speed * m_BackWalkSpeedRatio;
                             if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
                             {
                                 setisRightHeaded(false);
@@ -165,7 +196,7 @@ public class Player : Human
                         }
                         else
                         {
-                            m_playerRigid.velocity = -StaticMethods.getLPerpVec(m_PlayerStairMgr.m_PlayerNormal) * m_Speed * m_BackWalkSpeedRatio;
+                            m_PlayerRigid.velocity = -StaticMethods.getLPerpVec(m_PlayerStairMgr.m_PlayerNormal) * m_Speed * m_BackWalkSpeedRatio;
                             if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
                             {
                                 setisRightHeaded(true);
@@ -179,9 +210,9 @@ public class Player : Human
 
             case playerState.RUN:
                 if (m_isRightHeaded)
-                    m_playerRigid.velocity = new Vector2(m_Speed * m_RunSpeedRatio, 0f);
+                    m_PlayerRigid.velocity = new Vector2(m_Speed * m_RunSpeedRatio, 0f);
                 else
-                    m_playerRigid.velocity = new Vector2(-m_Speed * m_RunSpeedRatio, 0f);
+                    m_PlayerRigid.velocity = new Vector2(-m_Speed * m_RunSpeedRatio, 0f);
 
                 if (Input.GetKeyUp(KeyCode.LeftShift))
                     changePlayerFSM(playerState.WALK);
@@ -192,11 +223,11 @@ public class Player : Human
             case playerState.ROLL:
                 if (m_isRightHeaded)
                 {
-                    m_playerRigid.velocity = -new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_RollSpeedRatio;
+                    m_PlayerRigid.velocity = -new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_RollSpeedRatio;
                 }
                 else
                 {
-                    m_playerRigid.velocity = new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_RollSpeedRatio;
+                    m_PlayerRigid.velocity = new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_RollSpeedRatio;
                 }
                 if (m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                     changePlayerFSM(playerState.WALK);
@@ -229,7 +260,7 @@ public class Player : Human
                 break;
         }
     }
-    public void changePlayerFSM(playerState _inputPlayerState)
+    public void _changePlayerFSM(playerState _inputPlayerState)
     {
         exitPlayerFSM();
 
@@ -237,8 +268,8 @@ public class Player : Human
         {
             case playerState.IDLE:
                 m_curPlayerState = playerState.IDLE;
-                m_playerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
-                m_canAttacked = true;
+                m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
+                m_CanAttacked = true;
                 break;
 
             case playerState.WALK:
@@ -248,13 +279,13 @@ public class Player : Human
                 break;
 
             case playerState.RUN:
-                /*
+                
                 m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f));
                 StartCoroutine(m_FootStep);
                 m_curPlayerState = playerState.RUN;
                 m_playerRotation.m_doRotate = false;
                 m_canShot = false;
-                */
+                
                 break;
 
             case playerState.ROLL:
@@ -307,12 +338,12 @@ public class Player : Human
         switch (m_curPlayerState)
         {
             case playerState.IDLE:
-                m_playerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
+                m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
                 break;
 
             case playerState.WALK:
                 StopCoroutine(m_FootStep);
-                m_playerRigid.velocity = Vector2.zero;
+                m_PlayerRigid.velocity = Vector2.zero;
                 break;
 
             case playerState.RUN:
@@ -327,7 +358,7 @@ public class Player : Human
                 m_playerRotation.m_doRotate = true;
                 m_canShot = true;
                 m_canMove = true;
-                m_playerRigid.velocity = Vector2.zero;
+                m_PlayerRigid.velocity = Vector2.zero;
                 m_Player_AniMgr.setSprites(false, true, true, true, true);
                 break;
 
@@ -349,7 +380,9 @@ public class Player : Human
                 break;
         }
     }
+    */
 
+    
     // Functions
     public void GoToStairLayer(bool _input, Vector2 _movePos, Vector2 _normal)
     {
@@ -358,13 +391,13 @@ public class Player : Human
             gameObject.layer = 10;
             m_PlayerStairMgr.ChangePlayerNormal(_normal);
         }
-        else if (_input == false)
+        else
         {
             gameObject.layer = 12;
             m_PlayerStairMgr.ChangePlayerNormal(Vector2.up);
         }
     }
-    private IEnumerator RecoverRollCount()
+    public IEnumerator RecoverRollCount()
     {
         m_PlayerUIMgr.UpdateRollTimer(m_RollRecoverTime);
 
@@ -388,19 +421,15 @@ public class Player : Human
         }
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public override void setisRightHeaded(bool _isRightHeaded)
     {
         m_isRightHeaded = _isRightHeaded;
-        if (m_isRightHeaded)
-        {
-            if (transform.localScale.x < 0)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
-        else
-        {
-            if (transform.localScale.x > 0)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
+        var TempLocalScale = transform.localScale;
+
+        if ((m_isRightHeaded && TempLocalScale.x < 0) || (!m_isRightHeaded && TempLocalScale.x > 0))
+            transform.localScale = new Vector3(-TempLocalScale.x, TempLocalScale.y, 1);
+        
         m_Player_AniMgr.playplayerAnim();
     }
     public void setPlayerHp(int _value)
@@ -419,7 +448,7 @@ public class Player : Human
     private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
     public bool getIsPlayerWalkStraight()
     {
-        if ((m_isRightHeaded && m_playerMoveVec.x > 0) || (!m_isRightHeaded && m_playerMoveVec.x < 0))
+        if ((m_isRightHeaded && m_HumanMoveVec.x > 0) || (!m_isRightHeaded && m_HumanMoveVec.x < 0))
             return true;
         else
             return false;

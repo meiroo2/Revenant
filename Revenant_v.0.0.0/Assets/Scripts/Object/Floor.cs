@@ -15,7 +15,8 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     // Constructors
     private void Awake()
     {
-        InitObjectDefine(ObjectType.Floor, true, false);
+        m_ObjectType = ObjectType.Floor;
+        m_CanAttacked = true;
     }
     private void Start()
     {

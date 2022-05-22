@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ParicleMgr : MonoBehaviour
 {
+    public GameObject p_ANiObkj;
+
     public GameObject p_PullingObj;
 
     private GameObject[] m_Objs;
@@ -21,6 +23,21 @@ public class ParicleMgr : MonoBehaviour
             m_Objs[i].transform.localPosition = Vector2.zero;
 
             m_Rigids[i] = m_Objs[i].GetComponent<Rigidbody2D>();
+        }
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.H))
+            {
+            p_ANiObkj.SetActive(false);
+            p_ANiObkj.SetActive(true);
+            for (int i = 0; i < m_Objs.Length; i++)
+            {
+                m_Objs[i].transform.localPosition = Vector2.zero;
+                m_Rigids[i].velocity = (new Vector2(Random.Range(-3f, -1f), Random.Range(1f, 3f)));
+                m_Rigids[i].constraints = RigidbodyConstraints2D.None;
+            }
         }
     }
 

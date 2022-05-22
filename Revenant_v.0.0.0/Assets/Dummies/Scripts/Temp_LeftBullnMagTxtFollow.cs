@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,20 +7,21 @@ using TMPro;
 
 public class Temp_LeftBullnMagTxtFollow : MonoBehaviour
 {
-    private GameObject m_OriginLeftBulletTxt;
+    private Player_WeaponMgr m_WeaponMgr;
     private Text m_Text;
 
-    private TextMeshProUGUI m_TMP;
+    private void Awake()
+    {
+        m_Text = GetComponent<Text>();
+    }
 
     private void Start()
     {
-        m_Text = GetComponent<Text>();
-        m_OriginLeftBulletTxt = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>().m_WeaponTexts[0];
-        m_TMP = m_OriginLeftBulletTxt.GetComponent<TextMeshProUGUI>();
+        m_WeaponMgr = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr;
     }
 
     private void FixedUpdate()
     {
-        m_Text.text = m_TMP.text;
+        m_Text.text = m_WeaponMgr.m_CurWeapon.m_LeftBullet + " / " + m_WeaponMgr.m_CurWeapon.m_LeftMag;
     }
 }

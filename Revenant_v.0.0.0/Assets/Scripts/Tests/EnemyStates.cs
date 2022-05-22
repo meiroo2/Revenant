@@ -115,6 +115,7 @@ public class Attack_Dagger : EnemyStates
                         m_Enemy.setisRightHeaded(false);
                     else
                         m_Enemy.setisRightHeaded(true);
+
                     m_Enemy.ChangeFSMState(new Attack_Dagger());
                 }
                 else 

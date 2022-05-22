@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DaggerEnemy_Bullet : BULLET
+public class DaggerEnemy_Bullet : Bullet
 {
     private int m_Damage = 10;
 
