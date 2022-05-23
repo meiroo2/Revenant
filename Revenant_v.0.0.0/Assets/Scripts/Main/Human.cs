@@ -18,7 +18,7 @@ public class Human : ObjectDefine
     
     public bool m_CanMove { get; set; } = true;
     public bool m_CanShot { get; set; } = true;
-    public Vector2 m_HumanMoveVec { get; protected set; }
+    public Vector2 m_HumanFootNormal { get; set; }
 
     
     // Constructor

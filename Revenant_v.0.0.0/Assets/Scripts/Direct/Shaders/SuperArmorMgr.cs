@@ -53,6 +53,8 @@ public class SuperArmorMgr : MonoBehaviour
             if (m_Callback != null)
                 m_Callback();
 
+            m_Callback = null;
+            
             m_InstantiatedTransform.gameObject.SetActive(false);
         }
     }
@@ -62,11 +64,21 @@ public class SuperArmorMgr : MonoBehaviour
         if (m_isSuperArmorOn)
             return;
 
+        
         m_isSuperArmorOn = true;
         m_InstantiatedTransform.gameObject.SetActive(true);
         m_InstantiatedTransform.localScale = new Vector2(p_MaxScaleRatio, p_MaxScaleRatio);
-        m_InstantiatedTransform.localPosition = new Vector2(m_InstantiatedTransform.localPosition.x - p_DistanceBetweenOriginPos,
-            m_InstantiatedTransform.localPosition.y + p_DistanceBetweenOriginPos);
+
+        if (m_ParentObj.transform.localScale.x > 0)
+        {
+            m_InstantiatedTransform.localPosition = new Vector2(m_InstantiatedTransform.localPosition.x - p_DistanceBetweenOriginPos,
+                m_InstantiatedTransform.localPosition.y + p_DistanceBetweenOriginPos);
+        }
+        else
+        {
+            m_InstantiatedTransform.localPosition = new Vector2(m_InstantiatedTransform.localPosition.x + p_DistanceBetweenOriginPos,
+                m_InstantiatedTransform.localPosition.y + p_DistanceBetweenOriginPos);
+        }
     }
 
     public void SetCallback(SuperArmorDelegate _input, bool _doReset = false)

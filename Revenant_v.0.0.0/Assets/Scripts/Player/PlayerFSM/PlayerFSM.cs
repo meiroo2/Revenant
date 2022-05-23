@@ -115,9 +115,9 @@ public class PlayerWALK : PlayerFSM
         else // 키 인풋과 바라보는 방향이 다를 때(BackWalk)
         {
             if (m_Player.m_isRightHeaded) // 오른쪽보고 뒤로 걷기
-                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.m_Speed * m_Player.m_BackWalkSpeedRatio);
+                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.m_Speed * m_Player.p_BackWalkSpeedRatio);
             else
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.m_Speed * m_Player.m_BackWalkSpeedRatio);
+                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.m_Speed * m_Player.p_BackWalkSpeedRatio);
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && m_Player.m_LeftRollCount > 0)
@@ -182,9 +182,9 @@ public class PlayerROLL : PlayerFSM
 
         if (m_Player.m_isRightHeaded)   // 우측 구르기
             m_Rigid.velocity = -(StaticMethods.getLPerpVec(m_PlayerNormalVec) * m_Player.m_Speed) *
-                               m_Player.m_RollSpeedRatio;
+                               m_Player.p_RollSpeedRatio;
         else
-            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.m_Speed * m_Player.m_RollSpeedRatio);
+            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.m_Speed * m_Player.p_RollSpeedRatio);
         
         if(m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.IDLE);

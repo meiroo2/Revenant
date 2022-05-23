@@ -62,7 +62,7 @@ public class Player_StairMgr : MonoBehaviour
                 // 우상향 계단에서 올라갈 때
                 if (isStairUpKey && m_stairPos.m_isGoingUp && m_stairPos.m_isInitDetector &&
                     (transform.position.x < m_stairPos.transform.position.x) &&
-                    (m_Player.m_HumanMoveVec.x >= 0) &&
+                    (m_Player.m_HumanFootNormal.x >= 0) &&
                     m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()) == 1)
                 {
                     m_isOnStair = true;
@@ -73,7 +73,7 @@ public class Player_StairMgr : MonoBehaviour
                 // 우상향 계단에서 내려갈 때
                 else if (isStairDownKey && !m_stairPos.m_isGoingUp && m_stairPos.m_isInitDetector &&
                    (transform.position.x > m_stairPos.transform.position.x) &&
-                   (m_Player.m_HumanMoveVec.x <= 0) &&
+                   (m_Player.m_HumanFootNormal.x <= 0) &&
                    m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()) == 1)
                 {
                     m_isOnStair = true;
@@ -87,7 +87,7 @@ public class Player_StairMgr : MonoBehaviour
                 // 좌상향 계단에서 올라갈 때
                 if (isStairUpKey && m_stairPos.m_isGoingUp && m_stairPos.m_isInitDetector &&
                     (transform.position.x > m_stairPos.transform.position.x) && 
-                    (m_Player.m_HumanMoveVec.x <= 0) &&
+                    (m_Player.m_HumanFootNormal.x <= 0) &&
                     m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()) == 1)
                 {
                     m_isOnStair = true;
@@ -98,7 +98,7 @@ public class Player_StairMgr : MonoBehaviour
                 // 좌상향 계단에서 내려갈 때
                 else if (isStairDownKey && !m_stairPos.m_isGoingUp && m_stairPos.m_isInitDetector &&
                     (transform.position.x < m_stairPos.transform.position.x) &&
-                    (m_Player.m_HumanMoveVec.x >= 0) &&
+                    (m_Player.m_HumanFootNormal.x >= 0) &&
                     m_stairPos.StairDetectorDetected(gameObject.GetInstanceID()) == 1)
                 {
                     m_isOnStair = true;

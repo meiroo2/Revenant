@@ -15,13 +15,15 @@ public enum PlayerStateName
 public class Player : Human
 {
     // Visable Member Variables
-    [field : SerializeField] public float m_RollSpeedRatio { get; private set; } = 1.3f;
-    [field : SerializeField] public float m_BackWalkSpeedRatio { get; private set; } = 0.7f;
-    [field : SerializeField] public float m_RunSpeedRatio { get; private set; } = 1.5f;
-    [field : SerializeField] public float m_RollRecoverTime { get; private set; } = 2f;
-    [field : SerializeField] public int m_MaxRollCount { get; private set; } = 3;
-    public int m_LeftRollCount { get; set; }
-    public bool m_canRoll { get; private set; } = true;
+    [field : SerializeField] public float p_RollSpeedRatio { get; private set; } = 1.3f;
+    [field : SerializeField] public float p_BackWalkSpeedRatio { get; private set; } = 0.7f;
+    [field : SerializeField] public float p_RunSpeedRatio { get; private set; } = 1.5f;
+    [field : SerializeField] public float p_RollRecoverTime { get; private set; } = 2f;
+    [field : SerializeField] public int p_MaxRollCount { get; private set; } = 3;
+
+    [Space(30f)] 
+    [Header("Don't ∂£¡„")]
+    [field : SerializeField] public Transform p_Player_RealPos;
     
 
     // Member Variables
@@ -30,18 +32,22 @@ public class Player : Human
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
     public Player_AniMgr m_PlayerAniMgr { get; private set; }
-    
-    private NoiseMaker m_NoiseMaker;
+    public PlayerStateName m_CurPlayerFSMName { get; private set; }
     public Rigidbody2D m_PlayerRigid { get; private set; }
     public Animator m_PlayerAnimator { get; private set; }
     public Player_StairMgr m_PlayerStairMgr { get; private set; }
     public Player_HotBox m_PlayerHotBox { get; private set; }
     public Player_UI m_PlayerUIMgr { get; private set; }
+    
+    
     private SoundMgr_SFX m_SFXMgr;
     private Player_InputMgr m_InputMgr;
-
     private PlayerFSM m_CurPlayerFSM;
-    public PlayerStateName m_CurPlayerFSMName { get; private set; }
+    private NoiseMaker m_NoiseMaker;
+    
+    
+    public int m_LeftRollCount { get; set; }
+    public bool m_canRoll { get; private set; } = true;
     public bool m_canChangeWeapon { get; private set; } = false;
     public bool m_isPlayerBlinking { get; private set; } = false;
     public bool m_isRecoveringRollCount { get; private set; } = false;
@@ -66,7 +72,7 @@ public class Player : Human
 
         m_ObjectType = ObjectType.Human;
         m_ObjectState = ObjectState.Active;
-        m_LeftRollCount = m_MaxRollCount;
+        m_LeftRollCount = p_MaxRollCount;
         m_CanAttacked = true;
         m_curLocation = ScriptableObject.CreateInstance<LocationInfo>();
     }
@@ -75,12 +81,12 @@ public class Player : Human
         m_Hp = _input.Hp;
         m_stunTime = _input.StunInvincibleTime;
         m_Speed = _input.Speed;
-        m_BackWalkSpeedRatio = _input.BackSpeedRatio;
-        m_RunSpeedRatio = _input.RunSpeedRatio;
-        m_RollSpeedRatio = _input.RollSpeedRatio;
-        m_MaxRollCount = _input.RollCountMax;
-        m_LeftRollCount = m_MaxRollCount;
-        m_RollRecoverTime = _input.RollRecoverTime;
+        p_BackWalkSpeedRatio = _input.BackSpeedRatio;
+        p_RunSpeedRatio = _input.RunSpeedRatio;
+        p_RollSpeedRatio = _input.RollSpeedRatio;
+        p_MaxRollCount = _input.RollCountMax;
+        m_LeftRollCount = p_MaxRollCount;
+        p_RollRecoverTime = _input.RollRecoverTime;
 
         m_PlayerUIMgr.setLeftBulletUI(_input.BulletCount, _input.MagCount, 0);
     }
@@ -117,7 +123,7 @@ public class Player : Human
     // ReSharper disable Unity.PerformanceAnalysis
     public void ChangePlayerFSM(PlayerStateName _name)
     {
-        Debug.Log("ªÛ≈¬ ¿¸¿Ã" + _name);
+        //Debug.Log("ªÛ≈¬ ¿¸¿Ã" + _name);
         m_PlayerAniMgr.exitplayerAnim();
         m_CurPlayerFSMName = _name;
         
@@ -399,17 +405,17 @@ public class Player : Human
     }
     public IEnumerator RecoverRollCount()
     {
-        m_PlayerUIMgr.UpdateRollTimer(m_RollRecoverTime);
+        m_PlayerUIMgr.UpdateRollTimer(p_RollRecoverTime);
 
         m_isRecoveringRollCount = true;
-        yield return new WaitForSeconds(m_RollRecoverTime);
+        yield return new WaitForSeconds(p_RollRecoverTime);
 
         m_LeftRollCount += 1;
         m_PlayerUIMgr.UpdateRollCount(m_LeftRollCount);
 
-        if (m_LeftRollCount < m_MaxRollCount)
+        if (m_LeftRollCount < p_MaxRollCount)
             StartCoroutine(RecoverRollCount());
-        else if (m_LeftRollCount == m_MaxRollCount)
+        else if (m_LeftRollCount == p_MaxRollCount)
             m_isRecoveringRollCount = false;
     }
     private IEnumerator MakePlayerNoise(NoiseType _noiseType, Vector2 _size, LocationInfo _location)
@@ -448,7 +454,7 @@ public class Player : Human
     private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
     public bool getIsPlayerWalkStraight()
     {
-        if ((m_isRightHeaded && m_HumanMoveVec.x > 0) || (!m_isRightHeaded && m_HumanMoveVec.x < 0))
+        if ((m_isRightHeaded && m_HumanFootNormal.x > 0) || (!m_isRightHeaded && m_HumanFootNormal.x < 0))
             return true;
         else
             return false;
