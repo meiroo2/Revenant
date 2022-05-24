@@ -9,10 +9,12 @@ public class Negotiator_Player : BasicWeapon_Player
     // Visible Member Variables
     public ObjectPuller p_MuzFlashPuller;
     public Transform m_ShellPos;
+    public Sprite p_BulletSprite;
     
     
     // Member Variables
-    private Player_BulletPuller m_Puller;
+    private BulletPuller m_Puller;
+    private BulletParam m_BulletParam;
 
     private void Awake()
     {
@@ -27,7 +29,10 @@ public class Negotiator_Player : BasicWeapon_Player
         m_Player_Arm = m_Player.m_playerRotation.gameObject.transform;
         m_aimCursor = tempIns.GetComponentInChildren<AimCursor>();
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
-        m_Puller = tempIns.GetComponentInChildren<Player_BulletPuller>();
+        m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
+
+        m_BulletParam = new BulletParam(true, p_BulletSprite, true, m_Player_Arm.position,
+            m_Player_Arm.rotation, p_BulletDamage, p_BulletSpeed, p_StunValue, m_aimCursor.AimedObjid);
     }
 
     public override int Fire()
@@ -95,8 +100,12 @@ public class Negotiator_Player : BasicWeapon_Player
         m_LeftBullet--;
         
         m_SoundMgrSFX.playGunFireSound(0, gameObject);
-        m_Puller.MakeBullet(m_Player.m_isRightHeaded, m_Player_Arm.position,
-            m_Player_Arm.rotation, p_BulletSpeed, p_BulletDamage);
+
+        m_BulletParam.m_IsRightHeaded = m_Player.m_isRightHeaded;
+        m_BulletParam.m_Position = m_Player_Arm.position;
+        m_BulletParam.m_Rotation = m_Player_Arm.rotation;
+        m_BulletParam.m_AimedObjID = m_aimCursor.AimedObjid;
+        m_Puller.MakeBullet(ref m_BulletParam);
         
         p_MuzFlashPuller.EnableNewObj();
         

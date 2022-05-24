@@ -6,7 +6,7 @@ using UnityEngine;
 public class BasicWeapon : MonoBehaviour
 {
     // Visible Member Variables
-    public GameObject m_bulletPrefab;
+    //public GameObject m_bulletPrefab;
     [field : SerializeField] public bool m_isPlayers { get; protected set; }
 
     [Space(20f)] [Header("여기서부터 설정값들")]

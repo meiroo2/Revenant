@@ -1,39 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class SuperArmorMgr : MonoBehaviour
 {
-    public delegate void SuperArmorDelegate();
-    public SuperArmorDelegate m_Callback = null;
-
+    // Visible Member Variables
     public float p_MaxScaleRatio = 1.5f;
     public float p_SuperArmorSpeed = 20f;
     public float p_DistanceBetweenOriginPos = 0.08f;
-
-    private float m_Temp;
-
     [Space(30f)]
     [Header("¶£Áã ±ÝÁö")]
     public GameObject m_ChildObj;
+    
+    // Member Variables
+    public delegate void SuperArmorDelegate();
+    public SuperArmorDelegate m_Callback = null;
+
+    private float m_Temp;
     protected GameObject m_ParentObj;
-
+    protected SpriteRenderer m_ParentObjRenderer;
     protected Transform m_InstantiatedTransform;
-
+    protected SpriteRenderer m_InstantiatedObjRenderer;
     protected bool m_isSuperArmorOn = false;
 
     private void Awake()
     {
         m_ParentObj = GetComponentInParent<SpriteRenderer>().gameObject;
-        GameObject sans = Instantiate(m_ChildObj);
-        sans.transform.parent = m_ParentObj.transform;
-        m_InstantiatedTransform = sans.transform;
+        m_ParentObjRenderer = m_ParentObj.GetComponent<SpriteRenderer>();
+        
+        m_InstantiatedTransform = Instantiate(m_ChildObj, m_ParentObj.transform, true).transform;
         m_InstantiatedTransform.localPosition = Vector2.zero;
         m_InstantiatedTransform.localScale = Vector2.zero;
 
-        sans.GetComponent<SpriteRenderer>().sprite = m_ParentObj.GetComponent<SpriteRenderer>().sprite;
+        m_InstantiatedObjRenderer = m_InstantiatedTransform.GetComponent<SpriteRenderer>();
+        m_InstantiatedObjRenderer.sprite = m_ParentObjRenderer.sprite;
 
-        sans.SetActive(false);
+        m_InstantiatedTransform.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -63,7 +66,8 @@ public class SuperArmorMgr : MonoBehaviour
     {
         if (m_isSuperArmorOn)
             return;
-
+        
+        m_InstantiatedObjRenderer.sprite = m_ParentObjRenderer.sprite;
         
         m_isSuperArmorOn = true;
         m_InstantiatedTransform.gameObject.SetActive(true);

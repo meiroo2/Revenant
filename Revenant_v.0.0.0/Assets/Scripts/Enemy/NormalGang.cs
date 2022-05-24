@@ -10,11 +10,16 @@ public class NormalGang : BasicEnemy
     [field: SerializeField] public float p_MinFollowDistance { get; protected set; } = 0.2f;
     [field: SerializeField] public Transform p_GunPos { get; protected set; }
 
+
     // Member Variables
+    public Enemy_Rotation m_EnemyRotation { get; private set; }
+    public WeaponMgr m_WeaponMgr { get; private set; }
+
     private IDLE_NormalGang m_IDLE;
     private WALK_NormalGang m_WALK;
     private ATTACK_NormalGang m_ATTACK;
 
+    public bool m_IsFoundPlayer = false;
     public int m_AngleBetPlayer { get; protected set; } // 위에서부터 0, 1, 2
     private Vector2 m_DistBetPlayer;
 
@@ -22,6 +27,9 @@ public class NormalGang : BasicEnemy
     // Constructor
     private void Awake()
     {
+        m_EnemyRotation = GetComponentInChildren<Enemy_Rotation>();
+        m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
+        
         m_CurEnemyFSM = new IDLE_NormalGang(this);
         m_CurEnemyStateName = EnemyStateName.IDLE;
         m_CurEnemyFSM.StartState();
@@ -56,7 +64,7 @@ public class NormalGang : BasicEnemy
     public void CalculateAngleBetPlayer()
     {
         m_AngleBetPlayer = StaticMethods.getAnglePhase(p_GunPos.position,
-            m_PlayerTransform.position, 3, 20);
+            m_PlayerTransform.position, 3, p_AngleLimit);
     }
     public Vector2 GetDistBetPlayer()
     {

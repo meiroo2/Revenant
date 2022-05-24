@@ -15,6 +15,7 @@ public class BasicEnemy : Human
     // Visible Member Variables
     [field: SerializeField] public float p_VisionDistance { get; protected set; }
     [field: SerializeField] public float p_HearColSize { get; protected set; }
+    [field: SerializeField] public int p_AngleLimit { get; protected set; } = 20;
     
     
     // Member Variables

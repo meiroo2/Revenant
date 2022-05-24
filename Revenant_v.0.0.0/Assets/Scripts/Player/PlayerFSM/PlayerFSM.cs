@@ -197,7 +197,7 @@ public class PlayerROLL : PlayerFSM
         m_Rigid.velocity = Vector2.zero;
         m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
         m_Player.m_playerRotation.m_doRotate = true;
-        
+        m_Player.m_PlayerHotBox.setPlayerHotBoxCol(true);
         ExitFinalProcess();
     }
 

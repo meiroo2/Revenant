@@ -144,6 +144,8 @@ public class ATTACK_NormalGang : NormalGang_FSM
         
         m_SuperArmor.doSuperArmor();
         m_SuperArmor.SetCallback(NextPhase);
+        
+        m_Enemy.m_IsFoundPlayer = true;
     }
 
     public override void UpdateState()
@@ -151,26 +153,39 @@ public class ATTACK_NormalGang : NormalGang_FSM
         switch (m_Phase)
         {
             case 1:
+                m_Enemy.m_EnemyRotation.RotateEnemyArm();
+                m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                 m_Angle = StaticMethods.getAnglePhase(m_Enemy.p_GunPos.position,
                     m_PlayerTransform.position, 3, 20);
                 m_EnemyAnimator.SetInteger("FireAngle", m_Angle);
-                Debug.Log(m_Angle);
                 m_Phase = 2;
                 break;
             
             case 2:
                 if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f)
+                {
+                    m_EnemyAnimator.SetInteger("FireAngle", -1);
                     m_Phase = 3;
+                }
                 break;
             
             case 3:
+                if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f)
+                {
+                    m_Phase = 4;
+                }
+                break;
+            
+            case 4:
                 if (m_Enemy.GetDistBetPlayer().magnitude > m_Enemy.p_MinFollowDistance)
                 {
+                    m_EnemyAnimator.SetBool("isNear", false);
                     m_Enemy.ChangeEnemyFSM(EnemyStateName.WALK);
                 }
                 else
                 {
-                    this.StartState();
+                    m_EnemyAnimator.SetBool("isNear", true);
+                    m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
                 }
                 break;
         }
@@ -184,6 +199,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
 
     public override void NextPhase()
     {
+        Debug.Log("Next호출");
         m_Phase++;
     }
 }

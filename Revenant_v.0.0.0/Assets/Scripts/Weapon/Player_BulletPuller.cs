@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
+/*
 public class Player_BulletPuller : BulletPuller
 {
     // Member Variables
@@ -49,3 +50,4 @@ public class Player_BulletPuller : BulletPuller
             m_Idx = 0;
     }
 }
+*/
