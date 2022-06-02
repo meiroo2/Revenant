@@ -103,21 +103,21 @@ public class PlayerWALK : PlayerFSM
             return;
 
 
-        if ((m_Player.m_isRightHeaded ? 1 : -1) == (int)m_KeyInput) // 키 인풋과 바라보는 방향이 같을 때
+        if ((m_Player.m_IsRightHeaded ? 1 : -1) == (int)m_KeyInput) // 키 인풋과 바라보는 방향이 같을 때
         {
-            if (m_Player.m_isRightHeaded)
+            if (m_Player.m_IsRightHeaded)
                 m_Rigid.velocity =
-                    -new Vector2(-m_StairMgr.m_PlayerNormal.y, m_StairMgr.m_PlayerNormal.x) * m_Player.m_Speed;
+                    -new Vector2(-m_StairMgr.m_PlayerNormal.y, m_StairMgr.m_PlayerNormal.x) * m_Player.p_Speed;
             else
                 m_Rigid.velocity =
-                    new Vector2(-m_StairMgr.m_PlayerNormal.y, m_StairMgr.m_PlayerNormal.x) * m_Player.m_Speed;
+                    new Vector2(-m_StairMgr.m_PlayerNormal.y, m_StairMgr.m_PlayerNormal.x) * m_Player.p_Speed;
         }
         else // 키 인풋과 바라보는 방향이 다를 때(BackWalk)
         {
-            if (m_Player.m_isRightHeaded) // 오른쪽보고 뒤로 걷기
-                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.m_Speed * m_Player.p_BackWalkSpeedRatio);
+            if (m_Player.m_IsRightHeaded) // 오른쪽보고 뒤로 걷기
+                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
             else
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.m_Speed * m_Player.p_BackWalkSpeedRatio);
+                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && m_Player.m_LeftRollCount > 0)
@@ -180,11 +180,11 @@ public class PlayerROLL : PlayerFSM
         
         m_PlayerNormalVec = m_Player.m_PlayerStairMgr.m_PlayerNormal;
 
-        if (m_Player.m_isRightHeaded)   // 우측 구르기
-            m_Rigid.velocity = -(StaticMethods.getLPerpVec(m_PlayerNormalVec) * m_Player.m_Speed) *
+        if (m_Player.m_IsRightHeaded)   // 우측 구르기
+            m_Rigid.velocity = -(StaticMethods.getLPerpVec(m_PlayerNormalVec) * m_Player.p_Speed) *
                                m_Player.p_RollSpeedRatio;
         else
-            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.m_Speed * m_Player.p_RollSpeedRatio);
+            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_Speed * m_Player.p_RollSpeedRatio);
         
         if(m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.IDLE);

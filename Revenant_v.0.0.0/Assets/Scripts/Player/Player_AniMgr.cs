@@ -88,7 +88,7 @@ public class Player_AniMgr : MonoBehaviour
                 m_cur_OJacket.m_setPartAniVisible(true);
                 m_cur_OJacket.m_setPartAni("isWalk", 1);
 
-                if (m_Player.m_isRightHeaded)
+                if (m_Player.m_IsRightHeaded)
                 {
                     if(m_Player.getIsPlayerWalkStraight() == true)
                         m_cur_Leg.m_setPartAni("isWalk", 1);

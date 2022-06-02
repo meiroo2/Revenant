@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-public class BasicWeapon : MonoBehaviour
+public class    BasicWeapon : MonoBehaviour
 {
     // Visible Member Variables
     //public GameObject m_bulletPrefab;

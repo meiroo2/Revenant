@@ -48,5 +48,4 @@ public class GameMgr : MonoBehaviour
         m_isStartTimer = false;
         m_GameTimer = 0f;
     }
-
 }

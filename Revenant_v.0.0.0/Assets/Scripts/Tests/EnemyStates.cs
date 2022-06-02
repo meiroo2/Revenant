@@ -184,24 +184,24 @@ public class Alert_Dagger : EnemyStates
 
     private void CalculateLocation()
     {
-        if(m_Enemy.m_curLocation.m_curLayer != m_Enemy.m_NoiseSourceLocation.m_curLayer)
+        if(m_Enemy.m_curLocation.p_curLayer != m_Enemy.m_NoiseSourceLocation.p_curLayer)
         {
             // 레이어가 다름 -> 맞춤
             return;
         }
-        if(m_Enemy.m_curLocation.m_curRoom != m_Enemy.m_NoiseSourceLocation.m_curRoom)
+        if(m_Enemy.m_curLocation.p_curRoom != m_Enemy.m_NoiseSourceLocation.p_curRoom)
         {
             // 방이 다름 -> 맞춤
             return;
         }
-        if (m_Enemy.m_curLocation.m_curFloor != m_Enemy.m_NoiseSourceLocation.m_curFloor)
+        if (m_Enemy.m_curLocation.p_curFloor != m_Enemy.m_NoiseSourceLocation.p_curFloor)
         {
             // 층이 다름 -> 맞춤
             return;
         }
-        if (m_Enemy.m_curLocation.m_curPos != m_Enemy.m_NoiseSourceLocation.m_curPos)
+        if (m_Enemy.m_curLocation.p_curPos != m_Enemy.m_NoiseSourceLocation.p_curPos)
         {
-            m_DistBetweenSource = m_EnemyTransform.position.x - m_Enemy.m_NoiseSourceLocation.m_curPos.x;
+            m_DistBetweenSource = m_EnemyTransform.position.x - m_Enemy.m_NoiseSourceLocation.p_curPos.x;
             // 위치가 다름 -> 맞춤
             if (Mathf.Abs(m_DistBetweenSource) <= 0.2f)
             {

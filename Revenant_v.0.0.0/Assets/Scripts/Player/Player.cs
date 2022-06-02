@@ -25,6 +25,7 @@ public class Player : Human
     [Header("Don't ∂£¡„")]
     [field : SerializeField] public Transform p_Player_RealPos;
     
+    
 
     // Member Variables
     public Player_AniMgr m_Player_AniMgr { get; private set; }
@@ -38,8 +39,11 @@ public class Player : Human
     public Player_StairMgr m_PlayerStairMgr { get; private set; }
     public Player_HotBox m_PlayerHotBox { get; private set; }
     public Player_UI m_PlayerUIMgr { get; private set; }
+    public LocationInfo m_PlayerLocationInfo { get; private set; }
+    public LocationSensor m_PlayerLocationSensor { get; private set; }
+    public EnemyMgr m_EnemyMgr { get; private set; }
     
-    
+
     private SoundMgr_SFX m_SFXMgr;
     private Player_InputMgr m_InputMgr;
     private PlayerFSM m_CurPlayerFSM;
@@ -54,12 +58,18 @@ public class Player : Human
     private IEnumerator m_FootStep;
     private Vector2 m_PlayerPosVec;
     private RaycastHit2D m_FootRay;
+    
+
 
     // For Player_Managers
 
+    
+    
     // Constructor
     private void Awake()
     {
+        m_PlayerLocationSensor = GetComponentInChildren<LocationSensor>();
+        m_PlayerLocationInfo = GetComponentInChildren<LocationInfo>();
         m_PlayerAniMgr = GetComponentInChildren<Player_AniMgr>();
         m_PlayerHotBox = GetComponentInChildren<Player_HotBox>();
         m_PlayerStairMgr = GetComponentInChildren<Player_StairMgr>();
@@ -74,13 +84,12 @@ public class Player : Human
         m_ObjectState = ObjectState.Active;
         m_LeftRollCount = p_MaxRollCount;
         m_CanAttacked = true;
-        m_curLocation = ScriptableObject.CreateInstance<LocationInfo>();
     }
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
-        m_Hp = _input.Hp;
-        m_stunTime = _input.StunInvincibleTime;
-        m_Speed = _input.Speed;
+        p_Hp = _input.Hp;
+        p_stunTime = _input.StunInvincibleTime;
+        p_Speed = _input.Speed;
         p_BackWalkSpeedRatio = _input.BackSpeedRatio;
         p_RunSpeedRatio = _input.RunSpeedRatio;
         p_RollSpeedRatio = _input.RollSpeedRatio;
@@ -92,14 +101,18 @@ public class Player : Human
     }
     private void Start()
     {
-        m_InputMgr = InstanceMgr.GetInstance().GetComponentInChildren<Player_InputMgr>();
+        var tempInstance = InstanceMgr.GetInstance();
         m_CurPlayerFSM = new PlayerIDLE(this, m_InputMgr);
-        m_NoiseMaker = InstanceMgr.GetInstance().GetComponentInChildren<NoiseMaker>();
-        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
-        m_SFXMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        
+        m_PlayerUIMgr = tempInstance.m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_InputMgr = tempInstance.GetComponentInChildren<Player_InputMgr>();
+        m_NoiseMaker = tempInstance.GetComponentInChildren<NoiseMaker>();
+        m_SFXMgr = tempInstance.GetComponentInChildren<SoundMgr_SFX>();
+        m_EnemyMgr = tempInstance.GetComponentInChildren<EnemyMgr>();
     }
     
-
+    
+    
     // Update
     private void Update()
     {
@@ -118,6 +131,7 @@ public class Player : Human
         transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
     }
 
+    
     
     // Player FSM Functions
     // ReSharper disable Unity.PerformanceAnalysis
@@ -158,6 +172,112 @@ public class Player : Human
         m_CurPlayerFSM.StartState();
         m_PlayerAniMgr.playplayerAnim();
     }
+    
+
+    
+    // Functions
+    public bool IsPlayerOnStair()
+    {
+        /*
+        if (gameObject.layer == 10)
+        {
+            m_PlayerLocationSensor
+            return true;
+        }
+
+        return false;
+        */
+        return false;
+    }
+    public void GoToStairLayer(bool _input, Vector2 _movePos, Vector2 _normal)
+    {
+        if (_input)
+        {
+            gameObject.layer = 10;
+            m_PlayerStairMgr.ChangePlayerNormal(_normal);
+        }
+        else
+        {
+            gameObject.layer = 12;
+            m_PlayerStairMgr.ChangePlayerNormal(Vector2.up);
+        }
+    }
+    public IEnumerator RecoverRollCount()
+    {
+        m_PlayerUIMgr.UpdateRollTimer(p_RollRecoverTime);
+
+        m_isRecoveringRollCount = true;
+        yield return new WaitForSeconds(p_RollRecoverTime);
+
+        m_LeftRollCount += 1;
+        m_PlayerUIMgr.UpdateRollCount(m_LeftRollCount);
+
+        if (m_LeftRollCount < p_MaxRollCount)
+            StartCoroutine(RecoverRollCount());
+        else if (m_LeftRollCount == p_MaxRollCount)
+            m_isRecoveringRollCount = false;
+    }
+    private IEnumerator MakePlayerNoise(NoiseType _noiseType, Vector2 _size, LocationInfo _location)
+    {
+        while (true)
+        {
+            m_NoiseMaker.MakeNoise(_noiseType, _size, _location, true);
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    public override void setisRightHeaded(bool _isRightHeaded)
+    {
+        m_IsRightHeaded = _isRightHeaded;
+        var TempLocalScale = transform.localScale;
+
+        if ((m_IsRightHeaded && TempLocalScale.x < 0) || (!m_IsRightHeaded && TempLocalScale.x > 0))
+            transform.localScale = new Vector3(-TempLocalScale.x, TempLocalScale.y, 1);
+        
+        m_Player_AniMgr.playplayerAnim();
+    }
+    public void setPlayerHp(int _value)
+    {
+        p_Hp = _value;
+    }
+    public void DoPlayerBlink() 
+    {
+        if(p_stunTime > 0f)
+        {
+            m_isPlayerBlinking = true;
+            CancelInvoke(nameof(setPlayerBlinkFalse));
+            Invoke(nameof(setPlayerBlinkFalse), p_stunTime);
+        }
+    }
+    private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
+    public bool getIsPlayerWalkStraight()
+    {
+        if ((m_IsRightHeaded && m_HumanFootNormal.x > 0) || (!m_IsRightHeaded && m_HumanFootNormal.x < 0))
+            return true;
+        else
+            return false;
+    }
+    private void PlayerRayFunc()
+    {
+        m_PlayerPosVec = transform.position;
+
+        if (gameObject.layer == 12)
+            m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Floor"));
+        else if (gameObject.layer == 10)
+            m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Stair"));
+
+        Debug.DrawRay(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), Vector2.down * 0.5f, new Color(0, 1, 0));
+
+
+
+        if (m_FootRay && (m_PlayerPosVec.y - 0.36f) - m_FootRay.point.y >= 0.29f)
+            m_PlayerPosVec.y = m_FootRay.point.y + 0.26f + 0.36f;
+    }
+    
+    
+    
+    // Legacy
     /*
     private void updatePlayerFSM()
     {
@@ -387,93 +507,4 @@ public class Player : Human
         }
     }
     */
-
-    
-    // Functions
-    public void GoToStairLayer(bool _input, Vector2 _movePos, Vector2 _normal)
-    {
-        if (_input)
-        {
-            gameObject.layer = 10;
-            m_PlayerStairMgr.ChangePlayerNormal(_normal);
-        }
-        else
-        {
-            gameObject.layer = 12;
-            m_PlayerStairMgr.ChangePlayerNormal(Vector2.up);
-        }
-    }
-    public IEnumerator RecoverRollCount()
-    {
-        m_PlayerUIMgr.UpdateRollTimer(p_RollRecoverTime);
-
-        m_isRecoveringRollCount = true;
-        yield return new WaitForSeconds(p_RollRecoverTime);
-
-        m_LeftRollCount += 1;
-        m_PlayerUIMgr.UpdateRollCount(m_LeftRollCount);
-
-        if (m_LeftRollCount < p_MaxRollCount)
-            StartCoroutine(RecoverRollCount());
-        else if (m_LeftRollCount == p_MaxRollCount)
-            m_isRecoveringRollCount = false;
-    }
-    private IEnumerator MakePlayerNoise(NoiseType _noiseType, Vector2 _size, LocationInfo _location)
-    {
-        while (true)
-        {
-            m_NoiseMaker.MakeNoise(_noiseType, _size, _location, true);
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    // ReSharper disable Unity.PerformanceAnalysis
-    public override void setisRightHeaded(bool _isRightHeaded)
-    {
-        m_isRightHeaded = _isRightHeaded;
-        var TempLocalScale = transform.localScale;
-
-        if ((m_isRightHeaded && TempLocalScale.x < 0) || (!m_isRightHeaded && TempLocalScale.x > 0))
-            transform.localScale = new Vector3(-TempLocalScale.x, TempLocalScale.y, 1);
-        
-        m_Player_AniMgr.playplayerAnim();
-    }
-    public void setPlayerHp(int _value)
-    {
-        m_Hp = _value;
-    }
-    public void DoPlayerBlink() 
-    {
-        if(m_stunTime > 0f)
-        {
-            m_isPlayerBlinking = true;
-            CancelInvoke(nameof(setPlayerBlinkFalse));
-            Invoke(nameof(setPlayerBlinkFalse), m_stunTime);
-        }
-    }
-    private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
-    public bool getIsPlayerWalkStraight()
-    {
-        if ((m_isRightHeaded && m_HumanFootNormal.x > 0) || (!m_isRightHeaded && m_HumanFootNormal.x < 0))
-            return true;
-        else
-            return false;
-    }
-
-    private void PlayerRayFunc()
-    {
-        m_PlayerPosVec = transform.position;
-
-        if (gameObject.layer == 12)
-            m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Floor"));
-        else if (gameObject.layer == 10)
-            m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Stair"));
-
-        Debug.DrawRay(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), Vector2.down * 0.5f, new Color(0, 1, 0));
-
-
-
-        if (m_FootRay && (m_PlayerPosVec.y - 0.36f) - m_FootRay.point.y >= 0.29f)
-            m_PlayerPosVec.y = m_FootRay.point.y + 0.26f + 0.36f;
-    }
 }

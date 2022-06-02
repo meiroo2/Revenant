@@ -9,6 +9,17 @@ public static class StaticMethods
     private static Vector3 m_TempVec3;
     private static PixelPerfectCamera m_PPC = Camera.main.GetComponent<PixelPerfectCamera>();
 
+    public static bool IsRoomEqual(LocationInfo _first, LocationInfo _second)
+    {
+        if (_first.p_curLayer == _second.p_curLayer &&
+            _first.p_curRoom == _second.p_curRoom &&
+            _first.p_curFloor == _second.p_curFloor)
+            return true;
+        else
+        {
+            return false;
+        }
+    }
     public static Vector2 getPixelPerfectPos(Vector2 _rawpos)
     {
         m_TempVec2 = _rawpos;

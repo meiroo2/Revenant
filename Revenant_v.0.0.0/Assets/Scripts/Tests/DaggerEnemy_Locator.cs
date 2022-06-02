@@ -16,6 +16,6 @@ public class DaggerEnemy_Locator : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         m_KnownLocationInfo = collision.GetComponent<LocationInfo>();
-        m_Enemy.m_curLocation.setLocation(m_KnownLocationInfo);
+        //m_Enemy.m_curLocation.setLocation(m_KnownLocationInfo);
     }
 }

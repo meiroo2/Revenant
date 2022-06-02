@@ -42,19 +42,19 @@ public class Player_HotBox : MonoBehaviour, IHotBox
             return 0;
         }
 
-        m_Player.setPlayerHp((m_Player.m_Hp - _param.m_Damage));
-        if (m_Player.m_Hp <= 0)
+        m_Player.setPlayerHp((m_Player.p_Hp - _param.m_Damage));
+        if (m_Player.p_Hp <= 0)
         {
             m_Player.ChangePlayerFSM(PlayerStateName.DEAD);
             m_UIMgr.m_GameOverUI.SetActive(true);
-            m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Player.m_Hp / 10f));
+            m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Player.p_Hp / 10f));
             m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
             Debug.Log("플레이어 사망");
             return 1;
         }
 
         m_Player.DoPlayerBlink();
-        m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Player.m_Hp / 10f));
+        m_PlayerUIMgr.UpdatePlayerHp(Mathf.RoundToInt(m_Player.p_Hp / 10f));
         m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
         Debug.Log("플레이어에게 " + _param.m_Damage + "데미지!");
         return 1;

@@ -67,7 +67,7 @@ public class Player_ArmMgr : MonoBehaviour
     // Updates
     private void Update()
     {
-        if (m_Player.m_isRightHeaded)
+        if (m_Player.m_IsRightHeaded)
             p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 400f), m_HeadEffectorOriginPos.y);
         else
             p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 400f), m_HeadEffectorOriginPos.y);

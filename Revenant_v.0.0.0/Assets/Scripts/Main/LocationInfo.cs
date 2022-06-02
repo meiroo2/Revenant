@@ -1,34 +1,122 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LocationInfo : ScriptableObject
+
+[Serializable]
+public struct LocationNodes
 {
-    [field:SerializeField] public int m_curLayer { get; private set; }
-    [field: SerializeField] public int m_curRoom { get; private set; }
-    [field: SerializeField] public int m_curFloor { get; private set; }
-    [field: SerializeField] public Vector2 m_curPos { get; set; }
+    [SerializeField] public GameObject[] p_RoomnInteracts;
+}
 
-    public LocationInfo()
+
+[Serializable]
+public class LocationInfo : MonoBehaviour
+{
+    // Visual Member Variables
+    [field: SerializeField] public int p_curLayer { get; private set; } = 0;
+    [field: SerializeField] public int p_curRoom { get; private set; } = 0;
+    [field: SerializeField] public int p_curFloor { get; private set; } = 0;
+    [field: SerializeField] public Vector2 p_curPos { get; set; } = Vector2.zero;
+    [SerializeField] public LocationNodes[] p_ConnectedRooms;
+
+
+    // Member Variables
+    private LocationInfo[] m_MemberRooms;
+
+
+    // Constructors
+    private void Awake()
     {
-        m_curLayer = 0;
-        m_curRoom = 0;
-        m_curFloor = 0;
-        m_curPos = Vector2.zero;
-    }
-    public LocationInfo(int _Layer, int _Room, int _Stair, Vector2 _Pos)
-    {
-        m_curLayer = _Layer;
-        m_curRoom = _Room;
-        m_curFloor = _Stair;
-        m_curPos = _Pos;
+        m_MemberRooms = new LocationInfo[p_ConnectedRooms.Length];
+        for (int i = 0; i < m_MemberRooms.Length; i++)
+        {
+            m_MemberRooms[i] = p_ConnectedRooms[i].p_RoomnInteracts[0].GetComponent<LocationInfo>();
+        }
     }
 
-    public void setLocation(LocationInfo _location)
+
+    // Functions
+    public virtual void SetLocation(LocationInfo _location, bool _resetVector = false)
     {
-        m_curLayer = _location.m_curLayer;
-        m_curRoom = _location.m_curRoom;
-        m_curFloor = _location.m_curFloor;
-        m_curPos = _location.m_curPos;
+        if (_location == null)
+            return;
+
+        p_curLayer = _location.p_curLayer;
+        p_curRoom = _location.p_curRoom;
+        p_curFloor = _location.p_curFloor;
+
+        if (_resetVector)
+            p_curPos = _location.p_curPos;
+    }
+
+    public virtual void SetLocation(int _layer, int _room, int _floor, Vector2 _pos, bool _resetVector = false)
+    {
+        p_curLayer = _layer;
+        p_curRoom = _room;
+        p_curFloor = _floor;
+
+        if (_resetVector)
+            p_curPos = _pos;
+    }
+
+    public bool CanGotoRoom(LocationInfo _destination)
+    {
+        for (int i = 0; i < m_MemberRooms.Length; i++)
+        {
+            if (StaticMethods.IsRoomEqual(m_MemberRooms[i], _destination))
+                return true;
+        }
+
+        return false;
+    }
+
+    private int GetRoomIdx(LocationInfo _destination)
+    {
+        for (int i = 0; i < m_MemberRooms.Length; i++)
+        {
+            if (StaticMethods.IsRoomEqual(m_MemberRooms[i], _destination))
+                return i;
+        }
+
+        return -1;
+    }
+
+    public Vector2 GetRoomDestPos(Vector2 _entity, LocationInfo _dest)
+    {
+        int roomIdx = GetRoomIdx(_dest);
+
+        float minimumDistance = 999999f;
+        int destIdx = -1;
+
+
+        if (roomIdx != -1)
+        {
+            destIdx = 1;
+            minimumDistance = Vector2.Distance(_entity,
+                p_ConnectedRooms[roomIdx].p_RoomnInteracts[destIdx].transform.position);
+
+            // 해당 방으로 갈 수 있는 경로가 2가지 이상
+            if (p_ConnectedRooms[roomIdx].p_RoomnInteracts.Length > 3)
+            {
+                for (int i = 2; i < p_ConnectedRooms[roomIdx].p_RoomnInteracts.Length; i++)
+                {
+                    if (minimumDistance > Vector2.Distance(_entity,
+                            p_ConnectedRooms[roomIdx].p_RoomnInteracts[i].transform.position))
+                    {
+                        minimumDistance = Vector2.Distance(_entity,
+                            p_ConnectedRooms[roomIdx].p_RoomnInteracts[i].transform.position);
+                        destIdx = i;
+                    }
+                }
+            }
+
+            return p_ConnectedRooms[roomIdx].p_RoomnInteracts[destIdx].transform.position;
+        }
+        else
+        {
+            return Vector2.zero;
+        }
     }
 }

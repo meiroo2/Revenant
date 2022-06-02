@@ -39,7 +39,7 @@ public class DaggerEnemy : Human
         m_CurState = new IDLE_Dagger();
         m_CurState.StartState(this);
 
-        m_curLocation = new LocationInfo(0, 0, 0, Vector2.zero);
+        //m_curLocation = new LocationInfo(0, 0, 0, Vector2.zero);
     }
 
     private void Start()
@@ -55,12 +55,12 @@ public class DaggerEnemy : Human
     private void FixedUpdate()
     {
         RaycastVisionCheck();
-        m_curLocation.m_curPos = transform.position;
+        m_curLocation.p_curPos = transform.position;
     }
 
     private void RaycastVisionCheck()
     {
-        if (m_isRightHeaded)
+        if (m_IsRightHeaded)
         {
             m_VisionHit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 0.4f), Vector2.right, p_VisionDistance, LayerMask.GetMask("Player"));
             Debug.DrawRay(new Vector2(transform.position.x, transform.position.y - 0.4f), Vector2.right * p_VisionDistance, Color.red);
@@ -75,17 +75,17 @@ public class DaggerEnemy : Human
     {
         if (_direction == 1)
         {
-            if (!m_isRightHeaded)
+            if (!m_IsRightHeaded)
                 setisRightHeaded(true);
 
-            m_EnemyRigid.velocity = Vector2.right * m_Speed;
+            m_EnemyRigid.velocity = Vector2.right * p_Speed;
         }
         else if(_direction == -1)
         {
-            if (m_isRightHeaded)
+            if (m_IsRightHeaded)
                 setisRightHeaded(false);
 
-            m_EnemyRigid.velocity = -Vector2.right * m_Speed;
+            m_EnemyRigid.velocity = -Vector2.right * p_Speed;
         }
     }
 
@@ -98,8 +98,8 @@ public class DaggerEnemy : Human
 
     public void GetHit(int _inputDamage)
     {
-        m_Hp -= _inputDamage;
-        if(m_Hp <= 0)
+        p_Hp -= _inputDamage;
+        if(p_Hp <= 0)
         {
             ChangeFSMState(new Dead_Dagger());
         }
@@ -143,6 +143,6 @@ public class DaggerEnemy : Human
 
     public void setEntityLocation(LocationInfo _location)
     {
-        m_curLocation.setLocation(_location);
+        //m_curLocation.setLocation(_location);
     }
 }

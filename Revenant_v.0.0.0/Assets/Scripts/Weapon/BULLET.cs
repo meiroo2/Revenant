@@ -112,6 +112,8 @@ public class Bullet : MonoBehaviour
 
     private void CalculateBulletForEnemy(ref Collider2D col)
     {
+        Debug.Log(col.name);
+        
         if (!m_BulletHitHotBox.m_isEnemys)
         {
             Debug.Log("적 총알 충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
@@ -130,11 +132,11 @@ public class Bullet : MonoBehaviour
             case 0: // 조준한 오브젝트(적 등)
                 if (m_BulletParam.m_AimedObjID != col.gameObject.GetInstanceID())
                 {
-                    Debug.Log("지나감 : " + col.name + " " + col.gameObject.GetInstanceID());
+                    //Debug.Log("지나감 : " + col.name + " " + col.gameObject.GetInstanceID());
                     break;
                 }
 
-                Debug.Log("충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
+                //Debug.Log("충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
                 m_BulletHitHotBox.HitHotBox(new IHotBoxParam(m_BulletParam.m_Damage, m_BulletParam.m_StunValue, transform.position, WeaponType.BULLET));
                 m_HitSFXMaker.EnableNewObj(UnityEngine.Random.Range(1, 3), transform.position, transform.rotation,
                     m_BulletParam.m_IsRightHeaded);
@@ -142,7 +144,7 @@ public class Bullet : MonoBehaviour
                 break;
 
             case 1: // 반드시 충돌해야 하는 오브젝트(벽 등)
-                Debug.Log("반드시 충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
+                //Debug.Log("반드시 충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
 
                 m_BulletHitHotBox.HitHotBox(new IHotBoxParam(m_BulletParam.m_Damage, m_BulletParam.m_StunValue, transform.position, WeaponType.BULLET));
                 m_HitSFXMaker.EnableNewObj(UnityEngine.Random.Range(1, 3), transform.position, transform.rotation,

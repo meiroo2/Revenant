@@ -101,7 +101,7 @@ public class Negotiator_Player : BasicWeapon_Player
         
         m_SoundMgrSFX.playGunFireSound(0, gameObject);
 
-        m_BulletParam.m_IsRightHeaded = m_Player.m_isRightHeaded;
+        m_BulletParam.m_IsRightHeaded = m_Player.m_IsRightHeaded;
         m_BulletParam.m_Position = m_Player_Arm.position;
         m_BulletParam.m_Rotation = m_Player_Arm.rotation;
         m_BulletParam.m_AimedObjID = m_aimCursor.AimedObjid;
@@ -109,7 +109,7 @@ public class Negotiator_Player : BasicWeapon_Player
         
         p_MuzFlashPuller.EnableNewObj();
         
-        if(m_Player.m_isRightHeaded)
+        if(m_Player.m_IsRightHeaded)
             m_ShellMgr.MakeShell(m_ShellPos.transform.position,
                 new Vector2(Random.Range(-0.8f, -1.5f), Random.Range(0.8f, 1.5f)));
         else

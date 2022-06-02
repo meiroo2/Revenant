@@ -21,13 +21,29 @@ public class WeaponMgr : MonoBehaviour
             m_CurWeapon = p_Weapons[0];
         else
             Debug.Log("WeaponMgr에 할당된 BasicWeapon이 존재하지 않습니다.");
+
+
+        for (int i = 0; i < p_Weapons.Count; i++)
+        {
+            p_Weapons[i].gameObject.SetActive(false);
+        }
+
+        p_Weapons[0].gameObject.SetActive(true);
     }
 
     // Functions
-    protected void ChangeWeapon(BasicWeapon _weapon)
+    public void ChangeWeapon(int _idx)
     {
+        if (_idx < 0 || _idx >= p_Weapons.Count)
+        {
+            Debug.Log("WeaponMgr 총기교체 OOR ERROR");
+            return;
+        }
+        
         m_CurWeapon.ExitWeapon();
-        m_CurWeapon = _weapon;
+        m_CurWeapon.gameObject.SetActive(false);
+        m_CurWeapon = p_Weapons[_idx];
+        m_CurWeapon.gameObject.SetActive(true);
         m_CurWeapon.InitWeapon();
     }
 }
