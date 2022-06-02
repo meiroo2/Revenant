@@ -158,7 +158,7 @@ public class BasicEnemy : Human
 
     public virtual void SetDestinationToPlayer()
     {
-        m_EnemyUseRange.p_UseEnemyUseRange = true;
+        //m_EnemyUseRange.p_UseEnemyUseRange = true;
         ResetMovePoint(m_EnemyLocationSensor.m_CurLocationInfo.GetRoomDestPos(GetBodyCenterPos(),
             m_PlayerLocationSensor.m_CurLocationInfo));
     }

@@ -25,9 +25,6 @@ public class EnemyMgr : MonoBehaviour
     // Functions
     public void SetAllEnemysDestinationToPlayer()
     {
-        for (int i = 0; i < p_Enemys.Count; i++)
-        {
-            p_Enemys[i].SetDestinationToPlayer();
-        }
+        
     }
 }

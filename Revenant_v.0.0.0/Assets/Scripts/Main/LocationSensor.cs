@@ -18,7 +18,7 @@ public class LocationSensor : MonoBehaviour
 
     public LocationInfo m_PreLocationInfo { get; private set; } = null;
     public LocationInfo m_CurLocationInfo { get; private set; } = null;
-
+    
     
     // Constructors
     private void Awake()
@@ -107,9 +107,6 @@ public class LocationSensor : MonoBehaviour
             m_PreLocationInfo = temp;
 
             m_ParentLocationInfo.SetLocation(m_CurLocationInfo);
-            
-            if(m_isPlayers)
-                m_EnemyMgr.SetAllEnemysDestinationToPlayer();
         }
     }
 }
