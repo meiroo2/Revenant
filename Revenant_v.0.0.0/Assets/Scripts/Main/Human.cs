@@ -2,75 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum humanState
-{
-    Active,
-    Pause
-}
-
 public class Human : ObjectDefine
 {
+    // Visible Member Variables
+    [field: SerializeField] public int p_Hp { get; protected set; } = 10;
+    [field: SerializeField] public float p_Speed { get; protected set; } = 1f;
+    [field: SerializeField] public float p_stunTime { get; protected set; } = 0f;
+    [field: SerializeField] public int p_stunThreshold { get; protected set; } = 0;
+
+
+
     // Member Variables
-    public humanState m_curHumanState { get; private set; } = humanState.Active;
-    [field: SerializeField] public float m_Hp { get; set; } = 10;
-    [field: SerializeField] public float m_Speed { get; set; } = 1f;
-    [field: SerializeField] public float m_stunTime { get; set; } = 0f;
-    public bool m_isRightHeaded { get; protected set; } = true;
-    public MapInfo m_curPos { get; set; } = new MapInfo(0, 0, 0, 0, 0);
+    protected int m_CurStunValue = 0;
+    public bool m_IsRightHeaded { get; protected set; } = true;
+    public Vector2 m_OriginPos { get; protected set; } = Vector2.zero;
+    public LocationInfo m_CurLocation { get; protected set; }
+    
+    public bool m_CanMove { get; set; } = true;
+    public bool m_CanShot { get; set; } = true;
+    public Vector2 m_HumanFootNormal { get; set; }
 
-    // 오브젝트의 원래 위치
-    public Vector2 m_originVec { get; set; }
-
+    
     // Constructor
 
+
     // Functions
+    public Vector2 GetBodyCenterPos()
+    {
+        Vector2 position = transform.position;
+        return new Vector2(position.x, position.y - 0.36f);
+    }
 
     public virtual void setisRightHeaded(bool _isRightHeaded)
     {
-        m_isRightHeaded = _isRightHeaded;
-        if (m_isRightHeaded)
-        {
-            if (transform.localScale.x < 0)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
-        else
-        {
-            if (transform.localScale.x > 0)
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
-    }
+        m_IsRightHeaded = _isRightHeaded;
+        var TempLocalScale = transform.localScale;
 
-    public void changehumanState(humanState _inputhumanState)
-    {
-        switch (_inputhumanState)
-        {
-            case humanState.Active:
-                m_curHumanState = humanState.Active;
-                m_canAttacked = true;
-                m_canUse = true;
-                break;
-
-            case humanState.Pause:
-                m_curHumanState = humanState.Pause;
-                m_canAttacked = false;
-                m_canUse = false;
-                break;
-        }
-    }
-
-    // 오브젝트를 원래 위치로 변환(y: -100)
-    public void respawn()
-    {
-        // 아래로 많이 떨어졌을 때
-        if (transform.position.y < -10.0f)
-        {
-            // 원래 위치로 돌아온다
-            transform.position = m_originVec;
-        }
-    }
-
-    public void buffHp()
-    {
-        m_Hp = 10000.0f;
+        if ((m_IsRightHeaded && TempLocalScale.x < 0) || (!m_IsRightHeaded && TempLocalScale.x > 0))
+            transform.localScale = new Vector3(-TempLocalScale.x, TempLocalScale.y, 1);
     }
 }

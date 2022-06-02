@@ -23,7 +23,7 @@ public class CameraMove : MonoBehaviour
     // Constructors
     private void Start()
     {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
 
         m_CameraPos = transform.position;
 
@@ -36,8 +36,6 @@ public class CameraMove : MonoBehaviour
     // Updates
     private void FixedUpdate()
     {
-        if (m_EffectedByCamBound)
-        {
             if (!m_FollowMouse)
             {
                 m_CameraPos.z = -10f;
@@ -49,7 +47,7 @@ public class CameraMove : MonoBehaviour
                 m_CameraPos = Vector3.Lerp(m_CameraPos, m_Player.transform.position, Time.deltaTime * 4f);
                 if (m_CamBoundMgr.canCamMove(m_CameraPos))
                 {
-                    transform.position = m_CameraPos;
+                transform.position = m_CameraPos;
                 }
                 else
                 {
@@ -64,7 +62,6 @@ public class CameraMove : MonoBehaviour
                 m_MousePos = Input.mousePosition;
                 m_CameraPos.x += (m_MousePos.x - 960) / 6000f;
                 m_CameraPos.y += (m_MousePos.y - 540) / 6000f;
-                m_CameraPos.y += m_yOffSet;
 
                 if (m_CamBoundMgr.canCamMove(m_CameraPos))
                 {
@@ -77,7 +74,10 @@ public class CameraMove : MonoBehaviour
                     m_CamStuckOnce = true;
                 }
             }
-        }
+
+        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
+        transform.position = new Vector3(transform.position.x, transform.position.y + m_yOffSet, -10);
+        /*
         else
         {
             if (!m_FollowMouse)
@@ -98,8 +98,7 @@ public class CameraMove : MonoBehaviour
             }
             transform.position = m_CameraPos;
         }
-
-        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
+        */
     }
     private void Update()
     {

@@ -71,11 +71,12 @@ Shader "Unlit/OutlineShader"
 
                     if (totalAlpha == 0) {
                         if (_isOpacue == 1) {
-                            c.rgba = c.rgba * fixed4(1, 1, 1, 0.5);
+                            c.rgba = c.rgba * fixed4(1, 0, 0, 0.5);
                         }
                         else {
-                            //c.rgba = c.rgba * _OutlineColor;
-                            c.rgba = fixed4(1, 0, 0, 1);
+                            c.rgba = c.rgba * fixed4(1, 0, 0, 0.5);
+                            
+                            
                         }
                             
                         

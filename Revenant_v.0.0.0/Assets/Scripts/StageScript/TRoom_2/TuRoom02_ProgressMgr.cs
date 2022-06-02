@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TuRoom02_ProgressMgr : ProgressMgr
 {
+    /*
+    
     // Visible Member Variables
     public WorldUIMgr m_worldUIMgr;
 
@@ -103,4 +105,6 @@ public class TuRoom02_ProgressMgr : ProgressMgr
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
+    
+    */
 }

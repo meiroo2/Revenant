@@ -11,8 +11,8 @@ public class ObjectPuller : MonoBehaviour
     public float m_DestroyTimer = 0.8f;
 
     // Member Variables
-    private int m_Idx = 0;
-    private ForObjPull_Once[] m_PulledObjArr;
+    protected int m_Idx = 0;
+    protected ForObjPull_Once[] m_PulledObjArr;
 
     // Constructors
     private void Awake()
@@ -34,9 +34,8 @@ public class ObjectPuller : MonoBehaviour
     // Physics
 
     // Functions
-    public void EnableNewObj()
+    public virtual void EnableNewObj()
     {
-        m_PulledObjArr[m_Idx].gameObject.SetActive(false);
         m_PulledObjArr[m_Idx].gameObject.SetActive(true);
         m_PulledObjArr[m_Idx].resetTimer(m_DestroyTimer);
         m_Idx++;

@@ -6,11 +6,13 @@ public class IUseableObjParam
 {
     public Transform m_UserTransform { get; private set; }
     public bool m_isPlayer { get; private set; }
+    public int m_ObjInstanceNum;
 
-    public IUseableObjParam(Transform _inputUserTransform, bool _isPlayer)
+    public IUseableObjParam(Transform _inputUserTransform, bool _isPlayer, int _instanceNum)
     {
         m_UserTransform = _inputUserTransform;
         m_isPlayer = _isPlayer;
+        m_ObjInstanceNum = _instanceNum;
     }
 }
 

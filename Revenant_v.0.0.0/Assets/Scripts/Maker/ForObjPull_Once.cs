@@ -5,19 +5,35 @@ using UnityEngine;
 public class ForObjPull_Once : MonoBehaviour
 {
     // Visible Member Variables
-
+    public SoundMgr_SFX m_SoundSFXMgr;
+    private Animator m_Animator;
 
     // Member Variables
     private float m_Timer = 0f;
     private bool m_isStart = false;
 
     // Constructors
+    private void Awake()
+    {
+        if (GetComponentInChildren<Animator>())
+        {
+            m_Animator = GetComponentInChildren<Animator>();
+        }
+    }
 
     // Updates
     private void Update()
     {
         if (m_isStart)
         {
+            /*
+            if(m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.3f)
+            {
+                gameObject.SetActive(false);
+                m_isStart = false;
+            }
+            */
+            
             m_Timer -= Time.deltaTime;
             if (m_Timer <= 0f)
             {
@@ -25,6 +41,7 @@ public class ForObjPull_Once : MonoBehaviour
                 gameObject.SetActive(false);
                 m_isStart = false;
             }
+            
         }
     }
 

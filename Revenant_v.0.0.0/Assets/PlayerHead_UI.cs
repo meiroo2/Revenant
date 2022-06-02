@@ -23,7 +23,7 @@ public class PlayerHead_UI : MonoBehaviour, IUI
 
     private void Start()
     {
-        m_Player =  GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
+        m_Player =  InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
     }
 
     private void Update()

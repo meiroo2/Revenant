@@ -19,7 +19,7 @@ public class Player_Health : MonoBehaviour
     }
     private void Start()
     {
-        m_PlayerHp = m_Player.m_Hp;
+        m_PlayerHp = m_Player.p_Hp;
         m_Health.fillAmount = m_PlayerHp / 10f;
     }
     /*
@@ -46,7 +46,7 @@ public class Player_Health : MonoBehaviour
     // Functions
     public void UpdatePlayerUI()
     {
-        m_PlayerHp = m_Player.m_Hp;
+        m_PlayerHp = m_Player.p_Hp;
         m_Health.fillAmount = m_PlayerHp / 10f;
     }
 

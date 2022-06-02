@@ -5,6 +5,13 @@ public enum WeaponType
 {
     BULLET,
     GRENADE,
+    KNIFE,
+}
+
+public enum HitBoxPoint
+{
+    HEAD,
+    BODY
 }
 
 public class IHotBoxParam

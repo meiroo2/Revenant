@@ -15,11 +15,12 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     // Constructors
     private void Awake()
     {
-        InitObjectDefine(ObjectType.Floor, true, false);
+        m_ObjectType = ObjectType.Floor;
+        m_CanAttacked = true;
     }
     private void Start()
     {
-        m_SoundMgrSFX = GameManager.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        m_SoundMgrSFX = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
     }
 
     // Updates

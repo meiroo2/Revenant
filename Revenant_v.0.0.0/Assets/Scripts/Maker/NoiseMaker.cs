@@ -30,11 +30,10 @@ public class NoiseMaker : MonoBehaviour
 
 
     // Functions
-    public void MakeNoise(NoiseType _noiseType, Vector2 _noiseSize, Vector2 _noisePos, bool _isPlayer)
+    public void MakeNoise(NoiseType _noiseType, Vector2 _noiseSize, LocationInfo _noiseLocation, bool _isPlayer)
     {
         m_NoiseObjectList[m_NoiseIdx].gameObject.SetActive(true);
-        m_NoiseObjectList[m_NoiseIdx].gameObject.transform.position = transform.position;
-        m_NoiseObjectList[m_NoiseIdx].InstantiateNoise(_noiseType, _noiseSize, _noisePos, _isPlayer);
+        m_NoiseObjectList[m_NoiseIdx].InstantiateNoise(_noiseType, _noiseSize, _noiseLocation, _isPlayer);
         m_NoiseIdx++;
         if(m_NoiseIdx >= m_NoiseObjectList.Length)
         {

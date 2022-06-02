@@ -9,6 +9,17 @@ public static class StaticMethods
     private static Vector3 m_TempVec3;
     private static PixelPerfectCamera m_PPC = Camera.main.GetComponent<PixelPerfectCamera>();
 
+    public static bool IsRoomEqual(LocationInfo _first, LocationInfo _second)
+    {
+        if (_first.p_curLayer == _second.p_curLayer &&
+            _first.p_curRoom == _second.p_curRoom &&
+            _first.p_curFloor == _second.p_curFloor)
+            return true;
+        else
+        {
+            return false;
+        }
+    }
     public static Vector2 getPixelPerfectPos(Vector2 _rawpos)
     {
         m_TempVec2 = _rawpos;
@@ -38,6 +49,41 @@ public static class StaticMethods
         m_TempVec2.y = _rawVec.x;
 
         return m_TempVec2;
+    }
+
+    public static int getAnglePhase(Vector2 _origin, Vector2 _target, int _unitAngle, int _limitAngle = 0)
+    {
+        int curAnglePhase = 0;
+        Vector2 distance = new Vector2(_target.x - _origin.x, _target.y - _origin.y);
+
+        float curActualAngle;
+
+        if (_origin.x < _target.x)
+            curActualAngle = Mathf.Atan2(distance.y, distance.x) * Mathf.Rad2Deg;
+        else
+            curActualAngle = -(Mathf.Atan2(-distance.y, -distance.x) * Mathf.Rad2Deg);
+
+        if (_limitAngle > 0)
+        {
+            if (curActualAngle > 90 - _limitAngle)
+                curActualAngle = 90 - _limitAngle;
+            else if (curActualAngle < -90 + _limitAngle)
+                curActualAngle = -90 + _limitAngle;
+        }
+
+        float anglePhase = (180f - _limitAngle * 2) / _unitAngle;
+
+        for (int i = 0; i < _unitAngle; i++)
+        {
+            if (curActualAngle <= (90 - _limitAngle) - anglePhase * i &&
+                curActualAngle > (90 - _limitAngle) - anglePhase * (i + 1))
+            {
+                curAnglePhase = i;
+                break;
+            }
+        }
+
+        return curAnglePhase;
     }
 
 }

@@ -37,7 +37,7 @@ public class PlayerRotation : MonoBehaviour
     }
     private void Start()
     {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
     }
 
 
@@ -49,7 +49,7 @@ public class PlayerRotation : MonoBehaviour
 
         if (m_curActualAngle > 90f || m_curActualAngle < -90f)
         {
-            if (m_Player.m_isRightHeaded)
+            if (m_Player.m_IsRightHeaded)
                 m_Player.setisRightHeaded(false);
             else
                 m_Player.setisRightHeaded(true);
@@ -66,11 +66,11 @@ public class PlayerRotation : MonoBehaviour
         mousePos = m_mainCam.ScreenToWorldPoint(Input.mousePosition);
         m_Mousedistance = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
 
-        if (m_Player.m_isRightHeaded)
+        if (m_Player.m_IsRightHeaded)
         {
             m_curActualAngle = Mathf.Atan2(m_Mousedistance.y, m_Mousedistance.x) * Mathf.Rad2Deg;
         }
-        else if (!m_Player.m_isRightHeaded)
+        else if (!m_Player.m_IsRightHeaded)
         {
             m_curActualAngle = -(Mathf.Atan2(-m_Mousedistance.y, -m_Mousedistance.x) * Mathf.Rad2Deg);
         }
@@ -99,7 +99,7 @@ public class PlayerRotation : MonoBehaviour
     }
     private void doRotate()
     {
-        if (m_Player.m_isRightHeaded)
+        if (m_Player.m_IsRightHeaded)
             toRotation = Quaternion.Euler(0f, 0f, m_curAnglewithLimit);
         else
             toRotation = Quaternion.Euler(0f, 0f, -m_curAnglewithLimit);
@@ -118,5 +118,13 @@ public class PlayerRotation : MonoBehaviour
         }
         else
             Debug.Log("PlayerRotation Angle Param Error");
+    }
+
+    public bool getIsMouseRight()
+    {
+        if (m_mainCam.ScreenToWorldPoint(Input.mousePosition).x > m_Player.transform.position.x)
+            return true;
+        else
+            return false;
     }
 }

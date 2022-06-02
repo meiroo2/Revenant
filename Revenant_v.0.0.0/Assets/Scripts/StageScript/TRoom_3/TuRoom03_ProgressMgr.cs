@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class TuRoom03_ProgressMgr : ProgressMgr
 {
+    /*
+    
     // Visible Member Variables
     public WorldUIMgr m_worldUIMgr;
     public TutoRoom03EnemyMgr m_EnemeyTutoMgr;
@@ -26,7 +28,7 @@ public class TuRoom03_ProgressMgr : ProgressMgr
     // Constructors
     private void Start()
     {
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
         NextProgress();
     }
 
@@ -182,4 +184,6 @@ public class TuRoom03_ProgressMgr : ProgressMgr
     }
 
     // 기타 분류하고 싶은 것이 있을 경우
+    
+    */
 }

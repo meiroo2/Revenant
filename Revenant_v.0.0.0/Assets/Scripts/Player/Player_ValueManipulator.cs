@@ -25,8 +25,11 @@ public class Player_ValueManipulator : MonoBehaviour
 
     private void Start()
     {
-        GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.InitPlayerValue(this);
+        //InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.InitPlayerValue(this);
     }
 
-    public void SetPlayerValues() { GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.InitPlayerValue(this); }
+    public void SetPlayerValues()
+    {
+        //InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.InitPlayerValue(this);
+    }
 }

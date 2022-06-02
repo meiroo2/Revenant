@@ -16,19 +16,34 @@ public enum ObjectType
     Other
 }
 
+public enum ObjectState
+{
+    Active,
+    Pause
+}
+
 public class ObjectDefine : MonoBehaviour
 {
     // Member Variables
-    public ObjectType m_objectType { get; private set; } = ObjectType.Other;
-    public bool m_canAttacked { get; set; } = false;
-    public bool m_canUse { get; set; } = false;
-
-
-    // Constructor
-    public void InitObjectDefine(ObjectType _objectType, bool _canAttacked, bool _canUse)
+    public ObjectType m_ObjectType { get; protected set; } = ObjectType.Other;
+    public ObjectState m_ObjectState { get; protected set; } = ObjectState.Active;
+    public bool m_CanAttacked { get; protected set; } = false;
+    
+    private bool[] m_PrevMemberVariables = new bool[1];
+    
+    // Functions
+    public void setObjectState(ObjectState _state)
     {
-        m_objectType = _objectType;
-        m_canAttacked = _canAttacked;
-        m_canUse = _canUse;
+        if (_state == ObjectState.Pause)
+        {
+            m_PrevMemberVariables[0] = m_CanAttacked;
+            m_CanAttacked = false;
+            m_ObjectState = _state;
+        }
+        else
+        {
+            m_CanAttacked = m_PrevMemberVariables[0];
+            m_ObjectState = _state;
+        }
     }
 }

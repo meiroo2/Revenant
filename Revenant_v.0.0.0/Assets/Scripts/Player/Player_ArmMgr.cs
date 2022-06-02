@@ -25,17 +25,21 @@ public class Player_ArmMgr : MonoBehaviour
     public Transform p_LongInArmEffectorPos;
     public Transform p_ShortOutArmEffectorPos;
     public Transform p_ShortInArmEffectorPos;
+    public Transform p_HeadEffectorPos;
 
     // Member Variables
     private Player_AniMgr m_PlayerAniMgr;
-    private Player_Gun m_PlayerGun;
+    private WeaponMgr m_WeaponMgr;
     private PlayerRotation m_PlayerRotation;
+    private Player m_Player;
 
     private bool m_isRecoilLerping = false;
     private float m_RecoilTimer = 1f;
 
     private Vector2[] m_LongArmEffectorOriginPos = new Vector2[2];  // ±äÆÈÀÇ ¿øº» ÀÌÆåÅÍÆ÷Áö¼Ç (¹Ù±ù, ¾È)
     private Vector2[] m_ShortArmEffectorOriginPos = new Vector2[2]; // ÂªÀºÆÈÀÇ ¿øº» ÀÌÆåÅÍ Æ÷Áö¼Ç (¹Ù±ù, ¾È)
+
+    private Vector2 m_HeadEffectorOriginPos;
 
 
 
@@ -52,18 +56,27 @@ public class Player_ArmMgr : MonoBehaviour
     }
     private void Start()
     {
-        GameObject _instance = GameManager.GetInstance();
-        m_PlayerGun = _instance.GetComponentInChildren<Player_Manager>().m_Player.m_playerGun;
+        InstanceMgr _instance = InstanceMgr.GetInstance();
+        m_WeaponMgr = _instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr;
         m_PlayerAniMgr = _instance.GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
+        m_Player = _instance.GetComponentInChildren<Player_Manager>().m_Player;
+
+        m_HeadEffectorOriginPos = p_HeadEffectorPos.localPosition;
     }
 
     // Updates
     private void Update()
     {
+        if (m_Player.m_IsRightHeaded)
+            p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 400f), m_HeadEffectorOriginPos.y);
+        else
+            p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 400f), m_HeadEffectorOriginPos.y);
+
         if (Input.GetMouseButtonDown(0))
         {
-            switch (m_PlayerGun.Fire_PlayerGun())
+            switch (m_WeaponMgr.m_CurWeapon.Fire())
             {
+                
                 case 0:
                     // ¹ß»ç ½ÇÆÐ
                     break;
@@ -79,6 +92,11 @@ public class Player_ArmMgr : MonoBehaviour
                     // ÃÑ¾Ë ¾øÀ½
                     break;
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            m_WeaponMgr.m_CurWeapon.Reload();
         }
 
         if (m_isRecoilLerping)

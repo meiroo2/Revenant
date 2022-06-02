@@ -19,7 +19,7 @@ public class Player_AniMgr : MonoBehaviour
     // Member Variables
     private PlayerRotation m_PlayerRotation;
     private Player m_Player;
-    private Player_Gun m_PlayerGun;
+    private WeaponMgr m_WeaponMgr;
     private Animator m_PlayerAnimator;
     private SpriteRenderer m_PlayerSpriteRenderer;
     private int m_curAnglePhase;
@@ -35,7 +35,7 @@ public class Player_AniMgr : MonoBehaviour
 
     private Player_ArmMgr m_PlayerArmMgr;
     public int m_curArmIdx { get; private set; } = 0;
-    public bool[] m_curActivePartState { get; private set; } = { false, true, true, true, true };
+    private bool[] m_curActivePartState = { false, true, true, true, true };
 
 
     // Constructors
@@ -54,11 +54,11 @@ public class Player_AniMgr : MonoBehaviour
     }
     private void Start()
     {
-        m_PlayerRotation = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation;
-        m_Player = GameManager.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_PlayerRotation = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_playerRotation;
+        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerAnimator = m_Player.GetComponent<Animator>();
         m_PlayerSpriteRenderer = m_Player.GetComponent<SpriteRenderer>();
-        m_PlayerGun = m_Player.m_playerGun;
+        m_WeaponMgr = m_Player.m_WeaponMgr;
         m_PlayerArmMgr = m_PlayerRotation.gameObject.GetComponent<Player_ArmMgr>();
     }
 
@@ -77,18 +77,18 @@ public class Player_AniMgr : MonoBehaviour
     // Functions
     public void playplayerAnim()
     {
-        switch (m_Player.m_curPlayerState)
+        switch (m_Player.m_CurPlayerFSMName)
         {
-            case playerState.IDLE:
+            case PlayerStateName.IDLE:
                 break;
 
-            case playerState.WALK:
+            case PlayerStateName.WALK:
                 m_cur_IJacket.m_setPartAniVisible(true);
                 m_cur_IJacket.m_setPartAni("isWalk", 1);
                 m_cur_OJacket.m_setPartAniVisible(true);
                 m_cur_OJacket.m_setPartAni("isWalk", 1);
 
-                if (m_Player.m_isRightHeaded)
+                if (m_Player.m_IsRightHeaded)
                 {
                     if(m_Player.getIsPlayerWalkStraight() == true)
                         m_cur_Leg.m_setPartAni("isWalk", 1);
@@ -104,62 +104,38 @@ public class Player_AniMgr : MonoBehaviour
                 }
                 break;
 
-            case playerState.RUN:
-                break;
-
-            case playerState.ROLL:
+            case PlayerStateName.ROLL:
                 setSprites(true, false, false, false, false);
                 m_PlayerAnimator.SetInteger("DoDash", 1);
                 break;
 
-            case playerState.HIDDEN:
+            case PlayerStateName.HIDDEN:
                 setSprites(true, false, false, false, false);
                 m_PlayerAnimator.SetInteger("DoHide", 1);
-                break;
-
-            case playerState.HIDDEN_STAND:
-                break;
-
-            case playerState.INPORTAL:
-                break;
-
-            case playerState.DEAD:
                 break;
         }
     }
     public void exitplayerAnim()
     {
-        switch (m_Player.m_curPlayerState)
+        switch (m_Player.m_CurPlayerFSMName)
         {
-            case playerState.IDLE:
+            case PlayerStateName.IDLE:
                 break;
 
-            case playerState.WALK:
+            case PlayerStateName.WALK:
                 m_cur_IJacket.m_setPartAniVisible(false);
                 m_cur_OJacket.m_setPartAniVisible(false);
                 m_cur_Leg.m_setPartAni("isWalk", 0);
                 break;
 
-            case playerState.RUN:
-                break;
-
-            case playerState.ROLL:
+            case PlayerStateName.ROLL:
                 setSprites(false, true, true, true, true);
                 m_PlayerAnimator.SetInteger("DoDash", 0);
                 break;
 
-            case playerState.HIDDEN:
+            case PlayerStateName.HIDDEN:
                 setSprites(false, true, true, true, true);
                 m_PlayerAnimator.SetInteger("DoHide", 0);
-                break;
-
-            case playerState.HIDDEN_STAND:
-                break;
-
-            case playerState.INPORTAL:
-                break;
-
-            case playerState.DEAD:
                 break;
         }
     }
@@ -195,13 +171,13 @@ public class Player_AniMgr : MonoBehaviour
 
         if (_Arm)
         {
-            m_cur_Gun.m_setPartVisible(m_PlayerGun.m_ActiveWeaponType, true);
+            m_cur_Gun.m_setPartVisible(m_WeaponMgr.m_CurWeapon.p_WeaponType, true);
             m_cur_OArm.m_setFullVisible(true);
             m_cur_IArm.m_setFullVisible(true);
         }
         else
         {
-            m_cur_Gun.m_setPartVisible(m_PlayerGun.m_ActiveWeaponType, false);
+            m_cur_Gun.m_setPartVisible(m_WeaponMgr.m_CurWeapon.p_WeaponType, false);
             m_cur_OArm.m_setFullVisible(false);
             m_cur_IArm.m_setFullVisible(false);
         }

@@ -1,14 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Effect_Once : MonoBehaviour
 {
     float Timer = 1f;
-    void Update()
+
+    private void Start()
     {
-        Timer -= Time.deltaTime;
-        if (Timer <= 0f)
-            Destroy(gameObject);
+        StartCoroutine(ToDestroy());
+    }
+
+    IEnumerator ToDestroy()
+    {
+        yield return new WaitForSeconds(Timer);
+        Destroy(gameObject);
     }
 }

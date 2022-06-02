@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(Player_ValueManipulator))]
+
 public class CS_PlayerValueManipulator : Editor
 {
     public override void OnInspectorGUI()

@@ -32,11 +32,13 @@ public class Player_UseRange : MonoBehaviour
 
     private IUseableObjParam m_UseableObjParam;
 
+    private IUseableObj m_CurHiddenSlot = null;
+
     // Constructors
     private void Awake()
     {
         m_Player = GetComponentInParent<Player>();
-        m_UseableObjParam = new IUseableObjParam(m_Player.transform, true);
+        m_UseableObjParam = new IUseableObjParam(m_Player.transform, true, m_Player.GetInstanceID());
     }
 
     // Updates
@@ -54,10 +56,7 @@ public class Player_UseRange : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
             isPressedFKey = true;
     }
-    private void FixedUpdate()
-    {
 
-    }
 
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
@@ -80,23 +79,37 @@ public class Player_UseRange : MonoBehaviour
             }
         }
 
-        if (isPressedFKey)
+        if (isPressedFKey && m_ShortestLength < 999f)
         {
-            if (m_ShortestLength < 999f)
+            switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
             {
-                switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
-                {
-                    case UseableObjList.OBJECT:
-                        m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
+                case UseableObjList.OBJECT:
+                    m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
+                    break;
+
+                case UseableObjList.HIDEPOS:
+                    if (Vector2.Distance(transform.position, collision.transform.position) > 0.3f)
                         break;
 
-                    case UseableObjList.HIDEPOS:
-                        if (Vector2.Distance(transform.position, collision.transform.position) < 0.4f)
-                        {
-                            m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
-                        }
-                        break;
-                }
+                    switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam))
+                    {
+                        case 0:
+                            // 见扁 角菩
+                            break;
+
+                        case 1:
+                            // 见扁 己傍
+                            m_CurHiddenSlot = m_UseableObjs[m_ShortestIDX].m_ObjScript;
+                            m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
+                            break;
+
+                        case 2:
+                            // 见扁 秦力
+                            m_CurHiddenSlot = null;
+                            m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
+                            break;
+                    }
+                    break;
             }
             isPressedFKey = false;
         }
@@ -120,6 +133,13 @@ public class Player_UseRange : MonoBehaviour
     }
 
     // Functions
-
+    public void ForceExitFromHiddenSlot()
+    {
+        if(m_CurHiddenSlot is not null)
+        {
+            m_CurHiddenSlot.useObj(m_UseableObjParam);
+            m_CurHiddenSlot = null;
+        }
+    }
 
 }
