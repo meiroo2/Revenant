@@ -55,7 +55,6 @@ public class DaggerEnemy : Human
     private void FixedUpdate()
     {
         RaycastVisionCheck();
-        m_curLocation.p_curPos = transform.position;
     }
 
     private void RaycastVisionCheck()

@@ -68,13 +68,11 @@ public class AimCursor : MonoBehaviour
         {
             m_canAimCursorShot = false;
             m_PlayerAniMgr.changeArm(1);
-            m_ImageofAim.changeAimImage(1);
         }
         else if(!m_canAimCursorShot && m_Dist_Aim_Player > p_FireMinimumDistance)
         {
             m_canAimCursorShot = true;
             m_PlayerAniMgr.changeArm(0);
-            m_ImageofAim.changeAimImage(0);
         }
         
     }
@@ -87,6 +85,9 @@ public class AimCursor : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.CompareTag("Player"))
+            return;
+        
         // 충돌한 히트박스의 오브젝트 정보(InstanceID, Position)를 리스트에 담음
         m_AimedObjs.Add(new AimedObjInfo(collision.gameObject.name, collision.gameObject.GetInstanceID(), collision.transform.position));
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(Player_ValueManipulator))]
 
 public class CS_PlayerValueManipulator : Editor
@@ -18,3 +19,4 @@ public class CS_PlayerValueManipulator : Editor
         }
     }
 }
+#endif

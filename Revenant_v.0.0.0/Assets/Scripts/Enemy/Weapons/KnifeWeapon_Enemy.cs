@@ -6,6 +6,9 @@ using UnityEngine;
 public class KnifeWeapon_Enemy : BasicWeapon_Enemy
 {
     // Visible Member Variables
+    public float p_WeaponColliderTime = 0.1f;
+    
+    // Member Variables
     private KnifeBullet_Enemy m_KnifeBullet;
 
     private void Awake()
@@ -29,13 +32,14 @@ public class KnifeWeapon_Enemy : BasicWeapon_Enemy
 
     private IEnumerator Internal_Fire()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(p_WeaponColliderTime);
+        m_Callback?.Invoke();
         m_KnifeBullet.gameObject.SetActive(false);
     }
 
-    public override int Reload()
+    public override void Reload()
     {
-        return 0;
+        //return 0;
     }
 
     public override void InitWeapon()

@@ -10,10 +10,9 @@ public abstract class PlayerFSM
     protected Player_InputMgr m_InputMgr;
     protected Transform m_PlayerTransform;
 
-    protected PlayerFSM(Player _player, Player_InputMgr _inputMgr)
+    protected PlayerFSM(Player _player)
     {
         m_Player = _player;
-        m_InputMgr = _inputMgr;
     }
 
     public abstract void StartState();
@@ -33,34 +32,33 @@ public abstract class PlayerFSM
     }
 }
 
-public class PlayerIDLE : PlayerFSM
+public class Player_IDLE : PlayerFSM
 {
-    private float m_KeyInput = 0f;
-
-    public PlayerIDLE(Player _player, Player_InputMgr _inputMgr) : base(_player, _inputMgr)
+    
+    public Player_IDLE(Player _player) : base(_player)
     {
-        
+
     }
 
     public override void StartState()
     {
-        //m_Player = _player;
+        m_InputMgr = m_Player.m_InputMgr;
+        m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
     public override void UpdateState()
     {
         CheckNull();
         
-        m_KeyInput = Input.GetAxisRaw("Horizontal");
-        
-        if(m_KeyInput != 0f)
+        if(m_InputMgr.GetDirectionalKeyInput() != 0)
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
-        else if(Input.GetKeyDown(KeyCode.Space) && m_Player.m_LeftRollCount > 0)
+        else if(m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
     }
 
     public override void ExitState()
     {
+        m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
         ExitFinalProcess();
     }
 
@@ -70,13 +68,16 @@ public class PlayerIDLE : PlayerFSM
     }
 }
 
-public class PlayerWALK : PlayerFSM
+public class Player_WALK : PlayerFSM
 {
     private float m_KeyInput = 0f;
     private Player_StairMgr m_StairMgr;
     private Rigidbody2D m_Rigid;
 
-    public PlayerWALK(Player _player, Player_InputMgr _inputMgr) : base(_player, _inputMgr)
+    private int m_PreInput = 0;
+    private int m_CurInput = 0;
+
+    public Player_WALK(Player _player) : base(_player)
     {
 
     }
@@ -85,54 +86,58 @@ public class PlayerWALK : PlayerFSM
     {
         m_StairMgr = m_Player.m_PlayerStairMgr;
         m_Rigid = m_Player.m_PlayerRigid;
+        m_InputMgr = m_Player.m_InputMgr;
+        m_Player.SetWalkSoundCoroutine(true);
     }
 
     public override void UpdateState()
     {
         CheckNull();
+        m_PreInput = m_CurInput;
+        m_CurInput = m_InputMgr.GetDirectionalKeyInput();
         
-        m_KeyInput = Input.GetAxisRaw("Horizontal");
-
-        if (m_KeyInput == 0f)
+        if (m_CurInput == 0)
         {
             m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
             return;
         }
 
-        if (!m_Player.m_CanMove)
+        if (!m_Player.m_CanMove) 
             return;
 
 
-        if ((m_Player.m_IsRightHeaded ? 1 : -1) == (int)m_KeyInput) // 키 인풋과 바라보는 방향이 같을 때
+        if (m_Player.GetIsPlayerWalkStraight())
         {
-            if (m_Player.m_IsRightHeaded)
-                m_Rigid.velocity =
-                    -new Vector2(-m_StairMgr.m_PlayerNormal.y, m_StairMgr.m_PlayerNormal.x) * m_Player.p_Speed;
-            else
-                m_Rigid.velocity =
-                    new Vector2(-m_StairMgr.m_PlayerNormal.y, m_StairMgr.m_PlayerNormal.x) * m_Player.p_Speed;
+            if (m_Player.m_IsRightHeaded)   // 우측
+                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * 
+                                   (m_Player.p_Speed);
+            else                            // 좌측
+                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * 
+                                   (m_Player.p_Speed);
         }
-        else // 키 인풋과 바라보는 방향이 다를 때(BackWalk)
+        else
         {
-            if (m_Player.m_IsRightHeaded) // 오른쪽보고 뒤로 걷기
-                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
-            else
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
+            if (m_Player.m_IsRightHeaded)   // 오른쪽 보고 뒤로
+                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * 
+                                   (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
+            else                           // 왼쪽 보고 뒤로
+                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * 
+                                   (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
         }
-
-        if (Input.GetKeyDown(KeyCode.Space) && m_Player.m_LeftRollCount > 0)
+        
+        if(m_CurInput != m_PreInput)
+            m_Player.m_PlayerAniMgr.playplayerAnim();
+        
+        if (m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
         {
-            if(m_KeyInput > 0)
-                m_Player.setisRightHeaded(true);
-            else
-                m_Player.setisRightHeaded(false);
-
+            m_Player.setisRightHeaded(m_CurInput > 0);
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
     }
 
     public override void ExitState()
     {
+        m_Player.SetWalkSoundCoroutine(false);
         m_Rigid.velocity = Vector2.zero;
         ExitFinalProcess();
     }
@@ -143,32 +148,31 @@ public class PlayerWALK : PlayerFSM
     }
 }
 
-public class PlayerROLL : PlayerFSM
+public class Player_ROLL : PlayerFSM
 {
     private Player_StairMgr m_StairMgr;
     private Rigidbody2D m_Rigid;
     private Vector2 m_PlayerNormalVec;
     private Animator m_PlayerAnimator;
 
-    public PlayerROLL(Player _player, Player_InputMgr _inputMgr) : base(_player, _inputMgr)
+    public Player_ROLL(Player _player) : base(_player)
     {
         
     }
     
     public override void StartState()
     {
+        m_Player.m_SFXMgr.playPlayerSFXSound(0);
+        
         m_StairMgr = m_Player.m_PlayerStairMgr;
         m_Rigid = m_Player.m_PlayerRigid;
         m_PlayerAnimator = m_Player.m_PlayerAnimator;
 
         m_Player.m_CanMove = false;
-        m_Player.m_CanShot = false;
+        m_Player.m_CanFire = false;
         m_Player.m_PlayerHotBox.setPlayerHotBoxCol(false);
-        m_Player.m_LeftRollCount -= 1;
-        m_Player.m_PlayerUIMgr.UpdateRollCount(m_Player.m_LeftRollCount);
-
-        if (!m_Player.m_isRecoveringRollCount)
-            m_Player.StartCoroutine(m_Player.RecoverRollCount());
+        
+        m_Player.UseRollCount();
 
         m_Player.m_playerRotation.m_doRotate = false;
         m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
@@ -181,8 +185,7 @@ public class PlayerROLL : PlayerFSM
         m_PlayerNormalVec = m_Player.m_PlayerStairMgr.m_PlayerNormal;
 
         if (m_Player.m_IsRightHeaded)   // 우측 구르기
-            m_Rigid.velocity = -(StaticMethods.getLPerpVec(m_PlayerNormalVec) * m_Player.p_Speed) *
-                               m_Player.p_RollSpeedRatio;
+            m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_Speed * m_Player.p_RollSpeedRatio);
         else
             m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_Speed * m_Player.p_RollSpeedRatio);
         
@@ -192,8 +195,8 @@ public class PlayerROLL : PlayerFSM
 
     public override void ExitState()
     {
+        m_Player.m_CanFire = true;
         m_Player.m_CanMove = true;
-        m_Player.m_CanShot = true;
         m_Rigid.velocity = Vector2.zero;
         m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
         m_Player.m_playerRotation.m_doRotate = true;
@@ -207,34 +210,39 @@ public class PlayerROLL : PlayerFSM
     }
 }
 
-public class PlayerHIDDEN : PlayerFSM
+public class Player_HIDDEN : PlayerFSM
 {
-    private float m_KeyInput = 0f;
+    private int m_KeyInput = 0;
     private Player_StairMgr m_StairMgr;
     private Rigidbody2D m_Rigid;
+    private SoundMgr_SFX m_SFXMgr;
 
-    public PlayerHIDDEN(Player _player, Player_InputMgr _inputMgr) : base(_player, _inputMgr)
+    public Player_HIDDEN(Player _player) : base(_player)
     {
         
     }
 
     public override void StartState()
     {
+        m_SFXMgr = m_Player.m_SFXMgr;
+        m_Player.m_CanFire = false;
         m_StairMgr = m_Player.m_PlayerStairMgr;
         m_Rigid = m_Player.m_PlayerRigid;
+        m_InputMgr = m_Player.m_InputMgr;
         
+        m_SFXMgr.playPlayerSFXSound(5);
         m_Player.m_CanMove = false;
-        m_Player.m_CanShot = false;
+        m_Player.m_CanFire = false;
         m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
     }
 
     public override void UpdateState()
     {
         CheckNull();
-        
-        m_KeyInput = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.Space) && m_Player.m_LeftRollCount > 0)
+        m_KeyInput = m_InputMgr.GetDirectionalKeyInput();
+
+        if (m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
         {
             if(m_KeyInput > 0)
                 m_Player.setisRightHeaded(true);
@@ -254,9 +262,9 @@ public class PlayerHIDDEN : PlayerFSM
     public override void ExitState()
     {
         m_Player.m_CanMove = true;
-        m_Player.m_CanShot = true;
+        m_Player.m_CanFire = true;
         m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
-        
+        m_SFXMgr.playPlayerSFXSound(6);
         ExitFinalProcess();
     }
 
@@ -266,12 +274,12 @@ public class PlayerHIDDEN : PlayerFSM
     }
 }
 
-public class PlayerDEAD : PlayerFSM
+public class Player_DEAD : PlayerFSM
 {
     private Rigidbody2D m_Rigid;
 
 
-    public PlayerDEAD(Player _player, Player_InputMgr _inputMgr) : base(_player, _inputMgr)
+    public Player_DEAD(Player _player) : base(_player)
     {
         
     }
@@ -280,9 +288,11 @@ public class PlayerDEAD : PlayerFSM
     {
         m_Rigid = m_Player.m_PlayerRigid;
 
+        m_Player.m_PlayerAnimator.Play("Dead");
+        
         m_Rigid.velocity = Vector2.zero;
         m_Player.m_CanMove = false;
-        m_Player.m_CanShot = false;
+        m_Player.m_CanFire = false;
         m_Player.m_playerRotation.m_doRotate = false;
         m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
     }
@@ -295,7 +305,7 @@ public class PlayerDEAD : PlayerFSM
     public override void ExitState()
     {
         m_Player.m_CanMove = true;
-        m_Player.m_CanShot = true;
+        m_Player.m_CanFire = true;
         m_Player.m_playerRotation.m_doRotate = true;
         m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
         

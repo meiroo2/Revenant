@@ -88,20 +88,10 @@ public class Player_AniMgr : MonoBehaviour
                 m_cur_OJacket.m_setPartAniVisible(true);
                 m_cur_OJacket.m_setPartAni("isWalk", 1);
 
-                if (m_Player.m_IsRightHeaded)
-                {
-                    if(m_Player.getIsPlayerWalkStraight() == true)
-                        m_cur_Leg.m_setPartAni("isWalk", 1);
-                    else
-                        m_cur_Leg.m_setPartAni("isWalk", -1);
-                }
+                if (m_Player.GetIsPlayerWalkStraight() == true)
+                    m_cur_Leg.m_setPartAni("isWalk", 1);
                 else
-                {
-                    if (m_Player.getIsPlayerWalkStraight() == true)
-                        m_cur_Leg.m_setPartAni("isWalk", 1);
-                    else
-                        m_cur_Leg.m_setPartAni("isWalk", -1);
-                }
+                    m_cur_Leg.m_setPartAni("isWalk", -1);
                 break;
 
             case PlayerStateName.ROLL:
@@ -113,6 +103,12 @@ public class Player_AniMgr : MonoBehaviour
                 setSprites(true, false, false, false, false);
                 m_PlayerAnimator.SetInteger("DoHide", 1);
                 break;
+            
+            case PlayerStateName.DEAD:
+                break;
+            
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
     public void exitplayerAnim()

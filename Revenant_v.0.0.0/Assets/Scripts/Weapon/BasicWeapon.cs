@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-public class    BasicWeapon : MonoBehaviour
+public class BasicWeapon : MonoBehaviour
 {
     // Visible Member Variables
     //public GameObject m_bulletPrefab;
@@ -20,11 +20,12 @@ public class    BasicWeapon : MonoBehaviour
 
 
     // Member Variables
-    protected SoundMgr_SFX m_SoundMgrSFX;
+    public delegate void m_WeaponDelegate();
+    protected m_WeaponDelegate m_Callback = null;
     
-    
-    public int m_LeftBullet { get; set; } = 0;
-    public int m_LeftMag { get; set; } = 0;
+    public SoundMgr_SFX m_SoundMgrSFX { get; set; }
+    public int m_LeftRounds { get; set; } = 0;
+    public int m_LeftMags { get; set; } = 0;
     protected bool m_isShotDelayEnd = true;
 
 
@@ -38,8 +39,19 @@ public class    BasicWeapon : MonoBehaviour
 
 
     // Functions
+    public void SetCallback(m_WeaponDelegate _inputFunc, bool _resetDele = false)
+    {
+        if (_resetDele)
+            m_Callback = null;
+
+        m_Callback += _inputFunc;
+    }
     public virtual int Fire() { return 0; } // 0 = Fail, 1 = Success, 2 = Fail(No Ammo)
-    public virtual int Reload() { return 0; }   // 0 = Fail, 1 = Success
+    public virtual void Reload() { }
+    public virtual int GetCanReload()   // 0 = Fail, 1 = Success
+    {
+        return 0;
+    }
     public virtual void InitWeapon()
     {
         // 남은 총알 및 탄창 값 대입

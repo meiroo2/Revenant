@@ -13,8 +13,8 @@ public class Player_WeaponMgr : WeaponMgr
 
       for (int i = 0; i < p_Weapons.Count; i++)
       {
-         p_Weapons[i].m_LeftBullet = p_LeftBullet[i];
-         p_Weapons[i].m_LeftMag = p_LeftMag[i];
+         p_Weapons[i].m_LeftRounds = p_LeftBullet[i];
+         p_Weapons[i].m_LeftMags = p_LeftMag[i];
       }
    }
 }

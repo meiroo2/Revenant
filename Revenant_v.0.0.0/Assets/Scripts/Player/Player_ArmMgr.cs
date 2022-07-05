@@ -28,6 +28,7 @@ public class Player_ArmMgr : MonoBehaviour
     public Transform p_HeadEffectorPos;
 
     // Member Variables
+    [field: SerializeField] public bool m_IsReloading { get; private set; } = false;
     private Player_AniMgr m_PlayerAniMgr;
     private WeaponMgr m_WeaponMgr;
     private PlayerRotation m_PlayerRotation;
@@ -68,15 +69,14 @@ public class Player_ArmMgr : MonoBehaviour
     private void Update()
     {
         if (m_Player.m_IsRightHeaded)
-            p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 400f), m_HeadEffectorOriginPos.y);
+            p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 600f), m_HeadEffectorOriginPos.y);
         else
-            p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 400f), m_HeadEffectorOriginPos.y);
+            p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 600f), m_HeadEffectorOriginPos.y);
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && m_Player.m_CanFire && !m_IsReloading)
         {
             switch (m_WeaponMgr.m_CurWeapon.Fire())
             {
-                
                 case 0:
                     // 발사 실패
                     break;
@@ -89,6 +89,16 @@ public class Player_ArmMgr : MonoBehaviour
                     break;
 
                 case 2:
+                    m_Player.m_SFXMgr.playPlayerSFXSound(1);
+                    if (m_WeaponMgr.m_CurWeapon.GetCanReload() == 1)
+                    {
+                        m_Player.m_SFXMgr.playPlayerSFXSound(2);
+                        m_IsReloading = true;
+                        m_Player.m_PlayerUIMgr.ResetCallback();
+                        m_Player.m_PlayerUIMgr.AddCallback(m_WeaponMgr.m_CurWeapon.Reload);
+                        m_Player.m_PlayerUIMgr.AddCallback(() => m_IsReloading = false);
+                        m_Player.m_PlayerUIMgr.StartReload();
+                    }
                     // 총알 없음
                     break;
             }
@@ -96,7 +106,20 @@ public class Player_ArmMgr : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            m_WeaponMgr.m_CurWeapon.Reload();
+            switch (m_WeaponMgr.m_CurWeapon.GetCanReload())
+            {
+                case 0:     // 장전 불가
+                    break;
+                
+                case 1:     // 장전 가능
+                    m_Player.m_SFXMgr.playPlayerSFXSound(2);
+                    m_IsReloading = true;
+                    m_Player.m_PlayerUIMgr.ResetCallback();
+                    m_Player.m_PlayerUIMgr.AddCallback(m_WeaponMgr.m_CurWeapon.Reload);
+                    m_Player.m_PlayerUIMgr.AddCallback(() => m_IsReloading = false);
+                    m_Player.m_PlayerUIMgr.StartReload();
+                    break;
+            }
         }
 
         if (m_isRecoilLerping)

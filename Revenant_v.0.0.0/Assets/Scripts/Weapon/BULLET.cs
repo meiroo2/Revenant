@@ -112,11 +112,11 @@ public class Bullet : MonoBehaviour
 
     private void CalculateBulletForEnemy(ref Collider2D col)
     {
-        Debug.Log(col.name);
+        //Debug.Log(col.name);
         
         if (!m_BulletHitHotBox.m_isEnemys)
         {
-            Debug.Log("적 총알 충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
+            //Debug.Log("적 총알 충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
 
             m_BulletHitHotBox.HitHotBox(new IHotBoxParam(m_BulletParam.m_Damage, m_BulletParam.m_StunValue, transform.position, WeaponType.BULLET));
             m_HitSFXMaker.EnableNewObj(UnityEngine.Random.Range(1, 3), transform.position, transform.rotation,
@@ -138,8 +138,16 @@ public class Bullet : MonoBehaviour
 
                 //Debug.Log("충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
                 m_BulletHitHotBox.HitHotBox(new IHotBoxParam(m_BulletParam.m_Damage, m_BulletParam.m_StunValue, transform.position, WeaponType.BULLET));
-                m_HitSFXMaker.EnableNewObj(UnityEngine.Random.Range(1, 3), transform.position, transform.rotation,
+                
+                int hitPoint = 0;
+                if (m_BulletHitHotBox.m_HitBoxInfo == HitBoxPoint.HEAD)
+                    hitPoint = 1;
+                else if (m_BulletHitHotBox.m_HitBoxInfo == HitBoxPoint.BODY)
+                    hitPoint = 0;
+                
+                m_HitSFXMaker.EnableNewObj(hitPoint, transform.position, transform.rotation,
                     m_BulletParam.m_IsRightHeaded);
+                
                 m_ShouldDestroy = true;
                 break;
 
@@ -147,7 +155,7 @@ public class Bullet : MonoBehaviour
                 //Debug.Log("반드시 충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
 
                 m_BulletHitHotBox.HitHotBox(new IHotBoxParam(m_BulletParam.m_Damage, m_BulletParam.m_StunValue, transform.position, WeaponType.BULLET));
-                m_HitSFXMaker.EnableNewObj(UnityEngine.Random.Range(1, 3), transform.position, transform.rotation,
+                m_HitSFXMaker.EnableNewObj(0, transform.position, transform.rotation,
                     m_BulletParam.m_IsRightHeaded);
                 m_ShouldDestroy = true;
                 break;

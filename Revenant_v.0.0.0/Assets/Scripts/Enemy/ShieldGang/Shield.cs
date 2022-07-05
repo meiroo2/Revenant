@@ -11,8 +11,10 @@ public class Shield : MonoBehaviour, IHotBox
     public delegate void SuperArmorDelegate();
     public SuperArmorDelegate m_Callback = null;
     
+    public GameObject m_ParentObj { get; set; }
     public int m_hotBoxType { get; set; } = 1;
     public bool m_isEnemys { get; set; } = true;
+    public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.OBJECT;
     
     // Functions
     public int HitHotBox(IHotBoxParam _param)

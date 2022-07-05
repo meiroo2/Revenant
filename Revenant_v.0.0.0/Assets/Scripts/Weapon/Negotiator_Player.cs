@@ -30,7 +30,8 @@ public class Negotiator_Player : BasicWeapon_Player
         m_aimCursor = tempIns.GetComponentInChildren<AimCursor>();
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
         m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
-
+        m_PlayerUI = m_Player.m_PlayerUIMgr;
+        
         m_BulletParam = new BulletParam(true, p_BulletSprite, true, m_Player_Arm.position,
             m_Player_Arm.rotation, p_BulletDamage, p_BulletSpeed, p_StunValue, m_aimCursor.AimedObjid);
     }
@@ -40,7 +41,7 @@ public class Negotiator_Player : BasicWeapon_Player
         if (!m_isShotDelayEnd || m_isReloading)
             return 0;
 
-        if (m_LeftBullet > 0)
+        if (m_LeftRounds > 0)
         {
             Internal_Fire();
             return 1;
@@ -53,34 +54,40 @@ public class Negotiator_Player : BasicWeapon_Player
         return 0;
     }
 
-    public override int Reload()
+    public override void Reload()
     {
-        if (m_LeftMag <= 0 || m_LeftBullet > p_MaxBullet)
+        Internal_Reload();
+    }
+
+    public override int GetCanReload()
+    {
+        if (m_LeftMags <= 0 || m_LeftRounds > p_MaxBullet)
             return 0;
         else
         {
-            StartCoroutine(SetReload());
             return 1;
         }
     }
 
     protected override void Internal_Reload()
     {
-        switch (m_LeftBullet)
+        switch (m_LeftRounds)
         {
             case 0:
-                m_LeftMag--;
-                m_LeftBullet = p_MaxBullet;
+                m_LeftMags--;
+                m_LeftRounds = p_MaxBullet;
                 break;
 
             case > 0:
-                m_LeftMag--;
-                m_LeftBullet = p_MaxBullet + 1;
+                m_LeftMags--;
+                m_LeftRounds = p_MaxBullet + 1;
                 break;
 
             default:
                 break;
         }
+        
+        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
     }
 
     public override void InitWeapon()
@@ -97,7 +104,7 @@ public class Negotiator_Player : BasicWeapon_Player
     {
         m_isShotDelayEnd = false;
         StartCoroutine(SetShotDelay());
-        m_LeftBullet--;
+        m_LeftRounds--;
         
         m_SoundMgrSFX.playGunFireSound(0, gameObject);
 
@@ -118,5 +125,6 @@ public class Negotiator_Player : BasicWeapon_Player
         
         
         // UI 업데이트 필요
+        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
     }
 }

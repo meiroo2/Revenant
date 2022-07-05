@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public enum PlayerStateName
@@ -15,6 +17,7 @@ public enum PlayerStateName
 public class Player : Human
 {
     // Visable Member Variables
+    [field : SerializeField] public float p_RollCountRecoverSpeed { get; private set; } = 1f;
     [field : SerializeField] public float p_RollSpeedRatio { get; private set; } = 1.3f;
     [field : SerializeField] public float p_BackWalkSpeedRatio { get; private set; } = 0.7f;
     [field : SerializeField] public float p_RunSpeedRatio { get; private set; } = 1.5f;
@@ -28,7 +31,6 @@ public class Player : Human
     
 
     // Member Variables
-    public Player_AniMgr m_Player_AniMgr { get; private set; }
     public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
@@ -39,26 +41,37 @@ public class Player : Human
     public Player_StairMgr m_PlayerStairMgr { get; private set; }
     public Player_HotBox m_PlayerHotBox { get; private set; }
     public Player_UI m_PlayerUIMgr { get; private set; }
-    public LocationInfo m_PlayerLocationInfo { get; private set; }
     public LocationSensor m_PlayerLocationSensor { get; private set; }
-    public EnemyMgr m_EnemyMgr { get; private set; }
-    
+    public Player_InputMgr m_InputMgr { get; private set; }
 
-    private SoundMgr_SFX m_SFXMgr;
-    private Player_InputMgr m_InputMgr;
-    private PlayerFSM m_CurPlayerFSM;
-    private NoiseMaker m_NoiseMaker;
     
-    
-    public int m_LeftRollCount { get; set; }
+    private bool m_isRecoveringRollCount = false;
+    public float m_LeftRollCount { get; set; }
     public bool m_canRoll { get; private set; } = true;
     public bool m_canChangeWeapon { get; private set; } = false;
     public bool m_isPlayerBlinking { get; private set; } = false;
-    public bool m_isRecoveringRollCount { get; private set; } = false;
-    private IEnumerator m_FootStep;
-    private Vector2 m_PlayerPosVec;
-    private RaycastHit2D m_FootRay;
+
+
+    private Player_IDLE m_IDLE;
+    private Player_WALK m_WALK;
+    private Player_ROLL m_ROLL;
+    private Player_HIDDEN m_HIDDEN;
+    private Player_DEAD m_DEAD;
+
+    private List<HideSlot> m_HideSlotList = new List<HideSlot>();
+    private HideSlot m_CurHideSlot;
     
+    private RotationMatScriptMgr m_RotationMatMgr;
+    public SoundMgr_SFX m_SFXMgr { get; private set; }
+    private PlayerFSM m_CurPlayerFSM;
+    private NoiseMaker m_NoiseMaker;
+    private IEnumerator m_FootStep;
+
+    private Vector2 m_PlayerPosVec;
+    public RaycastHit2D m_FootRay { get; private set; }
+
+    private Coroutine m_WalkSoundCoroutine;
+
 
 
     // For Player_Managers
@@ -68,22 +81,40 @@ public class Player : Human
     // Constructor
     private void Awake()
     {
+        m_RotationMatMgr = GetComponent<RotationMatScriptMgr>();
+        m_PlayerAnimator = GetComponent<Animator>();
+        m_PlayerRigid = GetComponent<Rigidbody2D>();
         m_PlayerLocationSensor = GetComponentInChildren<LocationSensor>();
-        m_PlayerLocationInfo = GetComponentInChildren<LocationInfo>();
         m_PlayerAniMgr = GetComponentInChildren<Player_AniMgr>();
         m_PlayerHotBox = GetComponentInChildren<Player_HotBox>();
         m_PlayerStairMgr = GetComponentInChildren<Player_StairMgr>();
-        m_Player_AniMgr = GetComponentInChildren<Player_AniMgr>();
         m_playerRotation = GetComponentInChildren<PlayerRotation>();
         m_WeaponMgr = GetComponentInChildren<Player_WeaponMgr>();
         m_useRange = GetComponentInChildren<Player_UseRange>();
-        m_PlayerAnimator = GetComponent<Animator>();
-        m_PlayerRigid = GetComponent<Rigidbody2D>();
 
+
+        m_IDLE = new Player_IDLE(this);
+        m_WALK = new Player_WALK(this);
+        m_ROLL = new Player_ROLL(this);
+        m_HIDDEN = new Player_HIDDEN(this);
+        m_DEAD = new Player_DEAD(this);
+        
+        
         m_ObjectType = ObjectType.Human;
         m_ObjectState = ObjectState.Active;
         m_LeftRollCount = p_MaxRollCount;
         m_CanAttacked = true;
+    }
+    private void Start()
+    {
+        var tempInstance = InstanceMgr.GetInstance();
+        m_PlayerUIMgr = tempInstance.m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_InputMgr = tempInstance.GetComponentInChildren<Player_InputMgr>();
+        m_NoiseMaker = tempInstance.GetComponentInChildren<NoiseMaker>();
+        m_SFXMgr = tempInstance.GetComponentInChildren<SoundMgr_SFX>();
+        
+        m_CurPlayerFSM = m_IDLE;
+        m_CurPlayerFSM.StartState();
     }
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
@@ -96,23 +127,30 @@ public class Player : Human
         p_MaxRollCount = _input.RollCountMax;
         m_LeftRollCount = p_MaxRollCount;
         p_RollRecoverTime = _input.RollRecoverTime;
+        p_RollCountRecoverSpeed = _input.RollCountRecoverSpeed;
 
-        m_PlayerUIMgr.setLeftBulletUI(_input.BulletCount, _input.MagCount, 0);
-    }
-    private void Start()
-    {
-        var tempInstance = InstanceMgr.GetInstance();
-        m_CurPlayerFSM = new PlayerIDLE(this, m_InputMgr);
+        m_WeaponMgr.m_CurWeapon.p_MaxBullet = _input.BulletCount;
+        m_WeaponMgr.m_CurWeapon.p_MaxMag = _input.MagCount;
         
-        m_PlayerUIMgr = tempInstance.m_MainCanvas.GetComponentInChildren<Player_UI>();
-        m_InputMgr = tempInstance.GetComponentInChildren<Player_InputMgr>();
-        m_NoiseMaker = tempInstance.GetComponentInChildren<NoiseMaker>();
-        m_SFXMgr = tempInstance.GetComponentInChildren<SoundMgr_SFX>();
-        m_EnemyMgr = tempInstance.GetComponentInChildren<EnemyMgr>();
+        m_WeaponMgr.m_CurWeapon.m_LeftRounds = _input.BulletCount;
+        m_WeaponMgr.m_CurWeapon.m_LeftMags = _input.MagCount;
+        
+        // 강제 Player_UIMgr 할당
+        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_PlayerUIMgr.SetMaxHp(_input.Hp);
+        m_PlayerUIMgr.SetLeftRoundsNMag(_input.BulletCount, _input.MagCount);
+        m_PlayerUIMgr.m_ReloadSpeed = _input.ReloadSpeed;
+        m_PlayerUIMgr.m_HitmarkRemainTime = _input.HitmarkRemainTime;
+        
+        // 스폰과 동시에 InitPlayerValue가 호출되기 때문에 Prefab 데이터를 저장하진 않음.
+        #if UNITY_EDITOR
+        EditorUtility.SetDirty(this);
+        EditorUtility.SetDirty(m_PlayerUIMgr);
+        #endif
     }
-    
-    
-    
+
+
+
     // Update
     private void Update()
     {
@@ -120,7 +158,6 @@ public class Player : Human
             return;
 
         // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
-        m_CurPlayerFSM.UpdateState();
         PlayerRayFunc();
 
         if (gameObject.layer == 12 && m_FootRay)
@@ -128,11 +165,16 @@ public class Player : Human
             m_PlayerStairMgr.ChangePlayerNormal(m_FootRay.normal);
         }
 
-        transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
+        // 픽셀퍼펙트 공식 서비스 종료 (Noice)(22.06.13)
+        // transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
     }
 
-    
-    
+    private void FixedUpdate()
+    {
+        m_CurPlayerFSM.UpdateState();
+    }
+
+
     // Player FSM Functions
     // ReSharper disable Unity.PerformanceAnalysis
     public void ChangePlayerFSM(PlayerStateName _name)
@@ -145,23 +187,23 @@ public class Player : Human
         switch (m_CurPlayerFSMName)
         {
             case PlayerStateName.IDLE:
-                m_CurPlayerFSM = new PlayerIDLE(this, m_InputMgr);
+                m_CurPlayerFSM = m_IDLE;
                 break;
             
             case PlayerStateName.WALK:
-                m_CurPlayerFSM = new PlayerWALK(this, m_InputMgr);
+                m_CurPlayerFSM = m_WALK;
                 break;
             
             case PlayerStateName.ROLL:
-                m_CurPlayerFSM = new PlayerROLL(this, m_InputMgr);
+                m_CurPlayerFSM = m_ROLL;
                 break;
             
             case PlayerStateName.HIDDEN:
-                m_CurPlayerFSM = new PlayerHIDDEN(this, m_InputMgr);
+                m_CurPlayerFSM = m_HIDDEN;
                 break;
             
             case PlayerStateName.DEAD:
-                m_CurPlayerFSM = new PlayerDEAD(this, m_InputMgr);
+                m_CurPlayerFSM = m_DEAD;
                 break;
             
             default:
@@ -176,6 +218,27 @@ public class Player : Human
 
     
     // Functions
+    public void SetWalkSoundCoroutine(bool _isOn)
+    {
+        if (_isOn)
+        {
+            m_WalkSoundCoroutine = StartCoroutine(PlayWalkSound());
+        }
+        else
+        {
+            StopCoroutine(m_WalkSoundCoroutine);
+        }
+        
+    }
+
+    private IEnumerator PlayWalkSound()
+    {
+        while (true)
+        {
+            m_SFXMgr.playPlayerSFXSound(4);
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
     public bool IsPlayerOnStair()
     {
         /*
@@ -202,21 +265,30 @@ public class Player : Human
             m_PlayerStairMgr.ChangePlayerNormal(Vector2.up);
         }
     }
+
+    public void UseRollCount()
+    {
+        m_LeftRollCount -= 1f;
+        m_PlayerUIMgr.SetRollGauge(m_LeftRollCount);
+
+        if (!m_isRecoveringRollCount)
+            StartCoroutine(RecoverRollCount());
+    }
     public IEnumerator RecoverRollCount()
     {
-        m_PlayerUIMgr.UpdateRollTimer(p_RollRecoverTime);
-
         m_isRecoveringRollCount = true;
-        yield return new WaitForSeconds(p_RollRecoverTime);
+        while (m_LeftRollCount < p_MaxRollCount)
+        {
+            m_LeftRollCount += Time.deltaTime * p_RollCountRecoverSpeed;
+            m_PlayerUIMgr.SetRollGauge(m_LeftRollCount);
+            yield return null;
+        }
 
-        m_LeftRollCount += 1;
-        m_PlayerUIMgr.UpdateRollCount(m_LeftRollCount);
-
-        if (m_LeftRollCount < p_MaxRollCount)
-            StartCoroutine(RecoverRollCount());
-        else if (m_LeftRollCount == p_MaxRollCount)
-            m_isRecoveringRollCount = false;
+        m_LeftRollCount = 3f;
+        m_PlayerUIMgr.SetRollGauge(m_LeftRollCount);
+        m_isRecoveringRollCount = false;
     }
+    
     private IEnumerator MakePlayerNoise(NoiseType _noiseType, Vector2 _size, LocationInfo _location)
     {
         while (true)
@@ -235,11 +307,14 @@ public class Player : Human
         if ((m_IsRightHeaded && TempLocalScale.x < 0) || (!m_IsRightHeaded && TempLocalScale.x > 0))
             transform.localScale = new Vector3(-TempLocalScale.x, TempLocalScale.y, 1);
         
-        m_Player_AniMgr.playplayerAnim();
+        m_RotationMatMgr.FlipAllNormalsToRight(m_IsRightHeaded);
+        
+        m_PlayerAniMgr.playplayerAnim();
     }
     public void setPlayerHp(int _value)
     {
         p_Hp = _value;
+        m_PlayerUIMgr.SetHp(p_Hp);
     }
     public void DoPlayerBlink() 
     {
@@ -251,12 +326,9 @@ public class Player : Human
         }
     }
     private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
-    public bool getIsPlayerWalkStraight()
+    public bool GetIsPlayerWalkStraight()
     {
-        if ((m_IsRightHeaded && m_HumanFootNormal.x > 0) || (!m_IsRightHeaded && m_HumanFootNormal.x < 0))
-            return true;
-        else
-            return false;
+        return (m_IsRightHeaded && m_InputMgr.m_IsPushRightKey) || (!m_IsRightHeaded && m_InputMgr.m_IsPushLeftKey);
     }
     private void PlayerRayFunc()
     {
@@ -269,14 +341,84 @@ public class Player : Human
 
         Debug.DrawRay(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), Vector2.down * 0.5f, new Color(0, 1, 0));
 
+        //Debug.Log((m_PlayerPosVec.y - m_FootRay.point.y));
 
-
+        /*
         if (m_FootRay && (m_PlayerPosVec.y - 0.36f) - m_FootRay.point.y >= 0.29f)
             m_PlayerPosVec.y = m_FootRay.point.y + 0.26f + 0.36f;
+            */
     }
-    
-    
-    
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        switch (col.tag)
+        {
+            case "HideSlot":
+                m_HideSlotList.Add(col.GetComponent<HideSlot>());
+                break;
+        }
+    }
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        // HideSlotList 크기가 1 이상일 경우에만 작동
+        if (m_HideSlotList.Count <= 0)
+            return;
+
+
+        int nearSlotIdx = -1;
+        float nearSlotDistance = 999f;
+        
+        
+        // 1. 가장 가까운 슬롯 Idx 찾기
+        foreach (HideSlot ele in m_HideSlotList)
+        {
+            float distanceBetPlayer = (transform.position - ele.transform.position).sqrMagnitude;
+            if (distanceBetPlayer < nearSlotDistance)
+            {
+                nearSlotDistance = distanceBetPlayer;
+                nearSlotIdx = m_HideSlotList.IndexOf(ele);
+            }
+        }
+
+        // 2. 가장 가까운 것만 하이라이트 처리
+        foreach (HideSlot ele in m_HideSlotList)
+        {
+            ele.ActivateOutline(false);
+        }
+        if (nearSlotIdx == -1)
+            return;
+        else 
+            m_HideSlotList[nearSlotIdx].ActivateOutline(true);
+        
+        // 3. 키다운 or 키업 처리
+        if (m_InputMgr.m_IsPushHideKey && m_CurPlayerFSMName != PlayerStateName.HIDDEN)
+        {
+          m_CurHideSlot = m_HideSlotList[nearSlotIdx];
+          ChangePlayerFSM(PlayerStateName.HIDDEN);
+        }
+        else if(!m_InputMgr.m_IsPushHideKey && m_CurPlayerFSMName == PlayerStateName.HIDDEN)
+        {
+            ChangePlayerFSM(PlayerStateName.IDLE);
+            m_CurHideSlot = null;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        // HideSlot Outline 제거 후 Remove
+        switch (other.tag)
+        {
+            case "HideSlot":
+                HideSlot willRemoveSlot = other.GetComponent<HideSlot>();
+                willRemoveSlot.ActivateOutline(false);
+                m_HideSlotList.Remove(willRemoveSlot);
+                break;
+        }
+
+        if (m_HideSlotList.Count <= 0)
+            m_CurHideSlot = null;
+    }
+
+
     // Legacy
     /*
     private void updatePlayerFSM()

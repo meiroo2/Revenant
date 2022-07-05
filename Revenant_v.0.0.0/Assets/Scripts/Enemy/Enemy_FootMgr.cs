@@ -50,11 +50,12 @@ public class Enemy_FootMgr : MonoBehaviour
         if (!m_FootHit)
             return;
 
+        
         switch (m_Enemy.layer)
         {
             case 11:
                 m_FootNormal = m_FootHit.normal;
-                if (Vector2.Distance(m_EnemyTransform.position, m_FootHit.point) > 0.615f)
+                if (Vector2.Distance(m_EnemyTransform.position, m_FootHit.point) > 0.64f)
                     m_EnemyTransform.position = new Vector2(m_EnemyTransform.position.x, m_FootHit.point.y + 0.61f);
                 break;
 
@@ -63,5 +64,6 @@ public class Enemy_FootMgr : MonoBehaviour
                     m_EnemyTransform.position = new Vector2(m_EnemyTransform.position.x, m_FootHit.point.y + 0.62f);
                 break;
         }
+        
     }
 }

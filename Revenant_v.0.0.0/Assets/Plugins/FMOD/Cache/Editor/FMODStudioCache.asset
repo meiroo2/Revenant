@@ -71,7 +71,7 @@ MonoBehaviour:
   FileSizes:
   - Name: Desktop
     Value: 1440
-  Exists: 1
+  Exists: 0
 --- !u!114 &-1846164112011285353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,6 +141,8 @@ MonoBehaviour:
   EditorBanks:
   - {fileID: -3118849643136342556}
   - {fileID: 5784220613970355979}
+  - {fileID: 2018307053541319428}
+  - {fileID: 1970203530236238786}
   EditorEvents:
   - {fileID: -7179687399233399415}
   - {fileID: 2294031828980966762}
@@ -156,7 +158,8 @@ MonoBehaviour:
   - {fileID: 5784220613970355979}
   StringsBanks:
   - {fileID: -3118849643136342556}
-  cacheTime: 637883583892443654
+  - {fileID: 2018307053541319428}
+  cacheTime: 637915137224460488
   cacheVersion: 10
 --- !u!114 &421008950446572590
 MonoBehaviour:
@@ -207,6 +210,44 @@ MonoBehaviour:
   Type: 0
   IsGlobal: 0
   Labels: []
+  Exists: 1
+--- !u!114 &1970203530236238786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/AMB.bank
+  m_EditorClassIdentifier: 
+  Path: ../Revenant_FMOD/Build/Desktop/AMB.bank
+  Name: AMB
+  StudioPath: 
+  lastModified: 637915137222229286
+  FileSizes: []
+  Exists: 1
+--- !u!114 &2018307053541319428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: ../Revenant_FMOD/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 637915137223247305
+  FileSizes:
+  - Name: Desktop
+    Value: 3882
   Exists: 1
 --- !u!114 &2294031828980966762
 MonoBehaviour:
@@ -279,7 +320,7 @@ MonoBehaviour:
   FileSizes:
   - Name: Desktop
     Value: 770624
-  Exists: 1
+  Exists: 0
 --- !u!114 &7358642044761656635
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -22,28 +22,68 @@ public enum EnemyStateName
 public class BasicEnemy : Human
 {
     // Visible Member Variables
+    public Material p_WhiteMat;
+    
+    [field: SerializeField] protected bool p_OverrideEnemyMgr = false;
     [field: SerializeField] public float p_VisionDistance { get; protected set; }
     [field: SerializeField] public float p_HearColSize { get; protected set; }
     [field: SerializeField] public int p_AngleLimit { get; protected set; } = 20;
-    
-    
+    [field: SerializeField] public float p_AttackModeDelay { get; protected set; } = 0f;
+
+
     // Member Variables
+    protected SpriteRenderer m_Renderer;
+    protected Material m_DefaultMat;
+    private List<EnemySpawner> m_EnemySpawnerList = new List<EnemySpawner>();
+    public Enemy_HotBox[] m_EnemyHotBoxes { get; set; }
     protected Enemy_UseRange m_EnemyUseRange;
     protected LocationSensor m_EnemyLocationSensor;
     protected LocationSensor m_PlayerLocationSensor;
-    protected LocationInfo m_EnemyLocationInfo;
-    protected LocationInfo m_PlayerLocationInfo;
     protected Enemy_FootMgr m_Foot;
+    public Enemy_Alert m_Alert { get; protected set; }
     public Transform m_PlayerTransform { get; protected set; }
     public Rigidbody2D m_EnemyRigid { get; protected set; }
     public RaycastHit2D m_VisionHit { get; protected set; }
     protected Enemy_FSM m_CurEnemyFSM;
-    protected EnemyStateName m_CurEnemyStateName;
+    public EnemyStateName m_CurEnemyStateName { get; protected set; }
 
     protected Vector2 m_MovePoint;
 
-
+    private Coroutine m_MatCoroutine;
+    
     // Functions
+    protected void ChangeWhiteMat(float _time)
+    {
+        if(m_MatCoroutine != null)
+            StopCoroutine(m_MatCoroutine);
+
+        m_Renderer.material = m_DefaultMat;
+        m_MatCoroutine = StartCoroutine(ChangeMatCoroutine(_time));
+    }
+
+    private IEnumerator ChangeMatCoroutine(float _time)
+    {
+        m_Renderer.material = p_WhiteMat;
+        yield return new WaitForSeconds(_time);
+        m_Renderer.material = m_DefaultMat;
+    }
+    
+    public virtual void SetEnemyValues(EnemyMgr _mgr) { }
+
+    public Vector2 GetMovePoint() { return m_MovePoint; }
+    public void SendDeathAlarmToSpawner()
+    {
+        foreach (var ele in m_EnemySpawnerList)
+        {
+            ele.AchieveEnemyDeath(this.gameObject);
+        }
+    }
+
+    public void AddEnemySpawner(EnemySpawner _spawner)
+    {
+        m_EnemySpawnerList.Add(_spawner);
+    }
+    
     public virtual Vector2 GetDistBetPlayer()
     {
         var position = transform.position;
@@ -113,12 +153,19 @@ public class BasicEnemy : Human
 
     public virtual void ResetMovePoint(Vector2 _destinationPos)
     {
-        m_MovePoint = (_destinationPos - (Vector2)transform.position).normalized;
+        m_MovePoint = _destinationPos;
     }
     
     public virtual void MoveToPoint_FUpdate()
     {
-        m_EnemyRigid.velocity = m_MovePoint * (p_Speed * Time.deltaTime);
+        if (m_MovePoint.x > transform.position.x)
+        {
+            MoveByDirection_FUpdate(true);
+        }
+        else
+        {
+            MoveByDirection_FUpdate(false);
+        }
     }
 
     public virtual void MoveByDirection_FUpdate(bool _isRight)
@@ -140,9 +187,9 @@ public class BasicEnemy : Human
         }
     }
 
-    public virtual void GoToPlayer()
+    public virtual void GoToPlayerRoom()
     {
-        if (StaticMethods.IsRoomEqual(m_EnemyLocationInfo, m_PlayerLocationInfo))
+        if (StaticMethods.IsRoomEqual(m_EnemyLocationSensor.GetLocation(), m_PlayerLocationSensor.GetLocation()))
         {
             // 적과 플레이어의 방이 같을 경우
             
@@ -152,14 +199,18 @@ public class BasicEnemy : Human
         else
         {
             // 적과 플레이어의 방이 다를 경우
+            SetDestinationToPlayer();
             MoveToPoint_FUpdate();
         }
     }
 
-    public virtual void SetDestinationToPlayer()
+    
+    public void SetDestinationToPlayer()
     {
-        //m_EnemyUseRange.p_UseEnemyUseRange = true;
-        ResetMovePoint(m_EnemyLocationSensor.m_CurLocationInfo.GetRoomDestPos(GetBodyCenterPos(),
-            m_PlayerLocationSensor.m_CurLocationInfo));
+        Debug.Log(m_EnemyLocationSensor.GetLocation() + "Sans" + GetBodyCenterPos() + "dasln + "
+        + m_PlayerLocationSensor.GetLocation());
+        ResetMovePoint(m_EnemyLocationSensor.GetLocation().
+            GetRoomDestPos(GetBodyCenterPos(), m_PlayerLocationSensor.GetLocation()));
     }
+    
 }

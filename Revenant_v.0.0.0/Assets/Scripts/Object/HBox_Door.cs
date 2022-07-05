@@ -10,6 +10,7 @@ public class HBox_Door : MonoBehaviour, IHotBox
 
     private void Awake()
     {
+        m_ParentObj = GetComponentInParent<Door>().gameObject;
         m_HotBoxCol = GetComponent<BoxCollider2D>();
         m_InitBoxColliderSize = new Vector2(m_HotBoxCol.size.x, m_HotBoxCol.size.y);
     }
@@ -26,8 +27,10 @@ public class HBox_Door : MonoBehaviour, IHotBox
         }
     }
 
+    public GameObject m_ParentObj { get; set; }
     public int m_hotBoxType { get; set; } = 1;
     public bool m_isEnemys { get; set; } = false;
+    public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.OBJECT;
 
     public int HitHotBox(IHotBoxParam _param)
     {

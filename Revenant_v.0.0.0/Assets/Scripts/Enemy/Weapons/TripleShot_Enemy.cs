@@ -48,7 +48,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
     {
         m_LeftFire--;
         
-        m_SoundMgrSFX.playGunFireSound(0, gameObject);
+        m_SoundMgrSFX.playGunFireSound(1, gameObject);
 
         m_BulletParam.m_IsRightHeaded = m_Enemy.m_IsRightHeaded;
         m_BulletParam.m_Position = m_Enemy_Arm.position;
@@ -77,9 +77,9 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
         }
     }
 
-    public override int Reload()
+    public override void Reload()
     {
-        return 0;
+        //return 0;
     }
 
     public override void InitWeapon()

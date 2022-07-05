@@ -1,41 +1,48 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMOD.Studio;
+using UnityEditor;
 using UnityEngine;
 
 public class HideObj : MonoBehaviour, IHotBox
 {
     // Visible Member Variables
-    public HideSlot p_LSlot;
-    public HideSlot p_RSlot;
-
+    public HideSlot[] p_HideSlots;
+    
+    [Space(20f)]
+    [Header("Plz Assign")]
+    public SpriteOutline m_OutlineScript;
+    
     // Member Variables
+    public GameObject m_ParentObj { get; set; }
     public int m_hotBoxType { get; set; } = 1;
+    public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.OBJECT;
     public bool m_isEnemys { get; set; } = false;
-    private BoxCollider2D m_HitBox;
-    private bool[] m_isSlotOn_States = new bool[2];
-    private int m_SlotCount = 0;
+
 
 
     // Constructors
     private void Awake()
     {
-        m_HitBox = GetComponent<BoxCollider2D>();
-        m_HitBox.enabled = false;
 
-        m_isSlotOn_States.Initialize();
+        m_ParentObj = gameObject;
+        if (p_HideSlots.Length <= 0)
+        {
+            Debug.Log(gameObject.name + "에 HideSlot 배정이 되어있지 않음");
+            return;
+        }
+        
+        // 각 Slot에 부모 스크립트(this) 넣어줌
+        foreach (var ele in p_HideSlots)
+        {
+            ele.m_HideObj = this;
+        }
+    }
 
-        if (p_LSlot)
-        {
-            m_SlotCount++;
-            p_LSlot.m_isLeftSlot = true;
-            p_LSlot.m_HideObj = this;
-        }
-        if (p_RSlot)
-        {
-            m_SlotCount++;
-            p_RSlot.m_isLeftSlot = false;
-            p_RSlot.m_HideObj = this;
-        }
+    private void Start()
+    {
+        m_OutlineScript.outlineSize = 0;
     }
 
 
@@ -50,33 +57,7 @@ public class HideObj : MonoBehaviour, IHotBox
     { 
         return 1; 
     }
-    public void getHideSlotInfo(bool _isOn, bool _isLeftSlot)
-    {
-        if (_isLeftSlot)
-            m_isSlotOn_States[0] = _isOn;
-        else
-            m_isSlotOn_States[1] = _isOn;
 
-        if (m_isSlotFullOff() == true)
-            m_HitBox.enabled = false;
-        else
-            m_HitBox.enabled = true;
-    }
-    private bool m_isSlotFullOff()
-    {
-        bool isFullOff = true;
-
-        for(int i = 0; i < m_isSlotOn_States.Length; i++)
-        {
-            if(m_isSlotOn_States[i] == true)
-            {
-                isFullOff = false;
-                break;
-            }
-        }
-
-        return isFullOff;
-    }
 
     // 기타 분류하고 싶은 것이 있을 경우
 }

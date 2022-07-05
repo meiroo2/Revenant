@@ -18,7 +18,6 @@ public class LocationInfo : MonoBehaviour
     [field: SerializeField] public int p_curLayer { get; private set; } = 0;
     [field: SerializeField] public int p_curRoom { get; private set; } = 0;
     [field: SerializeField] public int p_curFloor { get; private set; } = 0;
-    [field: SerializeField] public Vector2 p_curPos { get; set; } = Vector2.zero;
     [SerializeField] public LocationNodes[] p_ConnectedRooms;
 
 
@@ -38,7 +37,7 @@ public class LocationInfo : MonoBehaviour
 
 
     // Functions
-    public virtual void SetLocation(LocationInfo _location, bool _resetVector = false)
+    public virtual void SetLocation(LocationInfo _location)
     {
         if (_location == null)
             return;
@@ -46,19 +45,13 @@ public class LocationInfo : MonoBehaviour
         p_curLayer = _location.p_curLayer;
         p_curRoom = _location.p_curRoom;
         p_curFloor = _location.p_curFloor;
-
-        if (_resetVector)
-            p_curPos = _location.p_curPos;
     }
 
-    public virtual void SetLocation(int _layer, int _room, int _floor, Vector2 _pos, bool _resetVector = false)
+    public virtual void SetLocation(int _layer, int _room, int _floor)
     {
         p_curLayer = _layer;
         p_curRoom = _room;
         p_curFloor = _floor;
-
-        if (_resetVector)
-            p_curPos = _pos;
     }
 
     public bool CanGotoRoom(LocationInfo _destination)
@@ -83,6 +76,7 @@ public class LocationInfo : MonoBehaviour
         return -1;
     }
 
+    // 파라미터로 함수를 호출하는 대상의 Position과 목적지 LocationInfo를 넣으면 상호작용 오브젝트 위치를 안내
     public Vector2 GetRoomDestPos(Vector2 _entity, LocationInfo _dest)
     {
         int roomIdx = GetRoomIdx(_dest);

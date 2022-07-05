@@ -11,7 +11,8 @@ public enum WeaponType
 public enum HitBoxPoint
 {
     HEAD,
-    BODY
+    BODY,
+    OBJECT
 }
 
 public class IHotBoxParam
@@ -28,13 +29,22 @@ public class IHotBoxParam
         m_contactPoint = _contactPt;
         m_weaponType = _weaponType;
     }
+
+    public void ResetContactPoint(Vector2 _pos)
+    {
+        m_contactPoint = _pos;
+    }
 }
 
 public interface IHotBox
 {
+    public GameObject m_ParentObj { get; set; }
+    
     // 0 = No Hit, 1 = Hit
     public int m_hotBoxType { get; set; }
     public bool m_isEnemys { get; set; }
+    public HitBoxPoint m_HitBoxInfo { get; set; }
+
 
     // 0 = No Hit, 1 = Hit
     public int HitHotBox(IHotBoxParam _param);

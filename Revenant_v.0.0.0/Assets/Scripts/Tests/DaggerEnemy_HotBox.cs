@@ -7,11 +7,14 @@ public class DaggerEnemy_HotBox : MonoBehaviour, IHotBox
     public bool p_isHead = false;
     public int m_hotBoxType { get; set; } = 0;
     public bool m_isEnemys { get; set; } = true;
+    public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.BODY;
+    public GameObject m_ParentObj { get; set; }
 
     private DaggerEnemy m_Enemy;
 
     private void Awake()
     {
+        m_ParentObj = GetComponentInParent<Human>().gameObject;
         m_Enemy = GetComponentInParent<DaggerEnemy>();
     }
 

@@ -5,6 +5,9 @@ using UnityEngine.Rendering.Universal;
 
 public class BlinkLight : MonoBehaviour
 {
+    public GameObject m_Input;
+    public GameObject m_Btn;
+    public Light2D m_Light2;
     Light2D m_WillLight;
 
     private bool m_isOn = true;
@@ -18,6 +21,9 @@ public class BlinkLight : MonoBehaviour
     {
         if (m_isOn)
         {
+            m_Input.SetActive(true);
+            m_Btn.SetActive(true);
+            m_Light2.enabled = true;
             m_WillLight.enabled = true;
             m_Timer -= Time.deltaTime;
             if(m_Timer <= 0f)
@@ -28,6 +34,8 @@ public class BlinkLight : MonoBehaviour
         }
         else
         {
+            m_Btn.SetActive(false);
+            m_Light2.enabled = false;
             m_WillLight.enabled = false;
             m_Timer -= Time.deltaTime;
             if (m_Timer <= 0f)

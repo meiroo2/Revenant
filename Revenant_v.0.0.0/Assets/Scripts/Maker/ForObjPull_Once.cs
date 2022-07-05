@@ -6,14 +6,14 @@ public class ForObjPull_Once : MonoBehaviour
 {
     // Visible Member Variables
     public SoundMgr_SFX m_SoundSFXMgr;
-    private Animator m_Animator;
+    protected Animator m_Animator;
 
     // Member Variables
-    private float m_Timer = 0f;
-    private bool m_isStart = false;
+    protected float m_Timer = 0f;
+    protected bool m_isStart = false;
 
     // Constructors
-    private void Awake()
+    protected void Awake()
     {
         if (GetComponentInChildren<Animator>())
         {
@@ -49,7 +49,7 @@ public class ForObjPull_Once : MonoBehaviour
 
 
     // Functions
-    public void resetTimer(float _inputTime)
+    public virtual void resetTimer(float _inputTime)
     {
         m_Timer = _inputTime;
         m_isStart = true;

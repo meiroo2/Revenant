@@ -44,7 +44,8 @@ public class UIMgr : MonoBehaviour
     // Functions
     public void CurSceneReload()
     {
-        SceneManager.LoadScene(m_Scene.name);
+        Scene curScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(curScene.name);
     }
 
 

@@ -24,6 +24,10 @@ public enum UseableObjList
 
 public interface IUseableObj
 {
+    public void ActivateOutline(bool _isOn)
+    {
+    }
+
     public UseableObjList m_ObjProperty { get; set; }
     public bool m_isOn { get; set; }
     public int useObj(IUseableObjParam _param);               // 오브젝트를 사용 시 호출되는 함수(하위 오브젝트에 내용 추가할 것)

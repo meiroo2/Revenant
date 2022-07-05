@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class AimImageCanvas : MonoBehaviour
 {
+    /*
     private Image m_Image;
     public Sprite m_WhiteAimSprite;
     public Sprite m_RedAimSprite;
@@ -32,4 +33,5 @@ public class AimImageCanvas : MonoBehaviour
                 break;
         }
     }
+    */
 }

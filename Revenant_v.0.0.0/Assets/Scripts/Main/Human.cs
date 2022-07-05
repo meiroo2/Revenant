@@ -19,12 +19,15 @@ public class Human : ObjectDefine
     public LocationInfo m_CurLocation { get; protected set; }
     
     public bool m_CanMove { get; set; } = true;
-    public bool m_CanShot { get; set; } = true;
+    public bool m_CanFire { get; set; } = true;
     public Vector2 m_HumanFootNormal { get; set; }
 
     
     // Constructor
-
+    protected void InitHuman()
+    {
+        setisRightHeaded(transform.localScale.x > 0);
+    }
 
     // Functions
     public Vector2 GetBodyCenterPos()

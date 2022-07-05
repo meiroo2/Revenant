@@ -199,9 +199,9 @@ public class Alert_Dagger : EnemyStates
             // 층이 다름 -> 맞춤
             return;
         }
-        if (m_Enemy.m_curLocation.p_curPos != m_Enemy.m_NoiseSourceLocation.p_curPos)
+        if (m_EnemyTransform.position != m_Enemy.m_NoiseSourceLocation.transform.position)
         {
-            m_DistBetweenSource = m_EnemyTransform.position.x - m_Enemy.m_NoiseSourceLocation.p_curPos.x;
+            m_DistBetweenSource = m_EnemyTransform.position.x - m_Enemy.m_NoiseSourceLocation.transform.position.x;
             // 위치가 다름 -> 맞춤
             if (Mathf.Abs(m_DistBetweenSource) <= 0.2f)
             {

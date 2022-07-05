@@ -14,19 +14,12 @@ public class BasicWeapon_Player : BasicWeapon
     protected Transform m_Player_Arm;
     protected AimCursor m_aimCursor;
     protected Player m_Player;
+    protected Player_UI m_PlayerUI;
 
     public bool m_isReloading { get; private set; }
 
     // Functions
     protected virtual void Internal_Reload()
     {
-    }
-
-    protected IEnumerator SetReload()
-    {
-        m_isReloading = true;
-        yield return new WaitForSeconds(p_ReloadTime);
-        m_isReloading = false;
-        Internal_Reload();
     }
 }

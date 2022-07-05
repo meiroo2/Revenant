@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 
 public class WeaponMgr : MonoBehaviour
@@ -11,18 +12,27 @@ public class WeaponMgr : MonoBehaviour
 
     // Member Variables
     public bool m_isPlayers { get; protected set; } = false;
-
     public BasicWeapon m_CurWeapon { get; private set; }
 
     // Constructors
     protected void Awake()
     {
+        m_isPlayers = !GetComponentInParent<BasicEnemy>();
+
         if (p_Weapons.Count > 0)
             m_CurWeapon = p_Weapons[0];
         else
             Debug.Log("WeaponMgr에 할당된 BasicWeapon이 존재하지 않습니다.");
+    }
 
-
+    private void Start()
+    {
+        SoundMgr_SFX SFXMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        for (int i = 0; i < p_Weapons.Count; i++)
+        {
+            p_Weapons[i].m_SoundMgrSFX = SFXMgr;
+        }
+        
         for (int i = 0; i < p_Weapons.Count; i++)
         {
             p_Weapons[i].gameObject.SetActive(false);
@@ -32,7 +42,7 @@ public class WeaponMgr : MonoBehaviour
     }
 
     // Functions
-    public void ChangeWeapon(int _idx)
+    public virtual void ChangeWeapon(int _idx)
     {
         if (_idx < 0 || _idx >= p_Weapons.Count)
         {

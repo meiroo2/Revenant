@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UseableObjInfo
@@ -7,12 +9,14 @@ public class UseableObjInfo
     public int m_ObjID;
     public IUseableObj m_ObjScript;
     public Vector2 m_ObjPos;
+    public GameObject m_Obj;
 
-    public UseableObjInfo(int _ObjID, IUseableObj _ObjScript, Vector2 _ObjPos)
+    public UseableObjInfo(int _ObjID, IUseableObj _ObjScript, Vector2 _ObjPos, GameObject _obj)
     {
         m_ObjID = _ObjID;
         m_ObjScript = _ObjScript;
         m_ObjPos = _ObjPos;
+        m_Obj = _obj;
     }
 }
 
@@ -26,9 +30,14 @@ public class Player_UseRange : MonoBehaviour
     private float FTimer = 0.1f;
 
     private List<UseableObjInfo> m_UseableObjs = new List<UseableObjInfo>();
+    
     private int m_ShortestIDX = -1;
+    private int m_PreShortestIDX;
+    
     private float m_ShortestLength = 999f;
     private Player m_Player;
+
+    private Player_InputMgr m_InputMgr;
 
     private IUseableObjParam m_UseableObjParam;
 
@@ -39,6 +48,12 @@ public class Player_UseRange : MonoBehaviour
     {
         m_Player = GetComponentInParent<Player>();
         m_UseableObjParam = new IUseableObjParam(m_Player.transform, true, m_Player.GetInstanceID());
+    }
+
+    private void Start()
+    {
+        var instance = InstanceMgr.GetInstance();
+        m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
     }
 
     // Updates
@@ -61,7 +76,8 @@ public class Player_UseRange : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        m_UseableObjs.Add(new UseableObjInfo(collision.gameObject.GetInstanceID(), collision.GetComponent<IUseableObj>(), collision.transform.position));
+        m_UseableObjs.Add(new UseableObjInfo(collision.gameObject.GetInstanceID(), collision.GetComponent<IUseableObj>(),
+            collision.transform.position, collision.gameObject));
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -79,6 +95,8 @@ public class Player_UseRange : MonoBehaviour
             }
         }
 
+        CalObjOutline();
+        
         if (isPressedFKey && m_ShortestLength < 999f)
         {
             switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
@@ -116,7 +134,7 @@ public class Player_UseRange : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (m_UseableObjs.Count > 0)
+        if (m_UseableObjs.Count > 0 && m_UseableObjs.Count != 1)
         {
             for (int i = 0; i < m_UseableObjs.Count; i++)
             {
@@ -128,7 +146,15 @@ public class Player_UseRange : MonoBehaviour
             }
 
             if (m_UseableObjs.Count == 0)
+            {
                 m_ShortestIDX = -1;
+            }
+        }
+        else if(m_UseableObjs.Count == 1)
+        {
+            m_UseableObjs[0].m_ObjScript.ActivateOutline(false);
+            m_UseableObjs.RemoveAt(0);
+            m_ShortestIDX = -1;
         }
     }
 
@@ -142,4 +168,16 @@ public class Player_UseRange : MonoBehaviour
         }
     }
 
+    private void CalObjOutline()
+    {
+        for (int i = 0; i < m_UseableObjs.Count; i++)
+        {
+            if(i == m_ShortestIDX)
+                m_UseableObjs[i].m_ObjScript.ActivateOutline(true);
+            else
+            {
+                m_UseableObjs[i].m_ObjScript.ActivateOutline(false);
+            }
+        }
+    }
 }

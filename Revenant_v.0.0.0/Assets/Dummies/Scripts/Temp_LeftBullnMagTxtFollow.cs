@@ -22,6 +22,6 @@ public class Temp_LeftBullnMagTxtFollow : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_Text.text = m_WeaponMgr.m_CurWeapon.m_LeftBullet + " / " + m_WeaponMgr.m_CurWeapon.m_LeftMag;
+        m_Text.text = m_WeaponMgr.m_CurWeapon.m_LeftRounds + " / " + m_WeaponMgr.m_CurWeapon.m_LeftMags;
     }
 }

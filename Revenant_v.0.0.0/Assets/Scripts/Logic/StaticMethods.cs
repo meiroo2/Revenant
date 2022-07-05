@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
@@ -11,6 +12,9 @@ public static class StaticMethods
 
     public static bool IsRoomEqual(LocationInfo _first, LocationInfo _second)
     {
+        if (_first is null || _second is null)
+            return false;
+        
         if (_first.p_curLayer == _second.p_curLayer &&
             _first.p_curRoom == _second.p_curRoom &&
             _first.p_curFloor == _second.p_curFloor)
@@ -33,14 +37,15 @@ public static class StaticMethods
     }
     public static Vector3 getPixelPerfectPos(Vector3 _rawpos)
     {
+        /*
         m_TempVec3 = _rawpos;
         m_TempVec3.x = Mathf.RoundToInt(m_TempVec3.x * m_PPC.assetsPPU);
         m_TempVec3.y = Mathf.RoundToInt(m_TempVec3.y * m_PPC.assetsPPU);
 
         m_TempVec3.x /= m_PPC.assetsPPU;
         m_TempVec3.y /= m_PPC.assetsPPU;
-
-        return m_TempVec3;
+        */
+        return _rawpos;
     }
 
     public static Vector2 getLPerpVec(Vector2 _rawVec)
