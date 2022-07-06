@@ -28,7 +28,7 @@ public class CoroutineHandler : MonoBehaviour
 
     public static CoroutineHandler Start_Coroutine(IEnumerator coro)
     {
-        Debug.Log("Coroutine Handler");
+        //Debug.Log("Coroutine Handler");
         
         var obj = new GameObject("CoroutineHandler");
         var handler = obj.AddComponent<CoroutineHandler>();

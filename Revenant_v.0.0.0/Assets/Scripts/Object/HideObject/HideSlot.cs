@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,26 +26,19 @@ public class HideSlot : MonoBehaviour
     // Functions
     public void ActivateOutline(bool _isOn)
     {
-        m_HideObj.m_OutlineScript.outlineSize = _isOn ? 1 : 0;
+        m_HideObj.p_Outline.outlineSize = _isOn ? 1 : 0;
     }
-    public int ActivateHideSlot(bool _true)
+    public void ActivateHideSlot(bool _true)
     {
-        if (_true)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-        
-        
+        m_isOn = _true;
+        m_HideObj.UpdateHideSlotInfo();
     }
 
-    public bool GetCanHide()
+    private void OnTriggerEnter2D(Collider2D col)
     {
-        return true;
+        Debug.Log(col.name);
     }
+
 
     // 기타 분류하고 싶은 것이 있을 경우
 }

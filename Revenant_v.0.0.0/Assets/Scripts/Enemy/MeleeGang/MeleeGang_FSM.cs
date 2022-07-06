@@ -238,6 +238,7 @@ public class DeadMeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
+        //m_Enemy.m_Alert.gameObject.SetActive(false);d
         m_Enemy.SendDeathAlarmToSpawner();
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
     }

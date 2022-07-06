@@ -349,6 +349,12 @@ public class Player : Human
             */
     }
 
+    public void ForceExitFromHiddenSlot()
+    {
+        m_CurHideSlot.ActivateHideSlot(false);
+        m_CurHideSlot = null;
+    }
+
     private void OnTriggerEnter2D(Collider2D col)
     {
         switch (col.tag)
@@ -391,13 +397,16 @@ public class Player : Human
             m_HideSlotList[nearSlotIdx].ActivateOutline(true);
         
         // 3. 키다운 or 키업 처리
-        if (m_InputMgr.m_IsPushHideKey && m_CurPlayerFSMName != PlayerStateName.HIDDEN)
+        if (m_InputMgr.m_IsPushHideKey && m_CurPlayerFSMName != PlayerStateName.HIDDEN && m_CurPlayerFSMName != PlayerStateName.ROLL)
         {
           m_CurHideSlot = m_HideSlotList[nearSlotIdx];
+          
+          m_CurHideSlot.ActivateHideSlot(true);
           ChangePlayerFSM(PlayerStateName.HIDDEN);
         }
         else if(!m_InputMgr.m_IsPushHideKey && m_CurPlayerFSMName == PlayerStateName.HIDDEN)
         {
+            m_CurHideSlot.ActivateHideSlot(false);
             ChangePlayerFSM(PlayerStateName.IDLE);
             m_CurHideSlot = null;
         }

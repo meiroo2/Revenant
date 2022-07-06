@@ -253,7 +253,7 @@ public class Player_HIDDEN : PlayerFSM
             else if(!m_Player.m_playerRotation.getIsMouseRight())
                 m_Player.setisRightHeaded(false);
             
-            m_Player.m_useRange.ForceExitFromHiddenSlot();
+            m_Player.ForceExitFromHiddenSlot();
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
         

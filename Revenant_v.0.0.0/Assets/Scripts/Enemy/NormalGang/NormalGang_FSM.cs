@@ -491,7 +491,8 @@ public class DEAD_NormalGang : NormalGang_FSM
 
     public override void StartState()
     {
-        m_Enemy.m_Alert.SetAlertActive(false);
+        m_Enemy.m_Alert.gameObject.SetActive(false);
+        //m_Enemy.m_Alert.SetAlertActive(false);
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
         m_Enemy.SendDeathAlarmToSpawner();
     }
