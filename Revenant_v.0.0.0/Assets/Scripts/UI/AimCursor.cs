@@ -60,6 +60,10 @@ public class AimCursor : MonoBehaviour
     // Updates
     private void Update()
     {
+        m_CursorPos = m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
+        transform.position = m_CursorPos;
+        
+        
         m_Dist_Aim_Player = Vector2.SqrMagnitude(transform.position - m_PlayerTransform.position);
 
         CalculateNearestHotBox();
@@ -78,8 +82,7 @@ public class AimCursor : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        m_CursorPos = m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = m_CursorPos;
+        
     }
 
     // Physics

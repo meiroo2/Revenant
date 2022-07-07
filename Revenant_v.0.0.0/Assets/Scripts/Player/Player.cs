@@ -49,7 +49,6 @@ public class Player : Human
     public float m_LeftRollCount { get; set; }
     public bool m_canRoll { get; private set; } = true;
     public bool m_canChangeWeapon { get; private set; } = false;
-    public bool m_isPlayerBlinking { get; private set; } = false;
 
 
     private Player_IDLE m_IDLE;
@@ -316,16 +315,6 @@ public class Player : Human
         p_Hp = _value;
         m_PlayerUIMgr.SetHp(p_Hp);
     }
-    public void DoPlayerBlink() 
-    {
-        if(p_stunTime > 0f)
-        {
-            m_isPlayerBlinking = true;
-            CancelInvoke(nameof(setPlayerBlinkFalse));
-            Invoke(nameof(setPlayerBlinkFalse), p_stunTime);
-        }
-    }
-    private void setPlayerBlinkFalse() { m_isPlayerBlinking = false; }
     public bool GetIsPlayerWalkStraight()
     {
         return (m_IsRightHeaded && m_InputMgr.m_IsPushRightKey) || (!m_IsRightHeaded && m_InputMgr.m_IsPushLeftKey);

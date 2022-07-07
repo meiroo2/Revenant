@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,10 +19,6 @@ public class CameraMove : MonoBehaviour
     public float p_RotateRecoverSpeed = 1f;
     public float p_BodyHitRatio = 0.5f;
     public float p_CamShakeZoomPower = 0f;
-
-    [Space(20f)] 
-    [Header("Å×½ºÆ®")] 
-    private Image m_EffectImg;
 
 
     // Member Variables
@@ -44,8 +39,7 @@ public class CameraMove : MonoBehaviour
     private float m_CamShakeZoomValue = 0f;
 
     private Camera m_MainCam;
-
-    private Color m_EffectColor = new Color(1f,1f,1f,0f);
+    
 
 
     // Constructors
@@ -59,9 +53,7 @@ public class CameraMove : MonoBehaviour
     private void Start()
     {
         m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
-        m_EffectImg = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>()
-            .GetComponentInChildren<ScreenEdgeEffect_UI>().GetComponent<Image>();
-        
+
         m_CameraPos = transform.position;
 
         if (p_InitFollow)
@@ -73,9 +65,7 @@ public class CameraMove : MonoBehaviour
     // Updates
     private void Update()
     {
-        m_EffectColor.a = Mathf.Lerp(m_EffectColor.a, 0f, Time.deltaTime * 10f);
-        m_EffectImg.color = m_EffectColor;
-        
+
         if (m_CamStuckOnce)
         {
             m_CamStuckOnce = false;
@@ -140,7 +130,6 @@ public class CameraMove : MonoBehaviour
         else
         {
             // Head Hit
-            m_EffectColor.a = 0.5f;
             m_CamShakeZoomValue = p_CamShakeZoomPower;
         }
 

@@ -54,16 +54,11 @@ public class Player_UI : MonoBehaviour
     private Color m_HitmarkColor = new Color(1, 1, 1, 1);
     private Vector2 m_HitmarkOriginScale;
     
-    private VolumeProfile m_CamVolumeProfile;
-    private UnityEngine.Rendering.Universal.ChromaticAberration m_Chroma;
     
     // Constructors
     private void Awake()
     {
         m_Maincam = Camera.main.GetComponent<CameraMove>();
-        m_CamVolumeProfile = m_Maincam.GetComponent<Volume>().profile;
-        m_CamVolumeProfile.TryGet(out m_Chroma);
-        
         m_AimTransform = p_MainAimImg.transform;
         p_Hitmark.enabled = false;
         p_ReloadCircle.fillAmount = 0f;
@@ -168,8 +163,6 @@ public class Player_UI : MonoBehaviour
         // 불투명하게 만들기 위한 것
         m_HitmarkColor = Color.white;
         p_Hitmark.color = m_HitmarkColor;
-        // 색수차 제거
-        m_Chroma.intensity.value = 0f;
 
         switch (_type)
         {
@@ -179,8 +172,6 @@ public class Player_UI : MonoBehaviour
                 m_SoundMgr.playUISound(0);
                 // 원본 크기 == 큰 크기임
                 p_Hitmark.rectTransform.localScale = m_HitmarkOriginScale;
-                // 색수차 Full
-                m_Chroma.intensity.value = 1f;
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Head());
                 break;
             
@@ -218,8 +209,6 @@ public class Player_UI : MonoBehaviour
             if (m_HitmarkColor.a <= 0f)
                 break;
             
-            // 색수차 점점 사라지게
-            m_Chroma.intensity.value -= Time.deltaTime * 6f;
             
             // 1.5f Scale까지 작아지면 그냥 0으로 스케일 줄여버리기
             p_Hitmark.rectTransform.localScale = p_Hitmark.rectTransform.localScale.x >= 1.5f ?
@@ -229,8 +218,7 @@ public class Player_UI : MonoBehaviour
             p_Hitmark.color = m_HitmarkColor;
             yield return null;
         }
-
-        m_Chroma.intensity.value = m_Chroma.intensity.value = 0;
+        
         p_Hitmark.enabled = false;
     }
     

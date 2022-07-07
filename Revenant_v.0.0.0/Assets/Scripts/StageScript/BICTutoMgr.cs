@@ -10,7 +10,7 @@ public class BICTutoMgr : MonoBehaviour
     public Image p_ScreenUIImgObj;
     public Sprite[] p_HoloUISprites;
     public Portal_LayerRoom p_Room00Door;
-    public Animator p_Room01Cover_First;
+    //public Animator p_Room01Cover_First;
     public Turret_Room1 p_Turret01;
     
     
@@ -123,7 +123,7 @@ public class BICTutoMgr : MonoBehaviour
                 if (Input.anyKey)
                 {
                     p_ScreenUIImgObj.enabled = false;
-                    p_Room01Cover_First.SetTrigger("Appear");
+                    //p_Room01Cover_First.SetTrigger("Appear");
                     m_Phase = 12;
                 }
                 break;

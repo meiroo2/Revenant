@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerRotation : MonoBehaviour
+public class RotateRnD : MonoBehaviour
 {
     // Visible Member Variables
-    [Header("회전 각도는 총 5단위로 나누어집니다.")]
     public bool m_doRotate = true;
-    public float m_rotationHighLimitAngle { get; private set; } = 65f;
-    public float m_rotationLowLimitAngle { get; private set; } = -45f;
+    public int p_RotationPhaseNum = 5;
+    
+    public float m_rotationHighLimitAngle = 65f;
+    public float m_rotationLowLimitAngle = -45f;
 
     [field: SerializeField] public float m_curActualAngle { get; private set; }
     [field: SerializeField] public float m_curAnglewithLimit { get; private set; }
@@ -17,7 +18,6 @@ public class PlayerRotation : MonoBehaviour
 
     // Member Variables
     private Camera m_mainCam;
-    private Player m_Player;
 
     private Vector2 mousePos;
     private Vector2 m_Mousedistance;
@@ -33,11 +33,7 @@ public class PlayerRotation : MonoBehaviour
         m_InitHighLimitAngle = m_rotationHighLimitAngle;
         m_InitLowLimitAngle = m_rotationLowLimitAngle;
         m_mainCam = Camera.main;
-        m_PhaseAngle = (Mathf.Abs(m_rotationHighLimitAngle) + Mathf.Abs(m_rotationLowLimitAngle)) / 5;
-    }
-    private void Start()
-    {
-        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_PhaseAngle = (Mathf.Abs(m_rotationHighLimitAngle) + Mathf.Abs(m_rotationLowLimitAngle)) / p_RotationPhaseNum;
     }
 
 
@@ -46,14 +42,6 @@ public class PlayerRotation : MonoBehaviour
     {
         if (!m_doRotate)
             return;
-
-        if (m_curActualAngle > 90f || m_curActualAngle < -90f)
-        {
-            if (m_Player.m_IsRightHeaded)
-                m_Player.setisRightHeaded(false);
-            else
-                m_Player.setisRightHeaded(true);
-        }
 
         getAngle();
         doRotate();
@@ -66,14 +54,8 @@ public class PlayerRotation : MonoBehaviour
         mousePos = m_mainCam.ScreenToWorldPoint(Input.mousePosition);
         m_Mousedistance = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
 
-        if (m_Player.m_IsRightHeaded)
-        {
-            m_curActualAngle = Mathf.Atan2(m_Mousedistance.y, m_Mousedistance.x) * Mathf.Rad2Deg;
-        }
-        else if (!m_Player.m_IsRightHeaded)
-        {
-            m_curActualAngle = -(Mathf.Atan2(-m_Mousedistance.y, -m_Mousedistance.x) * Mathf.Rad2Deg);
-        }
+        m_curActualAngle = Mathf.Atan2(m_Mousedistance.y, m_Mousedistance.x) * Mathf.Rad2Deg;
+
 
         // Limit Cut된 Angle 구하기
         m_curAnglewithLimit = m_curActualAngle;
@@ -87,7 +69,7 @@ public class PlayerRotation : MonoBehaviour
         // 이 각도를 기준으로 사용가능 각도 범위를 5개로 쪼갬
         // 윗각도는 포함, 아랫각도는 제외로 계산한다. 이 범위 안에 있으면 위쪽부터 0, 1, 2, 3, 4로 m_curAnglePhase에 할당
         // 해당 각도는 Init Angle을 받아와서 계산. -> 만약 Limit가 줄어들어도 초기 값으로 m_curAnglePhase가 바뀜
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < p_RotationPhaseNum; i++)
         {
             if (m_curAnglewithLimit <= m_InitHighLimitAngle - m_PhaseAngle * i &&
                 m_curAnglewithLimit > m_InitHighLimitAngle - m_PhaseAngle * (i + 1))
@@ -97,35 +79,15 @@ public class PlayerRotation : MonoBehaviour
             }
         }
     }
-    
+
     private void doRotate()
     {
-        if (m_Player.m_IsRightHeaded)
-            toRotation = Quaternion.Euler(0f, 0f, m_curAnglewithLimit);
-        else
-            toRotation = Quaternion.Euler(0f, 0f, -m_curAnglewithLimit);
+        //toRotation = Quaternion.Euler(0f, 0f, m_curAnglewithLimit);
 
+        float angle = m_rotationHighLimitAngle;
+        angle -= m_curAnglePhase * m_PhaseAngle;
+        toRotation = Quaternion.Euler(0f, 0f, angle);
+        
         transform.rotation = toRotation;
-    }
-
-    public void changeAngleLimit(float _HighLimit, float _LowLimit)
-    {
-        if (_HighLimit > 0f && _LowLimit < 0f)
-        {
-            m_rotationHighLimitAngle = _HighLimit;
-            m_rotationLowLimitAngle = _LowLimit;
-
-            //m_PhaseAngle = (Mathf.Abs(m_rotationHighLimitAngle) + Mathf.Abs(m_rotationLowLimitAngle)) / 5;
-        }
-        else
-            Debug.Log("PlayerRotation Angle Param Error");
-    }
-
-    public bool getIsMouseRight()
-    {
-        if (m_mainCam.ScreenToWorldPoint(Input.mousePosition).x > m_Player.transform.position.x)
-            return true;
-        else
-            return false;
     }
 }

@@ -3,39 +3,6 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine;
 
-public class BulletParam
-{
-    public bool m_IsPlayers;
-    public Sprite m_BulletSprite;
-    public bool m_IsRightHeaded;
-    public Vector2 m_Position;
-    public Quaternion m_Rotation;
-    public int m_Damage;
-    public float m_Speed;
-    public int m_StunValue;
-    public int m_AimedObjID;
-
-    public BulletParam(bool _isPlayers, Sprite _sprite, bool _isRight, Vector2 _position,
-        Quaternion _rotation, int _damage, float _speed, int _stunValue = 0, int _objID = -1)
-    {
-        m_IsPlayers = _isPlayers;
-        m_BulletSprite = _sprite;
-        m_IsRightHeaded = _isRight;
-        m_Position = _position;
-        m_Rotation = _rotation;
-        m_Damage = _damage;
-        m_Speed = _speed;
-
-        m_StunValue = _stunValue;
-        m_AimedObjID = _objID;
-    }
-
-    public object DeepCopy()
-    {
-        return this.MemberwiseClone();
-    }
-}
-
 public class Bullet : MonoBehaviour
 {
     // Visible Member Variables
@@ -162,3 +129,37 @@ public class Bullet : MonoBehaviour
         }
     }
 }
+
+public class BulletParam
+{
+    public bool m_IsPlayers;
+    public Sprite m_BulletSprite;
+    public bool m_IsRightHeaded;
+    public Vector2 m_Position;
+    public Quaternion m_Rotation;
+    public int m_Damage;
+    public float m_Speed;
+    public int m_StunValue;
+    public int m_AimedObjID;
+
+    public BulletParam(bool _isPlayers, Sprite _sprite, bool _isRight, Vector2 _position,
+        Quaternion _rotation, int _damage, float _speed, int _stunValue = 0, int _objID = -1)
+    {
+        m_IsPlayers = _isPlayers;
+        m_BulletSprite = _sprite;
+        m_IsRightHeaded = _isRight;
+        m_Position = _position;
+        m_Rotation = _rotation;
+        m_Damage = _damage;
+        m_Speed = _speed;
+
+        m_StunValue = _stunValue;
+        m_AimedObjID = _objID;
+    }
+
+    public object DeepCopy()
+    {
+        return this.MemberwiseClone();
+    }
+}
+
