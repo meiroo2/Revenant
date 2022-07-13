@@ -12,7 +12,7 @@ public class BasicWeapon_Player : BasicWeapon
     // Member Variables
     protected ShellMgr m_ShellMgr;
     protected Transform m_Player_Arm;
-    protected AimCursor m_aimCursor;
+    protected AimCursor m_AimCursor;
     protected Player m_Player;
     protected Player_UI m_PlayerUI;
 

@@ -5,14 +5,28 @@ using UnityEngine;
 
 public class AimedObjInfo
 {
-    public string m_ObjName;
-    public int m_ObjID;
-    public Vector2 m_ObjPos;
-    public AimedObjInfo(string _objName, int _objid, Vector2 _objpos)
+    public Collider2D m_Collider2d { get; private set; }
+    public int m_ColliderInstanceID { get; private set; }
+    public Vector2 m_ColliderPos { get; private set; }
+
+
+    public AimedObjInfo(Collider2D _collider, int _id, Vector2 _pos)
     {
-        m_ObjName = _objName;
-        m_ObjID = _objid;
-        m_ObjPos = _objpos;
+        m_Collider2d = _collider;
+        m_ColliderInstanceID = _id;
+        m_ColliderPos = _pos;
+    }
+}
+
+public class HitscanTargetInfo
+{
+    public IHotBox m_HotBox { get; private set; }
+    public Vector2 m_AimedPos { get; private set; }
+
+    public HitscanTargetInfo(IHotBox _hotBox, Vector2 _aimPos)
+    {
+        m_HotBox = _hotBox;
+        m_AimedPos = _aimPos;
     }
 }
 
@@ -29,6 +43,7 @@ public class AimCursor : MonoBehaviour
     private AimImageCanvas m_ImageofAim;
     private Transform m_PlayerTransform;
     private Player_AniMgr m_PlayerAniMgr;
+    private Player_HitscanRay m_PlayerHitscanRay;
 
     public bool m_canAimCursorShot { get; private set; } = true;
     public int AimedObjid { get; private set; } = -1;
@@ -50,9 +65,12 @@ public class AimCursor : MonoBehaviour
     }
     private void Start()
     {
-        m_ImageofAim = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<AimImageCanvas>();
-        m_PlayerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
-        m_PlayerAniMgr = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
+        var instance = InstanceMgr.GetInstance();
+        
+        m_ImageofAim = instance.m_MainCanvas.GetComponentInChildren<AimImageCanvas>();
+        m_PlayerTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.transform;
+        m_PlayerAniMgr = instance.GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
+        m_PlayerHitscanRay = instance.GetComponentInChildren<Player_Manager>().m_Player.m_PlayerHitscanRay;
     }
 
 
@@ -80,19 +98,17 @@ public class AimCursor : MonoBehaviour
         }
         
     }
-    private void FixedUpdate()
-    {
-        
-    }
+    
 
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // Player의 Hotbox Collider 제외
         if (collision.CompareTag("Player"))
             return;
         
         // 충돌한 히트박스의 오브젝트 정보(InstanceID, Position)를 리스트에 담음
-        m_AimedObjs.Add(new AimedObjInfo(collision.gameObject.name, collision.gameObject.GetInstanceID(), collision.transform.position));
+        m_AimedObjs.Add(new AimedObjInfo(collision, collision.GetInstanceID(), collision.transform.position));
     }
     
     private void OnTriggerExit2D(Collider2D collision)
@@ -102,7 +118,7 @@ public class AimCursor : MonoBehaviour
         {
             for(int i = 0; i < m_AimedObjs.Count; i++)
             {
-                if (m_AimedObjs[i].m_ObjID == collision.gameObject.GetInstanceID())
+                if (m_AimedObjs[i].m_ColliderInstanceID == collision.GetInstanceID())
                 {
                     m_AimedObjs.RemoveAt(i);
                     break;
@@ -120,16 +136,56 @@ public class AimCursor : MonoBehaviour
     }
 
     // Functions
+    public HitscanTargetInfo GetHitscanTargetInfo()
+    {
+        if (m_AimedObjs.Count > 0)
+        {
+            int isFound = -1;
+            List<RaycastHit2D> arr = m_PlayerHitscanRay.GetRayHits();
+
+            if (arr.Count <= 0)
+            {
+                return new HitscanTargetInfo(null, m_PlayerHitscanRay.GetAimFailedHit().point);
+            }
+
+            for (int i = 0; i < m_AimedObjs.Count; i++)
+            {
+                for (int j = 0; j < arr.Count; j++)
+                {
+                    if (m_AimedObjs[i].m_Collider2d == arr[j].collider)
+                    {
+                        isFound = i;
+                        break;
+                    }
+                }
+
+                if (isFound != -1)
+                    break;
+            }
+
+            if (isFound == -1)
+                return new HitscanTargetInfo(null, m_PlayerHitscanRay.GetAimFailedHit().point);
+            else
+            {
+                return new HitscanTargetInfo(m_AimedObjs[isFound].m_Collider2d.GetComponent<IHotBox>(),
+                    transform.position);
+            }
+        }
+        else
+        {
+            return new HitscanTargetInfo(null, m_PlayerHitscanRay.GetAimFailedHit().point);
+        }
+    }
     private void CalculateNearestHotBox()
     {
         if (m_AimedObjs.Count > 0)
         {
-            m_ShortestLength = Vector2.Distance(transform.position, m_AimedObjs[0].m_ObjPos);
+            m_ShortestLength = Vector2.Distance(transform.position, m_AimedObjs[0].m_ColliderPos);
             m_ShortestIdx = 0;
 
             for (int i = 0; i < m_AimedObjs.Count; i++)
             {
-                m_TempLength = Vector2.Distance(transform.position, m_AimedObjs[i].m_ObjPos);
+                m_TempLength = Vector2.Distance(transform.position, m_AimedObjs[i].m_ColliderPos);
                 if (m_TempLength < m_ShortestLength)
                 {
                     m_ShortestLength = m_TempLength;
@@ -137,8 +193,8 @@ public class AimCursor : MonoBehaviour
                 }
             }
 
-            AimedObjid = m_AimedObjs[m_ShortestIdx].m_ObjID;
-            AimedObjName = m_AimedObjs[m_ShortestIdx].m_ObjName;
+            AimedObjid = m_AimedObjs[m_ShortestIdx].m_ColliderInstanceID;
+            AimedObjName = m_AimedObjs[m_ShortestIdx].m_Collider2d.name;
         }
     }
 }

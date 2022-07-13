@@ -15,6 +15,7 @@ public class Negotiator_Player : BasicWeapon_Player
     // Member Variables
     private BulletPuller m_Puller;
     private BulletParam m_BulletParam;
+    private BulletLaserMgr m_BulletLaserMgr;
 
     private void Awake()
     {
@@ -27,13 +28,14 @@ public class Negotiator_Player : BasicWeapon_Player
         m_SoundMgrSFX = tempIns.GetComponentInChildren<SoundMgr_SFX>();
         m_Player = tempIns.GetComponentInChildren<Player_Manager>().m_Player;
         m_Player_Arm = m_Player.m_playerRotation.gameObject.transform;
-        m_aimCursor = tempIns.GetComponentInChildren<AimCursor>();
+        m_AimCursor = tempIns.GetComponentInChildren<AimCursor>();
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
         m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
+        m_BulletLaserMgr = tempIns.GetComponentInChildren<BulletLaserMgr>();
         m_PlayerUI = m_Player.m_PlayerUIMgr;
         
         m_BulletParam = new BulletParam(true, p_BulletSprite, true, m_Player_Arm.position,
-            m_Player_Arm.rotation, p_BulletDamage, p_BulletSpeed, p_StunValue, m_aimCursor.AimedObjid);
+            m_Player_Arm.rotation, p_BulletDamage, p_BulletSpeed, p_StunValue, m_AimCursor.AimedObjid);
     }
 
     public override int Fire()
@@ -111,10 +113,22 @@ public class Negotiator_Player : BasicWeapon_Player
         m_BulletParam.m_IsRightHeaded = m_Player.m_IsRightHeaded;
         m_BulletParam.m_Position = m_Player_Arm.position;
         m_BulletParam.m_Rotation = m_Player_Arm.rotation;
-        m_BulletParam.m_AimedObjID = m_aimCursor.AimedObjid;
-        m_Puller.MakeBullet(ref m_BulletParam);
+        m_BulletParam.m_AimedObjID = m_AimCursor.AimedObjid;
         
-        p_MuzFlashPuller.EnableNewObj();
+
+        HitscanTargetInfo targetInfo = m_AimCursor.GetHitscanTargetInfo();
+        
+        // 빗나감!
+        if(targetInfo.m_HotBox == null)
+            m_BulletLaserMgr.PoolingBulletLaser(transform.position, targetInfo.m_AimedPos);
+        else
+        {
+            targetInfo.m_HotBox.HitHotBox(new IHotBoxParam(p_BulletDamage, p_StunValue, targetInfo.m_AimedPos,
+                WeaponType.BULLET));
+            m_BulletLaserMgr.PoolingBulletLaser(transform.position, targetInfo.m_AimedPos);
+        }
+
+       p_MuzFlashPuller.EnableNewObj();
         
         if(m_Player.m_IsRightHeaded)
             m_ShellMgr.MakeShell(m_ShellPos.transform.position,

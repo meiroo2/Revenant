@@ -40,7 +40,7 @@ public interface IHotBox
 {
     public GameObject m_ParentObj { get; set; }
     
-    // 0 = No Hit, 1 = Hit
+    // 0 = Aim Hit, 1 = Force Hit
     public int m_hotBoxType { get; set; }
     public bool m_isEnemys { get; set; }
     public HitBoxPoint m_HitBoxInfo { get; set; }

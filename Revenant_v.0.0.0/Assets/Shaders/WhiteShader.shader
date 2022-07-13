@@ -12,6 +12,8 @@ Shader "Unlit/WhiteShader"
         [HideInInspector] _Flip("Flip", Vector) = (1,1,1,1)
         [HideInInspector] _AlphaTex("External Alpha", 2D) = "white" {}
         [HideInInspector] _EnableExternalAlpha("Enable External Alpha", Float) = 0
+        
+        [PerRendererDate] _WhiteIntensity("White Intensity", Float) = 0
     }
 
     SubShader
@@ -37,6 +39,8 @@ Shader "Unlit/WhiteShader"
             #pragma multi_compile USE_SHAPE_LIGHT_TYPE_2 __
             #pragma multi_compile USE_SHAPE_LIGHT_TYPE_3 __
             #pragma multi_compile _ DEBUG_DISPLAY
+
+            float _WhiteIntensity;
 
             struct Attributes
             {
@@ -108,9 +112,9 @@ Shader "Unlit/WhiteShader"
                 SurfaceData2D surfaceData;
                 InputData2D inputData;
 
-                main.r =  main.r + 0.3;
-                main.g =  main.g + 0.3;
-                main.b =  main.b + 0.3;
+                main.r =  main.r + (1 * _WhiteIntensity);
+                main.g =  main.g + (1 * _WhiteIntensity);
+                main.b =  main.b + (1 * _WhiteIntensity);
                 InitializeSurfaceData(main.rgb, main.a, mask, surfaceData);
                 InitializeInputData(i.uv, i.lightingUV, inputData);
 

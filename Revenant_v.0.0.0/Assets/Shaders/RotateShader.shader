@@ -12,7 +12,9 @@ Shader "Universal Render Pipeline/2D/Sprite-Lit-Default4Rotate_ver2"
         [HideInInspector] _Flip("Flip", Vector) = (1,1,1,1)
         [HideInInspector] _AlphaTex("External Alpha", 2D) = "white" {}
         [HideInInspector] _EnableExternalAlpha("Enable External Alpha", Float) = 0
+        
         [PerRendererData] _FlipVal("FlipVal", int) = 1
+        [PerRendererDate] _WhiteIntensity("White Intensity", Float) = 0
     }
 
     SubShader
@@ -38,6 +40,8 @@ Shader "Universal Render Pipeline/2D/Sprite-Lit-Default4Rotate_ver2"
             #pragma multi_compile USE_SHAPE_LIGHT_TYPE_2 __
             #pragma multi_compile USE_SHAPE_LIGHT_TYPE_3 __
             #pragma multi_compile _ DEBUG_DISPLAY
+
+            float _WhiteIntensity;
 
             struct Attributes
             {
@@ -104,11 +108,15 @@ Shader "Universal Render Pipeline/2D/Sprite-Lit-Default4Rotate_ver2"
 
             half4 CombinedShapeLightFragment(Varyings i) : SV_Target
             {
-                const half4 main = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
+                half4 main = i.color * SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
                 const half4 mask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, i.uv);
                 SurfaceData2D surfaceData;
                 InputData2D inputData;
 
+                // For White Blink
+                main.r =  main.r + (1 * _WhiteIntensity);
+                main.g =  main.g + (1 * _WhiteIntensity);
+                main.b =  main.b + (1 * _WhiteIntensity);
                 InitializeSurfaceData(main.rgb, main.a, mask, surfaceData);
                 InitializeInputData(i.uv, i.lightingUV, inputData);
 

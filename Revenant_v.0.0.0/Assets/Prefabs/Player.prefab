@@ -2876,7 +2876,6 @@ GameObject:
   - component: {fileID: 6699025932106853852}
   - component: {fileID: 7116114394177419113}
   - component: {fileID: 6923863678626100776}
-  - component: {fileID: 8755570605541304092}
   m_Layer: 12
   m_Name: Player
   m_TagString: Player
@@ -3099,18 +3098,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fafe9ab6d1ee4750af9cd2a74ba18542, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8755570605541304092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6699025932106853855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99c9154208364c25a6e5a87131b2d81f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  p_RotateMat: {fileID: 2100000, guid: 43e9e5cd9eddb8c4b9a2a74f34e059c5, type: 2}
+  p_MaxWhiteIntensity: 0.5
+  p_FadeSpeed: 4
 --- !u!1 &6699025932124731936
 GameObject:
   m_ObjectHideFlags: 0
@@ -3453,6 +3443,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6699025932563789976}
   - component: {fileID: 6699025932563789977}
+  - component: {fileID: 544675569204524179}
   - component: {fileID: 4288753431227060481}
   m_Layer: 0
   m_Name: Player_Arm
@@ -3499,6 +3490,19 @@ MonoBehaviour:
   <m_curActualAngle>k__BackingField: 0
   <m_curAnglewithLimit>k__BackingField: 0
   <m_curAnglePhase>k__BackingField: 0
+--- !u!114 &544675569204524179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6699025932563789979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93add51887ea476daae6012569ba5b1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_RayLength: 5
 --- !u!114 &4288753431227060481
 MonoBehaviour:
   m_ObjectHideFlags: 0

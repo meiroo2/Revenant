@@ -14,6 +14,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     private Player m_Player;
     private SoundMgr_SFX m_SFXMgr;
     private ScreenEffect_UI m_ScreenEffectUI;
+    private Player_MatMgr m_PlayerMatMgr;
     
     public int m_hotBoxType { get; set; } = 0;
     public bool m_isEnemys { get; set; } = false;
@@ -41,6 +42,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         m_PlayerUIMgr = instanceMgr.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_ScreenEffectUI = instanceMgr.m_MainCanvas.GetComponentInChildren<InGame_UI>().m_ScreenEffectUI;
         m_SFXMgr = instanceMgr.GetComponentInChildren<SoundMgr_SFX>();
+        m_PlayerMatMgr = GetComponentInParent<Player>().GetComponent<Player_MatMgr>();
     }
 
     public void setPlayerHotBoxCol(bool _isOn)
@@ -86,10 +88,14 @@ public class Player_HotBox : MonoBehaviour, IHotBox
 
     private IEnumerator ActivatePlayerBlink()
     {
+        m_PlayerMatMgr.ActivateBlink(true);
+        
         m_IsPlayerBlinking = true;
         m_PlayerHotBoxCol.enabled = false;
         yield return new WaitForSeconds(m_Player.p_stunTime);
         m_PlayerHotBoxCol.enabled = true;
         m_IsPlayerBlinking = false;
+        
+        m_PlayerMatMgr.ActivateBlink(false);
     }
 }

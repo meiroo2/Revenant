@@ -43,8 +43,9 @@ public class Player : Human
     public Player_UI m_PlayerUIMgr { get; private set; }
     public LocationSensor m_PlayerLocationSensor { get; private set; }
     public Player_InputMgr m_InputMgr { get; private set; }
+    public Player_HitscanRay m_PlayerHitscanRay { get; private set; }
 
-    
+
     private bool m_isRecoveringRollCount = false;
     public float m_LeftRollCount { get; set; }
     public bool m_canRoll { get; private set; } = true;
@@ -60,7 +61,7 @@ public class Player : Human
     private List<HideSlot> m_HideSlotList = new List<HideSlot>();
     private HideSlot m_CurHideSlot;
     
-    private RotationMatScriptMgr m_RotationMatMgr;
+    private Player_MatMgr _mPlayerMatMgr;
     public SoundMgr_SFX m_SFXMgr { get; private set; }
     private PlayerFSM m_CurPlayerFSM;
     private NoiseMaker m_NoiseMaker;
@@ -80,10 +81,11 @@ public class Player : Human
     // Constructor
     private void Awake()
     {
-        m_RotationMatMgr = GetComponent<RotationMatScriptMgr>();
+        _mPlayerMatMgr = GetComponent<Player_MatMgr>();
         m_PlayerAnimator = GetComponent<Animator>();
         m_PlayerRigid = GetComponent<Rigidbody2D>();
         m_PlayerLocationSensor = GetComponentInChildren<LocationSensor>();
+        m_PlayerHitscanRay = GetComponentInChildren<Player_HitscanRay>();
         m_PlayerAniMgr = GetComponentInChildren<Player_AniMgr>();
         m_PlayerHotBox = GetComponentInChildren<Player_HotBox>();
         m_PlayerStairMgr = GetComponentInChildren<Player_StairMgr>();
@@ -306,7 +308,7 @@ public class Player : Human
         if ((m_IsRightHeaded && TempLocalScale.x < 0) || (!m_IsRightHeaded && TempLocalScale.x > 0))
             transform.localScale = new Vector3(-TempLocalScale.x, TempLocalScale.y, 1);
         
-        m_RotationMatMgr.FlipAllNormalsToRight(m_IsRightHeaded);
+        _mPlayerMatMgr.FlipAllNormalsToRight(m_IsRightHeaded);
         
         m_PlayerAniMgr.playplayerAnim();
     }
