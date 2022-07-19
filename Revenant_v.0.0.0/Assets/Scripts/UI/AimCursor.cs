@@ -1,32 +1,18 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 
-public class AimedObjInfo
+public class AimedColInfo
 {
-    public Collider2D m_Collider2d { get; private set; }
-    public int m_ColliderInstanceID { get; private set; }
-    public Vector2 m_ColliderPos { get; private set; }
+    public readonly Collider2D m_Collider;
+    public readonly Vector2 m_AimCursorPos;
 
-
-    public AimedObjInfo(Collider2D _collider, int _id, Vector2 _pos)
+    public AimedColInfo(Collider2D _col, Vector2 _pos)
     {
-        m_Collider2d = _collider;
-        m_ColliderInstanceID = _id;
-        m_ColliderPos = _pos;
-    }
-}
-
-public class HitscanTargetInfo
-{
-    public IHotBox m_HotBox { get; private set; }
-    public Vector2 m_AimedPos { get; private set; }
-
-    public HitscanTargetInfo(IHotBox _hotBox, Vector2 _aimPos)
-    {
-        m_HotBox = _hotBox;
-        m_AimedPos = _aimPos;
+        m_Collider = _col;
+        m_AimCursorPos = _pos;
     }
 }
 
@@ -35,47 +21,138 @@ public class AimCursor : MonoBehaviour
     // Visible Member Variables
     [field: SerializeField] public float p_FireMinimumDistance { get; private set; } = 0.2f;
     [field: SerializeField] public float m_Dist_Aim_Player { get; private set; } = 0f;
-
-
+    public bool m_canAimCursorShot = true;
+    
 
     // Member Variables
     private Camera m_MainCamera;
-    private AimImageCanvas m_ImageofAim;
     private Transform m_PlayerTransform;
     private Player_AniMgr m_PlayerAniMgr;
-    private Player_HitscanRay m_PlayerHitscanRay;
+    private Coroutine m_UpdateCoroutine;
 
-    public bool m_canAimCursorShot { get; private set; } = true;
-    public int AimedObjid { get; private set; } = -1;
-    public string AimedObjName { get; private set; } = "";
-
-    private List<AimedObjInfo> m_AimedObjs = new List<AimedObjInfo>();
-    private Vector2 m_CursorPos;
-    private int m_ShortestIdx = -1;
-    private float m_ShortestLength = 0f;
-
-    private float m_TempLength;
-
+    private readonly int m_RO_ColInfoArrLength = 3;
+    private Collider2D[] m_AimedColInfoArr;
+    private int m_CurInfoArrLength = 0;
 
 
     // Constructors
     private void Awake()
     {
+        m_AimedColInfoArr = new Collider2D[m_RO_ColInfoArrLength];
+        m_CurInfoArrLength = 0;
+        
         m_MainCamera = Camera.main;
+        m_UpdateCoroutine = StartCoroutine(UpdateRoutine());
     }
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
         
-        m_ImageofAim = instance.m_MainCanvas.GetComponentInChildren<AimImageCanvas>();
         m_PlayerTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.transform;
         m_PlayerAniMgr = instance.GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
-        m_PlayerHitscanRay = instance.GetComponentInChildren<Player_Manager>().m_Player.m_PlayerHitscanRay;
+    }
+    private void OnDestroy()
+    {
+        StopCoroutine(m_UpdateCoroutine);
     }
 
 
-
     // Updates
+    private IEnumerator UpdateRoutine()
+    {
+        while (true)
+        {
+            transform.position = m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
+            yield return null;
+        }
+    }
+
+    // Physics
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (m_CurInfoArrLength >= m_RO_ColInfoArrLength)
+            return;
+
+        AddElement(col);
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        for (int i = 0; i < m_CurInfoArrLength; i++)
+        {
+            if (m_AimedColInfoArr[i] == other)
+            {
+                DeleteElementUsingIdx(i);
+                break;
+            }
+        }
+    }
+
+    
+    // Functions
+    public AimedColInfo GetAimedColInfo()
+    {
+        switch (m_CurInfoArrLength)
+        {
+            case <= 0:
+                return null;
+                break;
+            
+            case 1:
+                return new AimedColInfo(m_AimedColInfoArr[0], transform.position);
+                break;
+            
+            default:
+                Vector2 aimCursorPos = transform.position;
+                
+                int minIdx = 0;
+                float minDistance = (aimCursorPos - (Vector2)m_AimedColInfoArr[0].transform.position).sqrMagnitude;
+                float distance = 0f;
+                
+                for (int i = 1; i < m_CurInfoArrLength; i++)
+                {
+                    distance = (aimCursorPos - (Vector2)m_AimedColInfoArr[i].transform.position).sqrMagnitude;
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        minIdx = i;
+                    }
+                }
+
+                return new AimedColInfo(m_AimedColInfoArr[minIdx], aimCursorPos);
+                break;
+        }
+    }
+    private void DeleteElementUsingIdx(int _idx)
+    {
+        // Idx Out of range
+        if (_idx < 0 || _idx >= m_CurInfoArrLength)
+            return;
+
+        // 마지막 요소 제거가 아닐 시,마지막 요소 전까지 뒷 요소를 나아가며 본인에게 대입
+        if (_idx != m_CurInfoArrLength - 1)
+        {
+            for (int i = _idx; i < m_CurInfoArrLength - 1; i++)
+            {
+                m_AimedColInfoArr[i] = m_AimedColInfoArr[i + 1];
+            }
+        }
+
+        m_CurInfoArrLength--;
+    }
+    private void AddElement(Collider2D _col)
+    {
+        // Out of range check
+        if (m_CurInfoArrLength >= m_RO_ColInfoArrLength)
+            return;
+
+        m_AimedColInfoArr[m_CurInfoArrLength] = _col;
+        
+        m_CurInfoArrLength++;
+    }
+
+    /*
+     // Updates
     private void Update()
     {
         m_CursorPos = m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -136,46 +213,56 @@ public class AimCursor : MonoBehaviour
     }
 
     // Functions
+    public Vector2 GetAimCursorPos()
+    {
+        return transform.position;
+    }
+    
     public HitscanTargetInfo GetHitscanTargetInfo()
     {
-        if (m_AimedObjs.Count > 0)
+        List<RaycastHit2D> rayHitList = new List<RaycastHit2D>();
+        rayHitList = m_PlayerHitscanRay.GetRayHits();
+
+        if (ReferenceEquals(rayHitList, null))
         {
-            int isFound = -1;
-            List<RaycastHit2D> arr = m_PlayerHitscanRay.GetRayHits();
-
-            if (arr.Count <= 0)
-            {
-                return new HitscanTargetInfo(null, m_PlayerHitscanRay.GetAimFailedHit().point);
-            }
-
+            // Ray에 아무것도 맞지 않음(빈 공간)
+            return new HitscanTargetInfo(0, transform.position);
+        }
+        else
+        {
+            // Ray에 무언가 검출됨
+            int coinsideIdx = -1;
+            
+            // Aimcursor와 충돌한 대상들과 Ray에 맞은 대상이 같은지 비교
             for (int i = 0; i < m_AimedObjs.Count; i++)
             {
-                for (int j = 0; j < arr.Count; j++)
+                for (int j = 0; j < rayHitList.Count; j++)
                 {
-                    if (m_AimedObjs[i].m_Collider2d == arr[j].collider)
+                    if (m_AimedObjs[i].m_Collider2d == rayHitList[j].collider)
                     {
-                        isFound = i;
+                        coinsideIdx = i;
                         break;
                     }
                 }
 
-                if (isFound != -1)
+                if (coinsideIdx != -1)
                     break;
             }
 
-            if (isFound == -1)
-                return new HitscanTargetInfo(null, m_PlayerHitscanRay.GetAimFailedHit().point);
+            if (coinsideIdx == -1)
+            {
+                // 벽 맞음
+                return new HitscanTargetInfo(1, m_PlayerHitscanRay.GetPosWhenAimFailed());
+            }
             else
             {
-                return new HitscanTargetInfo(m_AimedObjs[isFound].m_Collider2d.GetComponent<IHotBox>(),
+                // 명중
+                return new HitscanTargetInfo(2,m_AimedObjs[coinsideIdx].m_Collider2d.GetComponent<IHotBox>(),
                     transform.position);
             }
         }
-        else
-        {
-            return new HitscanTargetInfo(null, m_PlayerHitscanRay.GetAimFailedHit().point);
-        }
     }
+
     private void CalculateNearestHotBox()
     {
         if (m_AimedObjs.Count > 0)
@@ -197,4 +284,5 @@ public class AimCursor : MonoBehaviour
             AimedObjName = m_AimedObjs[m_ShortestIdx].m_Collider2d.name;
         }
     }
+     */
 }
