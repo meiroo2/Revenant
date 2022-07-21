@@ -38,9 +38,9 @@ public class Player_UI : MonoBehaviour
     // Member Variables
     private SoundMgr_SFX m_SoundMgr;
     private CameraMove m_Maincam;
+    private Player_ArmMgr m_ArmMgr;
     public float m_ReloadSpeed { get; set; } = 1f;
     public float m_HitmarkRemainTime { get; set; } = 0.2f;
-    private bool m_IsReloading = false;
     private int m_MaxHp = 0;
     private float m_HpUnit = 0;
     private Transform m_AimTransform;
@@ -49,10 +49,12 @@ public class Player_UI : MonoBehaviour
     private PlayerUIDelegate m_Callback = null;
 
     private Coroutine m_CurCoroutine;
-    private Coroutine m_NullCoroutine = null;
+    private Coroutine m_ReloadCoroutine;
 
     private Color m_HitmarkColor = new Color(1, 1, 1, 1);
     private Vector2 m_HitmarkOriginScale;
+
+    private Sprite m_ReloadBackupSprite;
     
     
     // Constructors
@@ -72,7 +74,9 @@ public class Player_UI : MonoBehaviour
 
     private void Start()
     {
-        m_SoundMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        var instance = InstanceMgr.GetInstance();
+        m_SoundMgr = instance.GetComponentInChildren<SoundMgr_SFX>();
+        m_ArmMgr = instance.GetComponentInChildren<Player_Manager>().m_Player.m_ArmMgr;
     }
 
 
@@ -85,22 +89,23 @@ public class Player_UI : MonoBehaviour
     // Functions
     public void ForceStopReload()
     {
-        StopCoroutine(Internal_Reload());
+        if (!ReferenceEquals(m_ReloadCoroutine, null))
+            StopCoroutine(m_ReloadCoroutine);
+
+        p_MainAimImg.sprite = m_ReloadBackupSprite;
         p_ReloadCircle.fillAmount = 0f;
-        m_IsReloading = false;
+        m_ArmMgr.m_IsReloading = false;
     }
     public void StartReload()
     {
-        if (!m_IsReloading)
-        {
-            p_MainAimImg.sprite = p_ReloadAimImg;
-            StartCoroutine(Internal_Reload());
-        }
+        m_ArmMgr.m_IsReloading = true;
+        m_ReloadBackupSprite = p_MainAimImg.sprite;
+        p_MainAimImg.sprite = p_ReloadAimImg;
+        m_ReloadCoroutine = StartCoroutine(Internal_Reload());
     }
 
     private IEnumerator Internal_Reload()
     {
-        m_IsReloading = true;
         while (p_ReloadCircle.fillAmount < 1)
         {
             p_ReloadCircle.fillAmount += Time.deltaTime * m_ReloadSpeed;
@@ -108,7 +113,7 @@ public class Player_UI : MonoBehaviour
         }
 
         p_ReloadCircle.fillAmount = 0f;
-        m_IsReloading = false;
+        m_ArmMgr.m_IsReloading = false;
         m_Callback();
     }
     
@@ -155,7 +160,7 @@ public class Player_UI : MonoBehaviour
 
     public void ActiveHitmark(int _type)
     {
-        if (m_CurCoroutine != m_NullCoroutine)
+        if (m_CurCoroutine != null)
             StopCoroutine(m_CurCoroutine);
 
         // 기본 히트를 Body라 생각

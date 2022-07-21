@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class Player_ArmMgr : MonoBehaviour
 {
@@ -28,11 +30,12 @@ public class Player_ArmMgr : MonoBehaviour
     public Transform p_HeadEffectorPos;
 
     // Member Variables
-    [field: SerializeField] public bool m_IsReloading { get; private set; } = false;
+    [HideInInspector] public bool m_IsReloading = false;
     private Player_AniMgr m_PlayerAniMgr;
     private WeaponMgr m_WeaponMgr;
     private PlayerRotation m_PlayerRotation;
     private Player m_Player;
+    private Player_InputMgr m_InputMgr;
 
     private bool m_isRecoilLerping = false;
     private float m_RecoilTimer = 1f;
@@ -58,83 +61,109 @@ public class Player_ArmMgr : MonoBehaviour
     private void Start()
     {
         InstanceMgr _instance = InstanceMgr.GetInstance();
-        m_WeaponMgr = _instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr;
-        m_PlayerAniMgr = _instance.GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
         m_Player = _instance.GetComponentInChildren<Player_Manager>().m_Player;
+        m_WeaponMgr = m_Player.m_WeaponMgr;
+        m_PlayerAniMgr = m_Player.m_PlayerAniMgr;
+        m_InputMgr = m_Player.m_InputMgr;
 
         m_HeadEffectorOriginPos = p_HeadEffectorPos.localPosition;
     }
 
+    
     // Updates
     private void Update()
     {
-        if (m_Player.m_IsRightHeaded)
-            p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 600f), m_HeadEffectorOriginPos.y);
-        else
-            p_HeadEffectorPos.localPosition = new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 600f), m_HeadEffectorOriginPos.y);
+        if (m_InputMgr.m_IsPushAttackKey && m_Player.m_CanAttack && !m_IsReloading)
+            DoAttack();
+        
+        if (m_InputMgr.m_IsPushReloadKey && m_WeaponMgr.m_CurWeapon.GetCanReload() == 1 && !m_IsReloading)
+            DoReload();
+    }
 
-        if (Input.GetMouseButtonDown(0) && m_Player.m_CanFire && !m_IsReloading)
-        {
-            switch (m_WeaponMgr.m_CurWeapon.Fire())
-            {
-                case 0:
-                    // 발사 실패
-                    break;
-
-                case 1:
-                    // 발사 성공
-                    m_RecoilTimer = 1f;
-                    doRecoil();
-                    m_isRecoilLerping = true;
-                    break;
-
-                case 2:
-                    m_Player.m_SFXMgr.playPlayerSFXSound(1);
-                    if (m_WeaponMgr.m_CurWeapon.GetCanReload() == 1)
-                    {
-                        m_Player.m_SFXMgr.playPlayerSFXSound(2);
-                        m_IsReloading = true;
-                        m_Player.m_PlayerUIMgr.ResetCallback();
-                        m_Player.m_PlayerUIMgr.AddCallback(m_WeaponMgr.m_CurWeapon.Reload);
-                        m_Player.m_PlayerUIMgr.AddCallback(() => m_IsReloading = false);
-                        m_Player.m_PlayerUIMgr.StartReload();
-                    }
-                    // 총알 없음
-                    break;
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            switch (m_WeaponMgr.m_CurWeapon.GetCanReload())
-            {
-                case 0:     // 장전 불가
-                    break;
-                
-                case 1:     // 장전 가능
-                    m_Player.m_SFXMgr.playPlayerSFXSound(2);
-                    m_IsReloading = true;
-                    m_Player.m_PlayerUIMgr.ResetCallback();
-                    m_Player.m_PlayerUIMgr.AddCallback(m_WeaponMgr.m_CurWeapon.Reload);
-                    m_Player.m_PlayerUIMgr.AddCallback(() => m_IsReloading = false);
-                    m_Player.m_PlayerUIMgr.StartReload();
-                    break;
-            }
-        }
-
-        if (m_isRecoilLerping)
-        {
-            doRecoilLerp();
-        }
+    private void FixedUpdate()
+    {
+        UpdateHeadIKPos();
     }
 
     // Physics
 
 
     // Functions
+    private void DoAttack()
+    {
+        switch (m_WeaponMgr.m_CurWeapon.Fire())
+        {
+            case 0:
+                // 발사 실패
+                Debug.Log("플레이어 발사 실패");
+                break;
+
+            case 1:
+                // 발사 성공
+                m_RecoilTimer = 1f;
+                doRecoil();
+                StartCoroutine(RecoilLerp());
+                break;
+
+            case 2:
+                // 총알 없음 (자동 재장전)
+                m_Player.m_SFXMgr.playPlayerSFXSound(1);
+                if (!m_IsReloading)
+                    DoReload();
+                break;
+        }
+    }
+
+    private void DoReload()
+    {
+        m_Player.m_SFXMgr.playPlayerSFXSound(2);
+        m_Player.m_PlayerUIMgr.ResetCallback();
+        m_Player.m_PlayerUIMgr.AddCallback(m_WeaponMgr.m_CurWeapon.Reload);
+        m_Player.m_PlayerUIMgr.AddCallback(() => m_IsReloading = false);
+        m_Player.m_PlayerUIMgr.StartReload();
+    }
+
+    public void StopReload()
+    {
+        if (!m_IsReloading)
+            return;
+        
+        m_Player.m_PlayerUIMgr.ForceStopReload();
+    }
+
+    private IEnumerator RecoilLerp()
+    {
+        while (true)
+        {
+            switch (m_PlayerAniMgr.m_curArmIdx)
+            {
+                case 0:
+                    p_GunTransform.localPosition = Vector2.Lerp(p_GunTransform.localPosition, p_LongGunPos.localPosition, Time.deltaTime * RecoilSpeed);
+                    p_LongOutArmEffectorPos.localPosition = Vector2.Lerp(p_LongOutArmEffectorPos.localPosition, m_LongArmEffectorOriginPos[0], Time.deltaTime * RecoilSpeed);
+                    p_LongInArmEffectorPos.localPosition = Vector2.Lerp(p_LongInArmEffectorPos.localPosition, m_LongArmEffectorOriginPos[1], Time.deltaTime * RecoilSpeed);
+                    break;
+
+                case 1:
+                    p_GunTransform.localPosition = Vector2.Lerp(p_GunTransform.localPosition, p_ShortGunPos.localPosition, Time.deltaTime * RecoilSpeed);
+                    p_ShortOutArmEffectorPos.localPosition = Vector2.Lerp(p_ShortOutArmEffectorPos.localPosition, m_ShortArmEffectorOriginPos[0], Time.deltaTime * RecoilSpeed);
+                    p_ShortInArmEffectorPos.localPosition = Vector2.Lerp(p_ShortInArmEffectorPos.localPosition, m_ShortArmEffectorOriginPos[1], Time.deltaTime * RecoilSpeed);
+                    break;
+            }
+            m_RecoilTimer -= Time.deltaTime;
+
+            if (m_RecoilTimer <= 0f)
+                break;
+            
+            yield return null;
+        }
+    }
+    private void UpdateHeadIKPos()
+    {
+        p_HeadEffectorPos.localPosition = 
+            new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 700f), m_HeadEffectorOriginPos.y);
+    }
     public void changeArmPartPos(int _ArmIdx)
     {
-
         switch (_ArmIdx)
         {
             case 0:
@@ -167,29 +196,6 @@ public class Player_ArmMgr : MonoBehaviour
                 p_ShortOutArmEffectorPos.localPosition = new Vector2(m_ShortArmEffectorOriginPos[0].x - RecoilDistance, m_ShortArmEffectorOriginPos[0].y);
                 p_ShortInArmEffectorPos.localPosition = new Vector2(m_ShortArmEffectorOriginPos[1].x - RecoilDistance, m_ShortArmEffectorOriginPos[1].y);
                 break;
-        }
-    }
-    private void doRecoilLerp()
-    {
-        switch (m_PlayerAniMgr.m_curArmIdx)
-        {
-            case 0:
-                p_GunTransform.localPosition = Vector2.Lerp(p_GunTransform.localPosition, p_LongGunPos.localPosition, Time.deltaTime * RecoilSpeed);
-                p_LongOutArmEffectorPos.localPosition = Vector2.Lerp(p_LongOutArmEffectorPos.localPosition, m_LongArmEffectorOriginPos[0], Time.deltaTime * RecoilSpeed);
-                p_LongInArmEffectorPos.localPosition = Vector2.Lerp(p_LongInArmEffectorPos.localPosition, m_LongArmEffectorOriginPos[1], Time.deltaTime * RecoilSpeed);
-                break;
-
-            case 1:
-                p_GunTransform.localPosition = Vector2.Lerp(p_GunTransform.localPosition, p_ShortGunPos.localPosition, Time.deltaTime * RecoilSpeed);
-                p_ShortOutArmEffectorPos.localPosition = Vector2.Lerp(p_ShortOutArmEffectorPos.localPosition, m_ShortArmEffectorOriginPos[0], Time.deltaTime * RecoilSpeed);
-                p_ShortInArmEffectorPos.localPosition = Vector2.Lerp(p_ShortInArmEffectorPos.localPosition, m_ShortArmEffectorOriginPos[1], Time.deltaTime * RecoilSpeed);
-                break;
-        }
-        m_RecoilTimer -= Time.deltaTime;
-        if(m_RecoilTimer <= 0f)
-        {
-            m_RecoilTimer = 1f;
-            m_isRecoilLerping = false;
         }
     }
 

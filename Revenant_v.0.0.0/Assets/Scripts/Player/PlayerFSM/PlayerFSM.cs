@@ -20,6 +20,12 @@ public abstract class PlayerFSM
     public abstract void ExitState();
     public abstract void NextPhase();
 
+    protected void InitFunc()
+    {
+        m_InputMgr = m_Player.m_InputMgr;
+        m_PlayerTransform = m_Player.transform;
+    }
+    
     protected void CheckNull()
     {
         if (ReferenceEquals(m_Player, null))
@@ -29,6 +35,11 @@ public abstract class PlayerFSM
     protected void ExitFinalProcess()
     {
         //m_Player.m_Player_AniMgr.exitplayerAnim();
+    }
+
+    protected void CheckMeleeAttack()
+    {
+        //m_InputMgr.
     }
 }
 
@@ -42,7 +53,8 @@ public class Player_IDLE : PlayerFSM
 
     public override void StartState()
     {
-        m_InputMgr = m_Player.m_InputMgr;
+        InitFunc();
+        m_Player.m_CanHide = true;
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
@@ -54,10 +66,13 @@ public class Player_IDLE : PlayerFSM
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
         else if(m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
+        else if(m_InputMgr.m_IsPushSideAttackKey)
+            m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
     }
 
     public override void ExitState()
     {
+        m_Player.m_CanHide = false;
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
         ExitFinalProcess();
     }
@@ -84,6 +99,7 @@ public class Player_WALK : PlayerFSM
     
     public override void StartState()
     {
+        m_Player.m_CanHide = true;
         m_StairMgr = m_Player.m_PlayerStairMgr;
         m_Rigid = m_Player.m_PlayerRigid;
         m_InputMgr = m_Player.m_InputMgr;
@@ -133,10 +149,13 @@ public class Player_WALK : PlayerFSM
             m_Player.setisRightHeaded(m_CurInput > 0);
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
+        else if(m_InputMgr.m_IsPushSideAttackKey)
+            m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
     }
 
     public override void ExitState()
     {
+        m_Player.m_CanHide = false;
         m_Player.SetWalkSoundCoroutine(false);
         m_Rigid.velocity = Vector2.zero;
         ExitFinalProcess();
@@ -162,14 +181,17 @@ public class Player_ROLL : PlayerFSM
     
     public override void StartState()
     {
-        m_Player.m_SFXMgr.playPlayerSFXSound(0);
+        m_Player.m_ArmMgr.StopReload();
         
+        m_Player.m_SFXMgr.playPlayerSFXSound(0);
+
+        m_Player.m_CanHide = true;
         m_StairMgr = m_Player.m_PlayerStairMgr;
         m_Rigid = m_Player.m_PlayerRigid;
         m_PlayerAnimator = m_Player.m_PlayerAnimator;
 
         m_Player.m_CanMove = false;
-        m_Player.m_CanFire = false;
+        m_Player.m_CanAttack = false;
         m_Player.m_PlayerHotBox.setPlayerHotBoxCol(false);
         
         m_Player.UseRollCount();
@@ -195,7 +217,8 @@ public class Player_ROLL : PlayerFSM
 
     public override void ExitState()
     {
-        m_Player.m_CanFire = true;
+        m_Player.m_CanHide = false;
+        m_Player.m_CanAttack = true;
         m_Player.m_CanMove = true;
         m_Rigid.velocity = Vector2.zero;
         m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
@@ -224,15 +247,16 @@ public class Player_HIDDEN : PlayerFSM
 
     public override void StartState()
     {
+        m_Player.m_ArmMgr.StopReload();
         m_SFXMgr = m_Player.m_SFXMgr;
-        m_Player.m_CanFire = false;
+        m_Player.m_CanAttack = false;
         m_StairMgr = m_Player.m_PlayerStairMgr;
         m_Rigid = m_Player.m_PlayerRigid;
         m_InputMgr = m_Player.m_InputMgr;
         
         m_SFXMgr.playPlayerSFXSound(5);
         m_Player.m_CanMove = false;
-        m_Player.m_CanFire = false;
+        m_Player.m_CanAttack = false;
         m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
     }
 
@@ -253,7 +277,7 @@ public class Player_HIDDEN : PlayerFSM
             else if(!m_Player.m_playerRotation.getIsMouseRight())
                 m_Player.setisRightHeaded(false);
             
-            m_Player.ForceExitFromHiddenSlot();
+            m_Player.m_ObjInteractor.ForceExitFromHideSlot();
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
         
@@ -262,7 +286,7 @@ public class Player_HIDDEN : PlayerFSM
     public override void ExitState()
     {
         m_Player.m_CanMove = true;
-        m_Player.m_CanFire = true;
+        m_Player.m_CanAttack = true;
         m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
         m_SFXMgr.playPlayerSFXSound(6);
         ExitFinalProcess();
@@ -271,6 +295,61 @@ public class Player_HIDDEN : PlayerFSM
     public override void NextPhase()
     {
 
+    }
+}
+
+public class Player_MELEE : PlayerFSM
+{
+    private Animator m_PlayerAnimator;
+    private float m_CurAniTime;
+    private bool m_IsAttackFinished = false;
+    
+    public Player_MELEE(Player _player) : base(_player)
+    {
+    }
+
+    public override void StartState()
+    {
+        m_Player.m_ArmMgr.StopReload();
+        m_IsAttackFinished = false;
+        m_PlayerAnimator = m_Player.m_PlayerAnimator;
+        
+        m_Player.m_SFXMgr.playPlayerSFXSound(0);
+        
+        m_Player.m_CanMove = false;
+        m_Player.m_CanAttack = false;
+        m_Player.m_playerRotation.m_doRotate = false;
+        
+        m_Player.m_MeleeAttack.StartFindHotBoxes();
+    }
+
+    public override void UpdateState()
+    {
+        m_CurAniTime = m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
+        switch (m_CurAniTime)
+        {
+            case >= 0.5f when !m_IsAttackFinished:
+                m_IsAttackFinished = true;
+                m_Player.m_MeleeAttack.AttackAllHotBoxes();
+                break;
+            
+            case >= 1f:
+                m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
+                break;
+        }
+    }
+
+    public override void ExitState()
+    {
+        m_Player.m_CanAttack = true;
+        m_Player.m_CanMove = true;
+        m_Player.m_playerRotation.m_doRotate = true;
+    }
+
+    public override void NextPhase()
+    {
+        
     }
 }
 
@@ -287,12 +366,12 @@ public class Player_DEAD : PlayerFSM
     public override void StartState()
     {
         m_Rigid = m_Player.m_PlayerRigid;
-
+        m_Player.m_PlayerHotBox.setPlayerHotBoxCol(false);
         m_Player.m_PlayerAnimator.Play("Dead");
         
         m_Rigid.velocity = Vector2.zero;
         m_Player.m_CanMove = false;
-        m_Player.m_CanFire = false;
+        m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
         m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
     }
@@ -305,10 +384,10 @@ public class Player_DEAD : PlayerFSM
     public override void ExitState()
     {
         m_Player.m_CanMove = true;
-        m_Player.m_CanFire = true;
+        m_Player.m_CanAttack = true;
         m_Player.m_playerRotation.m_doRotate = true;
         m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
-        
+        m_Player.m_PlayerHotBox.setPlayerHotBoxCol(true);
         ExitFinalProcess();
     }
 

@@ -2,36 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine.Serialization;
 
 public class HitSFXMaker : MonoBehaviour
 {
     // Visible Member Variables
     public int m_ObjPullCount = 1;
-    public GameObject[] m_PullingObject;
-    public float m_DestroyTimer = 0.8f;
+    public GameObject[] p_PullingObject;
 
     // Member Variables
-    private int[] m_Idx;
-    private ForObjPull_Once[,] m_PulledObjArr;
+    private int[] m_CurIdxs;
+    private int[] m_Limits;
+    private HitSFX_Instance[] m_PulledSFXArr;
 
     // Constructors
     private void Awake()
     {
-        m_Idx = Enumerable.Repeat(0, m_PullingObject.Length).ToArray();
-
-        for(int i = 0; i < m_PullingObject.Length; i++)
-        {
-            m_PulledObjArr = new ForObjPull_Once[m_PullingObject.Length, m_ObjPullCount];
-        }
-
-        for(int i = 0; i <m_PullingObject.Length; i++)
+        m_CurIdxs = new int[p_PullingObject.Length];
+        m_Limits = new int[p_PullingObject.Length];
+        
+        List<HitSFX_Instance> list = new List<HitSFX_Instance>();
+        for (int i = 0; i < p_PullingObject.Length; i++)
         {
             for (int j = 0; j < m_ObjPullCount; j++)
             {
-                m_PulledObjArr[i, j] = Instantiate(m_PullingObject[i], transform).GetComponent<ForObjPull_Once>();
-                m_PulledObjArr[i, j].gameObject.SetActive(false);
+                GameObject instanced = Instantiate(p_PullingObject[i], transform, true);
+                list.Add(instanced.GetComponent<HitSFX_Instance>());
+                instanced.SetActive(false);
             }
+
+            m_Limits[i] = list.Count - 1;
+            m_CurIdxs[i] = m_Limits[i] - (m_ObjPullCount - 1);
         }
+        
+        m_PulledSFXArr = list.ToArray();
     }
 
     // Updates
@@ -39,25 +44,23 @@ public class HitSFXMaker : MonoBehaviour
     // Physics
 
     // Functions
-    public void EnableNewObj(int _pullingObjIdx, Vector2 _spawnPos, Quaternion _rotation, bool _isRightHeaded)
+    public void EnableNewObj(int _idx, Vector2 _spawnPos, bool _isRightHeaded = true)
     {
-        if(_pullingObjIdx < m_PullingObject.Length)
-        {
-            m_PulledObjArr[_pullingObjIdx, m_Idx[_pullingObjIdx]].gameObject.transform.position = _spawnPos;
-            m_PulledObjArr[_pullingObjIdx, m_Idx[_pullingObjIdx]].gameObject.transform.rotation = _rotation;
+        if (_idx < 0 || _idx >= p_PullingObject.Length)
+            return;
 
-            if (_isRightHeaded)
-                m_PulledObjArr[_pullingObjIdx, m_Idx[_pullingObjIdx]].gameObject.transform.localScale = new Vector2(1f, 1f);
-            else
-                m_PulledObjArr[_pullingObjIdx, m_Idx[_pullingObjIdx]].gameObject.transform.localScale = new Vector2(-1f, 1f);
+        if (m_PulledSFXArr[m_CurIdxs[_idx]].gameObject.activeSelf)
+            m_PulledSFXArr[m_CurIdxs[_idx]].gameObject.SetActive(false);
+        
+        m_PulledSFXArr[m_CurIdxs[_idx]].gameObject.SetActive(true);
+        Quaternion rotationValue = Quaternion.Euler(0,0, Random.Range(0, 360));
+        m_PulledSFXArr[m_CurIdxs[_idx]].transform.SetPositionAndRotation(_spawnPos,
+            rotationValue);
+            
+        m_CurIdxs[_idx]++;
 
-            m_PulledObjArr[_pullingObjIdx, m_Idx[_pullingObjIdx]].gameObject.SetActive(false);
-            m_PulledObjArr[_pullingObjIdx, m_Idx[_pullingObjIdx]].gameObject.SetActive(true);
-            m_PulledObjArr[_pullingObjIdx, m_Idx[_pullingObjIdx]].resetTimer(m_DestroyTimer);
-            m_Idx[_pullingObjIdx]++;
-            if (m_Idx[_pullingObjIdx] >= m_ObjPullCount)
-                m_Idx[_pullingObjIdx] = 0;
-        }
+        if (m_CurIdxs[_idx] > m_Limits[_idx])
+            m_CurIdxs[_idx] = m_Limits[_idx] - (m_ObjPullCount - 1);
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

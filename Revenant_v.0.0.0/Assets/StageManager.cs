@@ -10,7 +10,7 @@ public class StageManager : MonoBehaviour
     // Member Variables
     
 
-    // Constructos
+    // Constructors
 
 
     // Updates

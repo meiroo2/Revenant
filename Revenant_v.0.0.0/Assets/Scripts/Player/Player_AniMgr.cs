@@ -104,6 +104,11 @@ public class Player_AniMgr : MonoBehaviour
                 m_PlayerAnimator.SetInteger("DoHide", 1);
                 break;
             
+            case PlayerStateName.MELEE:
+                setSprites(true, false, false, false, false);
+                m_PlayerAnimator.SetBool("DoMelee", true);
+                break;
+
             case PlayerStateName.DEAD:
                 break;
             
@@ -132,6 +137,11 @@ public class Player_AniMgr : MonoBehaviour
             case PlayerStateName.HIDDEN:
                 setSprites(false, true, true, true, true);
                 m_PlayerAnimator.SetInteger("DoHide", 0);
+                break;
+            
+            case PlayerStateName.MELEE:
+                setSprites(false, true, true, true, true);
+                m_PlayerAnimator.SetBool("DoMelee", false);
                 break;
         }
     }

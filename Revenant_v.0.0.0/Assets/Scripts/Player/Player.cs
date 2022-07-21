@@ -11,6 +11,7 @@ public enum PlayerStateName
     WALK,
     ROLL,
     HIDDEN,
+    MELEE,
     DEAD
 }
 
@@ -44,21 +45,25 @@ public class Player : Human
     public LocationSensor m_PlayerLocationSensor { get; private set; }
     public Player_InputMgr m_InputMgr { get; private set; }
     public Player_HitscanRay m_PlayerHitscanRay { get; private set; }
+    public Player_ObjInteracter m_ObjInteractor { get; private set; }
+    public Player_MeleeAttack m_MeleeAttack { get; private set; }
+    public Player_ArmMgr m_ArmMgr { get; private set; }
 
 
     private bool m_isRecoveringRollCount = false;
     public float m_LeftRollCount { get; set; }
     public bool m_canRoll { get; private set; } = true;
     public bool m_canChangeWeapon { get; private set; } = false;
+    public bool m_CanHide { get; set; } = true;
 
 
     private Player_IDLE m_IDLE;
     private Player_WALK m_WALK;
     private Player_ROLL m_ROLL;
     private Player_HIDDEN m_HIDDEN;
+    private Player_MELEE m_MELEE;
     private Player_DEAD m_DEAD;
-
-    private List<HideSlot> m_HideSlotList = new List<HideSlot>();
+    
     private HideSlot m_CurHideSlot;
     
     private Player_MatMgr _mPlayerMatMgr;
@@ -92,12 +97,16 @@ public class Player : Human
         m_playerRotation = GetComponentInChildren<PlayerRotation>();
         m_WeaponMgr = GetComponentInChildren<Player_WeaponMgr>();
         m_useRange = GetComponentInChildren<Player_UseRange>();
+        m_ObjInteractor = GetComponentInChildren<Player_ObjInteracter>();
+        m_MeleeAttack = GetComponentInChildren<Player_MeleeAttack>();
+        m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
 
 
         m_IDLE = new Player_IDLE(this);
         m_WALK = new Player_WALK(this);
         m_ROLL = new Player_ROLL(this);
         m_HIDDEN = new Player_HIDDEN(this);
+        m_MELEE = new Player_MELEE(this);
         m_DEAD = new Player_DEAD(this);
         
         
@@ -157,22 +166,16 @@ public class Player : Human
     {
         if (m_ObjectState == ObjectState.Pause)       // Pause면 중지
             return;
-
-        // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
-        PlayerRayFunc();
-
+        
+        
+        m_CurPlayerFSM.UpdateState();
+        
+        
+        // Player Ray 측정(StairMgr로 바꿀 것)
         if (gameObject.layer == 12 && m_FootRay)
         {
             m_PlayerStairMgr.ChangePlayerNormal(m_FootRay.normal);
         }
-
-        // 픽셀퍼펙트 공식 서비스 종료 (Noice)(22.06.13)
-        // transform.position = StaticMethods.getPixelPerfectPos(m_PlayerPosVec);
-    }
-
-    private void FixedUpdate()
-    {
-        m_CurPlayerFSM.UpdateState();
     }
 
 
@@ -201,6 +204,10 @@ public class Player : Human
             
             case PlayerStateName.HIDDEN:
                 m_CurPlayerFSM = m_HIDDEN;
+                break;
+            
+            case PlayerStateName.MELEE:
+                m_CurPlayerFSM = m_MELEE;
                 break;
             
             case PlayerStateName.DEAD:
@@ -321,6 +328,14 @@ public class Player : Human
     {
         return (m_IsRightHeaded && m_InputMgr.m_IsPushRightKey) || (!m_IsRightHeaded && m_InputMgr.m_IsPushLeftKey);
     }
+
+
+
+
+
+    // Legacy
+    /*
+     
     private void PlayerRayFunc()
     {
         m_PlayerPosVec = transform.position;
@@ -331,96 +346,8 @@ public class Player : Human
             m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Stair"));
 
         Debug.DrawRay(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), Vector2.down * 0.5f, new Color(0, 1, 0));
-
-        //Debug.Log((m_PlayerPosVec.y - m_FootRay.point.y));
-
-        /*
-        if (m_FootRay && (m_PlayerPosVec.y - 0.36f) - m_FootRay.point.y >= 0.29f)
-            m_PlayerPosVec.y = m_FootRay.point.y + 0.26f + 0.36f;
-            */
     }
-
-    public void ForceExitFromHiddenSlot()
-    {
-        m_CurHideSlot.ActivateHideSlot(false);
-        m_CurHideSlot = null;
-    }
-
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        switch (col.tag)
-        {
-            case "HideSlot":
-                m_HideSlotList.Add(col.GetComponent<HideSlot>());
-                break;
-        }
-    }
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        // HideSlotList 크기가 1 이상일 경우에만 작동
-        if (m_HideSlotList.Count <= 0)
-            return;
-
-
-        int nearSlotIdx = -1;
-        float nearSlotDistance = 999f;
-        
-        
-        // 1. 가장 가까운 슬롯 Idx 찾기
-        foreach (HideSlot ele in m_HideSlotList)
-        {
-            float distanceBetPlayer = (transform.position - ele.transform.position).sqrMagnitude;
-            if (distanceBetPlayer < nearSlotDistance)
-            {
-                nearSlotDistance = distanceBetPlayer;
-                nearSlotIdx = m_HideSlotList.IndexOf(ele);
-            }
-        }
-
-        // 2. 가장 가까운 것만 하이라이트 처리
-        foreach (HideSlot ele in m_HideSlotList)
-        {
-            ele.ActivateOutline(false);
-        }
-        if (nearSlotIdx == -1)
-            return;
-        else 
-            m_HideSlotList[nearSlotIdx].ActivateOutline(true);
-        
-        // 3. 키다운 or 키업 처리
-        if (m_InputMgr.m_IsPushHideKey && m_CurPlayerFSMName != PlayerStateName.HIDDEN && m_CurPlayerFSMName != PlayerStateName.ROLL)
-        {
-          m_CurHideSlot = m_HideSlotList[nearSlotIdx];
-          
-          m_CurHideSlot.ActivateHideSlot(true);
-          ChangePlayerFSM(PlayerStateName.HIDDEN);
-        }
-        else if(!m_InputMgr.m_IsPushHideKey && m_CurPlayerFSMName == PlayerStateName.HIDDEN)
-        {
-            m_CurHideSlot.ActivateHideSlot(false);
-            ChangePlayerFSM(PlayerStateName.IDLE);
-            m_CurHideSlot = null;
-        }
-    }
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        // HideSlot Outline 제거 후 Remove
-        switch (other.tag)
-        {
-            case "HideSlot":
-                HideSlot willRemoveSlot = other.GetComponent<HideSlot>();
-                willRemoveSlot.ActivateOutline(false);
-                m_HideSlotList.Remove(willRemoveSlot);
-                break;
-        }
-
-        if (m_HideSlotList.Count <= 0)
-            m_CurHideSlot = null;
-    }
-
-
-    // Legacy
-    /*
+    
     private void updatePlayerFSM()
     {
         switch (m_curPlayerState)

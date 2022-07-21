@@ -13,29 +13,26 @@ public class Negotiator_Player : BasicWeapon_Player
     
     
     // Member Variables
-    private BulletPuller m_Puller;
-    private BulletParam m_BulletParam;
     private BulletLaserMgr m_BulletLaserMgr;
+    private Player_HitscanRay m_PlayerHitscanRay;
 
     private void Awake()
     {
         m_isShotDelayEnd = true;
     }
-    private void Start()
+    private new void Start()
     {
+        base.Start();
+        
         var tempIns = InstanceMgr.GetInstance();
         
         m_SoundMgrSFX = tempIns.GetComponentInChildren<SoundMgr_SFX>();
         m_Player = tempIns.GetComponentInChildren<Player_Manager>().m_Player;
+        m_PlayerHitscanRay = m_Player.m_PlayerHitscanRay;
         m_Player_Arm = m_Player.m_playerRotation.gameObject.transform;
-        m_AimCursor = tempIns.GetComponentInChildren<AimCursor>();
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
-        m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
         m_BulletLaserMgr = tempIns.GetComponentInChildren<BulletLaserMgr>();
         m_PlayerUI = m_Player.m_PlayerUIMgr;
-        
-        m_BulletParam = new BulletParam(true, p_BulletSprite, true, m_Player_Arm.position,
-            m_Player_Arm.rotation, p_BulletDamage, p_BulletSpeed, p_StunValue, m_AimCursor.AimedObjid);
     }
 
     public override int Fire()
@@ -104,31 +101,50 @@ public class Negotiator_Player : BasicWeapon_Player
 
     private void Internal_Fire()
     {
+        
         m_isShotDelayEnd = false;
         StartCoroutine(SetShotDelay());
         m_LeftRounds--;
         
         m_SoundMgrSFX.playGunFireSound(0, gameObject);
 
-        m_BulletParam.m_IsRightHeaded = m_Player.m_IsRightHeaded;
-        m_BulletParam.m_Position = m_Player_Arm.position;
-        m_BulletParam.m_Rotation = m_Player_Arm.rotation;
-        m_BulletParam.m_AimedObjID = m_AimCursor.AimedObjid;
-        
-
-        HitscanTargetInfo targetInfo = m_AimCursor.GetHitscanTargetInfo();
-        
-        // 빗나감!
-        if(targetInfo.m_HotBox == null)
-            m_BulletLaserMgr.PoolingBulletLaser(transform.position, targetInfo.m_AimedPos);
-        else
+        HitscanResult result = m_PlayerHitscanRay.GetHitscanResult();
+        switch (result.m_ResultCheckNum)
         {
-            targetInfo.m_HotBox.HitHotBox(new IHotBoxParam(p_BulletDamage, p_StunValue, targetInfo.m_AimedPos,
-                WeaponType.BULLET));
-            m_BulletLaserMgr.PoolingBulletLaser(transform.position, targetInfo.m_AimedPos);
+            case 0:
+                // 빈 곳(Ray 발사해도 아무것도 감지 X)
+                break;
+            
+            case 1:
+                // 조준 실패로 근처 벽
+                result.m_RayHitPoint.collider.GetComponent<IHotBox>().HitHotBox(
+                    new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos, WeaponType.BULLET));
+                m_HitSFXMaker.EnableNewObj(0, result.m_RayDestinationPos);
+                break;
+            
+            case 2:
+                // 조준 성공
+                IHotBox hotBox = result.m_RayHitPoint.collider.GetComponent<IHotBox>();
+                hotBox.HitHotBox(new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos,
+                    WeaponType.BULLET));
+                
+                switch (hotBox.m_HitBoxInfo)
+                {
+                    case HitBoxPoint.HEAD:
+                        m_HitSFXMaker.EnableNewObj(1, result.m_RayDestinationPos);
+                        break;
+                    
+                    case HitBoxPoint.BODY:
+                        m_HitSFXMaker.EnableNewObj(0, result.m_RayDestinationPos);
+                        break;
+                }
+                break;
         }
+        // Laser 소환
+        m_BulletLaserMgr.PoolingBulletLaser(result.m_RayStartPoint, result.m_RayDestinationPos);
 
-       p_MuzFlashPuller.EnableNewObj();
+        
+        p_MuzFlashPuller.EnableNewObj();
         
         if(m_Player.m_IsRightHeaded)
             m_ShellMgr.MakeShell(m_ShellPos.transform.position,
@@ -140,5 +156,7 @@ public class Negotiator_Player : BasicWeapon_Player
         
         // UI 업데이트 필요
         m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
+        
+        
     }
 }

@@ -38,7 +38,7 @@ public class IHotBoxParam
 
 public interface IHotBox
 {
-    public GameObject m_ParentObj { get; set; }
+    [field: SerializeField] public GameObject m_ParentObj { get; set; }
     
     // 0 = Aim Hit, 1 = Force Hit
     public int m_hotBoxType { get; set; }

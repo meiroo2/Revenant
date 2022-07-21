@@ -2,11 +2,16 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.Serialization;
 
 
 public class Player_InputMgr : MonoBehaviour
 {
     // Visible Member Variables
+    public bool p_MoveInputLock = false;
+    
+    
+    // Member Variables
     public bool m_IsPushLeftKey { get; private set; }
     public bool m_IsPushRightKey { get; private set; }
     public bool m_IsPushStairUpKey { get; private set; }
@@ -14,10 +19,10 @@ public class Player_InputMgr : MonoBehaviour
     public bool m_IsPushInteractKey { get; private set; }
     public bool m_IsPushRollKey { get; private set; }
     public bool m_IsPushHideKey { get; private set; }
+    public bool m_IsPushReloadKey { get; private set; }
+    public bool m_IsPushAttackKey { get; private set; }
+    public bool m_IsPushSideAttackKey { get; private set; }
 
-
-    // Member Variables
-    public bool m_InputLock { get; set; } = false;
     private bool m_LKeyInput = false;
     private bool m_RKeyInput = false;
 
@@ -25,6 +30,7 @@ public class Player_InputMgr : MonoBehaviour
     private bool m_DKeyInput = false;
 
     private Coroutine m_InputCoroutine;
+    
     
     // Constructors
     private void Awake()
@@ -42,28 +48,35 @@ public class Player_InputMgr : MonoBehaviour
     {
         while (true)
         {
-            if (!m_InputLock)
-            {
-                CalculateDirectinalKey();
-                CalculateStairKey();
-                m_IsPushInteractKey = Input.GetKey(KeyCode.F);
-                m_IsPushRollKey = Input.GetKey(KeyCode.Space);
-                m_IsPushHideKey = Input.GetKey(KeyCode.S);
-            }
-            else
-            {
-                ForceSetAllKey(false);
-            }
+            CalculateDirectinalKey();
+            CalculateStairKey();
+            m_IsPushInteractKey = Input.GetKey(KeyCode.F);
+            m_IsPushRollKey = Input.GetKey(KeyCode.Space);
+            m_IsPushHideKey = Input.GetKey(KeyCode.S);
+            m_IsPushReloadKey = Input.GetKey(KeyCode.R);
+            m_IsPushAttackKey = Input.GetMouseButtonDown(0);
+            m_IsPushSideAttackKey = Input.GetMouseButtonDown(1);
             yield return null;
         }
-        // ReSharper disable once IteratorNeverReturns
     }
 
-    
+
     // Physics
 
 
     // Functions
+    public void SetAllInputLock(bool _toLock)
+    {
+        if (_toLock)
+        {
+            StopCoroutine(m_InputCoroutine);
+            ForceSetAllKey(false);
+        }
+        else
+        {
+            m_InputCoroutine = StartCoroutine(CoroutineUpdate());
+        }
+    }
     public int GetDirectionalKeyInput()
     {
         if (m_IsPushLeftKey)

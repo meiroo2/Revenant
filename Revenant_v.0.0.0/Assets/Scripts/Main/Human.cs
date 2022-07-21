@@ -19,7 +19,7 @@ public class Human : ObjectDefine
     public LocationInfo m_CurLocation { get; protected set; }
     
     public bool m_CanMove { get; set; } = true;
-    public bool m_CanFire { get; set; } = true;
+    public bool m_CanAttack { get; set; } = true;
     public Vector2 m_HumanFootNormal { get; set; }
 
     

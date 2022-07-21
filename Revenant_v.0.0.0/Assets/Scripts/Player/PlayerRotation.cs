@@ -125,9 +125,6 @@ public class PlayerRotation : MonoBehaviour
 
     public bool getIsMouseRight()
     {
-        if (m_mainCam.ScreenToWorldPoint(Input.mousePosition).x > m_Player.transform.position.x)
-            return true;
-        else
-            return false;
+        return m_mainCam.ScreenToWorldPoint(Input.mousePosition).x > m_Player.transform.position.x;
     }
 }

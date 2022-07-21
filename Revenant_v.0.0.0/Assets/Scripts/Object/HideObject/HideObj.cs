@@ -11,21 +11,22 @@ public class HideObj : MonoBehaviour
     [Tooltip("0으로 설정시 파괴되지 않습니다.")]
     public int m_Hp = 0;
 
-    [Space(20f)]
-    [Header("Plz assign")] 
+    [Space(20f)] [Header("Plz assign")] 
     public HideSlot[] p_HideSlots;
-    public SpriteOutline p_Outline;
     public HideObjCollider p_Collider;
-    
+    [field : SerializeField]public Sprite p_DefaultSprite { get; private set; }
+    [field : SerializeField]public Sprite p_HighlightSprite { get; private set; }
+
 
     // Member Variables
     private bool m_Destructable = false;
+    public SpriteRenderer m_Renderer { get; private set; }
 
-    
+
     // Constructors
     private void Awake()
     {
-        p_Outline.outlineSize = 0;
+        m_Renderer = GetComponentInChildren<SpriteRenderer>();
         
         // 0보다 클 경우 파괴되는 엄폐물
         m_Destructable = m_Hp > 0;
@@ -104,6 +105,12 @@ public class HideObj : MonoBehaviour
 
         // 콜라이더 켜집 걸정
         p_Collider.SetHideObjCollider(!isSlotsFullOff);
+        SetHideObjSpriteLayer(!isSlotsFullOff);
+    }
+
+    private void SetHideObjSpriteLayer(bool _toStair)
+    {
+        m_Renderer.sortingLayerName = _toStair ? "Stair" : "Object";
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

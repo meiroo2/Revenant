@@ -219,10 +219,10 @@ public class BICTutoMgr : MonoBehaviour
     // Functions
     private IEnumerator SetControlLockForSec()
     {
-        m_InputMgr.m_InputLock = true;
+        m_InputMgr.SetAllInputLock(true);
         m_PlayerCanControl = false;
         yield return new WaitForSeconds(1f);
-        m_InputMgr.m_InputLock = false;
+        m_InputMgr.SetAllInputLock(false);
         m_PlayerCanControl = true;
     }
 

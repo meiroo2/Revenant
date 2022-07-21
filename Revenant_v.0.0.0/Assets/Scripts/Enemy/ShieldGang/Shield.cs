@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shield : MonoBehaviour, IHotBox
+public class Shield : MonoBehaviour
 {
     // Visible Member Variables
     public int p_ShieldHp = 30;
@@ -13,28 +13,18 @@ public class Shield : MonoBehaviour, IHotBox
     private Vector2 p_OriginPos;
     private bool m_IsLeft = false;
     
-    public GameObject m_ParentObj { get; set; }
-    public int m_hotBoxType { get; set; } = 1;
-    public bool m_isEnemys { get; set; } = true;
-    public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.OBJECT;
 
 
     // Constructors
     private void Awake()
     {
         p_OriginPos = transform.position;
-        m_ParentObj = this.gameObject;
-        
+
         //StartCoroutine(MoveToPosition(transform, p_OtherSidePos.position, p_MoveTime));
     }
 
 
     // Functions
-    public int HitHotBox(IHotBoxParam _param)
-    {
-        throw new System.NotImplementedException();
-    }
-    
     public IEnumerator MoveToPosition(Transform transform, Vector2 position, float timeToMove)
     {
         var currentPos = transform.position;
