@@ -50,7 +50,6 @@ public class NormalGang : BasicEnemy
         InitHuman();
 
         m_Renderer = GetComponentInChildren<SpriteRenderer>();
-        m_DefaultMat = m_Renderer.material;
         m_HotBoxes = GetComponentsInChildren<Enemy_HotBox>();
         m_Animator = GetComponentInChildren<Animator>();
         m_Alert = GetComponentInChildren<Enemy_Alert>();
@@ -66,16 +65,16 @@ public class NormalGang : BasicEnemy
         m_ATTACK = new ATTACK_NormalGang(this);
         m_Stun = new STUN_NormalGang(this);
         m_Dead = new DEAD_NormalGang(this);
-        
-        m_CurEnemyFSM = new IDLE_NormalGang(this);
-        m_CurEnemyFSM.StartState();
-        m_CurEnemyStateName = EnemyStateName.IDLE;
-        
+
         m_Alert.GetComponent<Animator>().SetFloat("AlertSpeed", p_AlertSpeedRatio);
     }
 
     private void Start()
     {
+        m_CurEnemyFSM = new IDLE_NormalGang(this);
+        m_CurEnemyFSM.StartState();
+        m_CurEnemyStateName = EnemyStateName.IDLE;
+        
         m_OriginPos = transform.position;
 
         Player tempPlayer = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
@@ -119,7 +118,6 @@ public class NormalGang : BasicEnemy
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
         
-        ChangeWhiteMat(0.2f);
         p_Hp -= _damage * (_point == HitBoxPoint.HEAD ? 2 : 1);
         m_CurStunValue += _stunValue;
 

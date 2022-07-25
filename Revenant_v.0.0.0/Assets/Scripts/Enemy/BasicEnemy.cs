@@ -22,8 +22,6 @@ public enum EnemyStateName
 public class BasicEnemy : Human
 {
     // Visible Member Variables
-    public Material p_WhiteMat;
-    
     [field: SerializeField] protected bool p_OverrideEnemyMgr = false;
     [field: SerializeField] public float p_VisionDistance { get; protected set; }
     [field: SerializeField] public float p_HearColSize { get; protected set; }
@@ -33,13 +31,13 @@ public class BasicEnemy : Human
 
     // Member Variables
     protected SpriteRenderer m_Renderer;
-    protected Material m_DefaultMat;
     private List<EnemySpawner> m_EnemySpawnerList = new List<EnemySpawner>();
     public Enemy_HotBox[] m_EnemyHotBoxes { get; set; }
     protected Enemy_UseRange m_EnemyUseRange;
     protected LocationSensor m_EnemyLocationSensor;
     protected LocationSensor m_PlayerLocationSensor;
     protected Enemy_FootMgr m_Foot;
+    public Animator m_Animator { get; protected set; }
     public Enemy_Alert m_Alert { get; protected set; }
     public Transform m_PlayerTransform { get; protected set; }
     public Rigidbody2D m_EnemyRigid { get; protected set; }
@@ -52,22 +50,10 @@ public class BasicEnemy : Human
     private Coroutine m_MatCoroutine;
     
     // Functions
-    protected void ChangeWhiteMat(float _time)
+    protected void InitEnemy()
     {
-        if(m_MatCoroutine != null)
-            StopCoroutine(m_MatCoroutine);
-
-        m_Renderer.material = m_DefaultMat;
-        m_MatCoroutine = StartCoroutine(ChangeMatCoroutine(_time));
+        m_Animator = GetComponentInChildren<Animator>();
     }
-
-    private IEnumerator ChangeMatCoroutine(float _time)
-    {
-        m_Renderer.material = p_WhiteMat;
-        yield return new WaitForSeconds(_time);
-        m_Renderer.material = m_DefaultMat;
-    }
-    
     public virtual void SetEnemyValues(EnemyMgr _mgr) { }
 
     public Vector2 GetMovePoint() { return m_MovePoint; }
@@ -87,8 +73,8 @@ public class BasicEnemy : Human
     public virtual Vector2 GetDistBetPlayer()
     {
         var position = transform.position;
-        var position1 = m_PlayerTransform.position;
-        return new Vector2(position.x - position1.x, position.y - position1.y);
+        var playerPos = m_PlayerTransform.position;
+        return new Vector2(position.x - playerPos.x, position.y - playerPos.y);
     }
 
     public virtual void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)

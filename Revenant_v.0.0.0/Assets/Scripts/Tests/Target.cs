@@ -12,9 +12,6 @@ public class Target : MonoBehaviour
     
     private Transform m_AimCursorTransform;
 
-    public SpriteOutline m_HeadOut;
-    public SpriteOutline m_BodyOut;
-
     [Space(20f)] public TextMeshProUGUI[] m_Txts;
     
     private int m_TxtIdx = 0;
@@ -46,33 +43,6 @@ public class Target : MonoBehaviour
     private void OnTriggerStay2D(Collider2D other)
     {
         m_IsColliding = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        m_IsColliding = false;
-        m_HeadOut.outlineSize = 0;
-        m_BodyOut.outlineSize = 0;
-    }
-
-    private void FixedUpdate()
-    {
-        if(!m_IsColliding)
-            return;
-
-        m_CursorToHeadDistance = (m_AimCursorTransform.position - p_Head.position).sqrMagnitude;
-        m_CursorToBodyDistance = (m_AimCursorTransform.position - p_Body.position).sqrMagnitude;
-
-        if (m_CursorToHeadDistance < m_CursorToBodyDistance)
-        {
-            m_HeadOut.outlineSize = 1;
-            m_BodyOut.outlineSize = 0;
-        }
-        else
-        {
-            m_HeadOut.outlineSize = 0;
-            m_BodyOut.outlineSize = 1;
-        }
     }
 
 

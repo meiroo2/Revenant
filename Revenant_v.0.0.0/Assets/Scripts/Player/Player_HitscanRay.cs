@@ -69,6 +69,7 @@ public class Player_HitscanRay : MonoBehaviour
     {
         AimedColInfo colInfo = m_Cursor.GetAimedColInfo();
         AimRaycast();
+        
 
         // 아무것도 조준하지 않았을 경우(AimCursor가 null)
         if (ReferenceEquals(colInfo, null))
@@ -152,6 +153,9 @@ public class Player_HitscanRay : MonoBehaviour
         UpdateNearObstacle();
 
         // 가장 가까운 장애물이 hit보다 더 가까이 있다면 true
+        if (ReferenceEquals(m_AimRayHit.collider, null))
+            return false;
+        
         return (m_RayStartPos - m_AimRayHit.point).sqrMagnitude < (m_RayStartPos - _hit.point).sqrMagnitude;
     }
 

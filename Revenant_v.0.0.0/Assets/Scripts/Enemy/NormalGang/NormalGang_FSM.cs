@@ -40,6 +40,9 @@ public class IDLE_NormalGang : NormalGang_FSM
     private int m_PatrolIdx = 0;
     private int m_Phase = 0;
     private readonly Transform m_EnemyTransform;
+    
+    private CoroutineHandler m_CoroutineHandler;
+    private CoroutineElement m_CoroutineElement;
 
     private readonly int IsWalk = Animator.StringToHash("IsWalk");
     private readonly int IsTurn = Animator.StringToHash("IsTurn");
@@ -53,6 +56,7 @@ public class IDLE_NormalGang : NormalGang_FSM
 
     public override void StartState()
     {
+        m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
         m_isPatrol = false;
         m_isLookAround = m_Enemy.p_IsLookAround;
         m_Phase = 0;
@@ -105,7 +109,8 @@ public class IDLE_NormalGang : NormalGang_FSM
                     case 3:     // Turn 끝
                         m_EnemyAnimator.SetBool(IsTurn, false);
                         m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
-                        CoroutineHandler.Start_Coroutine(LookDelay(m_Enemy.p_LookAroundDelay));
+                        m_CoroutineElement =
+                            m_CoroutineHandler.StartCoroutine_Handler(LookDelay(m_Enemy.p_LookAroundDelay));
                         m_Phase = 4;
                         break;
                 
@@ -134,7 +139,8 @@ public class IDLE_NormalGang : NormalGang_FSM
                     case 2:     // Turn 끝
                         m_EnemyAnimator.SetBool(IsTurn, false);
                         m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
-                        CoroutineHandler.Start_Coroutine(LookDelay(m_Enemy.p_LookAroundDelay));
+                        m_CoroutineElement = 
+                            m_CoroutineHandler.StartCoroutine_Handler(LookDelay(m_Enemy.p_LookAroundDelay));
                         m_Phase = 3;
                         break;
                 
@@ -174,7 +180,8 @@ public class IDLE_NormalGang : NormalGang_FSM
     {
         yield return new WaitForSeconds(_time);
         NextPhase();
-        yield return null;
+        
+       m_CoroutineElement.StopCoroutine_Element();
     }
     
     private void CheckTurn()

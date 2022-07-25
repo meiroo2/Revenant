@@ -57,7 +57,7 @@ public class Player_MeleeAttack : MonoBehaviour
             hotBox.HitHotBox(new IHotBoxParam(m_Damage, 0,
                 transform.position, WeaponType.KNIFE));
             
-            m_SFXMaker.EnableNewObj(0, element.transform.position);
+            m_SFXMaker.EnableNewObj(2, element.transform.position);
             m_SoundSFXMgr.playGunFireSound(0, element.transform.position);
         }
     }
