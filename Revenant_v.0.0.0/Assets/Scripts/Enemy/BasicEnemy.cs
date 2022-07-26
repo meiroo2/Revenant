@@ -32,7 +32,7 @@ public class BasicEnemy : Human
     // Member Variables
     protected SpriteRenderer m_Renderer;
     private List<EnemySpawner> m_EnemySpawnerList = new List<EnemySpawner>();
-    public Enemy_HotBox[] m_EnemyHotBoxes { get; set; }
+    protected Enemy_HotBox[] m_EnemyHotBoxes;
     protected Enemy_UseRange m_EnemyUseRange;
     protected LocationSensor m_EnemyLocationSensor;
     protected LocationSensor m_PlayerLocationSensor;
@@ -52,6 +52,7 @@ public class BasicEnemy : Human
     // Functions
     protected void InitEnemy()
     {
+        m_EnemyHotBoxes = GetComponentsInChildren<Enemy_HotBox>();
         m_Animator = GetComponentInChildren<Animator>();
     }
     public virtual void SetEnemyValues(EnemyMgr _mgr) { }
@@ -144,14 +145,7 @@ public class BasicEnemy : Human
     
     public virtual void MoveToPoint_FUpdate()
     {
-        if (m_MovePoint.x > transform.position.x)
-        {
-            MoveByDirection_FUpdate(true);
-        }
-        else
-        {
-            MoveByDirection_FUpdate(false);
-        }
+        MoveByDirection_FUpdate(m_MovePoint.x > transform.position.x);
     }
 
     public virtual void MoveByDirection_FUpdate(bool _isRight)
@@ -161,15 +155,14 @@ public class BasicEnemy : Human
             if(!m_IsRightHeaded)
                 setisRightHeaded(true);
 
-            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal) * (p_Speed * Time.deltaTime);
-            //Debug.Log(m_EnemyRigid.velocity);
+            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_Speed);
         }
         else
         {
             if(m_IsRightHeaded)
                 setisRightHeaded(false);
             
-            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal) * (p_Speed * Time.deltaTime);
+            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_Speed);
         }
     }
 
@@ -198,5 +191,13 @@ public class BasicEnemy : Human
         ResetMovePoint(m_EnemyLocationSensor.GetLocation().
             GetRoomDestPos(GetBodyCenterPos(), m_PlayerLocationSensor.GetLocation()));
     }
-    
+
+
+    public void SetHotBoxesActive(bool _isOn)
+    {
+        for (int i = 0; i < m_EnemyHotBoxes.Length; i++)
+        {
+            m_EnemyHotBoxes[i].gameObject.SetActive(_isOn);
+        }
+    }
 }

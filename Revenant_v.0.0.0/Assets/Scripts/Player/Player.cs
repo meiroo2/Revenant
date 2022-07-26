@@ -128,7 +128,7 @@ public class Player : Human
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
         p_Hp = _input.Hp;
-        p_stunTime = _input.StunInvincibleTime;
+        p_StunSpeed = _input.StunInvincibleTime;
         p_Speed = _input.Speed;
         p_BackWalkSpeedRatio = _input.BackSpeedRatio;
         p_RunSpeedRatio = _input.RunSpeedRatio;

@@ -80,7 +80,7 @@ public class MeleeGang : BasicEnemy
         
         p_Hp = _mgr.M_HP;
         p_Speed = _mgr.M_Speed;
-        p_stunTime = _mgr.M_StunTime;
+        p_StunSpeed = _mgr.M_StunTime;
         p_stunThreshold = _mgr.M_StunThreshold;
         p_VisionDistance = _mgr.M_Vision_Distance;
         p_MinFollowDistance = _mgr.M_MeleeAttack_Distance;

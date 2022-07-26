@@ -7,7 +7,7 @@ public class Human : ObjectDefine
     // Visible Member Variables
     [field: SerializeField] public int p_Hp { get; protected set; } = 10;
     [field: SerializeField] public float p_Speed { get; protected set; } = 1f;
-    [field: SerializeField] public float p_stunTime { get; protected set; } = 0f;
+    [field: SerializeField] public float p_StunSpeed { get; protected set; } = 0f;
     [field: SerializeField] public int p_stunThreshold { get; protected set; } = 0;
 
 
