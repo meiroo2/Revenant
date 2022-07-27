@@ -19,10 +19,6 @@ public class CS_EnemyMgr : Editor
         {
             Warning.Open();
         }
-        if (GUILayout.Button("드론 적용하기"))
-        {
-            FindObjectOfType<EnemyMgr>().SetDrones();
-        }
     }
 }
 

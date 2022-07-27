@@ -16,17 +16,9 @@ public class Enemy_Alert : MonoBehaviour
     private AlertDelegate m_Callback = null;
     private AnimatorStateInfo m_CurAniState;
     
+    private readonly int IsActivate = Animator.StringToHash("IsActivate");
     private Coroutine m_CurCoroutine;
-
     
-    
-    // Hashes
-    private static readonly int IsActivate = Animator.StringToHash("IsActivate");
-    private static readonly int IsHit = Animator.StringToHash("IsHit");
-    private static readonly int Idle_White = Animator.StringToHash("Idle_White");
-    private static readonly int DoAttack = Animator.StringToHash("DoAttack");
-
-
     // Constructors
     private void Awake()
     {
@@ -36,11 +28,6 @@ public class Enemy_Alert : MonoBehaviour
 
 
     // Updates
-    private void Update()
-    {
-        
-    }
-
     private void FixedUpdate()
     {
         if (!m_AlertFilling)
@@ -56,34 +43,25 @@ public class Enemy_Alert : MonoBehaviour
 
     
     // Functions
-    public void SetAlertStun(float _stunSpeed)
+    public void SetAlertStun()
     {
-        m_Animator.SetFloat("AlertSpeed", _stunSpeed);
-        m_Animator.SetTrigger(IsHit);
+        m_Animator.SetTrigger("IsHit");
         
-        if (!ReferenceEquals(m_CurCoroutine, null))
+        if(m_CurCoroutine != null)
             StopCoroutine(m_CurCoroutine);
-        
         m_CurCoroutine = StartCoroutine(AlertStunCheck());
     }
 
     private IEnumerator AlertStunCheck()
     {
-        yield return null;
-        
         while (true)
         {
             m_CurAniState = m_Animator.GetCurrentAnimatorStateInfo(0);
-            if (m_CurAniState.normalizedTime >= 1f)
+            if (m_CurAniState.IsName("Stun") && m_CurAniState.normalizedTime >= 0.9f)
                 break;
-            
             yield return null;
         }
-
         m_Callback?.Invoke();
-        m_Animator.Play(Idle_White);
-        
-        yield break;
     }
     
     public void SetAlertActive(bool _isActive)
@@ -96,8 +74,8 @@ public class Enemy_Alert : MonoBehaviour
         if (_doFill)
         {
             m_Animator.SetBool("IsCharge", _doFill);
-
-            if (!ReferenceEquals(m_CurCoroutine, null))
+            
+            if(m_CurCoroutine != null)
                 StopCoroutine(m_CurCoroutine);
             m_CurCoroutine = StartCoroutine(AlertFillCheck());
         }
@@ -113,15 +91,11 @@ public class Enemy_Alert : MonoBehaviour
         while (true)
         {
             m_CurAniState = m_Animator.GetCurrentAnimatorStateInfo(0);
-            if (m_CurAniState.IsName("GageUp")&&m_CurAniState.normalizedTime >= 1f)
+            if (m_CurAniState.IsName("GageUp") && m_CurAniState.normalizedTime >= 0.9f)
                 break;
-            
             yield return null;
         }
-        m_Animator.SetTrigger(DoAttack);
         m_Callback?.Invoke();
-
-        yield break;
     }
     
     public void SetCallback(AlertDelegate _input, bool _doReset = false)
