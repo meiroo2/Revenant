@@ -157,10 +157,13 @@ public class Drone : BasicEnemy
                 m_DeadReason = 1;
             }
 
+            SetHitBox(false);
             ChangeEnemyFSM(EnemyStateName.DEAD);
             return;
         }
     }
+    /// <summary>해당 오브젝트의 모든 Hotbox를 켜거나 끕니다.</summary>
+    /// <param name="_on">true = 켜기, false = 끄기</param>
     public void SetHitBox(bool _on)
     {
         foreach (Enemy_HotBox ele in m_HotBoxes)
