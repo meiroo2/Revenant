@@ -39,8 +39,8 @@ public class NormalGang : BasicEnemy
 
     public bool m_IsFoundPlayer = false;
     public int m_AngleBetPlayer { get; protected set; } // 위에서부터 0, 1, 2
-    public Player m_Player { get; private set; }
     private Vector2 m_DistBetPlayer;
+
     private Enemy_HotBox[] m_HotBoxes;
 
 
@@ -48,9 +48,9 @@ public class NormalGang : BasicEnemy
     private void Awake()
     {
         InitHuman();
-        InitEnemy();
 
         m_Renderer = GetComponentInChildren<SpriteRenderer>();
+        m_DefaultMat = m_Renderer.material;
         m_HotBoxes = GetComponentsInChildren<Enemy_HotBox>();
         m_Animator = GetComponentInChildren<Animator>();
         m_Alert = GetComponentInChildren<Enemy_Alert>();
@@ -66,28 +66,31 @@ public class NormalGang : BasicEnemy
         m_ATTACK = new ATTACK_NormalGang(this);
         m_Stun = new STUN_NormalGang(this);
         m_Dead = new DEAD_NormalGang(this);
-
+        
+        m_CurEnemyFSM = new IDLE_NormalGang(this);
+        m_CurEnemyFSM.StartState();
+        m_CurEnemyStateName = EnemyStateName.IDLE;
+        
         m_Alert.GetComponent<Animator>().SetFloat("AlertSpeed", p_AlertSpeedRatio);
     }
 
     private void Start()
     {
-        m_CurEnemyStateName = EnemyStateName.IDLE;
-        m_CurEnemyFSM = m_IDLE;
-        m_CurEnemyFSM.StartState();
-
-        
         m_OriginPos = transform.position;
 
-        var instance = InstanceMgr.GetInstance();
-        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
-        m_PlayerTransform = m_Player.p_Player_RealPos;
-        m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
+        Player tempPlayer = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_PlayerTransform = tempPlayer.p_Player_RealPos;
+        m_PlayerLocationSensor = tempPlayer.m_PlayerLocationSensor;
     }
 
 
     // Updates
     private void Update()
+    {
+        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
+    }
+
+    private void FixedUpdate()
     {
         m_CurEnemyFSM.UpdateState();
     }
@@ -101,7 +104,7 @@ public class NormalGang : BasicEnemy
         
         p_Hp = _mgr.N_HP;
         p_Speed = _mgr.N_Speed;
-        p_StunSpeed = _mgr.N_StunTime;
+        p_stunTime = _mgr.N_StunTime;
         p_stunThreshold = _mgr.N_StunThreshold;
         p_VisionDistance = _mgr.N_Vision_Distance;
         p_MinFollowDistance = _mgr.N_GunFire_Distance;
@@ -116,6 +119,7 @@ public class NormalGang : BasicEnemy
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
         
+        ChangeWhiteMat(0.2f);
         p_Hp -= _damage * (_point == HitBoxPoint.HEAD ? 2 : 1);
         m_CurStunValue += _stunValue;
 
@@ -125,7 +129,11 @@ public class NormalGang : BasicEnemy
                 m_Animator.Play("Head");
             else if(_point == HitBoxPoint.BODY)
                 m_Animator.Play("Body");
-            
+
+            foreach (Enemy_HotBox ele in m_HotBoxes)
+            {
+                ele.gameObject.SetActive(false);
+            }
             ChangeEnemyFSM(EnemyStateName.DEAD);
             return;
         }
@@ -139,7 +147,10 @@ public class NormalGang : BasicEnemy
     }
     public void ChangeAnimator(bool _isNormal)
     {
-        m_Animator.runtimeAnimatorController = _isNormal ? p_NormalAnimator : p_AttackAnimator;
+        if (_isNormal)
+            m_Animator.runtimeAnimatorController = p_NormalAnimator;
+        else
+            m_Animator.runtimeAnimatorController = p_AttackAnimator;
     }
     public void CalculateAngleBetPlayer()
     {

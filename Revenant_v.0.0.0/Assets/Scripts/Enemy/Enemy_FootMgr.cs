@@ -25,6 +25,7 @@ public class Enemy_FootMgr : MonoBehaviour
     private void Update()
     {
         CalEnemyFootRay();
+      // Debug.Log(Vector2.Distance( m_EnemyTransform.position, m_FootHit.point));
     }
 
     // Functions
@@ -34,16 +35,17 @@ public class Enemy_FootMgr : MonoBehaviour
     }
     private void CalEnemyFootRay()
     {
-        Vector2 position = transform.position;
-
+        Vector2 position = m_EnemyTransform.position;
+        position.y -= 0.36f;
+        
         m_FootHit = m_Enemy.layer switch
         {
-            11 => Physics2D.Raycast(position, -transform.up, 1f, LayerMask.GetMask("Floor")),
-            9 => Physics2D.Raycast(position, -transform.up, 1f, LayerMask.GetMask("Stair")),
+            11 => Physics2D.Raycast(position, -transform.up, 0.5f, LayerMask.GetMask("Floor")),
+            9 => Physics2D.Raycast(position, -transform.up, 0.5f, LayerMask.GetMask("Stair")),
             _ => m_FootHit
         };
 
-        Debug.DrawRay(position, Vector2.down * 0.5f, new Color(0, 1, 0));
+        Debug.DrawRay(position, Vector2.down * 0.5f, new Color(1, 0, 0));
 
         if (!m_FootHit)
             return;
@@ -52,9 +54,7 @@ public class Enemy_FootMgr : MonoBehaviour
         switch (m_Enemy.layer)
         {
             case 11:
-                m_FootNormal = new Vector2(Mathf.Round(m_FootHit.normal.x * 100) * 0.01f,
-                    Mathf.Round(m_FootHit.normal.y * 100) * 0.01f);
-                m_FootNormal = m_FootNormal.normalized;
+                m_FootNormal = m_FootHit.normal;
                 if (Vector2.Distance(m_EnemyTransform.position, m_FootHit.point) > 0.64f)
                     m_EnemyTransform.position = new Vector2(m_EnemyTransform.position.x, m_FootHit.point.y + 0.61f);
                 break;

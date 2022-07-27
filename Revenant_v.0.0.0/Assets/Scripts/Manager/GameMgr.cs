@@ -5,31 +5,32 @@ using UnityEngine;
 public class GameMgr : MonoBehaviour
 {
     // Visible Member Variables
-    [field: SerializeField] public CoroutineHandler p_CoroutineHandler { get; private set; }
     public float m_GameTimer { get; private set; } = 0f;
 
 
     // Member Variables
-    private static GameMgr m_Instance = null;
-    public static GameMgr GetInstance() { return m_Instance; }
+    private static GameMgr s_Instance = null;
+    public static GameMgr getInstance() { return s_Instance; }
     private bool m_isStartTimer = false;
 
 
     // Constructor
     private void Awake()
     {
-        if (m_Instance == null)
+        if (s_Instance == null)
         {
-            m_Instance = this;
+            s_Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
         else
         {
-            if(this != m_Instance)
+            if(this != s_Instance)
             {
                 Destroy(this.gameObject);
             }
         }
+        
+        
     }
 
 
