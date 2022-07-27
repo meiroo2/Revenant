@@ -16,7 +16,7 @@ public class PlayTimeTxt : MonoBehaviour
 
     private void Start()
     {
-        m_Gm = GameMgr.GetInstance();
+        m_Gm = GameMgr.getInstance();
     }
 
     private void Update()

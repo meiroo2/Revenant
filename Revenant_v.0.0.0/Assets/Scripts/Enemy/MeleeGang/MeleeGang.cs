@@ -31,7 +31,8 @@ public class MeleeGang : BasicEnemy
         InitHuman();
         
         m_Renderer = GetComponentInChildren<SpriteRenderer>();
-
+        m_DefaultMat = m_Renderer.material;
+            
         m_Animator = GetComponentInChildren<Animator>();
         m_HotBoxes = GetComponentsInChildren<IHotBox>();
         m_EnemyUseRange = GetComponentInChildren<Enemy_UseRange>();
@@ -94,6 +95,7 @@ public class MeleeGang : BasicEnemy
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
         
+        ChangeWhiteMat(0.2f);
         p_Hp -= _damage * (_point == HitBoxPoint.HEAD ? 2 : 1);
         m_CurStunValue += _stunValue;
 

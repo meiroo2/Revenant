@@ -1,19 +1,41 @@
 ﻿using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
 public class CoroutineHandler : MonoBehaviour
 {
-    // Member Variables
-    public GameObject p_CoroutineElement;
+    private IEnumerator enumerator = null;
 
-
-    // Functions
-    public CoroutineElement StartCoroutine_Handler(IEnumerator _enumerator)
+    private void Coroutine(IEnumerator coro)
     {
-        var element = Instantiate(p_CoroutineElement, transform).GetComponent<CoroutineElement>();
+        enumerator = coro;
+        StartCoroutine(coro);        
+    }
+
+    private void Update()
+    {
+        if (enumerator is { Current: null })
+        {
+            Destroy(gameObject);
+        }        
+    }
+
+    public void Stop()
+    {
+        StopCoroutine(enumerator.ToString());
+        Destroy(gameObject);
+    }
+
+    public static CoroutineHandler Start_Coroutine(IEnumerator coro)
+    {
+        //Debug.Log("Coroutine Handler");
         
-        return element.StartCoroutine_Element(_enumerator);
+        var obj = new GameObject("CoroutineHandler");
+        var handler = obj.AddComponent<CoroutineHandler>();
+        if (handler)
+        {
+            handler.Coroutine(coro);
+        }
+        return handler;
     }
 }
