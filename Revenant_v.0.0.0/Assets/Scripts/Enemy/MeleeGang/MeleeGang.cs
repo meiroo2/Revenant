@@ -11,7 +11,6 @@ public class MeleeGang : BasicEnemy
 
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
-    public Animator m_Animator { get; private set; }
     private IHotBox[] m_HotBoxes;
 
     private IdleMeleeGang m_IDLE;
@@ -29,10 +28,10 @@ public class MeleeGang : BasicEnemy
     private void Awake()
     {
         InitHuman();
+        InitEnemy();
         
         m_Renderer = GetComponentInChildren<SpriteRenderer>();
-        m_DefaultMat = m_Renderer.material;
-            
+
         m_Animator = GetComponentInChildren<Animator>();
         m_HotBoxes = GetComponentsInChildren<IHotBox>();
         m_EnemyUseRange = GetComponentInChildren<Enemy_UseRange>();
@@ -64,11 +63,9 @@ public class MeleeGang : BasicEnemy
     // Updates
     private void Update()
     {
-        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
-    }
-
-    private void FixedUpdate()
-    {
+        if (m_ObjectState == ObjectState.Pause)
+            return;
+        
         m_CurEnemyFSM.UpdateState();
     }
 
@@ -81,7 +78,7 @@ public class MeleeGang : BasicEnemy
         
         p_Hp = _mgr.M_HP;
         p_Speed = _mgr.M_Speed;
-        p_stunTime = _mgr.M_StunTime;
+        p_StunSpeed = _mgr.M_StunTime;
         p_stunThreshold = _mgr.M_StunThreshold;
         p_VisionDistance = _mgr.M_Vision_Distance;
         p_MinFollowDistance = _mgr.M_MeleeAttack_Distance;
@@ -95,7 +92,6 @@ public class MeleeGang : BasicEnemy
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
         
-        ChangeWhiteMat(0.2f);
         p_Hp -= _damage * (_point == HitBoxPoint.HEAD ? 2 : 1);
         m_CurStunValue += _stunValue;
 

@@ -69,6 +69,7 @@ public class Player_HitscanRay : MonoBehaviour
     {
         AimedColInfo colInfo = m_Cursor.GetAimedColInfo();
         AimRaycast();
+        
 
         // 아무것도 조준하지 않았을 경우(AimCursor가 null)
         if (ReferenceEquals(colInfo, null))
@@ -76,14 +77,15 @@ public class Player_HitscanRay : MonoBehaviour
             // 아무것도 검출되지 않음(멀리 있는 좌표 반환)
             if (m_HitCount <= 0 || IsThereNoObstacle() == true)
             {
-                //Debug.Log("아무것도 조준 X, 검출 X");
+                Debug.Log("아무것도 조준 X, 검출 X");
                 return new HitscanResult(0, m_RayStartPos, m_RayStartPos += GetRayDirection() * 5f);
             }
 
 
             // 근처 벽이나 장애물로 검출해야 함
             UpdateNearObstacle();
-            //Debug.Log("아무것도 조준 X, 벽 검출 O");
+            Debug.Log("아무것도 조준 X, 벽 검출 O");
+            Debug.Log(m_AimRayHit.collider.gameObject);
             return new HitscanResult(1, m_RayStartPos, m_AimRayHit, m_AimRayHit.point);
         }
         else
@@ -106,6 +108,7 @@ public class Player_HitscanRay : MonoBehaviour
             // 조준한 Collider가 Ray에 없을 경우 근처 장애물 Point를 반환
             if (isFound == false)
             {
+                Debug.Log("조준한 대상이 Ray에 없음");
                 UpdateNearObstacle();
                 if (ReferenceEquals(m_AimRayHit.collider, null))
                 {
@@ -123,12 +126,12 @@ public class Player_HitscanRay : MonoBehaviour
             // Ray보다 가까이에 장애물 존재할 경우
             if (IsThereAnyObstacle(m_AimRayHits[foundIdx]))
             {
-                //Debug.Log("조준한 대상이 있으나, 더 가까운 곳에 장애물이 존재");
+                Debug.Log("조준한 대상이 있으나, 더 가까운 곳에 장애물이 존재");
                 return new HitscanResult(1, m_RayStartPos, m_AimRayHit, m_AimRayHit.point);
             }
             else
             {
-                //Debug.Log("조준한 대상이 있고, 장애물도 없어서 명중");
+                Debug.Log("조준한 대상이 있고, 장애물도 없어서 명중");
                 return new HitscanResult(2, m_RayStartPos, m_AimRayHits[foundIdx], colInfo.m_AimCursorPos);
             }
         }
@@ -152,6 +155,9 @@ public class Player_HitscanRay : MonoBehaviour
         UpdateNearObstacle();
 
         // 가장 가까운 장애물이 hit보다 더 가까이 있다면 true
+        if (ReferenceEquals(m_AimRayHit.collider, null))
+            return false;
+        
         return (m_RayStartPos - m_AimRayHit.point).sqrMagnitude < (m_RayStartPos - _hit.point).sqrMagnitude;
     }
 

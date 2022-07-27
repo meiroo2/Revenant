@@ -86,7 +86,7 @@ public class Player_IDLE : PlayerFSM
 public class Player_WALK : PlayerFSM
 {
     private float m_KeyInput = 0f;
-    private Player_StairMgr m_StairMgr;
+    private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
 
     private int m_PreInput = 0;
@@ -100,7 +100,7 @@ public class Player_WALK : PlayerFSM
     public override void StartState()
     {
         m_Player.m_CanHide = true;
-        m_StairMgr = m_Player.m_PlayerStairMgr;
+        _mFootMgr = m_Player.m_PlayerFootMgr;
         m_Rigid = m_Player.m_PlayerRigid;
         m_InputMgr = m_Player.m_InputMgr;
         m_Player.SetWalkSoundCoroutine(true);
@@ -125,19 +125,19 @@ public class Player_WALK : PlayerFSM
         if (m_Player.GetIsPlayerWalkStraight())
         {
             if (m_Player.m_IsRightHeaded)   // 우측
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * 
+                m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
                                    (m_Player.p_Speed);
             else                            // 좌측
-                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * 
+                m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
                                    (m_Player.p_Speed);
         }
         else
         {
             if (m_Player.m_IsRightHeaded)   // 오른쪽 보고 뒤로
-                m_Rigid.velocity = StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * 
+                m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
                                    (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
             else                           // 왼쪽 보고 뒤로
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(m_StairMgr.m_PlayerNormal) * 
+                m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
                                    (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
         }
         
@@ -169,7 +169,7 @@ public class Player_WALK : PlayerFSM
 
 public class Player_ROLL : PlayerFSM
 {
-    private Player_StairMgr m_StairMgr;
+    private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
     private Vector2 m_PlayerNormalVec;
     private Animator m_PlayerAnimator;
@@ -186,7 +186,7 @@ public class Player_ROLL : PlayerFSM
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
 
         m_Player.m_CanHide = true;
-        m_StairMgr = m_Player.m_PlayerStairMgr;
+        _mFootMgr = m_Player.m_PlayerFootMgr;
         m_Rigid = m_Player.m_PlayerRigid;
         m_PlayerAnimator = m_Player.m_PlayerAnimator;
 
@@ -204,7 +204,7 @@ public class Player_ROLL : PlayerFSM
     {
         CheckNull();
         
-        m_PlayerNormalVec = m_Player.m_PlayerStairMgr.m_PlayerNormal;
+        m_PlayerNormalVec = m_Player.m_PlayerFootMgr.m_PlayerNormal;
 
         if (m_Player.m_IsRightHeaded)   // 우측 구르기
             m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_Speed * m_Player.p_RollSpeedRatio);
@@ -236,7 +236,7 @@ public class Player_ROLL : PlayerFSM
 public class Player_HIDDEN : PlayerFSM
 {
     private int m_KeyInput = 0;
-    private Player_StairMgr m_StairMgr;
+    private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
     private SoundMgr_SFX m_SFXMgr;
 
@@ -250,7 +250,7 @@ public class Player_HIDDEN : PlayerFSM
         m_Player.m_ArmMgr.StopReload();
         m_SFXMgr = m_Player.m_SFXMgr;
         m_Player.m_CanAttack = false;
-        m_StairMgr = m_Player.m_PlayerStairMgr;
+        _mFootMgr = m_Player.m_PlayerFootMgr;
         m_Rigid = m_Player.m_PlayerRigid;
         m_InputMgr = m_Player.m_InputMgr;
         
@@ -373,7 +373,9 @@ public class Player_DEAD : PlayerFSM
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
-        m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
+        m_Player.m_PlayerAniMgr.setSprites(false, false, false, false, false);
+        
+        GameMgr.GetInstance().PlayerDead();
     }
 
     public override void UpdateState()

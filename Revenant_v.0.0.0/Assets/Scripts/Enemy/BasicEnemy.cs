@@ -22,8 +22,6 @@ public enum EnemyStateName
 public class BasicEnemy : Human
 {
     // Visible Member Variables
-    public Material p_WhiteMat;
-    
     [field: SerializeField] protected bool p_OverrideEnemyMgr = false;
     [field: SerializeField] public float p_VisionDistance { get; protected set; }
     [field: SerializeField] public float p_HearColSize { get; protected set; }
@@ -33,13 +31,13 @@ public class BasicEnemy : Human
 
     // Member Variables
     protected SpriteRenderer m_Renderer;
-    protected Material m_DefaultMat;
     private List<EnemySpawner> m_EnemySpawnerList = new List<EnemySpawner>();
-    public Enemy_HotBox[] m_EnemyHotBoxes { get; set; }
+    protected Enemy_HotBox[] m_EnemyHotBoxes;
     protected Enemy_UseRange m_EnemyUseRange;
     protected LocationSensor m_EnemyLocationSensor;
     protected LocationSensor m_PlayerLocationSensor;
     protected Enemy_FootMgr m_Foot;
+    public Animator m_Animator { get; protected set; }
     public Enemy_Alert m_Alert { get; protected set; }
     public Transform m_PlayerTransform { get; protected set; }
     public Rigidbody2D m_EnemyRigid { get; protected set; }
@@ -52,22 +50,11 @@ public class BasicEnemy : Human
     private Coroutine m_MatCoroutine;
     
     // Functions
-    protected void ChangeWhiteMat(float _time)
+    protected void InitEnemy()
     {
-        if(m_MatCoroutine != null)
-            StopCoroutine(m_MatCoroutine);
-
-        m_Renderer.material = m_DefaultMat;
-        m_MatCoroutine = StartCoroutine(ChangeMatCoroutine(_time));
+        m_EnemyHotBoxes = GetComponentsInChildren<Enemy_HotBox>();
+        m_Animator = GetComponentInChildren<Animator>();
     }
-
-    private IEnumerator ChangeMatCoroutine(float _time)
-    {
-        m_Renderer.material = p_WhiteMat;
-        yield return new WaitForSeconds(_time);
-        m_Renderer.material = m_DefaultMat;
-    }
-    
     public virtual void SetEnemyValues(EnemyMgr _mgr) { }
 
     public Vector2 GetMovePoint() { return m_MovePoint; }
@@ -87,8 +74,8 @@ public class BasicEnemy : Human
     public virtual Vector2 GetDistBetPlayer()
     {
         var position = transform.position;
-        var position1 = m_PlayerTransform.position;
-        return new Vector2(position.x - position1.x, position.y - position1.y);
+        var playerPos = m_PlayerTransform.position;
+        return new Vector2(position.x - playerPos.x, position.y - playerPos.y);
     }
 
     public virtual void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
@@ -158,32 +145,25 @@ public class BasicEnemy : Human
     
     public virtual void MoveToPoint_FUpdate()
     {
-        if (m_MovePoint.x > transform.position.x)
-        {
-            MoveByDirection_FUpdate(true);
-        }
-        else
-        {
-            MoveByDirection_FUpdate(false);
-        }
+        MoveByDirection(m_MovePoint.x > transform.position.x);
     }
 
-    public virtual void MoveByDirection_FUpdate(bool _isRight)
+    /// <summary>파라미터에 따라 발 밑 Normal벡터에 직교하는 방향대로 이동합니다.</summary>
+    public virtual void MoveByDirection(bool _isRight)
     {
         if (_isRight)
         {
             if(!m_IsRightHeaded)
                 setisRightHeaded(true);
 
-            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal) * (p_Speed * Time.deltaTime);
-            //Debug.Log(m_EnemyRigid.velocity);
+            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_Speed);
         }
         else
         {
             if(m_IsRightHeaded)
                 setisRightHeaded(false);
             
-            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal) * (p_Speed * Time.deltaTime);
+            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_Speed);
         }
     }
 
@@ -194,7 +174,7 @@ public class BasicEnemy : Human
             // 적과 플레이어의 방이 같을 경우
             
             // 적과 플레이어의 좌우판별
-            MoveByDirection_FUpdate(!(transform.position.x > m_PlayerTransform.position.x));
+            MoveByDirection(!(transform.position.x > m_PlayerTransform.position.x));
         }
         else
         {
@@ -212,5 +192,13 @@ public class BasicEnemy : Human
         ResetMovePoint(m_EnemyLocationSensor.GetLocation().
             GetRoomDestPos(GetBodyCenterPos(), m_PlayerLocationSensor.GetLocation()));
     }
-    
+
+
+    public void SetHotBoxesActive(bool _isOn)
+    {
+        for (int i = 0; i < m_EnemyHotBoxes.Length; i++)
+        {
+            m_EnemyHotBoxes[i].gameObject.SetActive(_isOn);
+        }
+    }
 }

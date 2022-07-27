@@ -63,7 +63,6 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         if (m_Player.p_Hp <= 0)
         {
             m_Player.ChangePlayerFSM(PlayerStateName.DEAD);
-            m_UIMgr.m_GameOverUI.SetActive(true);
 
             if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
                 m_PlayerUIMgr.SetHp(m_Player.p_Hp);
@@ -92,7 +91,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         
         m_IsPlayerBlinking = true;
         m_PlayerHotBoxCol.enabled = false;
-        yield return new WaitForSeconds(m_Player.p_stunTime);
+        yield return new WaitForSeconds(m_Player.p_StunSpeed);
         m_PlayerHotBoxCol.enabled = true;
         m_IsPlayerBlinking = false;
         

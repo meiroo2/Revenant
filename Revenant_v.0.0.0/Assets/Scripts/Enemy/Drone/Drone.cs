@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using FMOD;
 using UnityEditor;
 using UnityEngine;
@@ -18,22 +19,31 @@ public class Drone : BasicEnemy
     [field: SerializeField] public float p_WigglePower { get; protected set; } = 1f;
     [field: SerializeField] public int p_BombHp { get; protected set; } = 20;
     [field: SerializeField] public float p_BombRange { get; protected set; } = 2f;
+    public float p_BreakPower = 1f;
 
     [Space(20f)] [Header("확인용 변수 모음")] 
-    public int m_DieReasaon = -1;
+    public int m_DeadReason = -1;
     public BombWeapon_Enemy m_BombWeapon;
     
     
-    // Member Variables
-    private Enemy_HotBox[] m_HotBoxes;
-    public Enemy_WeaponMgr m_WeponMgr;
-    public Drone_CrashCol m_CrashCol { get; private set; }
-    
+    // FSMs
+    private IDLE_Drone m_IDLE;
     private FOLLOW_Drone m_FOLLOW;
     private RUSH_Drone m_RUSH;
     private DEAD_Drone m_DEAD;
-    public Animator m_Animator { get; private set; }
+    
+    
+    // Member Variables
+    public delegate void CoroutineDelegate();
+    private CoroutineDelegate m_CoroutineCallback = null;
+    
+    public Player m_Player { get; private set; }
+    private Enemy_HotBox[] m_HotBoxes;
+    public Enemy_WeaponMgr m_WeponMgr;
+    public Drone_CrashCol m_CrashCol { get; private set; }
 
+
+    private Coroutine m_Coroutine;
     private Vector2 m_RushMoveVec;
     
     private float m_SinYValue = 0;
@@ -41,59 +51,62 @@ public class Drone : BasicEnemy
     
     public delegate void UpdateDelegate();
     private UpdateDelegate m_Callback = null;
+    
 
 
     // Constructors
     public void Awake()
     {
+        InitHuman();
+        InitEnemy();
+        
+        
         m_Renderer = GetComponentInChildren<SpriteRenderer>();
-        m_DefaultMat = m_Renderer.material;
         
-        m_Alert = GetComponentInChildren<Enemy_Alert>();
-        m_Alert.GetComponent<Animator>().SetFloat("AlertSpeed", p_AlertSpeedRatio);
-        m_DieReasaon = -1;
+        m_DeadReason = -1;
         
-        m_Animator = GetComponentInChildren<Animator>();
         m_HotBoxes = GetComponentsInChildren<Enemy_HotBox>();
         m_WeponMgr = GetComponentInChildren<Enemy_WeaponMgr>();
         m_CrashCol = GetComponentInChildren<Drone_CrashCol>();
         
-        InitHuman();
+
         m_RushMoveVec = Vector2.zero;
         m_EnemyHotBoxes = GetComponentsInChildren<Enemy_HotBox>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
-        
+
+        m_IDLE = new IDLE_Drone(this);
         m_FOLLOW = new FOLLOW_Drone(this);
         m_RUSH = new RUSH_Drone(this);
         m_DEAD = new DEAD_Drone(this);
-
+        
         m_CurEnemyStateName = EnemyStateName.FOLLOW;
         m_CurEnemyFSM = m_FOLLOW;
-        m_CurEnemyFSM.StartState();
     }
 
     public void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        Player tempPlayer = instance.GetComponentInChildren<Player_Manager>().m_Player;
-        m_PlayerTransform = tempPlayer.p_Player_RealPos;
+        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
+        m_PlayerTransform = m_Player.p_Player_RealPos;
+        
+        m_CurEnemyFSM.StartState();
     }
     
     // Updates
     public void Update()
     {
-        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
-
-        m_Callback?.Invoke();
-    }
-
-    public void FixedUpdate()
-    {
+        if (m_ObjectState == ObjectState.Pause)
+            return;
+        
         m_CurEnemyFSM.UpdateState();
     }
 
 
     // Functions
+    public void SetCoroutineCallback(CoroutineDelegate _input)
+    {
+        m_CoroutineCallback = _input;
+    }
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
         if (p_OverrideEnemyMgr)
@@ -101,7 +114,7 @@ public class Drone : BasicEnemy
 
         p_Hp = _mgr.D_HP;
         p_Speed = _mgr.D_Speed;
-        p_stunTime = _mgr.D_StunTime;
+        p_StunSpeed = _mgr.D_StunTime;
         p_stunThreshold = _mgr.D_StunThreshold;
         p_AlertSpeedRatio = _mgr.D_AlertSpeedRatio;
         p_RushSpeedRatio = _mgr.D_RushSpeedRatio;
@@ -130,7 +143,6 @@ public class Drone : BasicEnemy
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
         
-        ChangeWhiteMat(0.2f);
         p_Hp -= _damage * (_point == HitBoxPoint.HEAD ? 2 : 1);
         m_CurStunValue += _stunValue;
 
@@ -138,21 +150,15 @@ public class Drone : BasicEnemy
         {
             if (_point == HitBoxPoint.HEAD)
             {
-                m_DieReasaon = 0;
+                m_DeadReason = 0;
             }
             else if (_point == HitBoxPoint.BODY)
             {
-                m_DieReasaon = 1;
+                m_DeadReason = 1;
             }
-            
+
             ChangeEnemyFSM(EnemyStateName.DEAD);
             return;
-        }
-
-        if (m_CurStunValue >= p_stunThreshold)
-        {
-            m_CurStunValue = 0;
-            ChangeEnemyFSM(EnemyStateName.STUN);
         }
     }
     public void SetHitBox(bool _on)
@@ -171,6 +177,10 @@ public class Drone : BasicEnemy
         
         switch (m_CurEnemyStateName)
         {
+            case EnemyStateName.IDLE:
+                m_CurEnemyFSM = m_IDLE;
+                break;
+            
             case EnemyStateName.FOLLOW:
                 m_CurEnemyFSM = m_FOLLOW;
                 break;
@@ -191,24 +201,23 @@ public class Drone : BasicEnemy
         m_CurEnemyFSM.StartState();
     }
     
-    public override void MoveByDirection_FUpdate(bool _isRight)
+    /// <summary>파라미터에 기반하여 왼쪽 혹은 오른쪽 방향대로 velocity를 수정합니다.</summary>
+    public override void MoveByDirection(bool _isRight)
     {
-        m_Timer += Time.deltaTime;
-        m_SinYValue = Mathf.Sin(m_Timer * p_WiggleSpeed) * p_WigglePower;
+        Debug.Log("디렉션 호출");
         if (_isRight)
         {
             if(!m_IsRightHeaded)
                 setisRightHeaded(true);
-
-            m_EnemyRigid.velocity = new Vector2(1, m_SinYValue) * (p_Speed * Time.deltaTime);
             
+            m_EnemyRigid.velocity = Vector2.right * p_Speed;
         }
         else
         {
             if(m_IsRightHeaded)
                 setisRightHeaded(false);
             
-            m_EnemyRigid.velocity = new Vector2(-1, m_SinYValue) * (p_Speed * Time.deltaTime);
+            m_EnemyRigid.velocity = Vector2.left * p_Speed;
         }
     }
     
@@ -219,6 +228,61 @@ public class Drone : BasicEnemy
     
     public override void MoveToPoint_FUpdate()
     {
-        m_EnemyRigid.velocity = m_MovePoint * (p_Speed * p_RushSpeedRatio * Time.deltaTime);
+        m_EnemyRigid.velocity = m_MovePoint * (p_Speed * p_RushSpeedRatio);
     }
+
+    public void VelocityBreak()
+    {
+        StartCoroutine(VelocitySlowDown());
+    }
+
+    private IEnumerator VelocitySlowDown()
+    {
+        Vector2 velocity = m_EnemyRigid.velocity;
+        float power = 1f;
+        
+        while (true)
+        {
+            m_EnemyRigid.velocity = velocity * power;
+            power -= Time.deltaTime * p_BreakPower;
+            
+            if (power <= 0f)
+            {
+                m_EnemyRigid.velocity = Vector2.zero;
+                if (!ReferenceEquals(m_CoroutineCallback, null))
+                {
+                    m_CoroutineCallback();
+                    m_CoroutineCallback = null;
+                }
+
+                yield break;
+            }
+            yield return null;
+        }
+    }
+    
+    
+    /*
+     public override void MoveByDirection_FUpdate(bool _isRight)
+    {
+        m_Timer += Time.deltaTime;
+        m_SinYValue = Mathf.Sin(m_Timer * p_WiggleSpeed) * p_WigglePower;
+        if (_isRight)
+        {
+            if(!m_IsRightHeaded)
+                setisRightHeaded(true);
+            
+            //m_EnemyRigid.velocity = new Vector2(1, m_SinYValue).normalized * (p_Speed);
+            m_EnemyRigid.velocity = Vector2.right * p_Speed;
+        }
+        else
+        {
+            if(m_IsRightHeaded)
+                setisRightHeaded(false);
+            
+            //m_EnemyRigid.velocity = new Vector2(-1, m_SinYValue).normalized * (p_Speed);
+            m_EnemyRigid.velocity = Vector2.left * p_Speed;
+        }
+    }
+     */
 }

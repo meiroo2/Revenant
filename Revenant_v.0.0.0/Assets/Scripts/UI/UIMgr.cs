@@ -28,25 +28,13 @@ public class UIMgr : MonoBehaviour
 
 
     // Updates
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F5))
-            CurSceneReload();
-    }
-    private void FixedUpdate()
-    {
 
-    }
 
     // Physics
 
 
     // Functions
-    public void CurSceneReload()
-    {
-        Scene curScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(curScene.name);
-    }
+ 
 
 
     // 기타 분류하고 싶은 것이 있을 경우

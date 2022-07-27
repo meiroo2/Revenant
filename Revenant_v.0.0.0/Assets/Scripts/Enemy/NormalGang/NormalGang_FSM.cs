@@ -9,7 +9,9 @@ public class NormalGang_FSM : Enemy_FSM
 {
     // Member Variables
     protected NormalGang m_Enemy;
-    protected Animator m_EnemyAnimator;
+    protected Animator m_Animator;
+    protected Rigidbody2D m_Rigid;
+    protected Transform m_Transform;
 
     public override void StartState()
     {
@@ -30,6 +32,13 @@ public class NormalGang_FSM : Enemy_FSM
     {
         
     }
+
+    protected void InitFSM()
+    {
+        m_Animator = m_Enemy.m_Animator;
+        m_Rigid = m_Enemy.m_EnemyRigid;
+        m_Transform = m_Enemy.transform;
+    }
 }
 
 public class IDLE_NormalGang : NormalGang_FSM
@@ -39,7 +48,9 @@ public class IDLE_NormalGang : NormalGang_FSM
     private bool m_isLookAround = false;
     private int m_PatrolIdx = 0;
     private int m_Phase = 0;
-    private readonly Transform m_EnemyTransform;
+
+    private CoroutineHandler m_CoroutineHandler;
+    private CoroutineElement m_CoroutineElement;
 
     private readonly int IsWalk = Animator.StringToHash("IsWalk");
     private readonly int IsTurn = Animator.StringToHash("IsTurn");
@@ -47,25 +58,25 @@ public class IDLE_NormalGang : NormalGang_FSM
     public IDLE_NormalGang(NormalGang _enemy)
     {
         m_Enemy = _enemy;
-        m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
-        m_EnemyTransform = m_Enemy.transform;
+        InitFSM();
     }
 
     public override void StartState()
     {
+        m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
         m_isPatrol = false;
         m_isLookAround = m_Enemy.p_IsLookAround;
         m_Phase = 0;
         m_PatrolIdx = 0;
         m_Enemy.ChangeAnimator(true);
-        m_EnemyAnimator.SetBool(IsWalk, false);
+        m_Animator.SetBool(IsWalk, false);
         
         if (m_Enemy.p_PatrolPos.Length > 0)
         {
             m_isPatrol = true;
             m_PatrolIdx = 0;
             m_Enemy.ResetMovePoint(m_Enemy.p_PatrolPos[m_PatrolIdx].position);
-            m_EnemyAnimator.SetBool(IsWalk, true);
+            m_Animator.SetBool(IsWalk, true);
         }
     }
 
@@ -78,7 +89,7 @@ public class IDLE_NormalGang : NormalGang_FSM
                 {
                     case 0:     // 해당 포지션으로 이동
                         m_Enemy.MoveToPoint_FUpdate();
-                        if (Mathf.Abs(m_EnemyTransform.position.x - m_Enemy.p_PatrolPos[m_PatrolIdx].position.x) < 0.1f)
+                        if (Mathf.Abs(m_Transform.position.x - m_Enemy.p_PatrolPos[m_PatrolIdx].position.x) < 0.1f)
                         {
                             m_PatrolIdx++;
                 
@@ -93,8 +104,8 @@ public class IDLE_NormalGang : NormalGang_FSM
                     
                     case 1:     // 포지션 도착(좌우 돌아야 함)
                         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
-                        m_EnemyAnimator.SetBool(IsWalk, false);
-                        m_EnemyAnimator.SetBool(IsTurn, true);
+                        m_Animator.SetBool(IsWalk, false);
+                        m_Animator.SetBool(IsTurn, true);
                         m_Phase = 2;
                         break;
                     
@@ -103,9 +114,10 @@ public class IDLE_NormalGang : NormalGang_FSM
                         break;
 
                     case 3:     // Turn 끝
-                        m_EnemyAnimator.SetBool(IsTurn, false);
+                        m_Animator.SetBool(IsTurn, false);
                         m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
-                        CoroutineHandler.Start_Coroutine(LookDelay(m_Enemy.p_LookAroundDelay));
+                        m_CoroutineElement =
+                            m_CoroutineHandler.StartCoroutine_Handler(LookDelay(m_Enemy.p_LookAroundDelay));
                         m_Phase = 4;
                         break;
                 
@@ -113,7 +125,7 @@ public class IDLE_NormalGang : NormalGang_FSM
                         break;
                 
                     case 5:
-                        m_EnemyAnimator.SetBool(IsWalk, true);
+                        m_Animator.SetBool(IsWalk, true);
                         m_Phase = 0;
                         break;
                 }
@@ -123,7 +135,7 @@ public class IDLE_NormalGang : NormalGang_FSM
                 switch (m_Phase)
                 {
                     case 0:     // Turn 시작
-                        m_EnemyAnimator.SetBool(IsTurn, true);
+                        m_Animator.SetBool(IsTurn, true);
                         m_Phase = 1;
                         break;
                 
@@ -132,9 +144,10 @@ public class IDLE_NormalGang : NormalGang_FSM
                         break;
                 
                     case 2:     // Turn 끝
-                        m_EnemyAnimator.SetBool(IsTurn, false);
+                        m_Animator.SetBool(IsTurn, false);
                         m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
-                        CoroutineHandler.Start_Coroutine(LookDelay(m_Enemy.p_LookAroundDelay));
+                        m_CoroutineElement = 
+                            m_CoroutineHandler.StartCoroutine_Handler(LookDelay(m_Enemy.p_LookAroundDelay));
                         m_Phase = 3;
                         break;
                 
@@ -161,8 +174,9 @@ public class IDLE_NormalGang : NormalGang_FSM
 
     public override void ExitState()
     {
-        m_EnemyAnimator.SetBool(IsWalk, false);
-        m_EnemyAnimator.SetBool(IsTurn, false);
+        m_Rigid.velocity = Vector2.zero;
+        m_Animator.SetBool(IsWalk, false);
+        m_Animator.SetBool(IsTurn, false);
     }
 
     public override void NextPhase()
@@ -174,12 +188,13 @@ public class IDLE_NormalGang : NormalGang_FSM
     {
         yield return new WaitForSeconds(_time);
         NextPhase();
-        yield return null;
+        
+       m_CoroutineElement.StopCoroutine_Element();
     }
     
     private void CheckTurn()
     {
-        m_CurAnimState = m_EnemyAnimator.GetCurrentAnimatorStateInfo(0);
+        m_CurAnimState = m_Animator.GetCurrentAnimatorStateInfo(0);
         if (m_CurAnimState.IsName("Turn") && m_CurAnimState.normalizedTime >= 1f)
         {
             NextPhase();
@@ -190,7 +205,6 @@ public class IDLE_NormalGang : NormalGang_FSM
 public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
 {
     private Vector2 m_DistanceBetPlayer;
-    private Transform m_EnemyTransform;
     private AnimatorStateInfo m_CurAnimState;
     private float m_StuckTimer = 0f;
     private int m_Phase = 0;
@@ -201,13 +215,12 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
     public FOLLOW_NormalGang(NormalGang _enemy)
     {
         m_Enemy = _enemy;
-        m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
-        m_EnemyTransform = m_Enemy.transform;
+        InitFSM();
     }
 
     public override void StartState()
     {
-        m_EnemyAnimator.SetBool(IsWalk, true);
+        m_Animator.SetBool(IsWalk, true);
         m_IsFirst = true;
 
         if (!m_Enemy.m_IsFoundPlayer)
@@ -224,8 +237,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
         {
             case 0:     // 체인지 애니메이션 대기 + 느낌표 출력
                 m_Enemy.m_Alert.SetAlertActive(true);
-                
-                m_EnemyAnimator.SetTrigger(IsChange);
+                m_Animator.SetTrigger(IsChange);
                 m_Phase = 1;
                 break;
             
@@ -235,7 +247,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
             
             case 2:     // 체인지 끝
                 m_Enemy.ChangeAnimator(false);
-                m_EnemyAnimator.SetBool(IsWalk, true);
+                m_Animator.SetBool(IsWalk, true);
                 m_Enemy.m_IsFoundPlayer = true;
                 m_Phase = 3;
                 break;
@@ -256,7 +268,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
 
     public override void ExitState()
     {
-        m_EnemyAnimator.SetBool(IsWalk, false);
+        m_Animator.SetBool(IsWalk, false);
         m_Phase = 0;
     }
 
@@ -267,7 +279,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
     
     private void CheckChange()
     {
-        m_CurAnimState = m_EnemyAnimator.GetCurrentAnimatorStateInfo(0);
+        m_CurAnimState = m_Animator.GetCurrentAnimatorStateInfo(0);
         if (m_CurAnimState.IsName("Change") && m_CurAnimState.normalizedTime >= 1f)
         {
             NextPhase();
@@ -277,7 +289,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
     private void MoveTowardPlayer()
     {
         if (!(m_DistanceBetPlayer.magnitude > m_Enemy.p_MinFollowDistance)) return;
-        m_Enemy.MoveByDirection_FUpdate(!(m_DistanceBetPlayer.x > 0));
+        m_Enemy.MoveByDirection(!(m_DistanceBetPlayer.x > 0));
     }
 }
 
@@ -291,15 +303,15 @@ public class ATTACK_NormalGang : NormalGang_FSM
     private int m_Angle = 0;
     private float m_Timer = 0.2f;
     
-    private AnimatorStateInfo m_ForCheckAniState;
+    private AnimatorStateInfo m_AnimatorState;
     private readonly int IsWalk = Animator.StringToHash("IsWalk");
-    private static readonly int NearAttack = Animator.StringToHash("NearAttack");
+    private static readonly int Melee = Animator.StringToHash("Melee");
     private static readonly int FireAngle = Animator.StringToHash("FireAngle");
 
     public ATTACK_NormalGang(NormalGang _enemy)
     {
         m_Enemy = _enemy;
-        m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
+        m_Animator = m_Enemy.GetComponentInChildren<Animator>();
         m_EnemyTransform = m_Enemy.transform;
     }
 
@@ -327,13 +339,14 @@ public class ATTACK_NormalGang : NormalGang_FSM
                 m_Enemy.m_Alert.SetCallback(NextPhase, true);
                 m_Enemy.m_Alert.SetAlertFill(true);
                 
-                m_EnemyAnimator.SetInteger(FireAngle, -1);
+                m_Animator.SetInteger(FireAngle, -1);
                 m_Enemy.SetViewDirectionToPlayer();
-                m_EnemyAnimator.SetBool(IsWalk, false);
+                m_Animator.SetBool(IsWalk, false);
                 m_Phase = 1;
                 break;
             
             case 1:    // 느낌표 채우는 중 (CallBack 대기)
+                //Debug.Log("콜백 대기 느낌표 채움");
                 break;
 
             case 2:    // 근접공격 사거리 = 3, 총 사거리 = 4
@@ -341,17 +354,16 @@ public class ATTACK_NormalGang : NormalGang_FSM
                 break;
             
             case 3:    // 칼로 공격 
-                m_EnemyAnimator.SetBool(NearAttack, true);
+                m_Animator.SetTrigger(Melee);
                 m_Enemy.m_WeaponMgr.ChangeWeapon(1);    // 칼로 무기 변경
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                 m_Phase = 4;
                 break;
             
-            case 4:
-                m_ForCheckAniState = m_EnemyAnimator.GetCurrentAnimatorStateInfo(0);
-                if (m_ForCheckAniState.IsName("Knife") && m_ForCheckAniState.normalizedTime >= 1f)
+            case 4:     // 칼 공격 중(애니메이션 종료 대기)
+                m_AnimatorState = m_Animator.GetCurrentAnimatorStateInfo(0);
+                if (m_AnimatorState.normalizedTime >= 1f)
                 {
-                    m_EnemyAnimator.SetBool(NearAttack, false);
                     m_Phase = 8;
                 }
                 break;
@@ -364,12 +376,12 @@ public class ATTACK_NormalGang : NormalGang_FSM
                 m_Angle = StaticMethods.getAnglePhase(m_Enemy.p_GunPos.position,
                     m_PlayerTransform.position, 3, 20);
                 
-                m_EnemyAnimator.SetInteger(FireAngle, m_Angle);
+                m_Animator.SetInteger(FireAngle, m_Angle);
                 m_Phase = 6;
                 break;
             
             case 6: // 즉시 -1로 바꿔 재발사 금지
-                m_EnemyAnimator.SetInteger(FireAngle, -1);
+                m_Animator.SetInteger(FireAngle, -1);
                 m_Phase = 7;
                 break;
             
@@ -395,8 +407,8 @@ public class ATTACK_NormalGang : NormalGang_FSM
     public override void ExitState()
     {
         m_Enemy.m_EnemyRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
-        m_EnemyAnimator.SetInteger(FireAngle, -2);
-        m_EnemyAnimator.SetBool(IsWalk, true);
+        m_Animator.SetInteger(FireAngle, -2);
+        m_Animator.SetBool(IsWalk, true);
         
         m_Enemy.m_Alert.SetAlertFill(false);
     }
@@ -409,14 +421,14 @@ public class ATTACK_NormalGang : NormalGang_FSM
 
     private void CheckFireAniEnd()
     {
-        m_ForCheckAniState = m_EnemyAnimator.GetCurrentAnimatorStateInfo(0);
+        m_AnimatorState = m_Animator.GetCurrentAnimatorStateInfo(0);
 
-        if (m_ForCheckAniState.IsName("up_r") || m_ForCheckAniState.IsName("front_r") ||
-            m_ForCheckAniState.IsName("down_r"))
+        if (m_AnimatorState.IsName("up_r") || m_AnimatorState.IsName("front_r") ||
+            m_AnimatorState.IsName("down_r"))
         {
-            if (m_ForCheckAniState.normalizedTime >= 1f)
+            if (m_AnimatorState.normalizedTime >= 1f)
             {
-                m_EnemyAnimator.SetInteger("FireAngle", -2);
+                m_Animator.SetInteger("FireAngle", -2);
                 NextPhase();
             }
         }
@@ -437,7 +449,7 @@ public class STUN_NormalGang : NormalGang_FSM
     public STUN_NormalGang(NormalGang _enemy)
     {
         m_Enemy = _enemy;
-        m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
+        InitFSM();
     }
 
     public override void StartState()
@@ -446,7 +458,7 @@ public class STUN_NormalGang : NormalGang_FSM
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
         
         m_Enemy.m_Alert.SetCallback(NextPhase, true);
-        m_Enemy.m_Alert.SetAlertStun();
+        m_Enemy.m_Alert.SetAlertStun(m_Enemy.p_StunSpeed);
     }
 
     public override void UpdateState()
@@ -468,14 +480,6 @@ public class STUN_NormalGang : NormalGang_FSM
     {
         m_Phase++;
     }
-
-    private IEnumerator ExitStun()
-    {
-        yield return new WaitForSeconds(m_Enemy.p_stunTime);
-        if (m_Enemy.m_CurEnemyStateName != EnemyStateName.DEAD)
-            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
-        yield return null;
-    }
 }
 
 
@@ -486,13 +490,13 @@ public class DEAD_NormalGang : NormalGang_FSM
     public DEAD_NormalGang(NormalGang _enemy)
     {
         m_Enemy = _enemy;
-        m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
+        m_Animator = m_Enemy.GetComponentInChildren<Animator>();
     }
 
     public override void StartState()
     {
+        m_Enemy.SetHotBoxesActive(false);
         m_Enemy.m_Alert.gameObject.SetActive(false);
-        //m_Enemy.m_Alert.SetAlertActive(false);
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
         m_Enemy.SendDeathAlarmToSpawner();
     }

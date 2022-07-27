@@ -39,7 +39,7 @@ public class Player : Human
     public PlayerStateName m_CurPlayerFSMName { get; private set; }
     public Rigidbody2D m_PlayerRigid { get; private set; }
     public Animator m_PlayerAnimator { get; private set; }
-    public Player_StairMgr m_PlayerStairMgr { get; private set; }
+    public Player_FootMgr m_PlayerFootMgr { get; private set; }
     public Player_HotBox m_PlayerHotBox { get; private set; }
     public Player_UI m_PlayerUIMgr { get; private set; }
     public LocationSensor m_PlayerLocationSensor { get; private set; }
@@ -73,7 +73,6 @@ public class Player : Human
     private IEnumerator m_FootStep;
 
     private Vector2 m_PlayerPosVec;
-    public RaycastHit2D m_FootRay { get; private set; }
 
     private Coroutine m_WalkSoundCoroutine;
 
@@ -93,7 +92,7 @@ public class Player : Human
         m_PlayerHitscanRay = GetComponentInChildren<Player_HitscanRay>();
         m_PlayerAniMgr = GetComponentInChildren<Player_AniMgr>();
         m_PlayerHotBox = GetComponentInChildren<Player_HotBox>();
-        m_PlayerStairMgr = GetComponentInChildren<Player_StairMgr>();
+        m_PlayerFootMgr = GetComponentInChildren<Player_FootMgr>();
         m_playerRotation = GetComponentInChildren<PlayerRotation>();
         m_WeaponMgr = GetComponentInChildren<Player_WeaponMgr>();
         m_useRange = GetComponentInChildren<Player_UseRange>();
@@ -129,7 +128,7 @@ public class Player : Human
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
         p_Hp = _input.Hp;
-        p_stunTime = _input.StunInvincibleTime;
+        p_StunSpeed = _input.StunInvincibleTime;
         p_Speed = _input.Speed;
         p_BackWalkSpeedRatio = _input.BackSpeedRatio;
         p_RunSpeedRatio = _input.RunSpeedRatio;
@@ -167,15 +166,7 @@ public class Player : Human
         if (m_ObjectState == ObjectState.Pause)       // Pause면 중지
             return;
         
-        
         m_CurPlayerFSM.UpdateState();
-        
-        
-        // Player Ray 측정(StairMgr로 바꿀 것)
-        if (gameObject.layer == 12 && m_FootRay)
-        {
-            m_PlayerStairMgr.ChangePlayerNormal(m_FootRay.normal);
-        }
     }
 
 
@@ -265,12 +256,10 @@ public class Player : Human
         if (_input)
         {
             gameObject.layer = 10;
-            m_PlayerStairMgr.ChangePlayerNormal(_normal);
         }
         else
         {
             gameObject.layer = 12;
-            m_PlayerStairMgr.ChangePlayerNormal(Vector2.up);
         }
     }
 
@@ -327,6 +316,20 @@ public class Player : Human
     public bool GetIsPlayerWalkStraight()
     {
         return (m_IsRightHeaded && m_InputMgr.m_IsPushRightKey) || (!m_IsRightHeaded && m_InputMgr.m_IsPushLeftKey);
+    }
+
+    public Vector2 GetPlayerFootPos()
+    {
+        RaycastHit2D hit = m_PlayerFootMgr.GetFootRayHit();
+
+        if (!ReferenceEquals(hit.collider, null))
+        {
+            return hit.point;
+        }
+        else
+        {
+            return m_PlayerPosVec;
+        }
     }
 
 

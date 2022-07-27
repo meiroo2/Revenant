@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InstanceMgr : MonoBehaviour
 {
-    public GameObject m_MainCanvas;
+    [HideInInspector]public GameObject m_MainCanvas;
 
     [field: SerializeField] private GameObject[] m_ShouldBeMadeInWorld;
     [field: SerializeField] private GameObject[] m_ShouldBeMadeInCanvas;
@@ -14,6 +14,8 @@ public class InstanceMgr : MonoBehaviour
 
     private void Awake()
     {
+        m_MainCanvas = GameObject.FindGameObjectWithTag("MainCanvas");
+        
         Instance = this;
         for (int i = 0; i < m_ShouldBeMadeInWorld.Length; i++)
         {

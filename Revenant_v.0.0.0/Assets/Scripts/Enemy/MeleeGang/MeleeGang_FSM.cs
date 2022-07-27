@@ -106,7 +106,7 @@ public class FollowMeleeGang : MeleeGang_FSM
 
         if (m_DistanceBetPlayer.magnitude > m_Enemy.p_MinFollowDistance)
         {
-            m_Enemy.MoveByDirection_FUpdate(!(m_DistanceBetPlayer.x > 0));
+            m_Enemy.MoveByDirection(!(m_DistanceBetPlayer.x > 0));
         }
         else // MinFollowDistance 안쪽일 경우
         {

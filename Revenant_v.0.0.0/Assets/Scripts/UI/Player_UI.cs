@@ -30,10 +30,7 @@ public class Player_UI : MonoBehaviour
     [Space(10f)] 
     public Sprite[] p_AimImgArr;
     public Sprite[] p_HitmarkArr;
-
-
-
-
+    
 
     // Member Variables
     private SoundMgr_SFX m_SoundMgr;
@@ -55,11 +52,15 @@ public class Player_UI : MonoBehaviour
     private Vector2 m_HitmarkOriginScale;
 
     private Sprite m_ReloadBackupSprite;
+
+    private CanvasRenderer[] m_AllVisibleObjs;
     
     
     // Constructors
     private void Awake()
     {
+        m_AllVisibleObjs = this.gameObject.GetComponentsInChildren<CanvasRenderer>();
+
         m_Maincam = Camera.main.GetComponent<CameraMove>();
         m_AimTransform = p_MainAimImg.transform;
         p_Hitmark.enabled = false;
@@ -87,6 +88,13 @@ public class Player_UI : MonoBehaviour
 
 
     // Functions
+    public void SetPlayerUIVisible(bool _isVisible)
+    {
+        for (int i = 0; i < m_AllVisibleObjs.Length; i++)
+        {
+            m_AllVisibleObjs[i].SetAlpha(_isVisible ? 1 : 0);
+        }
+    }
     public void ForceStopReload()
     {
         if (!ReferenceEquals(m_ReloadCoroutine, null))
