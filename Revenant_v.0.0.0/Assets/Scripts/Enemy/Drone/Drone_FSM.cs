@@ -86,7 +86,7 @@ public class FOLLOW_Drone : Drone_FSM
 
     public override void UpdateState()
     {
-        m_DistanceBetPlayer = m_Enemy.GetDistBetPlayer();
+        m_DistanceBetPlayer = m_Enemy.GetPositionDifferenceBetPlayer();
 
         switch (m_Phase)
         {

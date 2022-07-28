@@ -1,13 +1,14 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MeleeGang : BasicEnemy
 {
     // Visible Member Variables
-    [field: SerializeField] public float p_MinFollowDistance { get; protected set; } = 0.2f;
+    [field: SerializeField] public float p_MeleeAttackDistance { get; protected set; } = 0.2f;
     [field: SerializeField] public bool p_IsLookAround = false;
     [field: SerializeField] public float p_LookAroundDelay = 1f;
-    [Range(0.0f, 1.0f)] public float p_PointAttackTime;
+    [Range(0.0f, 1.0f)] public float p_AttackTiming;
 
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
@@ -81,8 +82,8 @@ public class MeleeGang : BasicEnemy
         p_StunSpeed = _mgr.M_StunTime;
         p_stunThreshold = _mgr.M_StunThreshold;
         p_VisionDistance = _mgr.M_Vision_Distance;
-        p_MinFollowDistance = _mgr.M_MeleeAttack_Distance;
-        p_PointAttackTime = _mgr.M_PointAttackTime;
+        p_MeleeAttackDistance = _mgr.M_MeleeAttack_Distance;
+        p_AttackTiming = _mgr.M_PointAttackTime;
         #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
         #endif

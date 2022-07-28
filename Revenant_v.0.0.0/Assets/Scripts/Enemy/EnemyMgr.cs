@@ -31,8 +31,6 @@ public class EnemyMgr : MonoBehaviour
     [Header("드론 변수 목록")] 
     public int D_HP;
     public float D_Speed;
-    public float D_StunTime;
-    public int D_StunThreshold;
     public float D_AlertSpeedRatio;
     public float D_RushSpeedRatio;
     public float D_ToRush_Distance;
@@ -51,6 +49,33 @@ public class EnemyMgr : MonoBehaviour
 
 
     // Functions
+    public void LoadMeleeGangData()
+    {
+        List<Dictionary<string, object>> data = CSVReader.Read("EnemyData");
+
+        /*
+        for (int i = 0; i < data.Count; i++)
+        {
+            Debug.Log(data[i]["NormalGang_Values"].ToString());
+        }
+*/
+
+        N_HP = int.Parse(data[0]["NormalGang_Values"].ToString());
+        N_Speed = float.Parse(data[1]["NormalGang_Values"].ToString());
+        N_StunTime = float.Parse(data[2]["NormalGang_Values"].ToString());
+        N_StunThreshold = int.Parse(data[3]["NormalGang_Values"].ToString());
+        N_Vision_Distance = float.Parse(data[4]["NormalGang_Values"].ToString());
+        N_GunFire_Distance = float.Parse(data[5]["NormalGang_Values"].ToString());
+        N_MeleeAttack_Distance = float.Parse(data[6]["NormalGang_Values"].ToString());
+        N_AlertSpeedRatio = float.Parse(data[7]["NormalGang_Values"].ToString());
+        
+        /*
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+        #endif
+        */
+    }
+
     public void SetAllEnemys()
     {
         SetNoramlGangs();
