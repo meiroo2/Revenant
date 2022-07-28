@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HideSlot : MonoBehaviour, IObjHighlight
+public class HideSlot : MonoBehaviour
 {
     // Visible Member Variables
     public UseableObjList m_ObjProperty { get; set; } = UseableObjList.HIDEPOS;
@@ -24,11 +24,6 @@ public class HideSlot : MonoBehaviour, IObjHighlight
 
 
     // Functions
-       
-    public void ActivateOutline(bool _isOn)
-    {
-        m_HideObj.m_Renderer.sprite = _isOn ? m_HideObj.p_HighlightSprite : m_HideObj.p_DefaultSprite;
-    }
     public void ActivateHideSlot(bool _true)
     {
         m_isOn = _true;
