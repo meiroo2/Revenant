@@ -81,7 +81,7 @@ public class IdleMeleeGang : MeleeGang_FSM
 public class FollowMeleeGang : MeleeGang_FSM
 {
     // Member Variables
-    private Vector2 m_DistanceBetPlayer;
+    private float m_DistanceBetPlayer;
     private Transform m_EnemyTransform;
     private float m_OverlapTimer = 0f;
     private int m_Phase = 0;
@@ -102,11 +102,11 @@ public class FollowMeleeGang : MeleeGang_FSM
 
     public override void UpdateState()
     {
-        m_DistanceBetPlayer = m_Enemy.GetDistBetPlayer();
+        m_DistanceBetPlayer = m_Enemy.GetDistanceBetPlayer();
 
-        if (m_DistanceBetPlayer.magnitude > m_Enemy.p_MinFollowDistance)
+        if (m_DistanceBetPlayer > m_Enemy.p_MeleeAttackDistance)
         {
-            m_Enemy.MoveByDirection(!(m_DistanceBetPlayer.x > 0));
+            m_Enemy.MoveByDirection(m_Enemy.GetIsLeftThenPlayer());
         }
         else // MinFollowDistance 안쪽일 경우
         {
@@ -147,8 +147,7 @@ public class AttackMeleeGang : MeleeGang_FSM
     public override void StartState()
     {
         m_Enemy.m_EnemyRigid.constraints = RigidbodyConstraints2D.FreezeAll;
-        m_DistanceBetPlayer = m_Enemy.GetDistBetPlayer();
-        
+
         // Attack 시작 시 우선 플레이어 바라봄
         m_Enemy.SetViewDirectionToPlayer();
 
@@ -165,7 +164,7 @@ public class AttackMeleeGang : MeleeGang_FSM
         switch (m_Phase)
         {
             case 0:     // 휘두르는 애니 재생 중
-                if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= m_Enemy.p_PointAttackTime)
+                if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= m_Enemy.p_AttackTiming)
                 {
                     // 0.9f 이상이면 칼 콜라이더 생성하고 1페이즈로
                     m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
@@ -194,7 +193,7 @@ public class AttackMeleeGang : MeleeGang_FSM
             case 3:     // 공격 종료
                 m_EnemyAnimator.SetBool("IsAttackEnd", false);
                 // 사정거리 이내인지 계산
-                if (m_Enemy.GetDistBetPlayer().magnitude <= m_Enemy.p_MinFollowDistance)
+                if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_MeleeAttackDistance)
                 {
                     // 플레이어 방향 바라보고 다시 공격페이즈
                     m_Enemy.SetViewDirectionToPlayer();

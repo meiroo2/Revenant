@@ -71,11 +71,24 @@ public class BasicEnemy : Human
         m_EnemySpawnerList.Add(_spawner);
     }
     
-    public virtual Vector2 GetDistBetPlayer()
+    /// <summary>현재 위치에서 플레이어의 위치를 뺀 Vector2를 반환합니다.</summary>
+    public virtual Vector2 GetPositionDifferenceBetPlayer()
     {
         var position = transform.position;
         var playerPos = m_PlayerTransform.position;
         return new Vector2(position.x - playerPos.x, position.y - playerPos.y);
+    }
+
+    /// <summary>현재 위치에서 플레이어의 위치까지 Vector2.Distance를 반환합니다.</summary>
+    public float GetDistanceBetPlayer()
+    {
+        return Vector2.Distance(m_PlayerTransform.position, transform.position);
+    }
+
+    /// <summary>적이 더 왼쪽에 있을 경우 true를 반환합니다.</summary>
+    public bool GetIsLeftThenPlayer()
+    {
+        return transform.position.x < m_PlayerTransform.position.x ? true : false;
     }
 
     public virtual void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
@@ -149,6 +162,7 @@ public class BasicEnemy : Human
     }
 
     /// <summary>파라미터에 따라 발 밑 Normal벡터에 직교하는 방향대로 이동합니다.</summary>
+    /// /// <param name="_isRight">True시 오른쪽으로 이동</param>
     public virtual void MoveByDirection(bool _isRight)
     {
         if (_isRight)
