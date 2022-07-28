@@ -59,7 +59,7 @@ public class Player_ObjInteracter : MonoBehaviour
     {
         if (other.CompareTag("HideSlot"))
         {
-            m_HideSlotList.Find(x => x == other).GetComponent<IObjHighlight>().ActivateOutline(false);
+            //m_HideSlotList.Find(x => x == other).GetComponent<IObjHighlight>().ActivateOutline(false);
             m_HideSlotList.Remove(other);
 
             if (m_HideSlotList.Count > 0)
@@ -98,10 +98,10 @@ public class Player_ObjInteracter : MonoBehaviour
                 minDistance = distance;
             }
             
-            element.GetComponent<IObjHighlight>().ActivateOutline(false);
+           // element.GetComponent<IObjHighlight>().ActivateOutline(false);
         }
 
         m_CurHideSlot = m_HideSlotList[minIdx].GetComponent<HideSlot>();
-        m_HideSlotList[minIdx].GetComponent<IObjHighlight>().ActivateOutline(true);
+        //m_HideSlotList[minIdx].GetComponent<IObjHighlight>().ActivateOutline(true);
     }
 }

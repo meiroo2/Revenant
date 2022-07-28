@@ -114,8 +114,6 @@ public class Drone : BasicEnemy
 
         p_Hp = _mgr.D_HP;
         p_Speed = _mgr.D_Speed;
-        p_StunSpeed = _mgr.D_StunTime;
-        p_stunThreshold = _mgr.D_StunThreshold;
         p_AlertSpeedRatio = _mgr.D_AlertSpeedRatio;
         p_RushSpeedRatio = _mgr.D_RushSpeedRatio;
         p_ToRushXDistance = _mgr.D_ToRush_Distance;
