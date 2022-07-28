@@ -6,6 +6,7 @@ using UnityEngine;
 
 
 #if UNITY_EDITOR
+using System.Xml;
 using UnityEditor;      
 [CustomEditor(typeof(EnemyMgr))]
 public class CS_EnemyMgr : Editor
@@ -19,9 +20,10 @@ public class CS_EnemyMgr : Editor
         {
             Warning.Open();
         }
-        if (GUILayout.Button("드론 적용하기"))
+        if (GUILayout.Button("CSV 불러오기"))
         {
-            FindObjectOfType<EnemyMgr>().SetDrones();
+            GameObject.FindObjectOfType<EnemyMgr>().LoadMeleeGangData();
+            Debug.Log("설정을 불러왔습니다.");
         }
     }
 }

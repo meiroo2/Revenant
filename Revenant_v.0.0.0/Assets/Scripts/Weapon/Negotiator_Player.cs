@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class Negotiator_Player : BasicWeapon_Player
 {
     // Visible Member Variables
+    public Transform p_LaserStartPos;
     public ObjectPuller p_MuzFlashPuller;
     public Transform m_ShellPos;
     public Sprite p_BulletSprite;
@@ -141,10 +142,11 @@ public class Negotiator_Player : BasicWeapon_Player
                 break;
         }
         // Laser 소환
-        m_BulletLaserMgr.PoolingBulletLaser(result.m_RayStartPoint, result.m_RayDestinationPos);
+        m_BulletLaserMgr.PoolingBulletLaser(p_LaserStartPos.position, result.m_RayDestinationPos);
 
         
         p_MuzFlashPuller.EnableNewObj();
+        
         
         if(m_Player.m_IsRightHeaded)
             m_ShellMgr.MakeShell(m_ShellPos.transform.position,

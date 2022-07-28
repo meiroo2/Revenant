@@ -13,23 +13,32 @@ public class ObjectPuller : MonoBehaviour
     // Member Variables
     protected int m_Idx = 0;
     protected ForObjPull_Once[] m_PulledObjArr;
+    private SoundMgr_SFX m_SFXSoundMgr;
 
     // Constructors
-    private void Awake()
+    protected void Awake()
     {
         m_PulledObjArr = new ForObjPull_Once[m_ObjPullCount];
         for (int i = 0; i < m_ObjPullCount; i++)
         {
             m_PulledObjArr[i] = Instantiate(m_PullingObject, transform).GetComponent<ForObjPull_Once>();
-            m_PulledObjArr[i].gameObject.SetActive(false);
         }
     }
 
-    // Updates
-    private void Update()
+    protected void Start()
     {
-
+        var instance = InstanceMgr.GetInstance();
+        m_SFXSoundMgr = instance.GetComponentInChildren<SoundMgr_SFX>();
+        
+        for (int i = 0; i < m_ObjPullCount; i++)
+        {
+            m_PulledObjArr[i].m_SoundSFXMgr = m_SFXSoundMgr;
+            m_PulledObjArr[i].gameObject.SetActive(false);
+        }
     }
+    
+
+    // Updates
 
     // Physics
 
@@ -37,11 +46,12 @@ public class ObjectPuller : MonoBehaviour
     public virtual void EnableNewObj()
     {
         m_PulledObjArr[m_Idx].gameObject.SetActive(true);
-        m_PulledObjArr[m_Idx].resetTimer(m_DestroyTimer);
+        m_PulledObjArr[m_Idx].InitPulledObj();
         m_Idx++;
         if (m_Idx >= m_ObjPullCount)
             m_Idx = 0;
     }
-
+    
+    
     // 기타 분류하고 싶은 것이 있을 경우
 }

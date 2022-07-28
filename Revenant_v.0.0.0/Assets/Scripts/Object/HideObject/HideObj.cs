@@ -11,23 +11,19 @@ public class HideObj : MonoBehaviour
     [Tooltip("0으로 설정시 파괴되지 않습니다.")]
     public int m_Hp = 0;
 
-    [Space(20f)] [Header("Plz assign")] 
+    [Space(20f)] [Header("Plz assign")]
+    public SpriteRenderer m_Renderer;
     public HideSlot[] p_HideSlots;
     public HideObjCollider p_Collider;
-    [field : SerializeField]public Sprite p_DefaultSprite { get; private set; }
-    [field : SerializeField]public Sprite p_HighlightSprite { get; private set; }
 
 
     // Member Variables
     private bool m_Destructable = false;
-    public SpriteRenderer m_Renderer { get; private set; }
 
 
     // Constructors
     private void Awake()
     {
-        m_Renderer = GetComponentInChildren<SpriteRenderer>();
-        
         // 0보다 클 경우 파괴되는 엄폐물
         m_Destructable = m_Hp > 0;
         

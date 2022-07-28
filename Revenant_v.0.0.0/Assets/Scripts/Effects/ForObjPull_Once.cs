@@ -5,13 +5,15 @@ using UnityEngine;
 public class ForObjPull_Once : MonoBehaviour
 {
     // Visible Member Variables
-    public SoundMgr_SFX m_SoundSFXMgr;
+    [HideInInspector] public SoundMgr_SFX m_SoundSFXMgr;
     protected Animator m_Animator;
 
+    
     // Member Variables
     protected float m_Timer = 0f;
     protected bool m_isStart = false;
 
+    
     // Constructors
     protected void Awake()
     {
@@ -21,6 +23,7 @@ public class ForObjPull_Once : MonoBehaviour
         }
     }
 
+    
     // Updates
     private void Update()
     {
@@ -53,6 +56,10 @@ public class ForObjPull_Once : MonoBehaviour
     {
         m_Timer = _inputTime;
         m_isStart = true;
+    }
+
+    public virtual void InitPulledObj()
+    {
     }
 
 
