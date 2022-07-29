@@ -32,6 +32,38 @@ public class InGame_UI : MonoBehaviour
 
     
     // Functions
+    public void DoBlackFadeIn()
+    {
+        m_WhiteOutColor = Color.black;
+        m_WhiteOutColor.a = 0;
+        m_WhiteOutImg.color = m_WhiteOutColor;
+        StartCoroutine(BlackFadeIn());
+    }
+
+    private IEnumerator BlackFadeIn()
+    {
+        while (true)
+        {
+            m_WhiteOutColor.a += Time.deltaTime * p_WhiteOutSpeed;
+            m_WhiteOutImg.color = m_WhiteOutColor;
+
+            if (m_WhiteOutColor.a >= 1f)
+            {
+                m_WhiteOutColor = Color.black;
+                m_WhiteOutImg.color = m_WhiteOutColor;
+
+                if (!ReferenceEquals(m_Callback, null))
+                {
+                    m_Callback();
+                }
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+    
+    
     public void DoWhiteOut(bool _IsFadeOut)
     {
         m_WhiteOutColor = Color.white;
@@ -48,6 +80,8 @@ public class InGame_UI : MonoBehaviour
             StartCoroutine(WhiteFadeIn());
         }
     }
+
+    
     public void SetCallback(WhiteOutDelegate _func)
     {
         m_Callback = _func;
@@ -69,7 +103,6 @@ public class InGame_UI : MonoBehaviour
             yield return null;
         }
     }
-
     private IEnumerator WhiteFadeIn()
     {
         while (true)

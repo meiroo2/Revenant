@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class ToStage2_Door : MonoBehaviour, IUseableObj
 {
     // Visible Member Variables
+    public string p_LoadSceneName;
     
     
     // Member Variables
@@ -31,7 +32,7 @@ public class ToStage2_Door : MonoBehaviour, IUseableObj
         if (!m_isOn)
             return 0;
 
-        SceneManager.LoadScene(4);
+        SceneManager.LoadScene(p_LoadSceneName);
         return 1;
     }
 

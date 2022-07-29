@@ -22,11 +22,10 @@ public class Player : Human
     [field : SerializeField] public float p_RollSpeedRatio { get; private set; } = 1.3f;
     [field : SerializeField] public float p_BackWalkSpeedRatio { get; private set; } = 0.7f;
     [field : SerializeField] public float p_RunSpeedRatio { get; private set; } = 1.5f;
-    [field : SerializeField] public float p_RollRecoverTime { get; private set; } = 2f;
     [field : SerializeField] public int p_MaxRollCount { get; private set; } = 3;
 
     [Space(30f)] 
-    [Header("Don't ¶£Áã")]
+    [Header("Don't ë•ƒì¥")]
     [field : SerializeField] public Transform p_Player_RealPos;
     
     
@@ -135,7 +134,6 @@ public class Player : Human
         p_RollSpeedRatio = _input.RollSpeedRatio;
         p_MaxRollCount = _input.RollCountMax;
         m_LeftRollCount = p_MaxRollCount;
-        p_RollRecoverTime = _input.RollRecoverTime;
         p_RollCountRecoverSpeed = _input.RollCountRecoverSpeed;
 
         m_WeaponMgr.m_CurWeapon.p_MaxBullet = _input.BulletCount;
@@ -144,14 +142,14 @@ public class Player : Human
         m_WeaponMgr.m_CurWeapon.m_LeftRounds = _input.BulletCount;
         m_WeaponMgr.m_CurWeapon.m_LeftMags = _input.MagCount;
         
-        // °­Á¦ Player_UIMgr ÇÒ´ç
+        // ê°•ì œ Player_UIMgr í• ë‹¹
         m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_PlayerUIMgr.SetMaxHp(_input.Hp);
         m_PlayerUIMgr.SetLeftRoundsNMag(_input.BulletCount, _input.MagCount);
         m_PlayerUIMgr.m_ReloadSpeed = _input.ReloadSpeed;
         m_PlayerUIMgr.m_HitmarkRemainTime = _input.HitmarkRemainTime;
         
-        // ½ºÆù°ú µ¿½Ã¿¡ InitPlayerValue°¡ È£ÃâµÇ±â ¶§¹®¿¡ Prefab µ¥ÀÌÅÍ¸¦ ÀúÀåÇÏÁø ¾ÊÀ½.
+        // ìŠ¤í°ê³¼ ë™ì‹œì— InitPlayerValueê°€ í˜¸ì¶œë˜ê¸° ë•Œë¬¸ì— Prefab ë°ì´í„°ë¥¼ ì €ì¥í•˜ì§„ ì•ŠìŒ.
         #if UNITY_EDITOR
         EditorUtility.SetDirty(this);
         EditorUtility.SetDirty(m_PlayerUIMgr);
@@ -163,7 +161,7 @@ public class Player : Human
     // Update
     private void Update()
     {
-        if (m_ObjectState == ObjectState.Pause)       // Pause¸é ÁßÁö
+        if (m_ObjectState == ObjectState.Pause)       // Pauseë©´ ì¤‘ì§€
             return;
         
         m_CurPlayerFSM.UpdateState();
@@ -174,7 +172,7 @@ public class Player : Human
     // ReSharper disable Unity.PerformanceAnalysis
     public void ChangePlayerFSM(PlayerStateName _name)
     {
-        //Debug.Log("»óÅÂ ÀüÀÌ" + _name);
+        //Debug.Log("ìƒíƒœ ì „ì´" + _name);
         m_PlayerAniMgr.exitplayerAnim();
         m_CurPlayerFSMName = _name;
         
@@ -206,7 +204,7 @@ public class Player : Human
                 break;
             
             default:
-                Debug.Log("Player->ChangePlayerFSM¿¡¼­ Á¸ÀçÇÏÁö ¾Ê´Â »óÅÂ ÀüÀÌ ¿äÃ»");
+                Debug.Log("Player->ChangePlayerFSMì—ì„œ ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ìƒíƒœ ì „ì´ ìš”ì²­");
                 break;
         }
         

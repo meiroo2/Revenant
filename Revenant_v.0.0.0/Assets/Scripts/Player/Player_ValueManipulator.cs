@@ -12,7 +12,6 @@ public class Player_ValueManipulator : MonoBehaviour
     public float RunSpeedRatio = 1.5f;
     public float RollSpeedRatio = 2f;
     public int RollCountMax = 3;
-    public float RollRecoverTime = 2f;
     public float RollCountRecoverSpeed = 1f;
 
     [Space(20f)]

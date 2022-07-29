@@ -9,7 +9,7 @@ public class ScenePortal : MonoBehaviour, IUseableObj
     // Visible Member Variables
     public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
     public bool m_isOn { get; set; } = false;
-    public int p_LoadSceneIdx;
+    public string p_LoadSceneName;
 
     // Member Variables
 
@@ -26,7 +26,7 @@ public class ScenePortal : MonoBehaviour, IUseableObj
     // Functions
     public int useObj(IUseableObjParam _param)
     {
-        SceneManager.LoadScene(p_LoadSceneIdx);
+        SceneManager.LoadScene(p_LoadSceneName);
         return 1;
     }
 
