@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 public class MeleeGang : BasicEnemy
 {
     // Visible Member Variables
-    [field: SerializeField] public float p_MeleeAttackDistance { get; protected set; } = 0.2f;
+    [field: SerializeField] public float p_MeleeDistance { get; protected set; } = 0.2f;
     [field: SerializeField] public bool p_IsLookAround = false;
     [field: SerializeField] public float p_LookAroundDelay = 1f;
     [Range(0.0f, 1.0f)] public float p_AttackTiming;
@@ -56,7 +56,7 @@ public class MeleeGang : BasicEnemy
         m_OriginPos = transform.position;
 
         Player tempPlayer = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
-        m_PlayerTransform = tempPlayer.p_Player_RealPos;
+        m_PlayerTransform = tempPlayer.transform;
         m_PlayerLocationSensor = tempPlayer.m_PlayerLocationSensor;
     }
 
@@ -78,11 +78,11 @@ public class MeleeGang : BasicEnemy
             return;
         
         p_Hp = _mgr.M_HP;
-        p_Speed = _mgr.M_Speed;
-        p_StunSpeed = _mgr.M_StunTime;
-        p_stunThreshold = _mgr.M_StunThreshold;
+        p_MoveSpeed = _mgr.M_Speed;
+        p_StunAlertSpeed = _mgr.M_StunTime;
+        p_StunHp = _mgr.M_StunThreshold;
         p_VisionDistance = _mgr.M_Vision_Distance;
-        p_MeleeAttackDistance = _mgr.M_MeleeAttack_Distance;
+        p_MeleeDistance = _mgr.M_MeleeAttack_Distance;
         p_AttackTiming = _mgr.M_PointAttackTime;
         #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
@@ -111,7 +111,7 @@ public class MeleeGang : BasicEnemy
             return;
         }
 
-        if (m_CurStunValue >= p_stunThreshold)
+        if (m_CurStunValue >= p_StunHp)
         {
             m_CurStunValue = 0;
             ChangeEnemyFSM(EnemyStateName.STUN);

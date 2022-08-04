@@ -91,7 +91,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         
         m_IsPlayerBlinking = true;
         m_PlayerHotBoxCol.enabled = false;
-        yield return new WaitForSeconds(m_Player.p_StunSpeed);
+        yield return new WaitForSeconds(m_Player.p_StunAlertSpeed);
         m_PlayerHotBoxCol.enabled = true;
         m_IsPlayerBlinking = false;
         

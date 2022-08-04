@@ -30,7 +30,7 @@ public class DynamicOutline : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_PlayerRealTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.p_Player_RealPos;
+        m_PlayerRealTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.transform;
     }
     
     

@@ -32,9 +32,17 @@ public class ScreenEffect_UI : MonoBehaviour
         m_MainCamera = Camera.main;
         if (m_MainCamera != null) 
             m_CamVolumeProfile = m_MainCamera.GetComponent<Volume>().profile;
-        m_CamVolumeProfile.TryGet(out m_Chroma);
-        m_Chroma.intensity.value = 0f;
-        
+
+        if (m_CamVolumeProfile.TryGet(out m_Chroma))
+        {
+            m_Chroma.intensity.value = 0f;
+        }
+        else
+        {
+            Debug.Log("MainCamera의 현재 Profile에 ChromaticAberration 없음");
+        }
+
+
         m_Image = GetComponentInChildren<Image>();
         m_Color = new Color(1, 1, 1, 0);
         m_Image.color = m_Color;
@@ -42,6 +50,10 @@ public class ScreenEffect_UI : MonoBehaviour
     
     
     // Functions
+    
+    /// <summary>
+    /// 화면 가장자리에 유혈 효과를 생성합니다.
+    /// </summary>
     public void ActivateScreenEdgeEffect()
     {
         // 우선 해당 화면 이펙트 알파값 최대

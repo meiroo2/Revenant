@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using FMOD;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using Debug = UnityEngine.Debug;
@@ -22,11 +23,12 @@ public enum EnemyStateName
 public class BasicEnemy : Human
 {
     // Visible Member Variables
-    [field: SerializeField] protected bool p_OverrideEnemyMgr = false;
-    [field: SerializeField] public float p_VisionDistance { get; protected set; }
-    [field: SerializeField] public float p_HearColSize { get; protected set; }
-    [field: SerializeField] public int p_AngleLimit { get; protected set; } = 20;
-    [field: SerializeField] public float p_AttackModeDelay { get; protected set; } = 0f;
+    //[PropertySpace(SpaceBefore = 20, SpaceAfter = 20), PropertyOrder(3)]
+    [field: SerializeField, BoxGroup("BasicEnemy Values")] protected bool p_OverrideEnemyMgr = false;
+    [field: SerializeField, BoxGroup("BasicEnemy Values")] public int p_AngleLimit { get; protected set; } = 20;
+    
+    [field: SerializeField, BoxGroup("BasicEnemy Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)] 
+    public float p_VisionDistance { get; protected set; }
 
 
     // Member Variables
@@ -105,7 +107,7 @@ public class BasicEnemy : Human
             return;
         }
 
-        if (m_CurStunValue >= p_stunThreshold)
+        if (m_CurStunValue >= p_StunHp)
         {
             m_CurStunValue = 0;
             ChangeEnemyFSM(EnemyStateName.STUN);
@@ -170,14 +172,14 @@ public class BasicEnemy : Human
             if(!m_IsRightHeaded)
                 setisRightHeaded(true);
 
-            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_Speed);
+            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
         }
         else
         {
             if(m_IsRightHeaded)
                 setisRightHeaded(false);
             
-            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_Speed);
+            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
         }
     }
 
