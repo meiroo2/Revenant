@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 public class Human : ObjectDefine
 {
     // Visible Member Variables
-    [field: SerializeField] public int p_Hp { get; protected set; } = 10;
-    [field: SerializeField] public float p_Speed { get; protected set; } = 1f;
-    [field: SerializeField] public float p_StunSpeed { get; protected set; } = 0f;
-    [field: SerializeField] public int p_stunThreshold { get; protected set; } = 0;
+    [field: SerializeField, BoxGroup("Human Values")] public int p_Hp { get; protected set; } = 10;
+    [field: SerializeField, BoxGroup("Human Values")] public float p_MoveSpeed { get; protected set; } = 1f;
+    [field: SerializeField, BoxGroup("Human Values")] public int p_StunHp { get; protected set; } = 0;
+    [field: SerializeField, BoxGroup("Human Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)]
+    public float p_StunAlertSpeed { get; protected set; } = 0f;
+
 
 
 

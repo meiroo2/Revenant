@@ -43,7 +43,7 @@ public class ShieldGang : BasicEnemy
     {
         m_OriginPos = transform.position;
         m_PlayerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player
-            .p_Player_RealPos;
+            .transform;
 
         m_IDLE = new IDLE_ShieldGang(this);
         m_FOLLOW = new FOLLOW_ShieldGang(this);

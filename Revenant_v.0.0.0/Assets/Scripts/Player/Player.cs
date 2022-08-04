@@ -24,12 +24,7 @@ public class Player : Human
     [field : SerializeField] public float p_RunSpeedRatio { get; private set; } = 1.5f;
     [field : SerializeField] public int p_MaxRollCount { get; private set; } = 3;
 
-    [Space(30f)] 
-    [Header("Don't 땃쥐")]
-    [field : SerializeField] public Transform p_Player_RealPos;
     
-    
-
     // Member Variables
     public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
@@ -127,8 +122,8 @@ public class Player : Human
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
         p_Hp = _input.Hp;
-        p_StunSpeed = _input.StunInvincibleTime;
-        p_Speed = _input.Speed;
+        p_StunAlertSpeed = _input.StunInvincibleTime;
+        p_MoveSpeed = _input.Speed;
         p_BackWalkSpeedRatio = _input.BackSpeedRatio;
         p_RunSpeedRatio = _input.RunSpeedRatio;
         p_RollSpeedRatio = _input.RollSpeedRatio;

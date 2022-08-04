@@ -126,19 +126,19 @@ public class Player_WALK : PlayerFSM
         {
             if (m_Player.m_IsRightHeaded)   // 우측
                 m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_Speed);
+                                   (m_Player.p_MoveSpeed);
             else                            // 좌측
                 m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_Speed);
+                                   (m_Player.p_MoveSpeed);
         }
         else
         {
             if (m_Player.m_IsRightHeaded)   // 오른쪽 보고 뒤로
                 m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
+                                   (m_Player.p_MoveSpeed * m_Player.p_BackWalkSpeedRatio);
             else                           // 왼쪽 보고 뒤로
                 m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_Speed * m_Player.p_BackWalkSpeedRatio);
+                                   (m_Player.p_MoveSpeed * m_Player.p_BackWalkSpeedRatio);
         }
         
         if(m_CurInput != m_PreInput)
@@ -207,9 +207,9 @@ public class Player_ROLL : PlayerFSM
         m_PlayerNormalVec = m_Player.m_PlayerFootMgr.m_PlayerNormal;
 
         if (m_Player.m_IsRightHeaded)   // 우측 구르기
-            m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_Speed * m_Player.p_RollSpeedRatio);
+            m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedRatio);
         else
-            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_Speed * m_Player.p_RollSpeedRatio);
+            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedRatio);
         
         if(m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.IDLE);

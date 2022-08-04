@@ -255,7 +255,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
             case 3:     // 인식은 했으나 사정거리 안에 들어오지 못함
                 //Debug.Log("사정거리 밖");
                 m_Enemy.GoToPlayerRoom();
-                if (m_DistanceBetPlayer.magnitude < m_Enemy.p_MinFollowDistance)
+                if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AttackDistance)
                     m_Phase = 4;
                 break;
 
@@ -288,7 +288,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
 
     private void MoveTowardPlayer()
     {
-        if (!(m_DistanceBetPlayer.magnitude > m_Enemy.p_MinFollowDistance)) return;
+        if (!(m_DistanceBetPlayer.magnitude > m_Enemy.p_AttackDistance)) return;
         m_Enemy.MoveByDirection(!(m_DistanceBetPlayer.x > 0));
     }
 }
@@ -350,7 +350,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
                 break;
 
             case 2:    // 근접공격 사거리 = 3, 총 사거리 = 4
-                m_Phase = m_Enemy.GetDistBetPlayer().magnitude <= m_Enemy.p_CloseAttackDistance ? 3 : 5;
+                m_Phase = m_Enemy.GetDistBetPlayer().magnitude <= m_Enemy.p_MeleeDistance ? 3 : 5;
                 break;
             
             case 3:    // 칼로 공격 
@@ -373,7 +373,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
                 m_Enemy.m_WeaponMgr.ChangeWeapon(0);    // 총으로 무기 변경
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
 
-                m_Angle = StaticMethods.getAnglePhase(m_Enemy.p_GunPos.position,
+                m_Angle = StaticMethods.getAnglePhase(m_Enemy.m_GunPos.position,
                     m_PlayerTransform.position, 3, 20);
                 
                 m_Animator.SetInteger(FireAngle, m_Angle);
@@ -392,7 +392,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
             case 8: // 거리 재판별
                 m_Enemy.m_Alert.SetAlertFill(false);
                 m_Phase = 9;
-                if (m_Enemy.GetDistBetPlayer().magnitude > m_Enemy.p_MinFollowDistance)
+                if (m_Enemy.GetDistBetPlayer().magnitude > m_Enemy.p_AttackDistance)
                 {
                     m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
                 }
@@ -458,7 +458,7 @@ public class STUN_NormalGang : NormalGang_FSM
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
         
         m_Enemy.m_Alert.SetCallback(NextPhase, true);
-        m_Enemy.m_Alert.SetAlertStun(m_Enemy.p_StunSpeed);
+        m_Enemy.m_Alert.SetAlertStun(m_Enemy.p_StunAlertSpeed);
     }
 
     public override void UpdateState()
