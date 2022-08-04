@@ -10,7 +10,7 @@ public class Enemy_Rotation : MonoBehaviour
 
 
     // Member Variables
-    private Transform m_PlayerRealTransform;
+    private Transform m_PlayerTransform;
     private BasicEnemy m_Enemy;
     private int m_AnglePhase;
 
@@ -24,7 +24,7 @@ public class Enemy_Rotation : MonoBehaviour
     private void Start()
     {
         var Instance = InstanceMgr.GetInstance();
-        m_PlayerRealTransform = Instance.GetComponentInChildren<Player_Manager>().m_Player.p_Player_RealPos;
+        m_PlayerTransform = Instance.GetComponentInChildren<Player_Manager>().m_Player.transform;
     }
     
     
@@ -49,7 +49,7 @@ public class Enemy_Rotation : MonoBehaviour
         */
 
         m_AnglePhase = StaticMethods.getAnglePhase(m_Enemy.transform.position,
-            m_PlayerRealTransform.position, 3, m_Enemy.p_AngleLimit);
+            m_PlayerTransform.position, 3, m_Enemy.p_AngleLimit);
 
         switch (m_AnglePhase)
         {

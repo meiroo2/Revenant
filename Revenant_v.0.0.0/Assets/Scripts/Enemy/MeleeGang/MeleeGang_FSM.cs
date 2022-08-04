@@ -104,7 +104,7 @@ public class FollowMeleeGang : MeleeGang_FSM
     {
         m_DistanceBetPlayer = m_Enemy.GetDistanceBetPlayer();
 
-        if (m_DistanceBetPlayer > m_Enemy.p_MeleeAttackDistance)
+        if (m_DistanceBetPlayer > m_Enemy.p_MeleeDistance)
         {
             m_Enemy.MoveByDirection(m_Enemy.GetIsLeftThenPlayer());
         }
@@ -193,7 +193,7 @@ public class AttackMeleeGang : MeleeGang_FSM
             case 3:     // 공격 종료
                 m_EnemyAnimator.SetBool("IsAttackEnd", false);
                 // 사정거리 이내인지 계산
-                if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_MeleeAttackDistance)
+                if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_MeleeDistance)
                 {
                     // 플레이어 방향 바라보고 다시 공격페이즈
                     m_Enemy.SetViewDirectionToPlayer();

@@ -28,7 +28,7 @@ public class Missile : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_PlayerTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.p_Player_RealPos;
+        m_PlayerTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.transform;
 
         m_Coroutine = StartCoroutine(MissileStart());
     }

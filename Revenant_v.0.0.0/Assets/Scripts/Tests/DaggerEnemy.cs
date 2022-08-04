@@ -77,14 +77,14 @@ public class DaggerEnemy : Human
             if (!m_IsRightHeaded)
                 setisRightHeaded(true);
 
-            m_EnemyRigid.velocity = Vector2.right * p_Speed;
+            m_EnemyRigid.velocity = Vector2.right * p_MoveSpeed;
         }
         else if(_direction == -1)
         {
             if (m_IsRightHeaded)
                 setisRightHeaded(false);
 
-            m_EnemyRigid.velocity = -Vector2.right * p_Speed;
+            m_EnemyRigid.velocity = -Vector2.right * p_MoveSpeed;
         }
     }
 

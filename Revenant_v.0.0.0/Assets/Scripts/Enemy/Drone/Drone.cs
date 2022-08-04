@@ -87,7 +87,7 @@ public class Drone : BasicEnemy
     {
         var instance = InstanceMgr.GetInstance();
         m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
-        m_PlayerTransform = m_Player.p_Player_RealPos;
+        m_PlayerTransform = m_Player.transform;
         
         m_CurEnemyFSM.StartState();
     }
@@ -113,7 +113,7 @@ public class Drone : BasicEnemy
             return;
 
         p_Hp = _mgr.D_HP;
-        p_Speed = _mgr.D_Speed;
+        p_MoveSpeed = _mgr.D_Speed;
         p_AlertSpeedRatio = _mgr.D_AlertSpeedRatio;
         p_RushSpeedRatio = _mgr.D_RushSpeedRatio;
         p_ToRushXDistance = _mgr.D_ToRush_Distance;
@@ -205,20 +205,19 @@ public class Drone : BasicEnemy
     /// <summary>파라미터에 기반하여 왼쪽 혹은 오른쪽 방향대로 velocity를 수정합니다.</summary>
     public override void MoveByDirection(bool _isRight)
     {
-        Debug.Log("디렉션 호출");
         if (_isRight)
         {
             if(!m_IsRightHeaded)
                 setisRightHeaded(true);
             
-            m_EnemyRigid.velocity = Vector2.right * p_Speed;
+            m_EnemyRigid.velocity = Vector2.right * p_MoveSpeed;
         }
         else
         {
             if(m_IsRightHeaded)
                 setisRightHeaded(false);
             
-            m_EnemyRigid.velocity = Vector2.left * p_Speed;
+            m_EnemyRigid.velocity = Vector2.left * p_MoveSpeed;
         }
     }
     
@@ -229,7 +228,7 @@ public class Drone : BasicEnemy
     
     public override void MoveToPoint_FUpdate()
     {
-        m_EnemyRigid.velocity = m_MovePoint * (p_Speed * p_RushSpeedRatio);
+        m_EnemyRigid.velocity = m_MovePoint * (p_MoveSpeed * p_RushSpeedRatio);
     }
 
     public void VelocityBreak()
