@@ -45,6 +45,8 @@ public class Player_ArmMgr : MonoBehaviour
 
     private Vector2 m_HeadEffectorOriginPos;
 
+    private float m_HeadEffectorRecoil = 0f;
+
 
 
     // Constructors
@@ -151,16 +153,16 @@ public class Player_ArmMgr : MonoBehaviour
             }
             m_RecoilTimer -= Time.deltaTime;
 
+            if (m_HeadEffectorRecoil > 0f)
+                m_HeadEffectorRecoil -= Time.deltaTime * 0.3f;
+            
             if (m_RecoilTimer <= 0f)
                 break;
             
             yield return null;
         }
-    }
-    private void UpdateHeadIKPos()
-    {
-        p_HeadEffectorPos.localPosition = 
-            new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 700f), m_HeadEffectorOriginPos.y);
+
+        m_HeadEffectorRecoil = 0f;
     }
     public void changeArmPartPos(int _ArmIdx)
     {
@@ -181,8 +183,16 @@ public class Player_ArmMgr : MonoBehaviour
                 break;
         }
     }
+    private void UpdateHeadIKPos()
+    {
+        p_HeadEffectorPos.localPosition = 
+            new Vector2(m_HeadEffectorOriginPos.x - (m_PlayerRotation.m_curAnglewithLimit / 700f) - m_HeadEffectorRecoil,
+                m_HeadEffectorOriginPos.y);
+    }
     private void doRecoil()
     {
+        m_HeadEffectorRecoil = 0.05f;
+        
         switch (m_PlayerAniMgr.m_curArmIdx)
         {
             case 0:

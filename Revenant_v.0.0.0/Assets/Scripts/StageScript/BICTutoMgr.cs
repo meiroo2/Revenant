@@ -9,7 +9,7 @@ public class BICTutoMgr : MonoBehaviour
     // Visible Member Variables
     public Image p_ScreenUIImgObj;
     public Sprite[] p_HoloUISprites;
-    public Portal_LayerRoom p_Room00Door;
+    public Door_LayerRoom p_Room00Door;
     //public Animator p_Room01Cover_First;
     public Turret_Room1 p_Turret01;
     

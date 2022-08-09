@@ -11,6 +11,7 @@ public class Tutorial_Room1_Button0 : MonoBehaviour, IUseableObj
         m_ProgressMgr = GameObject.FindGameObjectWithTag("ProgressMgr");
     }
 
+    public bool m_IsOutlineActivated { get; set; }
     public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
     public bool m_isOn { get; set; } = false;
     public int useObj(IUseableObjParam _param)

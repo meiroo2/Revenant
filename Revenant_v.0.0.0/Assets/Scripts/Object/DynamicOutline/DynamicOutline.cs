@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
 using FixedUpdate = UnityEngine.PlayerLoop.FixedUpdate;
@@ -12,8 +13,11 @@ public class DynamicOutline : MonoBehaviour
     public Transform m_CenterPos;
     public float p_DetectDistance = 0.6f;
     
+    [ReadOnly] public bool m_IsActivating = true;
+
     
     // Member Variables
+    public Animator m_Animator { get; private set; } = null;
     private SpriteRenderer m_Renderer;
     private Transform m_PlayerRealTransform;
     private float m_Distance;
@@ -23,6 +27,16 @@ public class DynamicOutline : MonoBehaviour
     // Constructors
     private void Awake()
     {
+        if (GetComponentInChildren<Animator>())
+        {
+            m_Animator = GetComponentInChildren<Animator>();
+            m_Animator.enabled = false;
+        }
+        else
+        {
+            m_Animator = null;
+        }
+        
         m_Renderer = GetComponentInChildren<SpriteRenderer>();
         m_Phase = (p_DetectDistance * 2f) / m_Sprites.Length;
     }
@@ -41,8 +55,9 @@ public class DynamicOutline : MonoBehaviour
 
         if ((m_Distance < 0 ? m_Distance * -1 : m_Distance) > p_DetectDistance)
             return;
-        
-        CalculateDynamicOutline();
+
+        if (m_IsActivating)
+            CalculateDynamicOutline();
     }
 
 

@@ -104,9 +104,9 @@ public class HideObj : MonoBehaviour
         SetHideObjSpriteLayer(!isSlotsFullOff);
     }
 
-    private void SetHideObjSpriteLayer(bool _toStair)
+    private void SetHideObjSpriteLayer(bool _toFrontObj)
     {
-        m_Renderer.sortingLayerName = _toStair ? "Stair" : "Object";
+        m_Renderer.sortingLayerName = _toFrontObj ? "FrontObject" : "Object";
     }
 
     // 기타 분류하고 싶은 것이 있을 경우

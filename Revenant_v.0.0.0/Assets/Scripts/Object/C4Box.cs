@@ -32,6 +32,8 @@ public class C4Box : MonoBehaviour, IUseableObj
             m_Outline.outlineSize = 0;
     }
 
+    public bool m_IsOutlineActivated { get; set; }
+
     public int useObj(IUseableObjParam _param)
     {
         SceneManager.LoadScene(5);

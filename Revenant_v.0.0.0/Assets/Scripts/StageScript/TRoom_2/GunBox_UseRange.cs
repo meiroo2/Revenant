@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GunBox_UseRange : MonoBehaviour, IUseableObj
 {
+    public bool m_IsOutlineActivated { get; set; }
     public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
     public bool m_isOn { get; set; } = false;
     private GameObject m_ProgressMgr;

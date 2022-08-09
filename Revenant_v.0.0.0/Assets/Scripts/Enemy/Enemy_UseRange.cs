@@ -10,9 +10,8 @@ public class Enemy_UseRange : MonoBehaviour
     // Member Variables
     private BasicEnemy m_Enemy;
     private StairPos m_StairPos;
-    private int m_CountEnemyUseRange = 0;   // 주어진 횟수만큼 적이 상호작용하기 위해서(대체로 1번)
+    private IUseableObj m_UseableObj;
 
-    
     // Constructors
     private void Awake()
     {
@@ -20,37 +19,34 @@ public class Enemy_UseRange : MonoBehaviour
     }
 
     
-    // Functions
-    public void AddEnemyUseRangeCount(int _count)
-    {
-        if (_count > 0)
-            m_CountEnemyUseRange += _count;
-        else
-            Debug.Log("ERR : AddEnemyUseRangeCount, Param below 0");
-    }
-
+    // Physics
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (m_CountEnemyUseRange == 0)
-            return;
-
-        // 우선 현재는 계단만 탐
-        if (!col.CompareTag("StairSensor"))
+        if (col.CompareTag("Player"))
             return;
         
-        m_StairPos = col.GetComponent<StairPos>();
-        switch (m_StairPos.StairDetectorDetected(gameObject.GetInstanceID()))
+        m_UseableObj = col.GetComponent<IUseableObj>();
+
+        switch (m_UseableObj.m_ObjProperty)
         {
-            case 1:
-                m_Enemy.gameObject.layer = 9;
-                p_Enemy_FootMgr.CalEnemyStairNormal(ref m_StairPos);
-                break;
-            
-            default:
-                m_Enemy.gameObject.layer = 11;
+            case UseableObjList.LAYERDOOR:
+                m_UseableObj.ActivateOutline(true);
                 break;
         }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+            return;
         
-        m_CountEnemyUseRange--;
+        m_UseableObj = other.GetComponent<IUseableObj>();
+
+        switch (m_UseableObj.m_ObjProperty)
+        {
+            case UseableObjList.LAYERDOOR:
+                m_UseableObj.ActivateOutline(false);
+                break;
+        }
     }
 }

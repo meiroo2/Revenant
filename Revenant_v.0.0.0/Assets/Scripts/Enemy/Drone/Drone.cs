@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using FMOD;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -12,14 +13,14 @@ using FixedUpdate = Unity.VisualScripting.FixedUpdate;
 public class Drone : BasicEnemy
 {
     // Visible Member Variables
-    [field: SerializeField] public float p_AlertSpeedRatio = 1f;
-    [field: SerializeField] public float p_RushSpeedRatio { get; protected set; } = 2f;
-    [field: SerializeField] public float p_ToRushXDistance { get; protected set; } = 2f;
-    [field: SerializeField] public float p_WiggleSpeed { get; protected set; } = 1f;
-    [field: SerializeField] public float p_WigglePower { get; protected set; } = 1f;
-    [field: SerializeField] public int p_BombHp { get; protected set; } = 20;
-    [field: SerializeField] public float p_BombRange { get; protected set; } = 2f;
-    public float p_BreakPower = 1f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_AlertSpeedRatio = 1f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_RushSpeedRatio { get; protected set; } = 2f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_ToRushXDistance { get; protected set; } = 2f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_WiggleSpeed { get; protected set; } = 1f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_WigglePower { get; protected set; } = 1f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public int p_BombHp { get; protected set; } = 20;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_BombRange { get; protected set; } = 2f;
+    [field: SerializeField, BoxGroup("DroneGang Values")]public float p_BreakPower = 1f;
 
     [Space(20f)] [Header("확인용 변수 모음")] 
     public int m_DeadReason = -1;

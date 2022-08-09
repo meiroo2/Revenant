@@ -1,14 +1,15 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
 
 public class MeleeGang : BasicEnemy
 {
     // Visible Member Variables
-    [field: SerializeField] public float p_MeleeDistance { get; protected set; } = 0.2f;
-    [field: SerializeField] public bool p_IsLookAround = false;
-    [field: SerializeField] public float p_LookAroundDelay = 1f;
-    [Range(0.0f, 1.0f)] public float p_AttackTiming;
+    [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_MeleeDistance { get; protected set; } = 0.2f;
+    [field: SerializeField, BoxGroup("MeleeGang Values")] public bool p_IsLookAround = false;
+    [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_LookAroundDelay = 1f;
+    [field: SerializeField, BoxGroup("MeleeGang Values"),Range(0.0f, 1.0f)] public float p_AttackTiming;
 
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }

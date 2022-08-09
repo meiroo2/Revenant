@@ -20,13 +20,18 @@ public enum UseableObjList
 {
     HIDEPOS,
     OBJECT,
+    LAYERDOOR,
 }
 
 public interface IUseableObj
 {
+    /// <summary> IUseableObj를 상속받은 오브젝트의 Outline을 활성화시킵니다. </summary>
+    /// <param name="_isOn"> 켜짐/꺼짐 여부 </param>
     public void ActivateOutline(bool _isOn)
     {
     }
+
+    public bool m_IsOutlineActivated { get; set; }
 
     public UseableObjList m_ObjProperty { get; set; }
     public bool m_isOn { get; set; }

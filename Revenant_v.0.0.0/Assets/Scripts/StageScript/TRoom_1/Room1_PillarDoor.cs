@@ -10,6 +10,7 @@ public class Room1_PillarDoor : MonoBehaviour, IUseableObj
 
     private GameObject m_ProgressMgr;
 
+    public bool m_IsOutlineActivated { get; set; }
     public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
     public bool m_isOn { get; set; } = false;
 
