@@ -16,6 +16,8 @@ public class Negotiator_Player : BasicWeapon_Player
     // Member Variables
     private BulletLaserMgr m_BulletLaserMgr;
     private Player_HitscanRay m_PlayerHitscanRay;
+    private SoundMgr m_SoundMgr;
+    private Transform m_AimCursorTransform;
 
     private void Awake()
     {
@@ -26,7 +28,9 @@ public class Negotiator_Player : BasicWeapon_Player
         base.Start();
         
         var tempIns = InstanceMgr.GetInstance();
-        
+
+        m_AimCursorTransform = tempIns.GetComponentInChildren<AimCursor>().transform;
+        m_SoundMgr = tempIns.GetComponentInChildren<SoundMgr>();
         m_SoundMgrSFX = tempIns.GetComponentInChildren<SoundMgr_SFX>();
         m_Player = tempIns.GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerHitscanRay = m_Player.m_PlayerHitscanRay;
@@ -121,6 +125,11 @@ public class Negotiator_Player : BasicWeapon_Player
                 result.m_RayHitPoint.collider.GetComponent<IHotBox>().HitHotBox(
                     new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos, WeaponType.BULLET));
                 m_HitSFXMaker.EnableNewObj(0, result.m_RayDestinationPos);
+                
+                m_SoundMgr.MakeSound(result.m_RayDestinationPos, true, 
+                    transform.position, SOUNDTYPE.BULLET);
+                m_SoundMgr.MakeSound(m_AimCursorTransform.position, true, 
+                    transform.position, SOUNDTYPE.BULLET);
                 break;
             
             case 2:
@@ -139,6 +148,11 @@ public class Negotiator_Player : BasicWeapon_Player
                         m_HitSFXMaker.EnableNewObj(0, result.m_RayDestinationPos);
                         break;
                 }
+                
+                m_SoundMgr.MakeSound(result.m_RayDestinationPos, true, 
+                    transform.position, SOUNDTYPE.BULLET);
+                m_SoundMgr.MakeSound(m_AimCursorTransform.position, true, 
+                    transform.position, SOUNDTYPE.BULLET);
                 break;
         }
         // Laser 소환

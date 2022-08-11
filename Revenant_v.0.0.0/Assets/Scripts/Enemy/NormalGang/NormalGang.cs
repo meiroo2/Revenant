@@ -47,8 +47,6 @@ public class NormalGang : BasicEnemy
     private ATTACK_NormalGang m_ATTACK;
     private STUN_NormalGang m_Stun;
     private DEAD_NormalGang m_Dead;
-
-    [HideInInspector] public bool m_IsFoundPlayer = false;
     public int m_AngleBetPlayer { get; protected set; } // 위에서부터 0, 1, 2
     public Player m_Player { get; private set; }
     private Vector2 m_DistBetPlayer;
@@ -111,6 +109,16 @@ public class NormalGang : BasicEnemy
 
 
     // Functions
+    public override void StartPlayerCognition()
+    {
+        if (m_CurEnemyStateName == EnemyStateName.DEAD && m_PlayerCognition) 
+            return;
+        
+        Debug.Log(gameObject.name + "이 플레이어를 인지합니다.");
+        //m_PlayerCognition = true;
+        ChangeEnemyFSM(EnemyStateName.FOLLOW);
+    }
+    
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
         if (p_OverrideEnemyMgr)
@@ -124,9 +132,10 @@ public class NormalGang : BasicEnemy
         p_AttackDistance = _mgr.N_GunFire_Distance;
         p_MeleeDistance = _mgr.N_MeleeAttack_Distance;
         p_AlertSpeedRatio = _mgr.N_AlertSpeedRatio;
-#if UNITY_EDITOR
-        EditorUtility.SetDirty(this);
-#endif
+        
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+        #endif
     }
 
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
@@ -175,7 +184,7 @@ public class NormalGang : BasicEnemy
 
     public override void ChangeEnemyFSM(EnemyStateName _name)
     {
-        //Debug.Log("상태 전이" + _name);
+        Debug.Log("상태 전이" + _name);
         m_CurEnemyStateName = _name;
 
         m_CurEnemyFSM.ExitState();

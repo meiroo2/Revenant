@@ -1,12 +1,29 @@
-﻿using UnityEngine;
+﻿using Sirenix.OdinInspector;
+using UnityEngine;
 
 
 public class ShieldGang : BasicEnemy
 {
     // Visible Member Variables
-    [field: SerializeField] public float p_MinFollowDistance { get; protected set; } = 0.2f;
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public int p_Shield_Hp = 10;
 
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public float p_AttackDistance = 0.4f;
 
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public float p_AttackSpeed = 1f;
+
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public int p_AttackDamage = 10;
+
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public float p_GapDistance = 1f;
+
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public float p_BackMoveSpeedRatio = 0.8f;
+    
+    
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
 
@@ -17,19 +34,20 @@ public class ShieldGang : BasicEnemy
     private CHANGE_ShieldGang m_CHANGE;
     private ROTATION_ShieldGang m_ROTATION;
     private STUN_ShieldGang m_STUN;
-
-    private Shield m_Shield;
-
-
+    private BREAK_ShieldGang m_BREAK;
+    
+    public Shield m_Shield { get; private set; }
     public bool m_IsFoundPlayer = false;
-    public bool m_IsShield = true;
-    private Vector2 m_DistBetPlayer;
+    public bool m_IsShieldBroken { get; private set; } = false;
 
 
     // Constructor
     private void Awake()
     {
+        InitHuman();
         m_Shield = GetComponentInChildren<Shield>();
+        m_Shield.p_Shield_Hp = p_Shield_Hp;
+        
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
 
         m_CurEnemyFSM = new IDLE_ShieldGang(this);
@@ -37,6 +55,7 @@ public class ShieldGang : BasicEnemy
         m_CurEnemyFSM.StartState();
 
         m_EnemyRigid = GetComponent<Rigidbody2D>();
+        m_Foot = GetComponentInChildren<Enemy_FootMgr>();
     }
 
     private void Start()
@@ -52,25 +71,73 @@ public class ShieldGang : BasicEnemy
         m_ROTATION = new ROTATION_ShieldGang(this);
         m_DEAD = new DEAD_ShieldGang(this);
         m_STUN = new STUN_ShieldGang(this);
+        m_BREAK = new BREAK_ShieldGang(this);
+
+        // Weapon Value Initiate
+        m_WeaponMgr.m_CurWeapon.p_BulletDamage = p_AttackDamage;
     }
 
 
     // Updates
     private void Update()
     {
-        transform.position = StaticMethods.getPixelPerfectPos(transform.position);
-    }
-
-    private void FixedUpdate()
-    {
         m_CurEnemyFSM.UpdateState();
     }
 
 
     // Functions
+    public void ShieldBroken()
+    {
+        m_IsShieldBroken = true;
+        ChangeEnemyFSM(EnemyStateName.BREAK);
+    }
+    public override void MoveByDirection(bool _isRight)
+    {
+        if (!m_IsShieldBroken)
+        {
+            float moveSpeed = p_MoveSpeed;
+
+            if (m_IsRightHeaded)
+            {
+                if (GetIsLeftThenPlayer() == !_isRight)
+                    moveSpeed *= p_BackMoveSpeedRatio;
+            }
+            else
+            {
+                if (GetIsLeftThenPlayer() == _isRight)
+                    moveSpeed *= p_BackMoveSpeedRatio;
+            }
+
+            if (_isRight)
+            {
+                m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (moveSpeed);
+            }
+            else
+            {
+                m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (moveSpeed);
+            }
+        }
+        else
+        {
+            if (_isRight)
+            {
+                if(!m_IsRightHeaded)
+                    setisRightHeaded(true);
+
+                m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
+            }
+            else
+            {
+                if(m_IsRightHeaded)
+                    setisRightHeaded(false);
+            
+                m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
+            }
+        }
+    }
     public override void ChangeEnemyFSM(EnemyStateName _name)
     {
-        Debug.Log("상태 전이" + _name);
+        Debug.Log(gameObject.name + "의 상태 전이" + _name);
         m_CurEnemyStateName = _name;
 
         m_CurEnemyFSM.ExitState();
@@ -100,6 +167,10 @@ public class ShieldGang : BasicEnemy
             case EnemyStateName.DEAD:
                 m_CurEnemyFSM = m_DEAD;
                 break;
+            
+            case EnemyStateName.STUN:
+                m_CurEnemyFSM = m_BREAK;
+                break;
 
             default:
                 Debug.Log("Enemy->ChangeEnemyFSM에서 존재하지 않는 상태 전이 요청");
@@ -107,5 +178,13 @@ public class ShieldGang : BasicEnemy
         }
 
         m_CurEnemyFSM.StartState();
+    }
+    public override void StartPlayerCognition()
+    {
+        if (m_CurEnemyStateName == EnemyStateName.DEAD && m_PlayerCognition) 
+            return;
+        
+        Debug.Log(gameObject.name + "이 플레이어를 인지합니다.");
+        ChangeEnemyFSM(EnemyStateName.FOLLOW);
     }
 }

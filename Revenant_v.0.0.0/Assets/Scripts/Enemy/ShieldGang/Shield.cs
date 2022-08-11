@@ -2,49 +2,81 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
-public class Shield : MonoBehaviour
+public class Shield : MonoBehaviour, IHotBox
 {
     // Visible Member Variables
-    public int p_ShieldHp = 30;
+    public int p_Shield_Hp = 30;
     
-    public Transform p_OtherSidePos;
-    public float p_MoveTime = 1f;
-    private Vector2 p_OriginPos;
-    private bool m_IsLeft = false;
     
+    // Member Variables
+    private ShieldGang m_ShieldGang;
+    public GameObject m_ParentObj { get; set; }
+    public int m_hotBoxType { get; set; } = 1;
+    public bool m_isEnemys { get; set; } = true;
+    public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.OBJECT;
 
+    private Collider2D m_Collider;
+    private List<Rigidbody2D> m_SpriteRigids = new List<Rigidbody2D>();
 
+    
     // Constructors
     private void Awake()
     {
-        p_OriginPos = transform.position;
+        m_ParentObj = gameObject;
 
-        //StartCoroutine(MoveToPosition(transform, p_OtherSidePos.position, p_MoveTime));
+        m_Collider = GetComponent<Collider2D>();
+
+        var SpRenders = GetComponentsInChildren<SpriteRenderer>();
+        foreach (var element in SpRenders)
+        {
+            var rigid = element.GetComponent<Rigidbody2D>();
+            m_SpriteRigids.Add(rigid);
+            rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
+            rigid.isKinematic = true;
+        }
+        
+        m_ShieldGang = GetComponentInParent<ShieldGang>();
     }
 
 
     // Functions
-    public IEnumerator MoveToPosition(Transform transform, Vector2 position, float timeToMove)
-    {
-        var currentPos = transform.position;
-        var t = 0f;
-        while (t < 1)
-        {
-            t += Time.deltaTime / timeToMove;
-            transform.position = Vector2.Lerp(currentPos, position, t);
-            yield return null;
-        }
 
-        if (m_IsLeft)
+    public int HitHotBox(IHotBoxParam _param)
+    {
+        if (p_Shield_Hp <= 0)
+            return 0;
+        
+        p_Shield_Hp -= _param.m_Damage;
+
+        if (p_Shield_Hp <= 0)
         {
-            m_IsLeft = false;
-            StartCoroutine(MoveToPosition(transform, p_OtherSidePos.position, p_MoveTime));
+            m_ShieldGang.ShieldBroken();
+            StartCoroutine(PopShield());
+            m_Collider.enabled = false;
         }
-        else
+        
+        return 1;
+    }
+
+    private IEnumerator PopShield()
+    {
+        Vector2 RotateVec = Vector2.up;
+
+        foreach (var element in m_SpriteRigids)
         {
-            m_IsLeft = true;
-            StartCoroutine(MoveToPosition(transform, p_OriginPos, p_MoveTime));
+            RotateVec = Vector2.up;
+            RotateVec = StaticMethods.GetRotatedVec(RotateVec, Random.Range(-60f, 60f));
+            
+            element.isKinematic = false;
+            element.AddForce(RotateVec * 3f, ForceMode2D.Impulse);
         }
+        
+        yield return new WaitForSeconds(2f);
+        gameObject.SetActive(false);
+
+        yield break;
     }
 }

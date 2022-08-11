@@ -6,7 +6,7 @@ using UnityEngine;
 public class Enemy_Rotation : MonoBehaviour
 {
     // Visible Memeber Variables
-    [field : SerializeField]public int[] p_Angles { get; private set; } = new int[3];
+    [field: SerializeField] public int[] p_Angles { get; private set; } = new int[3];
 
 
     // Member Variables

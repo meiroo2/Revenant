@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
 
 
 public class ShieldGang_FSM : Enemy_FSM
@@ -48,7 +50,12 @@ public class IDLE_ShieldGang : ShieldGang_FSM
 
     public override void UpdateState()
     {
-
+        m_Enemy.RaycastVisionCheck();
+        if (!ReferenceEquals(m_Enemy.m_VisionHit.collider, null))
+        {
+            m_Enemy.m_IsFoundPlayer = true;
+            m_Enemy.StartPlayerCognition();
+        }
     }
 
     public override void ExitState()
@@ -65,7 +72,7 @@ public class IDLE_ShieldGang : ShieldGang_FSM
 public class FOLLOW_ShieldGang : ShieldGang_FSM
 {
     // Member Variables
-
+    private float m_DistanceBetPlayer;
 
     // Constructor
     public FOLLOW_ShieldGang(ShieldGang _enemy)
@@ -77,17 +84,46 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
     
     public override void StartState()
     {
-        
+        m_DistanceBetPlayer = m_Enemy.GetDistanceBetPlayer();
     }
 
     public override void UpdateState()
     {
+        m_DistanceBetPlayer = m_Enemy.GetDistanceBetPlayer();
 
+        // 쉴드 깨졌을 떄랑 구분
+        if (m_Enemy.m_IsShieldBroken)
+        {
+            
+        }
+        else
+        {
+            if (Mathf.Abs(m_DistanceBetPlayer - m_Enemy.p_GapDistance) > 0.03f)
+            {
+                // 이격거리보다 더 멀 경우
+                if (m_DistanceBetPlayer > m_Enemy.p_GapDistance)
+                {
+                    m_Enemy.MoveByDirection(m_Enemy.GetIsLeftThenPlayer());
+                }
+                // 이격거리보다 가까이 있음
+                else
+                {
+                    m_Enemy.MoveByDirection(!m_Enemy.GetIsLeftThenPlayer());
+                }
+            }
+            else
+            {
+                m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
+            }
+            
+            if(m_DistanceBetPlayer < m_Enemy.p_AttackDistance)
+                m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
+        }
     }
 
     public override void ExitState()
     {
-        
+        m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
     }
 
     public override void NextPhase()
@@ -99,6 +135,8 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
 public class ROTATION_ShieldGang : ShieldGang_FSM
 {
     // Member Variables
+    private bool m_RotateComplete = false;
+    private CoroutineElement m_Element;
     
 
     // Constructor
@@ -111,12 +149,18 @@ public class ROTATION_ShieldGang : ShieldGang_FSM
     
     public override void StartState()
     {
-        
+        m_Enemy.m_Shield.gameObject.SetActive(false);
+        m_RotateComplete = false;
+        m_Element = GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(DoRotate());
     }
 
     public override void UpdateState()
     {
-
+        if (m_RotateComplete)
+        {
+            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        }
     }
 
     public override void ExitState()
@@ -127,30 +171,75 @@ public class ROTATION_ShieldGang : ShieldGang_FSM
     public override void NextPhase()
     {
         
+    }
+
+    private IEnumerator DoRotate()
+    {
+        yield return new WaitForSeconds(1.5f);
+        m_Enemy.m_Shield.gameObject.SetActive(true);
+        m_RotateComplete = true;
+        
+        m_Element.StopCoroutine_Element(); 
+        yield break;
     }
 }
 
 public class ATTACK_ShieldGang : ShieldGang_FSM
 {
     // Member Variables
-
+    private CoroutineElement m_CoroutineElement;
+    private CoroutineHandler m_CoroutineHandler;
+    private HitSFXMaker m_HitSFXMaker;
+    
+    private bool m_IsAttackEnd = false;
+    
     
     // Constructor
     public ATTACK_ShieldGang(ShieldGang _enemy)
     {
         m_Enemy = _enemy;
         m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
+        m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
+
+        var instance = InstanceMgr.GetInstance();
+        m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
     }
 
     
     public override void StartState()
     {
-        
+        m_IsAttackEnd = false;
+
+        if (!m_Enemy.m_IsShieldBroken)
+            m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(AttackCheck());
     }
 
     public override void UpdateState()
     {
+        if (!m_IsAttackEnd)
+            return;
 
+        if (m_Enemy.m_IsShieldBroken)
+        {
+            if ((m_Enemy.m_IsRightHeaded && !m_Enemy.GetIsLeftThenPlayer()) ||
+                !m_Enemy.m_IsRightHeaded && m_Enemy.GetIsLeftThenPlayer())
+            {
+                m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+            }
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        }
+        else
+        {
+            if ((m_Enemy.m_IsRightHeaded && !m_Enemy.GetIsLeftThenPlayer()) ||
+                !m_Enemy.m_IsRightHeaded && m_Enemy.GetIsLeftThenPlayer())
+            {
+                m_Enemy.ChangeEnemyFSM(EnemyStateName.ROTATION);
+            }
+            else
+            {
+                m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+            }
+        }
     }
 
     public override void ExitState()
@@ -161,6 +250,23 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
     public override void NextPhase()
     {
         
+    }
+
+    private IEnumerator AttackCheck()
+    {
+        yield return new WaitForSeconds(0.5f);
+        m_Enemy.m_Shield.gameObject.SetActive(false);
+        
+        yield return new WaitForSeconds(0.5f);
+        m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+        m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
+        
+        yield return new WaitForSeconds(0.5f);
+        m_Enemy.m_Shield.gameObject.SetActive(true);
+
+        m_IsAttackEnd = true;
+        
+        m_CoroutineElement.StopCoroutine_Element();
     }
 }
 
@@ -211,7 +317,7 @@ public class DEAD_ShieldGang : ShieldGang_FSM
     
     public override void StartState()
     {
-        
+        m_Enemy.gameObject.SetActive(false);
     }
 
     public override void UpdateState()
@@ -260,5 +366,47 @@ public class STUN_ShieldGang : ShieldGang_FSM
     public override void NextPhase()
     {
         
+    }
+}
+
+public class BREAK_ShieldGang : ShieldGang_FSM
+{
+    // Member Variables
+    private CoroutineElement m_CoroutineElement;
+    private CoroutineHandler m_CoroutineHandler;
+    
+    // Constructor
+    public BREAK_ShieldGang(ShieldGang _enemy)
+    {
+        m_Enemy = _enemy;
+        m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
+
+        m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
+    }
+    
+    public override void StartState()
+    {
+        
+    }
+
+    public override void UpdateState()
+    {
+
+    }
+
+    public override void ExitState()
+    {
+        
+    }
+
+    public override void NextPhase()
+    {
+        
+    }
+
+    private IEnumerator BreakingCheck()
+    {
+        //m_Enemy.m_WeaponMgr.
+        yield return new WaitForSeconds(1);
     }
 }

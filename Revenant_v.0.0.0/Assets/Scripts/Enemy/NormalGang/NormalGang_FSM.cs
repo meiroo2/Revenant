@@ -223,7 +223,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
         m_Animator.SetBool(IsWalk, true);
         m_IsFirst = true;
 
-        if (!m_Enemy.m_IsFoundPlayer)
+        if (!m_Enemy.m_PlayerCognition)
             m_Phase = 0;
         else
             m_Phase = 3;
@@ -248,7 +248,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
             case 2:     // 체인지 끝
                 m_Enemy.ChangeAnimator(false);
                 m_Animator.SetBool(IsWalk, true);
-                m_Enemy.m_IsFoundPlayer = true;
+                m_Enemy.m_PlayerCognition = true;
                 m_Phase = 3;
                 break;
             
@@ -327,8 +327,6 @@ public class ATTACK_NormalGang : NormalGang_FSM
             m_Enemy.setisRightHeaded(false); 
         else if (m_DistanceBetPlayer.x < 0 && m_Enemy.m_IsRightHeaded == false)
             m_Enemy.setisRightHeaded(true);
-
-        m_Enemy.m_IsFoundPlayer = true;
     }
 
     public override void UpdateState()
@@ -466,7 +464,7 @@ public class STUN_NormalGang : NormalGang_FSM
         switch (m_Phase)
         {
             case 1:
-                m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+                m_Enemy.StartPlayerCognition();
                 break;
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.FullSerializer;
@@ -10,6 +11,18 @@ public static class StaticMethods
     private static Vector3 m_TempVec3;
     private static PixelPerfectCamera m_PPC = Camera.main.GetComponent<PixelPerfectCamera>();
 
+    
+    public static Vector2 GetRotatedVec(Vector2 _inputVec, float _angle)
+    {
+        float deg2rad = _angle * Mathf.Deg2Rad;
+        float sinElement = Mathf.Sin(deg2rad);
+        float cosElement = Mathf.Cos(deg2rad);
+
+        return new Vector2(
+            _inputVec.x * cosElement - _inputVec.y * sinElement,
+            _inputVec.x * sinElement + _inputVec.y * cosElement
+        );
+    }
     public static bool IsRoomEqual(LocationInfo _first, LocationInfo _second)
     {
         if (_first is null || _second is null)

@@ -22,6 +22,7 @@ public class Enemy_UseRange : MonoBehaviour
     // Physics
     private void OnTriggerEnter2D(Collider2D col)
     {
+        /*
         if (col.CompareTag("Player"))
             return;
         
@@ -33,10 +34,12 @@ public class Enemy_UseRange : MonoBehaviour
                 m_UseableObj.ActivateOutline(true);
                 break;
         }
+        */
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        /*
         if (other.CompareTag("Player"))
             return;
         
@@ -48,5 +51,6 @@ public class Enemy_UseRange : MonoBehaviour
                 m_UseableObj.ActivateOutline(false);
                 break;
         }
+        */
     }
 }

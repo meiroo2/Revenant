@@ -12,7 +12,8 @@ public enum HitBoxPoint
 {
     HEAD,
     BODY,
-    OBJECT
+    OBJECT,
+    COGNITION
 }
 
 public class IHotBoxParam
@@ -40,8 +41,12 @@ public interface IHotBox
 {
     [field: SerializeField] public GameObject m_ParentObj { get; set; }
     
-    // 0 = Aim Hit, 1 = Force Hit
+    
+    /// <summary>
+    /// HotBox의 타입을 결정합니다. 0일 경우 조준해야 히트, 1일 경우 강제 히트합니다.
+    /// </summary>
     public int m_hotBoxType { get; set; }
+    
     public bool m_isEnemys { get; set; }
     public HitBoxPoint m_HitBoxInfo { get; set; }
 

@@ -43,7 +43,7 @@ public class Enemy_FootMgr : MonoBehaviour
             _ => m_FootHit
         };
 
-        Debug.DrawRay(position, Vector2.down * 0.5f, new Color(0, 1, 0));
+        Debug.DrawRay(position, Vector2.down, new Color(0, 1, 0));
 
         if (!m_FootHit)
             return;
@@ -55,13 +55,14 @@ public class Enemy_FootMgr : MonoBehaviour
                 m_FootNormal = new Vector2(Mathf.Round(m_FootHit.normal.x * 100) * 0.01f,
                     Mathf.Round(m_FootHit.normal.y * 100) * 0.01f);
                 m_FootNormal = m_FootNormal.normalized;
-                if (Vector2.Distance(m_EnemyTransform.position, m_FootHit.point) > 0.64f)
-                    m_EnemyTransform.position = new Vector2(m_EnemyTransform.position.x, m_FootHit.point.y + 0.61f);
+                
+                if (Vector2.Distance(m_EnemyTransform.position, m_FootHit.point) > 0.65f)
+                    m_EnemyTransform.position = new Vector2(m_EnemyTransform.position.x, m_FootHit.point.y + 0.63f);
                 break;
 
             case 9:
-                if (Vector2.Distance(m_EnemyTransform.position, m_FootHit.point) > 0.64f)
-                    m_EnemyTransform.position = new Vector2(m_EnemyTransform.position.x, m_FootHit.point.y + 0.62f);
+                if (Vector2.Distance(m_EnemyTransform.position, m_FootHit.point) > 0.65f)
+                    m_EnemyTransform.position = new Vector2(m_EnemyTransform.position.x, m_FootHit.point.y + 0.63f);
                 break;
         }
         

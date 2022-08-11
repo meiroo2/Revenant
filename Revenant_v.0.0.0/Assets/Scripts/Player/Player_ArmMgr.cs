@@ -191,7 +191,7 @@ public class Player_ArmMgr : MonoBehaviour
     }
     private void doRecoil()
     {
-        m_HeadEffectorRecoil = 0.05f;
+        //m_HeadEffectorRecoil = 0.05f;
         
         switch (m_PlayerAniMgr.m_curArmIdx)
         {

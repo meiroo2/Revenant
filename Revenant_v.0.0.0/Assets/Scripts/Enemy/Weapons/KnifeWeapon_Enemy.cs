@@ -21,7 +21,13 @@ public class KnifeWeapon_Enemy : BasicWeapon_Enemy
     {
         m_KnifeBullet.gameObject.SetActive(false);
     }
-
+    private IEnumerator Internal_Fire()
+    {
+        yield return new WaitForSeconds(p_WeaponColliderTime);
+        m_Callback?.Invoke();
+        m_KnifeBullet.gameObject.SetActive(false);
+    }
+    
     public override int Fire()
     {
         m_KnifeBullet.gameObject.SetActive(true);
@@ -29,14 +35,7 @@ public class KnifeWeapon_Enemy : BasicWeapon_Enemy
         StartCoroutine(Internal_Fire());
         return 1;
     }
-
-    private IEnumerator Internal_Fire()
-    {
-        yield return new WaitForSeconds(p_WeaponColliderTime);
-        m_Callback?.Invoke();
-        m_KnifeBullet.gameObject.SetActive(false);
-    }
-
+    
     public override void Reload()
     {
         //return 0;

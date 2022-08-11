@@ -45,18 +45,15 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 m_SoundMgr.playAttackedSound(MatType.Target_Body, transform.position);
                 m_PlayerUI.ActiveHitmark(1);
                 break;
+            
+            case HitBoxPoint.COGNITION:
+                m_Enemy.StartPlayerCognition();
+                break;
         }
         
         m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage,
             _param.m_stunValue);
 
         return 1;
-    }
-
-    private IEnumerator TempFunc_StopTimeScale()
-    {
-        Time.timeScale = 0f;
-        yield return new WaitForSecondsRealtime(0.1f);
-        Time.timeScale = 1f;
     }
 }
