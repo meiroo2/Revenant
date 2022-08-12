@@ -23,6 +23,9 @@ public class ShieldGang : BasicEnemy
     [field: SerializeField, BoxGroup("ShieldGang Values")]
     public float p_BackMoveSpeedRatio = 0.8f;
     
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public float p_BrokenStateSpeedRatio = 1.5f;
+    
     
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
@@ -124,14 +127,14 @@ public class ShieldGang : BasicEnemy
                 if(!m_IsRightHeaded)
                     setisRightHeaded(true);
 
-                m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
+                m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed * p_BrokenStateSpeedRatio);
             }
             else
             {
                 if(m_IsRightHeaded)
                     setisRightHeaded(false);
             
-                m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
+                m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed * p_BrokenStateSpeedRatio);
             }
         }
     }
@@ -168,12 +171,12 @@ public class ShieldGang : BasicEnemy
                 m_CurEnemyFSM = m_DEAD;
                 break;
             
-            case EnemyStateName.STUN:
+            case EnemyStateName.BREAK:
                 m_CurEnemyFSM = m_BREAK;
                 break;
 
             default:
-                Debug.Log("Enemy->ChangeEnemyFSM에서 존재하지 않는 상태 전이 요청");
+                Debug.Log("ERR : 존재하지 않는 상태 전이 요청");
                 break;
         }
 

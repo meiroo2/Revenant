@@ -94,7 +94,14 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
         // 쉴드 깨졌을 떄랑 구분
         if (m_Enemy.m_IsShieldBroken)
         {
-            
+            if (m_DistanceBetPlayer > m_Enemy.p_AttackDistance)
+            {
+                m_Enemy.MoveByDirection(m_Enemy.GetIsLeftThenPlayer());
+            }
+            else
+            {
+                m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
+            }
         }
         else
         {
@@ -210,8 +217,8 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
     {
         m_IsAttackEnd = false;
 
-        if (!m_Enemy.m_IsShieldBroken)
-            m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(AttackCheck());
+        m_CoroutineElement = 
+            m_CoroutineHandler.StartCoroutine_Handler(m_Enemy.m_IsShieldBroken ? AttackCheck() : ShieldAttackCheck());
     }
 
     public override void UpdateState()
@@ -221,12 +228,14 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
 
         if (m_Enemy.m_IsShieldBroken)
         {
-            if ((m_Enemy.m_IsRightHeaded && !m_Enemy.GetIsLeftThenPlayer()) ||
-                !m_Enemy.m_IsRightHeaded && m_Enemy.GetIsLeftThenPlayer())
+            if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_AttackDistance)
             {
-                m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+                StartState();
             }
-            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+            else
+            {
+                m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+            }
         }
         else
         {
@@ -254,14 +263,35 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
 
     private IEnumerator AttackCheck()
     {
+        Debug.Log("무기를 든다.");
         yield return new WaitForSeconds(0.5f);
+
+        Debug.Log("공격 판정 개시");
+        m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+        m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
+
+        m_IsAttackEnd = true;
+        m_CoroutineElement.StopCoroutine_Element();
+        yield break;
+    }
+
+    private IEnumerator ShieldAttackCheck()
+    {
+        Debug.Log("방패를 내리고 무기를 꺼낸다");
+        yield return new WaitForSeconds(0.5f);
+        
+        Debug.Log("방패 콜라이더 꺼짐");
         m_Enemy.m_Shield.gameObject.SetActive(false);
         
+        Debug.Log("무기를 꺼낸 팔을 높이 든 채로 대기");
         yield return new WaitForSeconds(0.5f);
+        
+        Debug.Log("공격 판정 개시");
         m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
         m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
         
         yield return new WaitForSeconds(0.5f);
+        Debug.Log("방패를 다시 들었다.");
         m_Enemy.m_Shield.gameObject.SetActive(true);
 
         m_IsAttackEnd = true;
@@ -386,7 +416,8 @@ public class BREAK_ShieldGang : ShieldGang_FSM
     
     public override void StartState()
     {
-        
+        Debug.Log("방패 파괴중...");
+        m_CoroutineElement= m_CoroutineHandler.StartCoroutine_Handler(BreakingCheck());
     }
 
     public override void UpdateState()
@@ -406,7 +437,11 @@ public class BREAK_ShieldGang : ShieldGang_FSM
 
     private IEnumerator BreakingCheck()
     {
-        //m_Enemy.m_WeaponMgr.
         yield return new WaitForSeconds(1);
+        
+        Debug.Log("방패 파괴 끝");
+        m_CoroutineElement.StopCoroutine_Element();
+        
+        m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
     }
 }

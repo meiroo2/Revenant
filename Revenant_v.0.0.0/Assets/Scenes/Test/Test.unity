@@ -2997,6 +2997,7 @@ MonoBehaviour:
   p_AttackDamage: 10
   p_GapDistance: 1.5
   p_BackMoveSpeedRatio: 0.5
+  p_BrokenStateSpeedRatio: 0.8
   m_IsFoundPlayer: 0
 --- !u!4 &1131140167
 Transform:
@@ -5983,7 +5984,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2052425049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6339,7 +6340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <p_Hp>k__BackingField: 30
   <p_MoveSpeed>k__BackingField: 0.5
-  <p_StunHp>k__BackingField: 0
+  <p_StunHp>k__BackingField: 99999
   <p_StunAlertSpeed>k__BackingField: 0
   p_OverrideEnemyMgr: 0
   <p_AngleLimit>k__BackingField: 20
@@ -6350,6 +6351,7 @@ MonoBehaviour:
   p_AttackDamage: 10
   p_GapDistance: 1.5
   p_BackMoveSpeedRatio: 0.5
+  p_BrokenStateSpeedRatio: 2
   m_IsFoundPlayer: 0
 --- !u!212 &3358748124635036752
 SpriteRenderer:
@@ -6732,6 +6734,10 @@ PrefabInstance:
     - target: {fileID: 4243168276936824429, guid: 911d0d551cea4f14ca60abffb9e88e3b, type: 3}
       propertyPath: m_Name
       value: Door_LayerRoom_Tuto (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4243168276936824429, guid: 911d0d551cea4f14ca60abffb9e88e3b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 911d0d551cea4f14ca60abffb9e88e3b, type: 3}

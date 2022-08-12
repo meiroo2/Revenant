@@ -59,7 +59,8 @@ public class Player : Human
     private Player_DEAD m_DEAD;
     
     private HideSlot m_CurHideSlot;
-    
+
+    private RageGauge_UI m_RageUI;
     private Player_MatMgr _mPlayerMatMgr;
     public SoundMgr_SFX m_SFXMgr { get; private set; }
     private PlayerFSM m_CurPlayerFSM;
@@ -112,6 +113,7 @@ public class Player : Human
     {
         var tempInstance = InstanceMgr.GetInstance();
         m_PlayerUIMgr = tempInstance.m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_RageUI = tempInstance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
         m_InputMgr = tempInstance.GetComponentInChildren<Player_InputMgr>();
         m_NoiseMaker = tempInstance.GetComponentInChildren<NoiseMaker>();
         m_SFXMgr = tempInstance.GetComponentInChildren<SoundMgr_SFX>();
@@ -258,6 +260,7 @@ public class Player : Human
 
     public void UseRollCount()
     {
+        m_RageUI.MinusValueToRageGauge(0.2f);
         m_LeftRollCount -= 1f;
         m_PlayerUIMgr.SetRollGauge(m_LeftRollCount);
 
