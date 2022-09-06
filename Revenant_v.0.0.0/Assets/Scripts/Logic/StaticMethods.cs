@@ -61,6 +61,11 @@ public static class StaticMethods
         return _rawpos;
     }
 
+    /// <summary>
+    /// 수직인 벡터를 반환합니다.
+    /// </summary>
+    /// <param name="_rawVec"> 넣을 벡터 </param>
+    /// <returns> 넣은 벡터에 수직인 벡터 </returns>
     public static Vector2 getLPerpVec(Vector2 _rawVec)
     {
         m_TempVec2.x = -_rawVec.y;

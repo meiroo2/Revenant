@@ -12,7 +12,7 @@ public class HideObjCollider : MonoBehaviour, IHotBox
     // Member Variables
     public HideObj m_HideObj { get; set; }
     private BoxCollider2D m_Collider;
-    private SoundMgr_SFX m_SFXSoundMgr;
+    private SoundPlayer m_SFXSoundMgr;
     
         // IHotBox Variables
         public GameObject m_ParentObj { get; set; }
@@ -32,7 +32,7 @@ public class HideObjCollider : MonoBehaviour, IHotBox
         m_ParentObj = m_HideObj.gameObject;
         
         var instanceMgr = InstanceMgr.GetInstance();
-        m_SFXSoundMgr = instanceMgr.GetComponentInChildren<SoundMgr_SFX>();
+        m_SFXSoundMgr = instanceMgr.GetComponentInChildren<SoundPlayer>();
     }
 
     

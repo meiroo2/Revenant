@@ -13,13 +13,13 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     private BasicEnemy m_Enemy;
     private Player_UI m_PlayerUI;
     private RageGauge_UI m_RageUI;
-    private SoundMgr_SFX m_SoundMgr;
+    private SoundPlayer m_SoundMgr;
     
     // Constructors
     private void Awake()
     {
         m_Enemy = GetComponentInParent<BasicEnemy>();
-        m_ParentObj = m_Enemy.gameObject;
+        m_ParentObj = gameObject;
         m_HitBoxInfo = p_HitBoxPoint;
     }
     private void Start()
@@ -28,7 +28,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         
         m_PlayerUI = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
-        m_SoundMgr = instance.GetComponentInChildren<SoundMgr_SFX>();
+        m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
     }
 
     public GameObject m_ParentObj { get; set; }
@@ -38,6 +38,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     
     public int HitHotBox(IHotBoxParam _param)
     {
+        m_Enemy.StartPlayerCognition();
         switch (p_HitBoxPoint)
         {
             case HitBoxPoint.HEAD:
@@ -53,7 +54,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 break;
             
             case HitBoxPoint.COGNITION:
-                m_Enemy.StartPlayerCognition();
+                
                 break;
         }
         

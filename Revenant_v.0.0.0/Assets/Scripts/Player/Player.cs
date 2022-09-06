@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,14 +18,29 @@ public enum PlayerStateName
 
 public class Player : Human
 {
-    // Visable Member Variables
-    [field : SerializeField] public float p_RollCountRecoverSpeed { get; private set; } = 1f;
-    [field : SerializeField] public float p_RollSpeedRatio { get; private set; } = 1.3f;
-    [field : SerializeField] public float p_BackWalkSpeedRatio { get; private set; } = 0.7f;
-    [field : SerializeField] public float p_RunSpeedRatio { get; private set; } = 1.5f;
-    [field : SerializeField] public int p_MaxRollCount { get; private set; } = 3;
+    // Visible Member Variables
+    [field: SerializeField, BoxGroup("Player Values")]
+    public float p_RollCountRecoverSpeed { get; private set; } = 1f;
 
-    
+    [field: SerializeField, BoxGroup("Player Values")]
+    public float p_RollSpeedRatio { get; private set; } = 1.3f;
+
+    [field: SerializeField, BoxGroup("Player Values")]
+    public float p_BackWalkSpeedRatio { get; private set; } = 0.7f;
+
+    [field: SerializeField, BoxGroup("Player Values")]
+    public float p_RunSpeedRatio { get; private set; } = 1.5f;
+
+    [field: SerializeField, BoxGroup("Player Values")]
+    public int p_MaxRollCount { get; private set; } = 3;
+
+    [field: SerializeField, BoxGroup("Player Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)]
+    public float p_MeleeSpeedMulti { get; private set; } = 2f;
+
+    [field: SerializeField] 
+    public Transform p_CenterTransform { get; private set; }
+
+
     // Member Variables
     public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
@@ -57,14 +73,15 @@ public class Player : Human
     private Player_HIDDEN m_HIDDEN;
     private Player_MELEE m_MELEE;
     private Player_DEAD m_DEAD;
-    
+
     private HideSlot m_CurHideSlot;
 
     private RageGauge_UI m_RageUI;
     private Player_MatMgr _mPlayerMatMgr;
-    public SoundMgr_SFX m_SFXMgr { get; private set; }
+    public SoundPlayer m_SFXMgr { get; private set; }
+    public HitSFXMaker m_HitSFXMaker { get; private set; }
     private PlayerFSM m_CurPlayerFSM;
-    private NoiseMaker m_NoiseMaker;
+    private SoundMgr m_SoundMgr;
     private IEnumerator m_FootStep;
 
     private Vector2 m_PlayerPosVec;
@@ -75,8 +92,8 @@ public class Player : Human
 
     // For Player_Managers
 
-    
-    
+
+
     // Constructor
     private void Awake()
     {
@@ -102,25 +119,28 @@ public class Player : Human
         m_HIDDEN = new Player_HIDDEN(this);
         m_MELEE = new Player_MELEE(this);
         m_DEAD = new Player_DEAD(this);
-        
-        
+
+
         m_ObjectType = ObjectType.Human;
         m_ObjectState = ObjectState.Active;
         m_LeftRollCount = p_MaxRollCount;
         m_CanAttacked = true;
     }
+
     private void Start()
     {
         var tempInstance = InstanceMgr.GetInstance();
         m_PlayerUIMgr = tempInstance.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_RageUI = tempInstance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
         m_InputMgr = tempInstance.GetComponentInChildren<Player_InputMgr>();
-        m_NoiseMaker = tempInstance.GetComponentInChildren<NoiseMaker>();
-        m_SFXMgr = tempInstance.GetComponentInChildren<SoundMgr_SFX>();
-        
+        m_SoundMgr = tempInstance.GetComponentInChildren<SoundMgr>();
+        m_SFXMgr = tempInstance.GetComponentInChildren<SoundPlayer>();
+        m_HitSFXMaker = tempInstance.GetComponentInChildren<HitSFXMaker>();
+
         m_CurPlayerFSM = m_IDLE;
         m_CurPlayerFSM.StartState();
     }
+
     public void InitPlayerValue(Player_ValueManipulator _input)
     {
         p_Hp = _input.Hp;
@@ -135,22 +155,22 @@ public class Player : Human
 
         m_WeaponMgr.m_CurWeapon.p_MaxBullet = _input.BulletCount;
         m_WeaponMgr.m_CurWeapon.p_MaxMag = _input.MagCount;
-        
+
         m_WeaponMgr.m_CurWeapon.m_LeftRounds = _input.BulletCount;
         m_WeaponMgr.m_CurWeapon.m_LeftMags = _input.MagCount;
-        
+
         // 강제 Player_UIMgr 할당
         m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_PlayerUIMgr.SetMaxHp(_input.Hp);
         m_PlayerUIMgr.SetLeftRoundsNMag(_input.BulletCount, _input.MagCount);
         m_PlayerUIMgr.m_ReloadSpeed = _input.ReloadSpeed;
         m_PlayerUIMgr.m_HitmarkRemainTime = _input.HitmarkRemainTime;
-        
+
         // 스폰과 동시에 InitPlayerValue가 호출되기 때문에 Prefab 데이터를 저장하진 않음.
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         EditorUtility.SetDirty(this);
         EditorUtility.SetDirty(m_PlayerUIMgr);
-        #endif
+#endif
     }
 
 
@@ -158,9 +178,9 @@ public class Player : Human
     // Update
     private void Update()
     {
-        if (m_ObjectState == ObjectState.Pause)       // Pause면 중지
+        if (m_ObjectState == ObjectState.Pause) // Pause면 중지
             return;
-        
+
         m_CurPlayerFSM.UpdateState();
     }
 
@@ -172,46 +192,50 @@ public class Player : Human
         //Debug.Log("상태 전이" + _name);
         m_PlayerAniMgr.exitplayerAnim();
         m_CurPlayerFSMName = _name;
-        
+
         m_CurPlayerFSM.ExitState();
         switch (m_CurPlayerFSMName)
         {
             case PlayerStateName.IDLE:
                 m_CurPlayerFSM = m_IDLE;
                 break;
-            
+
             case PlayerStateName.WALK:
                 m_CurPlayerFSM = m_WALK;
                 break;
-            
+
             case PlayerStateName.ROLL:
                 m_CurPlayerFSM = m_ROLL;
                 break;
-            
+
             case PlayerStateName.HIDDEN:
                 m_CurPlayerFSM = m_HIDDEN;
                 break;
-            
+
             case PlayerStateName.MELEE:
                 m_CurPlayerFSM = m_MELEE;
                 break;
-            
+
             case PlayerStateName.DEAD:
                 m_CurPlayerFSM = m_DEAD;
                 break;
-            
+
             default:
                 Debug.Log("Player->ChangePlayerFSM에서 존재하지 않는 상태 전이 요청");
                 break;
         }
-        
+
         m_CurPlayerFSM.StartState();
         m_PlayerAniMgr.playplayerAnim();
     }
-    
 
-    
+
+
     // Functions
+    public Vector2 GetPlayerCenterPos()
+    {
+        return p_CenterTransform.position;
+    }
     public void SetWalkSoundCoroutine(bool _isOn)
     {
         if (_isOn)
@@ -222,17 +246,19 @@ public class Player : Human
         {
             StopCoroutine(m_WalkSoundCoroutine);
         }
-        
+
     }
 
     private IEnumerator PlayWalkSound()
     {
         while (true)
         {
+            m_SoundMgr.MakeSound(GetPlayerCenterPos(), true, SOUNDTYPE.PLAYERNOISE);
             m_SFXMgr.playPlayerSFXSound(4);
             yield return new WaitForSeconds(0.5f);
         }
     }
+
     public bool IsPlayerOnStair()
     {
         /*
@@ -246,6 +272,7 @@ public class Player : Human
         */
         return false;
     }
+
     public void GoToStairLayer(bool _input, Vector2 _movePos, Vector2 _normal)
     {
         if (_input)
@@ -267,6 +294,7 @@ public class Player : Human
         if (!m_isRecoveringRollCount)
             StartCoroutine(RecoverRollCount());
     }
+
     public IEnumerator RecoverRollCount()
     {
         m_isRecoveringRollCount = true;
@@ -282,16 +310,6 @@ public class Player : Human
         m_isRecoveringRollCount = false;
     }
     
-    private IEnumerator MakePlayerNoise(NoiseType _noiseType, Vector2 _size, LocationInfo _location)
-    {
-        while (true)
-        {
-            m_NoiseMaker.MakeNoise(_noiseType, _size, _location, true);
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
-
-    // ReSharper disable Unity.PerformanceAnalysis
     public override void setisRightHeaded(bool _isRightHeaded)
     {
         m_IsRightHeaded = _isRightHeaded;
@@ -299,16 +317,18 @@ public class Player : Human
 
         if ((m_IsRightHeaded && TempLocalScale.x < 0) || (!m_IsRightHeaded && TempLocalScale.x > 0))
             transform.localScale = new Vector3(-TempLocalScale.x, TempLocalScale.y, 1);
-        
+
         _mPlayerMatMgr.FlipAllNormalsToRight(m_IsRightHeaded);
-        
+
         m_PlayerAniMgr.playplayerAnim();
     }
+
     public void setPlayerHp(int _value)
     {
         p_Hp = _value;
         m_PlayerUIMgr.SetHp(p_Hp);
     }
+
     public bool GetIsPlayerWalkStraight()
     {
         return (m_IsRightHeaded && m_InputMgr.m_IsPushRightKey) || (!m_IsRightHeaded && m_InputMgr.m_IsPushLeftKey);
@@ -328,251 +348,32 @@ public class Player : Human
         }
     }
 
-
-
-
-
-    // Legacy
-    /*
-     
-    private void PlayerRayFunc()
+    /// <summary>파라미터에 따라 발 밑 Normal벡터에 직교하는 방향대로 이동합니다.</summary>
+    /// <param name="_direction">-1 : 왼, 0 : 정지, 1 : 오른</param>
+    /// <param name="_multi"> 이동속도 추가 배율 </param>>
+    public void MoveByDirection(int _direction, float _multi = 1f)
     {
-        m_PlayerPosVec = transform.position;
-
-        if (gameObject.layer == 12)
-            m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Floor"));
-        else if (gameObject.layer == 10)
-            m_FootRay = Physics2D.Raycast(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), -transform.up, 0.5f, LayerMask.GetMask("Stair"));
-
-        Debug.DrawRay(new Vector2(m_PlayerPosVec.x, m_PlayerPosVec.y - 0.36f), Vector2.down * 0.5f, new Color(0, 1, 0));
-    }
-    
-    private void updatePlayerFSM()
-    {
-        switch (m_curPlayerState)
+        switch (_direction)
         {
-            case playerState.IDLE:
-                m_HumanMoveVec = new Vector2(Input.GetAxisRaw("Horizontal"), m_HumanMoveVec.y);
-                if (m_HumanMoveVec.x != 0)
-                    changePlayerFSM(playerState.WALK);
-                if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
-                    changePlayerFSM(playerState.ROLL);
-                break;
-
-            case playerState.WALK:
-                m_HumanMoveVec = new Vector2(Input.GetAxisRaw("Horizontal"), m_HumanMoveVec.y);
-                if (m_HumanMoveVec.x == 0)
-                    changePlayerFSM(playerState.IDLE);
-                else
-                {
-                    if ((m_isRightHeaded ? 1 : -1) == (int)m_HumanMoveVec.x)
-                    {
-                        if (m_isRightHeaded)
-                            m_PlayerRigid.velocity = -new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_Speed;
-                        else
-                            m_PlayerRigid.velocity = new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_Speed;
-
-                        if (Input.GetKeyDown(KeyCode.LeftShift))
-                            changePlayerFSM(playerState.RUN);
-                        else if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
-                            changePlayerFSM(playerState.ROLL);
-                    }
-                    else
-                    {
-                        if (m_isRightHeaded)
-                        {
-                            m_PlayerRigid.velocity = StaticMethods.getLPerpVec(m_PlayerStairMgr.m_PlayerNormal) * m_Speed * m_BackWalkSpeedRatio;
-                            if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
-                            {
-                                setisRightHeaded(false);
-                                changePlayerFSM(playerState.ROLL);
-                            }
-                        }
-                        else
-                        {
-                            m_PlayerRigid.velocity = -StaticMethods.getLPerpVec(m_PlayerStairMgr.m_PlayerNormal) * m_Speed * m_BackWalkSpeedRatio;
-                            if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
-                            {
-                                setisRightHeaded(true);
-                                changePlayerFSM(playerState.ROLL);
-                            }
-                        }
-                    }
-                       
-                }
-                break;
-
-            case playerState.RUN:
-                if (m_isRightHeaded)
-                    m_PlayerRigid.velocity = new Vector2(m_Speed * m_RunSpeedRatio, 0f);
-                else
-                    m_PlayerRigid.velocity = new Vector2(-m_Speed * m_RunSpeedRatio, 0f);
-
-                if (Input.GetKeyUp(KeyCode.LeftShift))
-                    changePlayerFSM(playerState.WALK);
-                else if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
-                    changePlayerFSM(playerState.ROLL);
-                break;
-
-            case playerState.ROLL:
-                if (m_isRightHeaded)
-                {
-                    m_PlayerRigid.velocity = -new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_RollSpeedRatio;
-                }
-                else
-                {
-                    m_PlayerRigid.velocity = new Vector2(-m_PlayerStairMgr.m_PlayerNormal.y, m_PlayerStairMgr.m_PlayerNormal.x) * m_RollSpeedRatio;
-                }
-                if (m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
-                    changePlayerFSM(playerState.WALK);
-                break;
-
-            case playerState.HIDDEN:
-                if (Input.GetKeyDown(KeyCode.Space) && m_LeftRollCount > 0)
-                {
-                    if (Input.GetKey(KeyCode.A))
-                        setisRightHeaded(false);
-                    else if (Input.GetKey(KeyCode.D))
-                        setisRightHeaded(true);
-                    else if (m_playerRotation.getIsMouseRight())
-                        setisRightHeaded(true);
-                    else if (!m_playerRotation.getIsMouseRight())
-                        setisRightHeaded(false);
-
-                    m_useRange.ForceExitFromHiddenSlot();
-                    changePlayerFSM(playerState.ROLL);
-                }
-                break;
-
-            case playerState.HIDDEN_STAND:
-                break;
-
-            case playerState.INPORTAL:
-                break;
-
-            case playerState.DEAD:
-                break;
-        }
-    }
-    public void _changePlayerFSM(playerState _inputPlayerState)
-    {
-        exitPlayerFSM();
-
-        switch (_inputPlayerState)
-        {
-            case playerState.IDLE:
-                m_curPlayerState = playerState.IDLE;
-                m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
-                m_CanAttacked = true;
-                break;
-
-            case playerState.WALK:
-                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(0.8f, 0.1f), m_curLocation);
-                StartCoroutine(m_FootStep);
-                m_curPlayerState = playerState.WALK;
-                break;
-
-            case playerState.RUN:
-                
-                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f));
-                StartCoroutine(m_FootStep);
-                m_curPlayerState = playerState.RUN;
-                m_playerRotation.m_doRotate = false;
-                m_canShot = false;
-                
-                break;
-
-            case playerState.ROLL:
-                m_FootStep = MakePlayerNoise(NoiseType.WALK, new Vector2(1f, 0.3f), m_curLocation);
-                StartCoroutine(m_FootStep);
-
-                m_PlayerHotBox.setPlayerHotBoxCol(false);
-
-                m_LeftRollCount -= 1;
-                m_PlayerUIMgr.UpdateRollCount(m_LeftRollCount);
-
-                if (!m_isRecoveringRollCount)
-                    StartCoroutine(RecoverRollCount());
-
-                m_curPlayerState = playerState.ROLL;
-                m_playerRotation.m_doRotate = false;
-                m_canShot = false;
-                m_canMove = false;
-
-                m_Player_AniMgr.setSprites(true, false, false, false, false);
-                break;
-
-            case playerState.HIDDEN:
-                m_curPlayerState = playerState.HIDDEN;
-                m_Player_AniMgr.setSprites(true, false, false, false, false);
-                m_playerRotation.m_doRotate = false;
-                m_canShot = false;
-                m_canMove = false;
-                break;
-
-            case playerState.HIDDEN_STAND:
-                break;
-
-            case playerState.INPORTAL:
-                break;
-
-            case playerState.DEAD:
-                m_curPlayerState = playerState.DEAD;
-                m_playerRotation.m_doRotate = false;
-                m_canMove = false;
-                m_canShot = false;
-                break;
-        }
-
-        m_Player_AniMgr.playplayerAnim();
-    }
-    private void exitPlayerFSM()
-    {
-        m_Player_AniMgr.exitplayerAnim();
-        switch (m_curPlayerState)
-        {
-            case playerState.IDLE:
-                m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
-                break;
-
-            case playerState.WALK:
-                StopCoroutine(m_FootStep);
+            case 0:
                 m_PlayerRigid.velocity = Vector2.zero;
                 break;
 
-            case playerState.RUN:
-                StopCoroutine(m_FootStep);
-                m_playerRotation.m_doRotate = true;
-                m_canShot = true;
+            case 1:
+                if (!m_IsRightHeaded)
+                    setisRightHeaded(true);
+
+                m_PlayerRigid.velocity =
+                    -StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal).normalized * (p_MoveSpeed * _multi);
                 break;
 
-            case playerState.ROLL:
-                m_PlayerHotBox.setPlayerHotBoxCol(true);
-                StopCoroutine(m_FootStep);
-                m_playerRotation.m_doRotate = true;
-                m_canShot = true;
-                m_canMove = true;
-                m_PlayerRigid.velocity = Vector2.zero;
-                m_Player_AniMgr.setSprites(false, true, true, true, true);
-                break;
+            case -1:
+                if (m_IsRightHeaded)
+                    setisRightHeaded(false);
 
-            case playerState.HIDDEN:
-                m_Player_AniMgr.setSprites(false, true, true, true, true);
-                m_playerRotation.m_doRotate = true;
-                m_canShot = true;
-                m_canMove = true;
-                m_Player_AniMgr.setSprites(false, true, true, true, true);
-                break;
-
-            case playerState.HIDDEN_STAND:
-                break;
-
-            case playerState.INPORTAL:
-                break;
-
-            case playerState.DEAD:
+                m_PlayerRigid.velocity =
+                    StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal).normalized * (p_MoveSpeed * _multi);
                 break;
         }
     }
-    */
 }

@@ -22,6 +22,8 @@ public class AttachGameObjectsToParticles : MonoBehaviour
     void LateUpdate()
     {
         int count = m_ParticleSystem.GetParticles(m_Particles);
+        m_Particles[0].position = Vector2.zero;
+        m_ParticleSystem.SetParticles(m_Particles, count);
 
         while (m_Instances.Count < count)
             m_Instances.Add(Instantiate(m_Prefab, m_ParticleSystem.transform));
@@ -46,4 +48,6 @@ public class AttachGameObjectsToParticles : MonoBehaviour
             }
         }
     }
+
+
 }

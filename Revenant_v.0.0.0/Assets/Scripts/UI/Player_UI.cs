@@ -33,7 +33,7 @@ public class Player_UI : MonoBehaviour
     
 
     // Member Variables
-    private SoundMgr_SFX m_SoundMgr;
+    private SoundPlayer m_SoundMgr;
     private CameraMove m_Maincam;
     private Player_ArmMgr m_ArmMgr;
     public float m_ReloadSpeed { get; set; } = 1f;
@@ -76,7 +76,7 @@ public class Player_UI : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_SoundMgr = instance.GetComponentInChildren<SoundMgr_SFX>();
+        m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
         m_ArmMgr = instance.GetComponentInChildren<Player_Manager>().m_Player.m_ArmMgr;
     }
 
@@ -171,9 +171,9 @@ public class Player_UI : MonoBehaviour
         if (m_CurCoroutine != null)
             StopCoroutine(m_CurCoroutine);
 
-        // ±âº» È÷Æ®¸¦ Body¶ó »ý°¢
+        // ï¿½âº» ï¿½ï¿½Æ®ï¿½ï¿½ Bodyï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         p_Hitmark.enabled = true;
-        // ºÒÅõ¸íÇÏ°Ô ¸¸µé±â À§ÇÑ °Í
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         m_HitmarkColor = Color.white;
         p_Hitmark.color = m_HitmarkColor;
 
@@ -183,7 +183,7 @@ public class Player_UI : MonoBehaviour
                 p_Hitmark.sprite = p_HitmarkArr[0];
                 m_Maincam.DoCamShake(true);
                 m_SoundMgr.playUISound(0);
-                // ¿øº» Å©±â == Å« Å©±âÀÓ
+                // ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ == Å« Å©ï¿½ï¿½ï¿½ï¿½
                 p_Hitmark.rectTransform.localScale = m_HitmarkOriginScale;
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Head());
                 break;
@@ -192,14 +192,14 @@ public class Player_UI : MonoBehaviour
                 p_Hitmark.sprite = p_HitmarkArr[1];
                 m_Maincam.DoCamShake(false);
                 m_SoundMgr.playUISound(1);
-                // 2f, 2f°¡ ÀÛÀº ¹öÀüÀÇ Å©±â
+                // 2f, 2fï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½
                 p_Hitmark.rectTransform.localScale = new Vector2(2f, 2f);
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Body());
                 break;
         }
     }
 
-    private IEnumerator DisableHitMark_Body()   // ¸öÅë Hit ÄÚ·çÆ¾
+    private IEnumerator DisableHitMark_Body()   // ï¿½ï¿½ï¿½ï¿½ Hit ï¿½Ú·ï¿½Æ¾
     {
         while (true)
         {
@@ -223,7 +223,7 @@ public class Player_UI : MonoBehaviour
                 break;
             
             
-            // 1.5f Scale±îÁö ÀÛ¾ÆÁö¸é ±×³É 0À¸·Î ½ºÄÉÀÏ ÁÙ¿©¹ö¸®±â
+            // 1.5f Scaleï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½ 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             p_Hitmark.rectTransform.localScale = p_Hitmark.rectTransform.localScale.x >= 1.5f ?
                 Vector2.Lerp(p_Hitmark.rectTransform.localScale, Vector2.zero, Time.deltaTime * 6f) : Vector2.zero;
             
@@ -293,11 +293,11 @@ public class Player_UI : MonoBehaviour
         if (m_RollTimerEnable)
         {
             m_RollTimer -= Time.deltaTime;
-            m_RollTimerTxt.text = "±¸¸£±â Å¸ÀÌ¸Ó : " + m_RollTimer;
+            m_RollTimerTxt.text = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ì¸ï¿½ : " + m_RollTimer;
             if(m_RollTimer <= 0f)
             {
                 m_RollTimer = 0f;
-                m_RollTimerTxt.text = "±¸¸£±â Å¸ÀÌ¸Ó : " + m_RollTimer;
+                m_RollTimerTxt.text = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ì¸ï¿½ : " + m_RollTimer;
                 m_RollTimerEnable = false;
             }
         }
@@ -305,11 +305,11 @@ public class Player_UI : MonoBehaviour
         if (m_ReloadTimerEnable)
         {
             m_ReloadTimer -= Time.deltaTime;
-            m_ReloadTimerTxt.text = "³²Àº ÀçÀåÀü ½Ã°£ : " + m_ReloadTimer;
+            m_ReloadTimerTxt.text = "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ : " + m_ReloadTimer;
             if (m_ReloadTimer <= 0f)
             {
                 m_ReloadTimer = 0f;
-                m_ReloadTimerTxt.text = "³²Àº ÀçÀåÀü ½Ã°£ : " + m_ReloadTimer;
+                m_ReloadTimerTxt.text = "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ : " + m_ReloadTimer;
                 m_ReloadTimerEnable = false;
             }
         }
@@ -401,7 +401,7 @@ public class Player_UI : MonoBehaviour
     }
     public void UpdateRollCount(int _count)
     {
-        m_LeftRollCountTxt.text = "±¸¸£±â È½¼ö : " + _count;
+        m_LeftRollCountTxt.text = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È½ï¿½ï¿½ : " + _count;
     }
     public void UpdateRollTimer(float _time)
     {

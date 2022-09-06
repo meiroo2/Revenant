@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShellMgr : ObjectPuller
 {
     private Rigidbody2D[] m_PulledObjRigidArr;
-    private SoundMgr_SFX m_SoundMgrSFX;
+    private SoundPlayer _mSoundPlayer;
 
     private void Awake()
     {
@@ -24,10 +24,10 @@ public class ShellMgr : ObjectPuller
     }
     private void Start()
     {
-        m_SoundMgrSFX = InstanceMgr.GetInstance().GetComponentInChildren<SoundMgr_SFX>();
+        _mSoundPlayer = InstanceMgr.GetInstance().GetComponentInChildren<SoundPlayer>();
         for (int i = 0; i < m_ObjPullCount; i++)
         {
-            m_PulledObjArr[i].GetComponent<ForObjPull_Once>().m_SoundSFXMgr = m_SoundMgrSFX;
+            m_PulledObjArr[i].GetComponent<ForObjPull_Once>().m_SoundSFXMgr = _mSoundPlayer;
         }
     }
 

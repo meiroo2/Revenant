@@ -7,7 +7,8 @@
 public enum SOUNDTYPE
 {
     BULLET,
-    EXPLOSION
+    EXPLOSION,
+    PLAYERNOISE
 }
 
 /// <summary>
@@ -16,15 +17,20 @@ public enum SOUNDTYPE
 public class SoundHotBoxParam
 {
     // Member Variables
+    public Vector2 m_SoundPos { get; private set; } = Vector2.zero;
     public bool m_IsPlayers { get; private set; } = false;
-    public Vector2 m_SoundOriginPos { get; private set; } = Vector2.zero;
     public SOUNDTYPE m_SoundType { get; private set; } = SOUNDTYPE.BULLET;
-    
+    public Vector2 m_SoundSize { get; private set; } = Vector2.zero;
+    public float m_LifeTime { get; private set; } = 0.5f;
+
     // Constructors
-    public SoundHotBoxParam(bool _isPlayers, Vector2 _soundPos, SOUNDTYPE _soundType)
+    public SoundHotBoxParam(Vector2 _soundPos, bool _isPlayers, SOUNDTYPE _soundType,
+        Vector2 _soundSize, float _lifeTime)
     {
+        m_SoundPos = _soundPos;
         m_IsPlayers = _isPlayers;
-        m_SoundOriginPos = _soundPos;
         m_SoundType = _soundType;
+        m_SoundSize = _soundSize;
+        m_LifeTime = _lifeTime;
     }
 }

@@ -75,6 +75,10 @@ public class BasicEnemy : Human
     {
     }
 
+    public virtual void SoundCognition(SoundHotBoxParam _param)
+    {
+    }
+
     protected void InitEnemy()
     {
         m_EnemyHotBoxes = GetComponentsInChildren<Enemy_HotBox>();

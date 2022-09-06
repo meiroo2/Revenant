@@ -23,7 +23,7 @@ public class BasicWeapon : MonoBehaviour
     public delegate void m_WeaponDelegate();
     protected m_WeaponDelegate m_Callback = null;
     
-    public SoundMgr_SFX m_SoundMgrSFX { get; set; }
+    public SoundPlayer MSoundPlayer { get; set; }
     public int m_LeftRounds { get; set; } = 0;
     public int m_LeftMags { get; set; } = 0;
     protected bool m_isShotDelayEnd = true;

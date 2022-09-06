@@ -238,7 +238,7 @@ public class Player_HIDDEN : PlayerFSM
     private int m_KeyInput = 0;
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
-    private SoundMgr_SFX m_SFXMgr;
+    private SoundPlayer m_SFXMgr;
 
     public Player_HIDDEN(Player _player) : base(_player)
     {
@@ -303,9 +303,10 @@ public class Player_MELEE : PlayerFSM
     private Animator m_PlayerAnimator;
     private float m_CurAniTime;
     private bool m_IsAttackFinished = false;
-    
+
     public Player_MELEE(Player _player) : base(_player)
     {
+        InitFunc();
     }
 
     public override void StartState()
@@ -320,7 +321,8 @@ public class Player_MELEE : PlayerFSM
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
         
-        m_Player.m_MeleeAttack.StartFindHotBoxes();
+        m_Player.m_MeleeAttack.StartMelee();
+        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
     }
 
     public override void UpdateState()
@@ -329,11 +331,6 @@ public class Player_MELEE : PlayerFSM
 
         switch (m_CurAniTime)
         {
-            case >= 0.5f when !m_IsAttackFinished:
-                m_IsAttackFinished = true;
-                m_Player.m_MeleeAttack.AttackAllHotBoxes();
-                break;
-            
             case >= 1f:
                 m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
                 break;
@@ -345,6 +342,9 @@ public class Player_MELEE : PlayerFSM
         m_Player.m_CanAttack = true;
         m_Player.m_CanMove = true;
         m_Player.m_playerRotation.m_doRotate = true;
+        
+        m_Player.m_MeleeAttack.StopMelee();
+        m_Player.MoveByDirection(0);
     }
 
     public override void NextPhase()

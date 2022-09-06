@@ -25,6 +25,12 @@ public class ShieldGang : BasicEnemy
     
     [field: SerializeField, BoxGroup("ShieldGang Values")]
     public float p_BrokenStateSpeedRatio = 1.5f;
+
+    [field: SerializeField, BoxGroup("ShieldGang Values"), Range(0f, 1f)]
+    public float p_ParticularAtkTime = 0.5f;
+
+    [field: SerializeField, BoxGroup("ShieldGang Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)]
+    public float p_AtkHoldTime = 0.5f;
     
     
     // Member Variables
@@ -48,6 +54,8 @@ public class ShieldGang : BasicEnemy
     private void Awake()
     {
         InitHuman();
+        InitEnemy();
+
         m_Shield = GetComponentInChildren<Shield>();
         m_Shield.p_Shield_Hp = p_Shield_Hp;
         
