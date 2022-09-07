@@ -15,7 +15,6 @@ public class Enemy_SoundHotBox : SoundHotBox
 
     public override void HitSoundHotBox(SoundHotBoxParam _param)
     {
-        Debug.Log("사운드 감지 " + _param.m_SoundType + " " + _param.m_SoundOriginPos);
-        m_Enemy.StartPlayerCognition();
+        m_Enemy.SoundCognition(_param);
     }
 }

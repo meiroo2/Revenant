@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -8,9 +9,10 @@ using UnityEngine;
 public class SoundEntity : MonoBehaviour
 {
     // Member Variables
+    private BoxCollider2D m_Collider;
+    
     private SoundHotBoxParam m_SoundHotBoxParam;
     private Coroutine m_Coroutine;
-    private List<SoundHotBox> m_SoundHotBoxList;
 
     private bool m_CanCheck = false;
     
@@ -18,39 +20,36 @@ public class SoundEntity : MonoBehaviour
     // Constructors
     private void Awake()
     {
-        m_SoundHotBoxList = new List<SoundHotBox>();
+        m_Collider = GetComponent<BoxCollider2D>();
     }
-    private void OnEnable()
-    {
-        m_Coroutine = StartCoroutine(SoundHit());
-    }
+
     private void OnDisable()
     {
-        StopCoroutine(m_Coroutine);
-        
-        // 비활성화 시 리스트 비우고 메모리 반납
-        m_SoundHotBoxList.Clear();
-        m_SoundHotBoxList.TrimExcess();
+        if (!ReferenceEquals(m_Coroutine, null))
+            StopCoroutine(m_Coroutine);
     }
 
 
     // Physics
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (!m_CanCheck || !col.CompareTag("Enemy"))
+        if (!m_CanCheck)
             return;
 
-        var instance = col.GetComponent<SoundHotBox>();
-        m_SoundHotBoxList.Add(instance);
-    }
+        if (m_SoundHotBoxParam.m_IsPlayers)
+        {
+            if (!col.CompareTag("Enemy"))
+                return;
 
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (!m_CanCheck || !other.CompareTag("Enemy"))
-            return;
-        
-        var instance = other.GetComponent<SoundHotBox>();
-        m_SoundHotBoxList.Remove(instance);
+            if (col.TryGetComponent(out SoundHotBox soundHotbox))
+            {
+                soundHotbox.HitSoundHotBox(m_SoundHotBoxParam);
+            }
+        }
+        else
+        {
+            
+        }
     }
 
 
@@ -58,19 +57,16 @@ public class SoundEntity : MonoBehaviour
     public void InitSound(SoundHotBoxParam _param)
     {
         m_SoundHotBoxParam = _param;
+        transform.position = m_SoundHotBoxParam.m_SoundPos;
+        m_Collider.size = _param.m_SoundSize;
+        m_Coroutine = StartCoroutine(SoundHit());
     }
 
     private IEnumerator SoundHit()
     {
         m_CanCheck = true;
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return new WaitForSecondsRealtime(m_SoundHotBoxParam.m_LifeTime);
         m_CanCheck = false;
-
-        foreach (var element in m_SoundHotBoxList)
-        {
-            element.HitSoundHotBox(m_SoundHotBoxParam);
-        }
-        
         gameObject.SetActive(false);
         
         yield break;

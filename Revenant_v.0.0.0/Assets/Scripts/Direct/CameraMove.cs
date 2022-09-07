@@ -96,14 +96,6 @@ public class CameraMove : MonoBehaviour
         m_CamShakeZoomValue = Mathf.Lerp(m_CamShakeZoomValue, 0f, Time.deltaTime * 5f);
         
         m_MainCam.orthographicSize = m_OriginCamZoomValue + m_CamShakeZoomValue;
-        
-        /*
-        m_PlusVec = Vector2.up;
-        Debug.Log(rotateAngle);
-        m_PlusVec = Quaternion.Euler(0, 0, rotateAngle) * m_PlusVec;
-
-        m_PlusVec *= p_ShakePower;
-        */
     }
     
 
@@ -159,50 +151,4 @@ public class CameraMove : MonoBehaviour
         m_CameraTempPos = m_CameraPos;
         transform.position = m_CameraPos;
     }
-
-    
-    
-    // 기타 분류하고 싶은 것이 있을 경우
-    /*
-     Legacy Codes that i luv it~
-     
-        m_MousePos = Input.mousePosition;
-
-        if (Input.GetMouseButton(1))
-        {
-            m_CameraPos = transform.position;
-
-            m_AddMouseVec = new Vector2((m_MousePos.x - 960) / 6000f, (m_MousePos.y - 540) / 6000f);
-
-            if (m_CamBoundMgr.canCamMove(m_CameraPos))
-            {
-                transform.position = new Vector3(m_CameraPos.x + m_AddMouseVec.x, m_CameraPos.y+ m_AddMouseVec.y + m_yOffSet, -10);
-            }
-            else
-            {
-                transform.position = m_CamBoundMgr.getNearCamPos(new Vector2(m_CameraPos.x + m_AddMouseVec.x, m_CameraPos.y + m_AddMouseVec.y) );
-                transform.position = new Vector3(transform.position.x, transform.position.y + m_yOffSet, -10);
-            }
-        }
-        else
-        {
-            if (m_CamStuckOnce)
-            {
-                m_CamStuckOnce = false;
-                m_CameraPos = m_CameraTempPos;
-            }
-
-            m_CameraPos = Vector3.Lerp(m_CameraPos, m_Player.transform.position, Time.deltaTime * 4f);
-            if (m_CamBoundMgr.canCamMove(m_CameraPos))
-            {
-                m_CameraPos.z = -10f;
-                transform.position = m_CameraPos;
-            }
-            else
-            {
-                m_CameraPos.z = -10f;
-                transform.position = m_CamBoundMgr.getNearCamPos(m_CameraPos);
-            }
-        }
-        */
 }

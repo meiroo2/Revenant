@@ -19,12 +19,13 @@ public class Enemy_Alert : MonoBehaviour
     private Coroutine m_CurCoroutine;
 
     
-    
     // Hashes
     private static readonly int IsActivate = Animator.StringToHash("IsActivate");
     private static readonly int IsHit = Animator.StringToHash("IsHit");
     private static readonly int Idle_White = Animator.StringToHash("Idle_White");
     private static readonly int DoAttack = Animator.StringToHash("DoAttack");
+    private static readonly int AlertSpeed = Animator.StringToHash("AlertSpeed");
+    private static readonly int DoStun = Animator.StringToHash("DoStun");
 
 
     // Constructors
@@ -56,28 +57,30 @@ public class Enemy_Alert : MonoBehaviour
 
     
     // Functions
-    public void SetAlertStun(float _stunSpeed)
+    public void SetAlertSpeed(float _speed)
     {
-        m_Animator.SetFloat("AlertSpeed", _stunSpeed);
-        m_Animator.SetTrigger(IsHit);
+        m_Animator.SetFloat(AlertSpeed, _speed);
+    }
+    
+    public void SetAlertStun()
+    {
+        m_Animator.SetTrigger(DoStun);
         
         if (!ReferenceEquals(m_CurCoroutine, null))
             StopCoroutine(m_CurCoroutine);
         
-        m_CurCoroutine = StartCoroutine(AlertStunCheck());
+        m_CurCoroutine = StartCoroutine(DoAlertStun());
     }
 
-    private IEnumerator AlertStunCheck()
+    private IEnumerator DoAlertStun()
     {
-        yield return null;
-        
         while (true)
         {
+            yield return null;
+
             m_CurAniState = m_Animator.GetCurrentAnimatorStateInfo(0);
             if (m_CurAniState.normalizedTime >= 1f)
                 break;
-            
-            yield return null;
         }
 
         m_Callback?.Invoke();

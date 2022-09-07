@@ -16,6 +16,9 @@ public enum HitBoxPoint
     COGNITION
 }
 
+/// <summary>
+/// HotBox에 히트 판정을 내고자 할 때 파라미터로 쓰이는 클래스입니다.
+/// </summary>
 public class IHotBoxParam
 {
     public int m_Damage { get; private set; }
@@ -37,6 +40,9 @@ public class IHotBoxParam
     }
 }
 
+/// <summary>
+/// 피격 가능한 히트박스용 클래스입니다.
+/// </summary>
 public interface IHotBox
 {
     [field: SerializeField] public GameObject m_ParentObj { get; set; }

@@ -12,7 +12,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     private UIMgr m_UIMgr;
     private Player_UI m_PlayerUIMgr;
     private Player m_Player;
-    private SoundMgr_SFX m_SFXMgr;
+    private SoundPlayer m_SFXMgr;
     private ScreenEffect_UI m_ScreenEffectUI;
     private Player_MatMgr m_PlayerMatMgr;
     
@@ -41,7 +41,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         m_UIMgr = instanceMgr.GetComponentInChildren<UIMgr>();
         m_PlayerUIMgr = instanceMgr.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_ScreenEffectUI = instanceMgr.m_MainCanvas.GetComponentInChildren<InGame_UI>().m_ScreenEffectUI;
-        m_SFXMgr = instanceMgr.GetComponentInChildren<SoundMgr_SFX>();
+        m_SFXMgr = instanceMgr.GetComponentInChildren<SoundPlayer>();
         m_PlayerMatMgr = GetComponentInParent<Player>().GetComponent<Player_MatMgr>();
     }
 

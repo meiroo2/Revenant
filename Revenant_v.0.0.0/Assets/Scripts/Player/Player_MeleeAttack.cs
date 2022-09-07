@@ -10,12 +10,12 @@ public class Player_MeleeAttack : MonoBehaviour
     
     
     // Member Variables
-    private SoundMgr_SFX m_SoundSFXMgr;
+    private SoundPlayer m_SoundSFXMgr;
     private HitSFXMaker m_SFXMaker;
     private BoxCollider2D m_MeleeCol;
-    private List<Collider2D> m_HotBoxList;
-    
-    
+    private Player m_Player;
+
+
     // Constructors
     private void Awake()
     {
@@ -23,8 +23,6 @@ public class Player_MeleeAttack : MonoBehaviour
         m_MeleeCol = GetComponent<BoxCollider2D>();
         
         // Init
-        m_HotBoxList = new List<Collider2D>();
-        
         m_MeleeCol.enabled = false;
     }
 
@@ -32,48 +30,43 @@ public class Player_MeleeAttack : MonoBehaviour
     {
         var instance = InstanceMgr.GetInstance();
         m_SFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
-        m_SoundSFXMgr = instance.GetComponentInChildren<SoundMgr_SFX>();
+        m_SoundSFXMgr = instance.GetComponentInChildren<SoundPlayer>();
+        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
     }
 
 
     // Functions
-    public void StartFindHotBoxes()
+    public void StartMelee()
     {
-        Debug.Log("히트박스 검색 시작");
-        m_HotBoxList.Clear();
         m_MeleeCol.enabled = true;
     }
 
-    public void AttackAllHotBoxes()
+    public void StopMelee()
     {
-        Debug.Log("히트박스 타격 시작");
         m_MeleeCol.enabled = false;
-        foreach (var element in m_HotBoxList)
-        {
-            IHotBox hotBox = element.GetComponent<IHotBox>();
-            if (hotBox.m_HitBoxInfo == HitBoxPoint.HEAD)
-                continue;
-
-            hotBox.HitHotBox(new IHotBoxParam(m_Damage, 0,
-                transform.position, WeaponType.KNIFE));
-            
-            m_SFXMaker.EnableNewObj(2, element.transform.position);
-            m_SoundSFXMgr.playGunFireSound(0, element.transform.position);
-        }
     }
+    
     
     
     // Physics
     private void OnTriggerEnter2D(Collider2D col)
     {
-        m_HotBoxList.Add(col);
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (m_MeleeCol.enabled == false)
-            return;
-        
-        m_HotBoxList.Remove(other);
+        if (col.TryGetComponent(out IHotBox hotBox))
+        {
+            if (hotBox.m_HitBoxInfo is HitBoxPoint.BODY or HitBoxPoint.OBJECT)
+            {
+                hotBox.HitHotBox(new IHotBoxParam(m_Damage, 0,
+                    transform.position, WeaponType.KNIFE));
+                
+                m_SFXMaker.EnableNewObj(3, col.ClosestPoint(transform.position), m_Player.m_IsRightHeaded);
+                m_SFXMaker.EnableNewObj(2, col.ClosestPoint(transform.position),m_Player.m_IsRightHeaded);
+                m_SoundSFXMgr.playGunFireSound(0, col.transform.position);
+                m_MeleeCol.enabled = false;
+            }
+        }
+        else
+        {
+            Debug.Log("ERR : Player_MeleeAttack에서 IHotBox 탐색 불가");
+        }
     }
 }

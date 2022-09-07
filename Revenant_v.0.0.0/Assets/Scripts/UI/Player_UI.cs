@@ -33,7 +33,7 @@ public class Player_UI : MonoBehaviour
     
 
     // Member Variables
-    private SoundMgr_SFX m_SoundMgr;
+    private SoundPlayer m_SoundMgr;
     private CameraMove m_Maincam;
     private Player_ArmMgr m_ArmMgr;
     public float m_ReloadSpeed { get; set; } = 1f;
@@ -76,7 +76,7 @@ public class Player_UI : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_SoundMgr = instance.GetComponentInChildren<SoundMgr_SFX>();
+        m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
         m_ArmMgr = instance.GetComponentInChildren<Player_Manager>().m_Player.m_ArmMgr;
     }
 
@@ -171,9 +171,9 @@ public class Player_UI : MonoBehaviour
         if (m_CurCoroutine != null)
             StopCoroutine(m_CurCoroutine);
 
-        // ±‚∫ª »˜∆Æ∏¶ Body∂Û ª˝∞¢
+        // Body Í∏∞Ï§Ä
         p_Hitmark.enabled = true;
-        // ∫“≈ı∏Ì«œ∞‘ ∏∏µÈ±‚ ¿ß«— ∞Õ
+        
         m_HitmarkColor = Color.white;
         p_Hitmark.color = m_HitmarkColor;
 
@@ -183,7 +183,7 @@ public class Player_UI : MonoBehaviour
                 p_Hitmark.sprite = p_HitmarkArr[0];
                 m_Maincam.DoCamShake(true);
                 m_SoundMgr.playUISound(0);
-                // ø¯∫ª ≈©±‚ == ≈´ ≈©±‚¿”
+                // ÏõêÎ≥∏ ScaleÎ°ú Ìï®
                 p_Hitmark.rectTransform.localScale = m_HitmarkOriginScale;
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Head());
                 break;
@@ -192,14 +192,14 @@ public class Player_UI : MonoBehaviour
                 p_Hitmark.sprite = p_HitmarkArr[1];
                 m_Maincam.DoCamShake(false);
                 m_SoundMgr.playUISound(1);
-                // 2f, 2f∞° ¿€¿∫ πˆ¿¸¿« ≈©±‚
+                // scale 2Î∞∞Î°ú ÏãúÏûë
                 p_Hitmark.rectTransform.localScale = new Vector2(2f, 2f);
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Body());
                 break;
         }
     }
 
-    private IEnumerator DisableHitMark_Body()   // ∏ˆ≈Î Hit ƒ⁄∑Á∆æ
+    private IEnumerator DisableHitMark_Body()
     {
         while (true)
         {
@@ -223,7 +223,7 @@ public class Player_UI : MonoBehaviour
                 break;
             
             
-            // 1.5f Scale±Ó¡ˆ ¿€æ∆¡ˆ∏È ±◊≥… 0¿∏∑Œ Ω∫ƒ…¿œ ¡Ÿø©πˆ∏Æ±‚
+            // Scale Í∞àÏàòÎ°ù Ï§ÑÏûÑ
             p_Hitmark.rectTransform.localScale = p_Hitmark.rectTransform.localScale.x >= 1.5f ?
                 Vector2.Lerp(p_Hitmark.rectTransform.localScale, Vector2.zero, Time.deltaTime * 6f) : Vector2.zero;
             
@@ -234,184 +234,4 @@ public class Player_UI : MonoBehaviour
         
         p_Hitmark.enabled = false;
     }
-    
-    
-    // Legacy Codes
-    /*
-    public GameObject m_HealthSlot;
-    public GameObject[] m_WeaponSlots;
-    public GameObject[] m_WeaponImgs;
-    public GameObject[] m_WeaponTexts;
-
-    public Text m_LeftRollCountTxt;
-    public Text m_RollTimerTxt;
-    public Text m_ReloadTimerTxt;
-
-    [Space(20f)]
-    public Sprite m_RedHealth;
-    public Sprite m_GrayHealth;
-
-    // Visible Member Variables
-    RectTransform m_Player_Health;
-    RectTransform m_MainWeaponSlot;
-    RectTransform m_SubWeaponSlot;
-    TextMeshProUGUI m_MainBulletText;
-    TextMeshProUGUI m_SubBulletText;
-
-
-    // Member Variables
-    private float m_Timer = 3f;
-    private bool m_DoLerpForSlot = false;
-
-    private bool m_FrontSlotisMain = true;
-
-    private Vector2 m_FrontSlotPos;
-    private Vector2 m_BehindSlotPos;
-    private Image[] m_HealthSlots;
-
-    private bool m_RollTimerEnable = false;
-    private float m_RollTimer = 0f;
-
-    private bool m_ReloadTimerEnable = false;
-    private float m_ReloadTimer = 0f;
-
-    private void Awake()
-    {
-        m_Player_Health = m_HealthSlot.GetComponent<RectTransform>();
-        m_MainWeaponSlot = m_WeaponSlots[0].GetComponent<RectTransform>();
-        m_SubWeaponSlot = m_WeaponSlots[1].GetComponent<RectTransform>();
-        m_MainBulletText = m_WeaponTexts[0].GetComponent<TextMeshProUGUI>();
-        m_SubBulletText = m_WeaponTexts[1].GetComponent<TextMeshProUGUI>();
-
-        m_FrontSlotPos = m_MainWeaponSlot.anchoredPosition;
-        m_BehindSlotPos = m_SubWeaponSlot.anchoredPosition;
-        m_HealthSlots = m_Player_Health.GetComponentsInChildren<Image>();
-    }
-
-    private void Update()
-    {
-        if (m_RollTimerEnable)
-        {
-            m_RollTimer -= Time.deltaTime;
-            m_RollTimerTxt.text = "±∏∏£±‚ ≈∏¿Ã∏” : " + m_RollTimer;
-            if(m_RollTimer <= 0f)
-            {
-                m_RollTimer = 0f;
-                m_RollTimerTxt.text = "±∏∏£±‚ ≈∏¿Ã∏” : " + m_RollTimer;
-                m_RollTimerEnable = false;
-            }
-        }
-
-        if (m_ReloadTimerEnable)
-        {
-            m_ReloadTimer -= Time.deltaTime;
-            m_ReloadTimerTxt.text = "≥≤¿∫ ¿Á¿Â¿¸ Ω√∞£ : " + m_ReloadTimer;
-            if (m_ReloadTimer <= 0f)
-            {
-                m_ReloadTimer = 0f;
-                m_ReloadTimerTxt.text = "≥≤¿∫ ¿Á¿Â¿¸ Ω√∞£ : " + m_ReloadTimer;
-                m_ReloadTimerEnable = false;
-            }
-        }
-
-        if (m_DoLerpForSlot)
-        {
-            if (m_FrontSlotisMain)
-            {
-                m_Timer -= Time.deltaTime;
-                m_MainWeaponSlot.anchoredPosition = Vector2.Lerp(m_MainWeaponSlot.anchoredPosition, m_FrontSlotPos, Time.deltaTime * 4f);
-                m_SubWeaponSlot.anchoredPosition = Vector2.Lerp(m_SubWeaponSlot.anchoredPosition, m_BehindSlotPos, Time.deltaTime * 4f);
-                if (m_Timer <= 0f)
-                {
-                    m_DoLerpForSlot = false;
-                    m_Timer = 3f;
-                }
-            }
-            else
-            {
-                m_Timer -= Time.deltaTime;
-                m_MainWeaponSlot.anchoredPosition = Vector2.Lerp(m_MainWeaponSlot.anchoredPosition, m_BehindSlotPos, Time.deltaTime * 4f);
-                m_SubWeaponSlot.anchoredPosition = Vector2.Lerp(m_SubWeaponSlot.anchoredPosition, m_FrontSlotPos, Time.deltaTime * 4f);
-                if (m_Timer <= 0f)
-                {
-                    m_DoLerpForSlot = false;
-                    m_Timer = 3f;
-                }
-            }
-        }
-    }
-
-    // Functions
-    public void setLeftBulletUI(int _LeftBullet, int _LeftMag, int _SlotNum)
-    {
-        switch (_SlotNum)
-        {
-            case 0:
-                m_MainBulletText.text = _LeftBullet + " / " + _LeftMag;
-                break;
-            case 1:
-                m_SubBulletText.text = _LeftBullet + " / " + _LeftMag;
-                break;
-        }
-    }
-    public void changeWeapon(int _Num)
-    {
-        switch (_Num)
-        {
-            case 0: // Main
-                if (!m_FrontSlotisMain)
-                {
-                    m_FrontSlotisMain = true;
-                    m_DoLerpForSlot = true;
-                    m_Timer = 3f;
-                    m_SubWeaponSlot.SetAsFirstSibling();
-                    m_MainWeaponSlot.SetAsLastSibling();
-                }
-                break;
-            case 1: // Sub
-                if (m_FrontSlotisMain)
-                {
-                    m_FrontSlotisMain = false;
-                    m_DoLerpForSlot = true;
-                    m_Timer = 3f;
-                    m_SubWeaponSlot.SetAsLastSibling();
-                    m_MainWeaponSlot.SetAsFirstSibling();
-                }
-                break;
-            case 2: // Throw
-                break;
-        }
-    }
-    public void UpdatePlayerHp(int _Hp)
-    {
-        for (int i = 0; i < _Hp; i++)
-        {
-            if (i < m_HealthSlots.Length)
-                m_HealthSlots[i].sprite = m_RedHealth;
-        }
-
-        if (_Hp < m_HealthSlots.Length)
-        {
-            for (int i = _Hp; i < m_HealthSlots.Length; i++)
-            {
-                if (i < m_HealthSlots.Length)
-                    m_HealthSlots[i].sprite = m_GrayHealth;
-            }
-        }
-    }
-    public void UpdateRollCount(int _count)
-    {
-        m_LeftRollCountTxt.text = "±∏∏£±‚ »Ωºˆ : " + _count;
-    }
-    public void UpdateRollTimer(float _time)
-    {
-        m_RollTimer = _time;
-        m_RollTimerEnable = true;
-    }
-    public void UpdateReloadTimer(float _time)
-    {
-        m_ReloadTimer = _time;
-        m_ReloadTimerEnable = true;
-    }
-    */
 }

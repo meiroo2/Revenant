@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8492784437133119544}
   - component: {fileID: 8492784437133119543}
-  - component: {fileID: 8492784437133119542}
-  - component: {fileID: 8492784437133119545}
+  - component: {fileID: 1662142169972965818}
   m_Layer: 23
   m_Name: SoundEntity
   m_TagString: Untagged
@@ -46,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f3f36aafabb4c1984efc7dab80f52fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!58 &8492784437133119542
-CircleCollider2D:
+--- !u!61 &1662142169972965818
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -60,26 +59,15 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Radius: 0.1
---- !u!50 &8492784437133119545
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8492784437133119547}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Size: {x: 1, y: 0.5}
+  m_EdgeRadius: 0

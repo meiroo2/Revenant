@@ -158,12 +158,22 @@ public class ROTATION_ShieldGang : ShieldGang_FSM
     {
         m_Enemy.m_Shield.gameObject.SetActive(false);
         m_RotateComplete = false;
-        m_Element = GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(DoRotate());
+
+        if (!m_Enemy.m_IsShieldBroken)
+            m_Element = GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(DoRotate());
     }
 
     public override void UpdateState()
     {
-        if (m_RotateComplete)
+        if (!m_RotateComplete)
+            return;
+
+        if (m_Enemy.m_IsShieldBroken)
+        {
+            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        }
+        else
         {
             m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
             m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
@@ -182,12 +192,31 @@ public class ROTATION_ShieldGang : ShieldGang_FSM
 
     private IEnumerator DoRotate()
     {
-        yield return new WaitForSeconds(1.5f);
+        AnimatorStateInfo aniInfo;
+        Animator animator = m_Enemy.m_Animator;
+        
+        // 쉴드 해제
+        m_Enemy.m_Shield.gameObject.SetActive(false);
+        
+        animator.SetBool("Turn", true);
+        while (true)
+        {
+            yield return null;
+            aniInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+            if (aniInfo.normalizedTime >= 1f)
+                break;
+        }
+        
+        animator.SetBool("Turn", false);
+        animator.SetBool("Idle", true);
+        yield return null;
+        
+        animator.SetBool("Idle", false);
         m_Enemy.m_Shield.gameObject.SetActive(true);
         m_RotateComplete = true;
-        
-        m_Element.StopCoroutine_Element(); 
-        yield break;
+
+        m_Element.StopCoroutine_Element();
     }
 }
 
@@ -230,7 +259,7 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
         {
             if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_AttackDistance)
             {
-                StartState();
+                m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
             }
             else
             {
@@ -263,13 +292,52 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
 
     private IEnumerator AttackCheck()
     {
-        Debug.Log("무기를 든다.");
-        yield return new WaitForSeconds(0.5f);
+        AnimatorStateInfo aniInfo;
+        Animator animator = m_Enemy.m_Animator;
+        
+        // 쉴드 제거
+        m_Enemy.m_Shield.gameObject.SetActive(false);
 
-        Debug.Log("공격 판정 개시");
-        m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
-        m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
+        // 방패 드는 모션
+        animator.SetBool("AttackReady", true);
+        while (true)
+        {
+            yield return null;
+            
+            aniInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (aniInfo.normalizedTime >= 1f)
+            {
+                break;
+            }
+        }
 
+        // 공격 홀드
+        yield return new WaitForSeconds(m_Enemy.p_AtkHoldTime);
+        
+        // 공격 개시
+        bool atkFinished = false;
+        animator.SetBool("Attack", true);
+        while (true)
+        {
+            yield return null;
+            aniInfo = animator.GetCurrentAnimatorStateInfo(0);
+            
+            if (!atkFinished && aniInfo.normalizedTime >= m_Enemy.p_ParticularAtkTime)
+            {
+                atkFinished = true;
+                m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+                m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
+            }
+            else if (aniInfo.normalizedTime >= 1f)
+            {
+                break;
+            }
+        }
+        
+        animator.SetBool("AttackReady", false);
+        animator.SetBool("Attack", false);
+        animator.Play("IDLE");
+        
         m_IsAttackEnd = true;
         m_CoroutineElement.StopCoroutine_Element();
         yield break;
@@ -277,23 +345,72 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
 
     private IEnumerator ShieldAttackCheck()
     {
-        Debug.Log("방패를 내리고 무기를 꺼낸다");
-        yield return new WaitForSeconds(0.5f);
+        AnimatorStateInfo aniInfo;
+        Animator animator = m_Enemy.m_Animator;
         
-        Debug.Log("방패 콜라이더 꺼짐");
+        // 쉴드 제거
         m_Enemy.m_Shield.gameObject.SetActive(false);
-        
-        Debug.Log("무기를 꺼낸 팔을 높이 든 채로 대기");
-        yield return new WaitForSeconds(0.5f);
-        
-        Debug.Log("공격 판정 개시");
-        m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
-        m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
-        
-        yield return new WaitForSeconds(0.5f);
-        Debug.Log("방패를 다시 들었다.");
-        m_Enemy.m_Shield.gameObject.SetActive(true);
 
+        // 방패 드는 모션
+        animator.SetBool("AttackReady", true);
+        while (true)
+        {
+            yield return null;
+            
+            aniInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (aniInfo.normalizedTime >= 1f)
+            {
+                break;
+            }
+        }
+
+        // 공격 홀드
+        yield return new WaitForSeconds(m_Enemy.p_AtkHoldTime);
+        
+        // 공격 개시
+        bool atkFinished = false;
+        animator.SetBool("Attack", true);
+        while (true)
+        {
+            yield return null;
+            aniInfo = animator.GetCurrentAnimatorStateInfo(0);
+            
+            if (!atkFinished && aniInfo.normalizedTime >= m_Enemy.p_ParticularAtkTime)
+            {
+                atkFinished = true;
+                m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+                m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
+            }
+            else if (aniInfo.normalizedTime >= 1f)
+            {
+                break;
+            }
+        }
+
+        // 방패 내리는 모션
+        animator.SetBool("Return", true);
+        while (true)
+        {
+            yield return null;
+            aniInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (aniInfo.normalizedTime >= 1f)
+            {
+                break;
+            }
+        }
+        
+        // Idle로 돌림
+        animator.SetBool("Idle",true);
+        yield return null;
+        
+        // 변수 되돌림
+        animator.SetBool("Idle", false);
+        animator.SetBool("AttackReady", false);
+        animator.SetBool("Attack", false);
+        animator.SetBool("Return", false);
+        
+        // 쉴드 재생성
+        m_Enemy.m_Shield.gameObject.SetActive(true);
         m_IsAttackEnd = true;
         
         m_CoroutineElement.StopCoroutine_Element();
@@ -437,7 +554,7 @@ public class BREAK_ShieldGang : ShieldGang_FSM
 
     private IEnumerator BreakingCheck()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1f);
         
         Debug.Log("방패 파괴 끝");
         m_CoroutineElement.StopCoroutine_Element();

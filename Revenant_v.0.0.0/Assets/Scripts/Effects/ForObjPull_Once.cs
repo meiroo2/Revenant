@@ -5,7 +5,7 @@ using UnityEngine;
 public class ForObjPull_Once : MonoBehaviour
 {
     // Visible Member Variables
-    [HideInInspector] public SoundMgr_SFX m_SoundSFXMgr;
+    [HideInInspector] public SoundPlayer m_SoundSFXMgr;
     protected Animator m_Animator;
 
     
@@ -63,5 +63,5 @@ public class ForObjPull_Once : MonoBehaviour
     }
 
 
-    // ±âÅ¸ ºÐ·ùÇÏ°í ½ÍÀº °ÍÀÌ ÀÖÀ» °æ¿ì
+    // ï¿½ï¿½Å¸ ï¿½Ð·ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 }
