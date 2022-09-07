@@ -53,10 +53,11 @@ public class HitSFXMaker : MonoBehaviour
             m_PulledSFXArr[m_CurIdxs[_idx]].gameObject.SetActive(false);
         
         m_PulledSFXArr[m_CurIdxs[_idx]].gameObject.SetActive(true);
-        Quaternion rotationValue = Quaternion.Euler(0,0, Random.Range(0, 360));
-        m_PulledSFXArr[m_CurIdxs[_idx]].transform.SetPositionAndRotation(_spawnPos,
-            rotationValue);
-            
+        Transform sfxTransform = m_PulledSFXArr[m_CurIdxs[_idx]].transform;
+        sfxTransform.localScale = new Vector3(Mathf.Abs(sfxTransform.localScale.x) * (_isRightHeaded ? 1 : -1) ,
+            sfxTransform.localScale.y, sfxTransform.localScale.z);
+        sfxTransform.position = _spawnPos;
+
         m_CurIdxs[_idx]++;
 
         if (m_CurIdxs[_idx] > m_Limits[_idx])

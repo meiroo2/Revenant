@@ -12,11 +12,19 @@ public class Target_HotBox : MonoBehaviour, IHotBox
     public bool m_isEnemys { get; set; } = true;
     public HitBoxPoint m_HitBoxInfo { get; set; }
     private Target m_Target;
+    private RageGauge_UI m_RageUI;
 
     private void Awake()
     {
         m_HitBoxInfo = p_Point;
         m_Target = GetComponentInParent<Target>();
+    }
+
+    private void Start()
+    {
+        var instance = InstanceMgr.GetInstance();
+        
+        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
     }
 
     public int HitHotBox(IHotBoxParam _param)

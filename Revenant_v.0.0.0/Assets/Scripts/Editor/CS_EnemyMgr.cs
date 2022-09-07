@@ -20,11 +20,6 @@ public class CS_EnemyMgr : Editor
         {
             Warning.Open();
         }
-        if (GUILayout.Button("CSV 불러오기"))
-        {
-            GameObject.FindObjectOfType<EnemyMgr>().LoadMeleeGangData();
-            Debug.Log("설정을 불러왔습니다.");
-        }
     }
 }
 

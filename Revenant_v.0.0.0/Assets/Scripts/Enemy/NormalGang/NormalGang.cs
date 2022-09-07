@@ -13,7 +13,7 @@ public class NormalGang : BasicEnemy
 {
     // Visible Member Variables
     [field: SerializeField, BoxGroup("NormalGang Values")]
-    public float p_AlertSpeedRatio = 1f;
+    public float p_AlertSpeed = 1f;
 
     [field: SerializeField, BoxGroup("NormalGang Values")]
     public float p_MeleeDistance = 0.1f;
@@ -36,6 +36,9 @@ public class NormalGang : BasicEnemy
     [field : SerializeField, BoxGroup("NormalGang Values")]
     public RuntimeAnimatorController p_AttackAnimator { get; protected set; }
 
+    [field: SerializeField, BoxGroup("NormalGang Values")]
+    public BasicWeapon_Enemy p_MeleeWeapon { get; private set; }
+
 
     // Member Variables
     public Enemy_Rotation m_EnemyRotation { get; private set; }
@@ -47,8 +50,6 @@ public class NormalGang : BasicEnemy
     private ATTACK_NormalGang m_ATTACK;
     private STUN_NormalGang m_Stun;
     private DEAD_NormalGang m_Dead;
-
-    [HideInInspector] public bool m_IsFoundPlayer = false;
     public int m_AngleBetPlayer { get; protected set; } // 위에서부터 0, 1, 2
     public Player m_Player { get; private set; }
     private Vector2 m_DistBetPlayer;
@@ -74,13 +75,13 @@ public class NormalGang : BasicEnemy
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
 
+        m_Alert.SetAlertSpeed(p_AlertSpeed);
+        
         m_IDLE = new IDLE_NormalGang(this);
         m_FOLLOW = new FOLLOW_NormalGang(this);
         m_ATTACK = new ATTACK_NormalGang(this);
         m_Stun = new STUN_NormalGang(this);
         m_Dead = new DEAD_NormalGang(this);
-
-        m_Alert.GetComponent<Animator>().SetFloat("AlertSpeed", p_AlertSpeedRatio);
 
         m_CurEnemyStateName = EnemyStateName.IDLE;
         m_CurEnemyFSM = m_IDLE;
@@ -89,7 +90,6 @@ public class NormalGang : BasicEnemy
     private void Start()
     {
         m_CurEnemyFSM.StartState();
-
 
         m_OriginPos = transform.position;
 
@@ -111,6 +111,24 @@ public class NormalGang : BasicEnemy
 
 
     // Functions
+    public override void StartPlayerCognition()
+    {
+        if (m_CurEnemyStateName == EnemyStateName.DEAD || m_PlayerCognition) 
+            return;
+        
+        Debug.Log(gameObject.name + "이 플레이어를 인지합니다.");
+        ChangeEnemyFSM(EnemyStateName.FOLLOW);
+    }
+
+    public override void SoundCognition(SoundHotBoxParam _param)
+    {
+        if (m_PlayerCognition)
+            return;
+        
+        Debug.Log(gameObject.name + " 사운드 인지");
+        StartPlayerCognition();
+    }
+    
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
         if (p_OverrideEnemyMgr)
@@ -123,10 +141,11 @@ public class NormalGang : BasicEnemy
         p_VisionDistance = _mgr.N_Vision_Distance;
         p_AttackDistance = _mgr.N_GunFire_Distance;
         p_MeleeDistance = _mgr.N_MeleeAttack_Distance;
-        p_AlertSpeedRatio = _mgr.N_AlertSpeedRatio;
-#if UNITY_EDITOR
-        EditorUtility.SetDirty(this);
-#endif
+        p_AlertSpeed = _mgr.N_AlertSpeedRatio;
+        
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+        #endif
     }
 
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
@@ -175,7 +194,7 @@ public class NormalGang : BasicEnemy
 
     public override void ChangeEnemyFSM(EnemyStateName _name)
     {
-        //Debug.Log("상태 전이" + _name);
+        Debug.Log("상태 전이" + _name);
         m_CurEnemyStateName = _name;
 
         m_CurEnemyFSM.ExitState();

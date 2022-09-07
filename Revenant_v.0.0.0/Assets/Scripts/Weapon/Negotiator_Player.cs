@@ -16,6 +16,13 @@ public class Negotiator_Player : BasicWeapon_Player
     // Member Variables
     private BulletLaserMgr m_BulletLaserMgr;
     private Player_HitscanRay m_PlayerHitscanRay;
+    private SoundMgr m_SoundMgr;
+    private Transform m_AimCursorTransform;
+    private BulletTimeMgr _mBulletTimeMgr;
+    private ParticleMgr m_ParticleMgr;
+
+    private RageGauge_UI m_RageGauge;
+    
 
     private void Awake()
     {
@@ -26,13 +33,20 @@ public class Negotiator_Player : BasicWeapon_Player
         base.Start();
         
         var tempIns = InstanceMgr.GetInstance();
-        
-        m_SoundMgrSFX = tempIns.GetComponentInChildren<SoundMgr_SFX>();
+
+        m_AimCursorTransform = tempIns.GetComponentInChildren<AimCursor>().transform;
+        m_SoundMgr = tempIns.GetComponentInChildren<SoundMgr>();
+        MSoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
         m_Player = tempIns.GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerHitscanRay = m_Player.m_PlayerHitscanRay;
         m_Player_Arm = m_Player.m_playerRotation.gameObject.transform;
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
         m_BulletLaserMgr = tempIns.GetComponentInChildren<BulletLaserMgr>();
+        _mBulletTimeMgr = tempIns.GetComponentInChildren<BulletTimeMgr>();
+        m_ParticleMgr = tempIns.GetComponentInChildren<ParticleMgr>();
+
+        m_RageGauge = tempIns.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+
         m_PlayerUI = m_Player.m_PlayerUIMgr;
     }
 
@@ -102,12 +116,11 @@ public class Negotiator_Player : BasicWeapon_Player
 
     private void Internal_Fire()
     {
-        
         m_isShotDelayEnd = false;
         StartCoroutine(SetShotDelay());
         m_LeftRounds--;
         
-        m_SoundMgrSFX.playGunFireSound(0, gameObject);
+        MSoundPlayer.playGunFireSound(0, gameObject);
 
         HitscanResult result = m_PlayerHitscanRay.GetHitscanResult();
         switch (result.m_ResultCheckNum)
@@ -121,13 +134,20 @@ public class Negotiator_Player : BasicWeapon_Player
                 result.m_RayHitPoint.collider.GetComponent<IHotBox>().HitHotBox(
                     new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos, WeaponType.BULLET));
                 m_HitSFXMaker.EnableNewObj(0, result.m_RayDestinationPos);
+
+                m_SoundMgr.MakeSound(result.m_RayDestinationPos, true, SOUNDTYPE.BULLET);
+                m_SoundMgr.MakeSound(m_AimCursorTransform.position, true, SOUNDTYPE.BULLET);
                 break;
             
             case 2:
                 // 조준 성공
                 IHotBox hotBox = result.m_RayHitPoint.collider.GetComponent<IHotBox>();
-                hotBox.HitHotBox(new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos,
-                    WeaponType.BULLET));
+                IHotBoxParam hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos,
+                    WeaponType.BULLET);
+                
+                hotBox.HitHotBox(hotBoxParam);
+                m_ParticleMgr.MakeParticle(result.m_RayDestinationPos, m_Player.p_CenterTransform, 8f,
+                    sans);
                 
                 switch (hotBox.m_HitBoxInfo)
                 {
@@ -139,6 +159,9 @@ public class Negotiator_Player : BasicWeapon_Player
                         m_HitSFXMaker.EnableNewObj(0, result.m_RayDestinationPos);
                         break;
                 }
+                
+                m_SoundMgr.MakeSound(result.m_RayDestinationPos, true, SOUNDTYPE.BULLET);
+                m_SoundMgr.MakeSound(m_AimCursorTransform.position, true, SOUNDTYPE.BULLET);
                 break;
         }
         // Laser 소환
@@ -158,7 +181,10 @@ public class Negotiator_Player : BasicWeapon_Player
         
         // UI 업데이트 필요
         m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
-        
-        
+    }
+
+    private void sans()
+    {
+        m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue + m_RageGauge.p_Gauge_Refill_Attack);
     }
 }

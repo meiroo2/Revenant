@@ -17,6 +17,7 @@ public enum EnemyStateName
     STUN,
     ROTATION,
     CHANGE,
+    BREAK,
     DEAD
 }
 
@@ -46,12 +47,38 @@ public class BasicEnemy : Human
     public RaycastHit2D m_VisionHit { get; protected set; }
     protected Enemy_FSM m_CurEnemyFSM;
     public EnemyStateName m_CurEnemyStateName { get; protected set; }
-
     protected Vector2 m_MovePoint;
-
     private Coroutine m_MatCoroutine;
-    
+
+    public bool m_PlayerCognition { get; set; } = false;
+
     // Functions
+    /// <summary>
+    /// 적이 플레이어를 바라보고 있다면 True를 반환합니다.
+    /// </summary>
+    /// <returns>플레이어를 바라보고 있는지 여부</returns>
+    public bool IsFacePlayer()
+    {
+        if (m_IsRightHeaded)
+        {
+            // 오른쪽을 보고 있을 때
+            return transform.position.x < m_PlayerTransform.position.x;
+        }
+        else
+        {
+            return transform.position.x > m_PlayerTransform.position.x;
+        }
+    }
+    
+    /// <summary> 해당 적이 플레이어 인지를 시작하도록 합니다. </summary>
+    public virtual void StartPlayerCognition()
+    {
+    }
+
+    public virtual void SoundCognition(SoundHotBoxParam _param)
+    {
+    }
+
     protected void InitEnemy()
     {
         m_EnemyHotBoxes = GetComponentsInChildren<Enemy_HotBox>();

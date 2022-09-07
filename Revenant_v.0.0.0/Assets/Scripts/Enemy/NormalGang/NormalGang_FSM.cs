@@ -223,7 +223,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
         m_Animator.SetBool(IsWalk, true);
         m_IsFirst = true;
 
-        if (!m_Enemy.m_IsFoundPlayer)
+        if (!m_Enemy.m_PlayerCognition)
             m_Phase = 0;
         else
             m_Phase = 3;
@@ -248,7 +248,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
             case 2:     // 체인지 끝
                 m_Enemy.ChangeAnimator(false);
                 m_Animator.SetBool(IsWalk, true);
-                m_Enemy.m_IsFoundPlayer = true;
+                m_Enemy.m_PlayerCognition = true;
                 m_Phase = 3;
                 break;
             
@@ -327,8 +327,6 @@ public class ATTACK_NormalGang : NormalGang_FSM
             m_Enemy.setisRightHeaded(false); 
         else if (m_DistanceBetPlayer.x < 0 && m_Enemy.m_IsRightHeaded == false)
             m_Enemy.setisRightHeaded(true);
-
-        m_Enemy.m_IsFoundPlayer = true;
     }
 
     public override void UpdateState()
@@ -354,9 +352,8 @@ public class ATTACK_NormalGang : NormalGang_FSM
                 break;
             
             case 3:    // 칼로 공격 
-                m_Animator.SetTrigger(Melee);
-                m_Enemy.m_WeaponMgr.ChangeWeapon(1);    // 칼로 무기 변경
-                m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+                m_Animator.SetTrigger(Melee); 
+                m_Enemy.p_MeleeWeapon.Fire();
                 m_Phase = 4;
                 break;
             
@@ -445,10 +442,12 @@ public class ATTACK_NormalGang : NormalGang_FSM
 public class STUN_NormalGang : NormalGang_FSM
 {
     private int m_Phase;
+    private Enemy_Alert m_Alert;
     
     public STUN_NormalGang(NormalGang _enemy)
     {
         m_Enemy = _enemy;
+        m_Alert = m_Enemy.m_Alert;
         InitFSM();
     }
 
@@ -457,28 +456,32 @@ public class STUN_NormalGang : NormalGang_FSM
         m_Phase = 0;
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
         
-        m_Enemy.m_Alert.SetCallback(NextPhase, true);
-        m_Enemy.m_Alert.SetAlertStun(m_Enemy.p_StunAlertSpeed);
+        m_Alert.SetCallback(NextPhase, true);
+        m_Alert.SetAlertSpeed(m_Enemy.p_StunAlertSpeed);
+        m_Alert.SetAlertStun();
     }
 
     public override void UpdateState()
     {
-        switch (m_Phase)
+        if (m_Phase == 0)
+            return;
+
+        if (m_Enemy.m_PlayerCognition)
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        else
         {
-            case 1:
-                m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
-                break;
+            m_Enemy.StartPlayerCognition();
         }
     }
 
     public override void ExitState()
     {
-       
+        m_Alert.SetAlertSpeed(m_Enemy.p_AlertSpeed);
     }
 
     public override void NextPhase()
     {
-        m_Phase++;
+        m_Phase = 1;
     }
 }
 
