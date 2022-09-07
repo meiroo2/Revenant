@@ -20,6 +20,8 @@ public class Negotiator_Player : BasicWeapon_Player
     private Transform m_AimCursorTransform;
     private BulletTimeMgr _mBulletTimeMgr;
     private ParticleMgr m_ParticleMgr;
+
+    private RageGauge_UI m_RageGauge;
     
 
     private void Awake()
@@ -42,6 +44,8 @@ public class Negotiator_Player : BasicWeapon_Player
         m_BulletLaserMgr = tempIns.GetComponentInChildren<BulletLaserMgr>();
         _mBulletTimeMgr = tempIns.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = tempIns.GetComponentInChildren<ParticleMgr>();
+
+        m_RageGauge = tempIns.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
 
         m_PlayerUI = m_Player.m_PlayerUIMgr;
     }
@@ -112,7 +116,6 @@ public class Negotiator_Player : BasicWeapon_Player
 
     private void Internal_Fire()
     {
-        
         m_isShotDelayEnd = false;
         StartCoroutine(SetShotDelay());
         m_LeftRounds--;
@@ -142,10 +145,9 @@ public class Negotiator_Player : BasicWeapon_Player
                 IHotBoxParam hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos,
                     WeaponType.BULLET);
                 
-                //m_ShotWaitMgr.AddHotBox(hotBox, hotBoxParam);
                 hotBox.HitHotBox(hotBoxParam);
-                
-                m_ParticleMgr.MakeParticle(result.m_RayDestinationPos, m_Player.p_CenterTransform, 8f);
+                m_ParticleMgr.MakeParticle(result.m_RayDestinationPos, m_Player.p_CenterTransform, 8f,
+                    sans);
                 
                 switch (hotBox.m_HitBoxInfo)
                 {
@@ -179,7 +181,10 @@ public class Negotiator_Player : BasicWeapon_Player
         
         // UI 업데이트 필요
         m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
-        
-        
+    }
+
+    private void sans()
+    {
+        m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue + m_RageGauge.p_Gauge_Refill_Attack);
     }
 }

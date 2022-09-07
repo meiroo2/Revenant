@@ -43,13 +43,11 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         {
             case HitBoxPoint.HEAD:
                 m_SoundMgr.playAttackedSound(MatType.Target_Head, transform.position);
-                m_RageUI.AddValueToRageGauge(0.2f);
                 m_PlayerUI.ActiveHitmark(0);
                 break;
             
             case HitBoxPoint.BODY:
                 m_SoundMgr.playAttackedSound(MatType.Target_Body, transform.position);
-                m_RageUI.AddValueToRageGauge(0.1f);
                 m_PlayerUI.ActiveHitmark(1);
                 break;
             

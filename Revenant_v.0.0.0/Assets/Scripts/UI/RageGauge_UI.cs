@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
@@ -8,13 +10,38 @@ public class RageGauge_UI : MonoBehaviour
     // Visible Member Variables
     [Tooltip("자연회복 게이지 이미지")] public Image p_NaturalImg;
     [Tooltip("광분 게이지 이미지")] public Image p_RageImg;
-    public float p_GaugeSpeed = 0.5f;
+
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public float p_Gauge_TickTime { get; private set; } = 1f;
+
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Max { get; private set; } = 100;
+
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Refill_Nature { get; private set; } = 1;
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Refill_Attack { get; private set; } = 1;
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Refill_Evade { get; private set; } = 1;
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Refill_Limit { get; private set; } = 50;
+
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Consume_Nature { get; private set; } = 1;
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Consume_Roll { get; private set; } = 1;
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Consume_Melee { get; private set; } = 1;
+    
     
     // Member Variables
+    public int m_CurGaugeValue { get; private set; } = 0;
     private bool m_SafetyLock = false;
-    private float m_NaturalValue = 1f;
     private float m_RageValue = 0f;
-    
+    private float m_NaturalValue = 0f;
+    private float m_Multiply = 0.1f;
+
+    private Coroutine m_Coroutine;
     
     // Constructors
     private void Awake()
@@ -23,103 +50,92 @@ public class RageGauge_UI : MonoBehaviour
         {
             Debug.Log("ERR : RageGauge_UI에서 이미지 할당되지 않음.");
         }
+
+        m_Multiply = 2f / p_Gauge_Max;
     }
-    
-    
+
+    private void Start()
+    {
+        ChangeGaugeValue(p_Gauge_Refill_Limit);
+    }
+
+    private void OnEnable()
+    {
+        m_Coroutine = StartCoroutine(RefillGauge());
+    }
+
+    private void OnDisable()
+    {
+        StopCoroutine(m_Coroutine);
+    }
+
+
     // Updates
-    private void Update()
-    {
-        if (m_SafetyLock)
-            return;
 
-        if (m_NaturalValue < 1f)
-        {
-            m_NaturalValue += Time.deltaTime * p_GaugeSpeed;
-            
-            if (m_NaturalValue >= 1f)
-                m_NaturalValue = 1f;
-        }
-        else if (m_NaturalValue >= 1f && m_RageValue > 0f)
-        {
-            m_RageValue -= Time.deltaTime * p_GaugeSpeed;
-        }
 
-        p_NaturalImg.fillAmount = m_NaturalValue;
-        p_RageImg.fillAmount = m_RageValue;
-    }
-    
-    
     // Functions
+
     /// <summary>
-    /// RageGauge에서 값을 뻅니다. 성공 시 True를 반환합니다.
+    /// 원하는 양만큼 게이지 양이 충분한지 알려줍니다.
     /// </summary>
-    /// <param name="_input"> 뺄 양 </param>
-    /// <returns> 성공 여부 </returns>
-    public bool MinusValueToRageGauge(float _input)
+    /// <param name="_value">원하는 소모량</param>
+    /// <returns>소모 가능 여부</returns>
+    public bool CanConsume(int _value)
     {
+        return m_CurGaugeValue - _value >= 0;
+    }
+
+    /// <summary>
+    /// 매 1초마다 지정된 값으로 광분 게이지를 자연회복합니다.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RefillGauge()
+    {
+        while (true)
+        {
+            if (!m_SafetyLock)
+            {
+                if (m_CurGaugeValue < p_Gauge_Refill_Limit)
+                {
+                    ChangeGaugeValue(m_CurGaugeValue + p_Gauge_Refill_Nature);
+                }
+                else
+                {
+                    ChangeGaugeValue(m_CurGaugeValue - p_Gauge_Consume_Nature);
+                }
+            }
+            yield return new WaitForSecondsRealtime(p_Gauge_TickTime);
+        }
+
+        yield break;
+    }
+
+    /// <summary>
+    /// 광분 게이지를 원하는 값으로 변경 및 초기화합니다.
+    /// </summary>
+    /// <param name="_input">원하는 값</param>
+    public void ChangeGaugeValue(int _input)
+    {
+        if (_input > p_Gauge_Max || _input < 0)
+            return;
+        
         m_SafetyLock = true;
 
-        if (m_NaturalValue + m_RageValue < _input)
-        {
-            m_SafetyLock = false;
-            return false;
-        }
+        m_CurGaugeValue = _input;
+        float value = _input * m_Multiply;
 
-        // Rage가 조금이라도 차 있는 경우
-        if (m_RageValue > 0f)
+        if (value > 1f)
         {
-            m_RageValue -= _input;
-
-            if (m_RageValue < 0f)
-            {
-                m_NaturalValue += m_RageValue;
-                m_RageValue = 0f;
-            }
+            m_NaturalValue = 1f;
+            value -= 1f;
+            m_RageValue = value;
         }
         else
         {
-            m_NaturalValue -= _input;
+            m_NaturalValue = value;
+            m_RageValue = 0f;
         }
         
-        p_NaturalImg.fillAmount = m_NaturalValue;
-        p_RageImg.fillAmount = m_RageValue;
-
-        m_SafetyLock = false;
-        return true;
-    }
-    
-    
-    /// <summary>
-    /// RageGauge에 값을 더합니다.
-    /// </summary>
-    /// <param name="_input"> 더할 양 </param>
-    public void AddValueToRageGauge(float _input)
-    {
-        m_SafetyLock = true;
-
-
-        // 아직 자연회복 중
-        if (m_NaturalValue < 1f)
-        {
-            m_NaturalValue += _input;
-
-            if (m_NaturalValue > 1f)
-            {
-                float remain = m_NaturalValue - 1f;
-                m_NaturalValue = 1f;
-                m_RageValue = remain;
-            }
-        }
-        else if(m_NaturalValue >= 1f)
-        {
-            m_RageValue += _input;
-            if (m_RageValue >= 1f)
-            {
-                m_RageValue = 1f;
-            }
-        }
-        
-
         p_NaturalImg.fillAmount = m_NaturalValue;
         p_RageImg.fillAmount = m_RageValue;
         

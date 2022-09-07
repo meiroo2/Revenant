@@ -15,12 +15,12 @@ public class Particle : MonoBehaviour
     private ParticleMgr m_ParticleMgr;
     private Transform m_DestinationTransform;
     private float m_Speed;
-    private UnityEvent m_Event;
+    private UnityEvent m_Event = new UnityEvent();
 
     private Vector2 m_Direction;
     private Coroutine m_Coroutine;
-    
-    
+
+
     // Constructors
     private void Awake()
     {
@@ -35,7 +35,7 @@ public class Particle : MonoBehaviour
 
     private void OnDisable()
     {
-        m_Event = null;
+        m_Event.RemoveAllListeners();
         if (!ReferenceEquals(m_Coroutine, null))
         {
             StopCoroutine(m_Coroutine);
@@ -47,7 +47,7 @@ public class Particle : MonoBehaviour
         
         m_DestinationTransform = _transform;
         m_Speed = _speed;
-
+        
         if (!ReferenceEquals(_action, null))
             m_Event.AddListener(_action);
 
@@ -99,44 +99,7 @@ public class Particle : MonoBehaviour
         }
         if (!ReferenceEquals(m_Event, null))
             m_Event.Invoke();
-            
-        gameObject.SetActive(false);
-        /*
-        m_Rigid.AddForce(StaticMethods.GetRotatedVec(Vector2.up, Random.Range(-10f, 10f)) * 1f, ForceMode2D.Impulse);
         
-        float distance;
-        while (true)
-        {
-            yield return null;
-            m_Trail.time += Time.deltaTime;
-            Timer -= Time.deltaTime;
-
-            if (transform.localScale.x > 0f)
-                transform.localScale = new Vector3(transform.localScale.x - Timer * 2f,
-                    transform.localScale.y - Timer * 2f,
-                    transform.localScale.z);
-
-            distance = (transform.position - m_DestinationTransform.position).sqrMagnitude;
-           
-            switch (distance)
-            {
-                case <= 0.03f:
-                    if (!ReferenceEquals(m_Event, null))
-                        m_Event.Invoke();
-            
-                    gameObject.SetActive(false);
-                    break;
-                
-                case <= 0.2f:
-                    m_Rigid.velocity = (m_DestinationTransform.position -transform.position ) * m_Speed;
-                    break;
-                
-                default:
-                    m_Rigid.AddForce((m_DestinationTransform.position - transform.position).normalized * 2f);
-                    break;
-            }
-            
-        }
-        */
+        gameObject.SetActive(false);
     }
 }

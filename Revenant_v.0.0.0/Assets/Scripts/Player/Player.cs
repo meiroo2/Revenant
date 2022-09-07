@@ -58,6 +58,7 @@ public class Player : Human
     public Player_ObjInteracter m_ObjInteractor { get; private set; }
     public Player_MeleeAttack m_MeleeAttack { get; private set; }
     public Player_ArmMgr m_ArmMgr { get; private set; }
+    public RageGauge_UI m_RageGauge { get; private set; }
 
 
     private bool m_isRecoveringRollCount = false;
@@ -136,7 +137,8 @@ public class Player : Human
         m_SoundMgr = tempInstance.GetComponentInChildren<SoundMgr>();
         m_SFXMgr = tempInstance.GetComponentInChildren<SoundPlayer>();
         m_HitSFXMaker = tempInstance.GetComponentInChildren<HitSFXMaker>();
-
+        m_RageGauge = tempInstance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        
         m_CurPlayerFSM = m_IDLE;
         m_CurPlayerFSM.StartState();
     }
@@ -287,7 +289,6 @@ public class Player : Human
 
     public void UseRollCount()
     {
-        m_RageUI.MinusValueToRageGauge(0.2f);
         m_LeftRollCount -= 1f;
         m_PlayerUIMgr.SetRollGauge(m_LeftRollCount);
 

@@ -32,12 +32,10 @@ public class Target_HotBox : MonoBehaviour, IHotBox
         switch (p_Point)
         {
             case HitBoxPoint.HEAD:
-                m_RageUI.AddValueToRageGauge(0.2f);
                 m_Target.PrintTxt(p_Point + " " + _param.m_Damage * 2 + " DMG");
                 break;
             
             case HitBoxPoint.BODY:
-                m_RageUI.AddValueToRageGauge(0.1f);
                 m_Target.PrintTxt(p_Point + " " + _param.m_Damage + " DMG");
                 break;
         }

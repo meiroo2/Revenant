@@ -66,7 +66,8 @@ public class Player_IDLE : PlayerFSM
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
         else if(m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
-        else if(m_InputMgr.m_IsPushSideAttackKey)
+        else if(m_InputMgr.m_IsPushSideAttackKey &&
+                m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
     }
 
@@ -311,6 +312,9 @@ public class Player_MELEE : PlayerFSM
 
     public override void StartState()
     {
+        var gauge = m_Player.m_RageGauge;
+        gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
+        
         m_Player.m_ArmMgr.StopReload();
         m_IsAttackFinished = false;
         m_PlayerAnimator = m_Player.m_PlayerAnimator;

@@ -23,6 +23,7 @@ public class ScreenEffect_UI : MonoBehaviour
     private Camera m_MainCamera;
     private VolumeProfile m_CamVolumeProfile;
     private UnityEngine.Rendering.Universal.ChromaticAberration m_Chroma;
+    private UnityEngine.Rendering.Universal.LensDistortion m_LensDistort;
     private Coroutine m_ColorDistortionCoroutine;
     
     
@@ -40,6 +41,15 @@ public class ScreenEffect_UI : MonoBehaviour
         else
         {
             Debug.Log("MainCamera의 현재 Profile에 ChromaticAberration 없음");
+        }
+
+        if (m_CamVolumeProfile.TryGet(out m_LensDistort))
+        {
+            m_LensDistort.intensity.value = 0f;
+        }
+        else
+        {
+            Debug.Log("MainCamera의 현재 Profile에 LensDistort 없음");
         }
 
 

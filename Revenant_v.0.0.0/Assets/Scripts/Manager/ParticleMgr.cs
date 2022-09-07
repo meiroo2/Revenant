@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,7 @@ public class ParticleMgr : MonoBehaviour
 
     
     // Member Variables
+    private RageGauge_UI m_RageGauge;
     private List<Particle> m_PulledPaticleList;
     private int m_Idx = 0;
     
@@ -33,6 +35,12 @@ public class ParticleMgr : MonoBehaviour
             m_PulledPaticleList.Add(instance);
             instance.gameObject.SetActive(false);
         }
+    }
+
+    private void Start()
+    {
+        var instance = InstanceMgr.GetInstance();
+        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
     }
 
     // Functions
