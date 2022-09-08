@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,13 +8,19 @@ using UnityEngine;
 public class Enemy_HotBox : MonoBehaviour, IHotBox
 {
     // Visual Member Variables
-    public HitBoxPoint p_HitBoxPoint;
-    
+    [field: SerializeField, BoxGroup("HotBox Values")]
+    public HitBoxPoint p_HitBoxPoint { get; private set; }
+
+    [field: SerializeField, BoxGroup("HotBox Values")]
+    public int p_DamageMultiples { get; private set; }
+
+
     // Member Variables
     private BasicEnemy m_Enemy;
     private Player_UI m_PlayerUI;
     private RageGauge_UI m_RageUI;
     private SoundPlayer m_SoundMgr;
+    
     
     // Constructors
     private void Awake()
@@ -56,8 +63,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 break;
         }
         
-        m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage,
-            _param.m_stunValue);
+        m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMultiples, _param.m_stunValue);
 
         return 1;
     }

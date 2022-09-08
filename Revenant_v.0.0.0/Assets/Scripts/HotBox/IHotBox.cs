@@ -49,7 +49,7 @@ public interface IHotBox
     
     
     /// <summary>
-    /// HotBox의 타입을 결정합니다. 0일 경우 조준해야 히트, 1일 경우 강제 히트합니다.
+    /// HotBox의 타입을 결정합니다. 0일 경우 조준해야 히트, 1일 경우 강제 히트, 2일 경우 정보는 주되 지나갑니다.
     /// </summary>
     public int m_hotBoxType { get; set; }
     

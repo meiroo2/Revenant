@@ -2971,10 +2971,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6699025932106853847}
+  - component: {fileID: 6699025932106853842}
   - component: {fileID: 6699025932106853841}
   - component: {fileID: 6699025932106853840}
   - component: {fileID: 6699025932106853843}
-  - component: {fileID: 6699025932106853842}
   - component: {fileID: 6699025932106853853}
   - component: {fileID: 6699025932106853852}
   - component: {fileID: 7116114394177419113}
@@ -3015,6 +3015,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6699025932106853842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6699025932106853855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 105661aab8d2c664b9b490428fd7d006, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <p_Hp>k__BackingField: 50
+  <p_MoveSpeed>k__BackingField: 1
+  <p_StunHp>k__BackingField: 0
+  <p_StunAlertSpeed>k__BackingField: 0
+  <p_RollCountRecoverSpeed>k__BackingField: 1
+  <p_RollSpeedRatio>k__BackingField: 2
+  <p_BackWalkSpeedRatio>k__BackingField: 0.7
+  <p_RunSpeedRatio>k__BackingField: 1.5
+  <p_MaxRollCount>k__BackingField: 3
+  <p_MeleeSpeedMulti>k__BackingField: 8.5
+  <p_JustEvadeNormalizeTime>k__BackingField: {x: 0, y: 0.31341955}
+  p_JustEvadeStopTime: 0.1
+  <p_CenterTransform>k__BackingField: {fileID: 5349450568617132045}
 --- !u!50 &6699025932106853841
 Rigidbody2D:
   serializedVersion: 4
@@ -3108,29 +3133,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6699025932106853842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6699025932106853855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 105661aab8d2c664b9b490428fd7d006, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <p_Hp>k__BackingField: 50
-  <p_MoveSpeed>k__BackingField: 1
-  <p_StunHp>k__BackingField: 0
-  <p_StunAlertSpeed>k__BackingField: 0
-  <p_RollCountRecoverSpeed>k__BackingField: 1
-  <p_RollSpeedRatio>k__BackingField: 2
-  <p_BackWalkSpeedRatio>k__BackingField: 0.7
-  <p_RunSpeedRatio>k__BackingField: 1.5
-  <p_MaxRollCount>k__BackingField: 3
-  <p_MeleeSpeedMulti>k__BackingField: 8.5
-  <p_CenterTransform>k__BackingField: {fileID: 5349450568617132045}
 --- !u!114 &6699025932106853853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5212,6 +5214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d758814bbb09074fa9ba607574d268a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_HitCount: 0
 --- !u!1 &8572164995221824396
 GameObject:
   m_ObjectHideFlags: 0

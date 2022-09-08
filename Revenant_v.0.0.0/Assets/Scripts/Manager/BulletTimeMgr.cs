@@ -33,6 +33,8 @@ public class BulletTimeMgr : MonoBehaviour
 
     private List<BulletTimeParam> m_BulletTimeParamList = new List<BulletTimeParam>();
     private Coroutine m_Coroutine;
+
+    private bool m_BulletTimeActivating = false;
     
     
     // Constructors
@@ -83,6 +85,20 @@ public class BulletTimeMgr : MonoBehaviour
             m_BulletTimeParamList.Clear();
             m_BulletTimeParamList.TrimExcess();
         }
+    }
+    
+    /// <summary>
+    /// BulletTime을 지정한 시간 동안 작동시킵니다. Timescale이 0이 됩니다.
+    /// </summary>
+    /// <param name="_time">지정 시간</param>
+    public void ActivateBulletTime(float _time)
+    {
+        if (m_BulletTimeActivating)
+            return;
+        
+        m_BulletTimeActivating = true;
+        Time.timeScale = 0f;
+        StartCoroutine(CheckBulletTimePassed(_time));
     }
     
     /// <summary>
@@ -138,5 +154,24 @@ public class BulletTimeMgr : MonoBehaviour
         }
         
         yield break;
+    }
+
+    private IEnumerator CheckBulletTimePassed(float _time)
+    {
+        yield return new WaitForSecondsRealtime(_time);
+        Time.timeScale = 1f;
+
+        foreach (var element in m_MarkerList)
+        {
+            element.transform.parent = this.transform;
+            element.SetActive(false);
+        }
+            
+        m_MarkerIdx = 0;
+            
+        m_BulletTimeParamList.Clear();
+        m_BulletTimeParamList.TrimExcess();
+
+        m_BulletTimeActivating = false;
     }
 }

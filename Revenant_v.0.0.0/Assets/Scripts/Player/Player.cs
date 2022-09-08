@@ -34,9 +34,14 @@ public class Player : Human
     [field: SerializeField, BoxGroup("Player Values")]
     public int p_MaxRollCount { get; private set; } = 3;
 
-    [field: SerializeField, BoxGroup("Player Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)]
+    [field: SerializeField, BoxGroup("Player Values")]
     public float p_MeleeSpeedMulti { get; private set; } = 2f;
 
+    [field: SerializeField, MinMaxSlider(0f, 1f), Title("Evade Values"), BoxGroup("Player Values")]
+    public Vector2 p_JustEvadeNormalizeTime { get; private set; } = Vector2.zero;
+    [BoxGroup("Player Values")]
+    public float p_JustEvadeStopTime = 0.1f;
+    
     [field: SerializeField] 
     public Transform p_CenterTransform { get; private set; }
 
@@ -59,7 +64,11 @@ public class Player : Human
     public Player_MeleeAttack m_MeleeAttack { get; private set; }
     public Player_ArmMgr m_ArmMgr { get; private set; }
     public RageGauge_UI m_RageGauge { get; private set; }
+    public BulletTimeMgr m_BulletTimeMgr { get; private set; }
 
+    public ScreenEffect_UI m_ScreenEffectUI { get; private set; }
+
+    public ParticleMgr m_ParticleMgr { get; private set; }
 
     private bool m_isRecoveringRollCount = false;
     public float m_LeftRollCount { get; set; }
@@ -130,14 +139,21 @@ public class Player : Human
 
     private void Start()
     {
-        var tempInstance = InstanceMgr.GetInstance();
-        m_PlayerUIMgr = tempInstance.m_MainCanvas.GetComponentInChildren<Player_UI>();
-        m_RageUI = tempInstance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
-        m_InputMgr = tempInstance.GetComponentInChildren<Player_InputMgr>();
-        m_SoundMgr = tempInstance.GetComponentInChildren<SoundMgr>();
-        m_SFXMgr = tempInstance.GetComponentInChildren<SoundPlayer>();
-        m_HitSFXMaker = tempInstance.GetComponentInChildren<HitSFXMaker>();
-        m_RageGauge = tempInstance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        var instance = InstanceMgr.GetInstance();
+        m_PlayerUIMgr = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
+        m_SoundMgr = instance.GetComponentInChildren<SoundMgr>();
+        m_SFXMgr = instance.GetComponentInChildren<SoundPlayer>();
+        m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
+        m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
+        m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
+        
+        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_ScreenEffectUI = instance.m_MainCanvas.GetComponentInChildren<InGame_UI>()
+            .GetComponentInChildren<ScreenEffect_UI>();
+        
+
         
         m_CurPlayerFSM = m_IDLE;
         m_CurPlayerFSM.StartState();

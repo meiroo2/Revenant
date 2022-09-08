@@ -55,18 +55,19 @@ public class Bullet : MonoBehaviour
     // Functions
     private void OnTriggerEnter2D(Collider2D _col)
     {
-        //Debug.Log(_col.name);
-        m_BulletHitHotBox = _col.GetComponent<IHotBox>();
-        
-        if (m_BulletParam.m_IsPlayers)
+        if (_col.TryGetComponent(out IHotBox hotBox))
         {
-            CalculateBulletForPlayer(ref _col);
+            if (m_BulletParam.m_IsPlayers)
+            {
+                m_BulletHitHotBox = hotBox;
+                CalculateBulletForPlayer(ref _col);
+            }
+            else
+            {
+                CalculateBulletForEnemy(ref hotBox);
+            }
         }
-        else
-        {
-            CalculateBulletForEnemy(ref _col);
-        }
-        
+
         if(m_ShouldDestroy)
             gameObject.SetActive(false);
     }
@@ -77,17 +78,28 @@ public class Bullet : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void CalculateBulletForEnemy(ref Collider2D col)
+    private void CalculateBulletForEnemy(ref IHotBox hotBox)
     {
-        //Debug.Log(col.name);
+        if (hotBox.m_isEnemys)
+            return;
         
-        if (!m_BulletHitHotBox.m_isEnemys)
-        {
-            //Debug.Log("적 총알 충돌 : " + col.name + " " + col.gameObject.GetInstanceID());
+        hotBox.HitHotBox(new IHotBoxParam(m_BulletParam.m_Damage, m_BulletParam.m_StunValue,
+            transform.position, WeaponType.BULLET));
 
-            m_BulletHitHotBox.HitHotBox(new IHotBoxParam(m_BulletParam.m_Damage, m_BulletParam.m_StunValue, transform.position, WeaponType.BULLET));
-            m_HitSFXMaker.EnableNewObj(0,transform.position);
-            m_ShouldDestroy = true;
+        switch (hotBox.m_hotBoxType)
+        {
+            case 0:
+                m_HitSFXMaker.EnableNewObj(0,transform.position);
+                m_ShouldDestroy = true;
+                break;
+            
+            case 1:
+                m_HitSFXMaker.EnableNewObj(0,transform.position);
+                m_ShouldDestroy = true;
+                break;
+            
+            case 2:
+                break;
         }
     }
 

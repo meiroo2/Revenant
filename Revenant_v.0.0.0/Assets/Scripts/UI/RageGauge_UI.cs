@@ -24,6 +24,8 @@ public class RageGauge_UI : MonoBehaviour
     [field: SerializeField, BoxGroup("게이지 구성요소")]
     public int p_Gauge_Refill_Evade { get; private set; } = 1;
     [field: SerializeField, BoxGroup("게이지 구성요소")]
+    public int p_Gauge_Refill_JustEvade { get; private set; } = 5;
+    [field: SerializeField, BoxGroup("게이지 구성요소")]
     public int p_Gauge_Refill_Limit { get; private set; } = 50;
 
     [field: SerializeField, BoxGroup("게이지 구성요소")]
@@ -118,6 +120,8 @@ public class RageGauge_UI : MonoBehaviour
     {
         if (_input > p_Gauge_Max || _input < 0)
             return;
+        
+        // Max치보다 높게 들어올 경우 풀로 채워줘야 함
         
         m_SafetyLock = true;
 

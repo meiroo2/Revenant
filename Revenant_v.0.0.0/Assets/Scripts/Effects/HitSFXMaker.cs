@@ -58,11 +58,11 @@ public class HitSFXMaker : MonoBehaviour
             sfxTransform.localScale.y, sfxTransform.localScale.z);
         sfxTransform.position = _spawnPos;
 
+        sfxTransform.localRotation = Quaternion.Euler(Random.Range(0, 360), 0, 0);
+
         m_CurIdxs[_idx]++;
 
         if (m_CurIdxs[_idx] > m_Limits[_idx])
             m_CurIdxs[_idx] = m_Limits[_idx] - (m_ObjPullCount - 1);
     }
-
-    // 기타 분류하고 싶은 것이 있을 경우
 }

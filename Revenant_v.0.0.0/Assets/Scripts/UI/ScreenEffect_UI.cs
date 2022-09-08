@@ -14,6 +14,9 @@ public class ScreenEffect_UI : MonoBehaviour
     public float p_ColorDistortionPower = 1f;
     public float p_ColorDistortionRestoreSpeed = 5f;
     
+    public float p_LensDistortPower = -0.5f;
+    public float p_LensDistortRestoreSpeed = 2f;
+    
     
     // Member Variables
     private Color m_Color;
@@ -24,6 +27,7 @@ public class ScreenEffect_UI : MonoBehaviour
     private VolumeProfile m_CamVolumeProfile;
     private UnityEngine.Rendering.Universal.ChromaticAberration m_Chroma;
     private UnityEngine.Rendering.Universal.LensDistortion m_LensDistort;
+    private Coroutine m_LensDistortCoroutine;
     private Coroutine m_ColorDistortionCoroutine;
     
     
@@ -59,6 +63,17 @@ public class ScreenEffect_UI : MonoBehaviour
     }
     
     
+    // Updates
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            ActivateScreenColorDistortionEffect();
+            ActivateLensDistortEffect(0.15f);
+        }
+    }
+
+
     // Functions
     
     /// <summary>
@@ -90,6 +105,38 @@ public class ScreenEffect_UI : MonoBehaviour
             yield return null;
         }
     }
+
+    /// <summary>
+    /// 지정된 시간 동안 화면을 왜곡시킵니다.
+    /// </summary>
+    /// <param name="_time">지정 시간</param>
+    public void ActivateLensDistortEffect(float _time)
+    {
+        m_LensDistort.intensity.value = p_LensDistortPower;
+        
+        if(!ReferenceEquals(m_LensDistortCoroutine, null))
+            StopCoroutine(m_LensDistortCoroutine);
+
+        m_LensDistortCoroutine = StartCoroutine(LensDistortStart(_time));
+    }
+
+    private IEnumerator LensDistortStart(float _time)
+    {
+        yield return new WaitForSecondsRealtime(_time);
+        while (true)
+        {
+            m_LensDistort.intensity.value += Time.unscaledDeltaTime * p_LensDistortRestoreSpeed;
+
+            if (m_LensDistort.intensity.value >= 0f)
+            {
+                m_LensDistort.intensity.value = 0f;
+                break;
+            }
+            
+            yield return null;
+        }
+    }
+    
     
     
     public void ActivateScreenColorDistortionEffect()
@@ -106,7 +153,7 @@ public class ScreenEffect_UI : MonoBehaviour
     {
         while (true)
         {
-            m_Chroma.intensity.value -= Time.deltaTime * p_ColorDistortionRestoreSpeed;
+            m_Chroma.intensity.value -= Time.unscaledDeltaTime * p_ColorDistortionRestoreSpeed;
             
             if (m_Chroma.intensity.value <= 0f)
                 break;

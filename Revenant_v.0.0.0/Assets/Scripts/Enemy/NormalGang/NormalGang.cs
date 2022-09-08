@@ -75,8 +75,6 @@ public class NormalGang : BasicEnemy
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
 
-        m_Alert.SetAlertSpeed(p_AlertSpeed);
-        
         m_IDLE = new IDLE_NormalGang(this);
         m_FOLLOW = new FOLLOW_NormalGang(this);
         m_ATTACK = new ATTACK_NormalGang(this);
@@ -89,6 +87,8 @@ public class NormalGang : BasicEnemy
 
     private void Start()
     {
+        m_Alert.SetAlertSpeed(p_AlertSpeed);
+        
         m_CurEnemyFSM.StartState();
 
         m_OriginPos = transform.position;
@@ -97,6 +97,16 @@ public class NormalGang : BasicEnemy
         m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerTransform = m_Player.transform;
         m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
+    }
+
+    public override void InitEnemy()
+    {
+        base.InitEnemy();
+        if (ReferenceEquals(m_Alert, null))
+        {
+            m_Alert = GetComponentInChildren<Enemy_Alert>();
+        }
+        m_Alert.SetAlertSpeed(p_AlertSpeed);
     }
 
 
@@ -194,7 +204,7 @@ public class NormalGang : BasicEnemy
 
     public override void ChangeEnemyFSM(EnemyStateName _name)
     {
-        Debug.Log("상태 전이" + _name);
+//        Debug.Log("상태 전이" + _name);
         m_CurEnemyStateName = _name;
 
         m_CurEnemyFSM.ExitState();

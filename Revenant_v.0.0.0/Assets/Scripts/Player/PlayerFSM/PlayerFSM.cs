@@ -174,6 +174,8 @@ public class Player_ROLL : PlayerFSM
     private Rigidbody2D m_Rigid;
     private Vector2 m_PlayerNormalVec;
     private Animator m_PlayerAnimator;
+    private CoroutineElement m_CoroutineElement;
+    private BulletTimeMgr m_BulletTimeMgr;
 
     public Player_ROLL(Player _player) : base(_player)
     {
@@ -193,12 +195,17 @@ public class Player_ROLL : PlayerFSM
 
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
-        m_Player.m_PlayerHotBox.setPlayerHotBoxCol(false);
+        
+        // 투과 히트박스로 변경
+        m_Player.m_PlayerHotBox.m_hotBoxType = 2;
         
         m_Player.UseRollCount();
 
         m_Player.m_playerRotation.m_doRotate = false;
         m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
+        
+        // 코루틴 시작
+        m_CoroutineElement = GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(CheckEvade());
     }
 
     public override void UpdateState()
@@ -224,13 +231,70 @@ public class Player_ROLL : PlayerFSM
         m_Rigid.velocity = Vector2.zero;
         m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
         m_Player.m_playerRotation.m_doRotate = true;
-        m_Player.m_PlayerHotBox.setPlayerHotBoxCol(true);
+        m_Player.m_PlayerHotBox.m_hotBoxType = 0;
+
+        m_Player.m_PlayerHotBox.m_HitCount = 0;
+        
+        // 코루틴 끝
+        m_CoroutineElement.StopCoroutine_Element();
+        
         ExitFinalProcess();
     }
 
     public override void NextPhase()
     {
 
+    }
+
+    private IEnumerator CheckEvade()
+    {
+        float normalTime;
+
+        // 좋은 생각이 이거말고 떠오르지 않음
+        Player_HotBox hotBox = m_Player.m_PlayerHotBox;
+        while (true)
+        {
+            normalTime = m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
+            if (m_Player.m_PlayerHotBox.m_HitCount > 0)
+            {
+                if (normalTime >= m_Player.p_JustEvadeNormalizeTime.x &&
+                    normalTime <= m_Player.p_JustEvadeNormalizeTime.y)
+                {
+                    // 저스트 회피
+                    m_Player.m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
+                    m_Player.m_BulletTimeMgr.ActivateBulletTime(0.2f);
+                    m_Player.m_ScreenEffectUI.ActivateLensDistortEffect(0.2f);
+                    
+                    m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
+                        m_Player.p_CenterTransform, 8f, JustEvadeGaugeUp);
+                    
+                    Debug.Log("저스트 회피!!");
+                    yield break;
+                }
+                else
+                {
+                    // 그냥 회피
+                    m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
+                        m_Player.p_CenterTransform, 8f, EvadeGaugeUp);
+                    Debug.Log("그냥 회피");
+                    yield break;
+                }
+            }
+            yield return null;
+        }
+    }
+
+    private void JustEvadeGaugeUp()
+    {
+        var rageGauge = m_Player.m_RageGauge;
+        rageGauge.ChangeGaugeValue(rageGauge.m_CurGaugeValue + rageGauge.p_Gauge_Refill_JustEvade);
+    }
+
+    private void EvadeGaugeUp()
+    {
+        var rageGauge = m_Player.m_RageGauge;
+        rageGauge.ChangeGaugeValue(rageGauge.m_CurGaugeValue + rageGauge.p_Gauge_Refill_Evade);
     }
 }
 

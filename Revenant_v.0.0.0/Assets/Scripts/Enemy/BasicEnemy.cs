@@ -79,7 +79,7 @@ public class BasicEnemy : Human
     {
     }
 
-    protected void InitEnemy()
+    public virtual void InitEnemy()
     {
         m_EnemyHotBoxes = GetComponentsInChildren<Enemy_HotBox>();
         m_Animator = GetComponentInChildren<Animator>();
@@ -124,8 +124,8 @@ public class BasicEnemy : Human
     {
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
-        
-        p_Hp -= _damage * (_point == HitBoxPoint.HEAD ? 2 : 1);
+
+        p_Hp -= _damage;
         m_CurStunValue += _stunValue;
 
         if (p_Hp <= 0)

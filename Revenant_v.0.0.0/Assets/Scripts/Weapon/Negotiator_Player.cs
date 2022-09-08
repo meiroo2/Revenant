@@ -147,7 +147,7 @@ public class Negotiator_Player : BasicWeapon_Player
                 
                 hotBox.HitHotBox(hotBoxParam);
                 m_ParticleMgr.MakeParticle(result.m_RayDestinationPos, m_Player.p_CenterTransform, 8f,
-                    sans);
+                    RageGaugeUp);
                 
                 switch (hotBox.m_HitBoxInfo)
                 {
@@ -183,7 +183,7 @@ public class Negotiator_Player : BasicWeapon_Player
         m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
     }
 
-    private void sans()
+    private void RageGaugeUp()
     {
         m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue + m_RageGauge.p_Gauge_Refill_Attack);
     }

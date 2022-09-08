@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,9 +22,13 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.BODY;
     public GameObject m_ParentObj { get; set; }
 
+    [HideInInspector]
+    public int m_HitCount = 0;
+
     
     // Coroutine Variables
     private Coroutine m_BlinkCoroutine;
+    private Coroutine m_EvadeCoroutine;
     
     
     // Constructors
@@ -55,36 +60,46 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         if (!m_Player.m_CanAttacked || m_IsPlayerBlinking)
             return 0;
 
-        m_ScreenEffectUI.ActivateScreenEdgeEffect();
-        m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
-        m_SFXMgr.playPlayerSFXSound(3);
-
-        m_Player.setPlayerHp((m_Player.p_Hp - _param.m_Damage));
-        if (m_Player.p_Hp <= 0)
+        switch (m_hotBoxType)
         {
-            m_Player.ChangePlayerFSM(PlayerStateName.DEAD);
+            case 0:
+                m_ScreenEffectUI.ActivateScreenEdgeEffect();
+                m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
+                m_SFXMgr.playPlayerSFXSound(3);
 
-            if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
-                m_PlayerUIMgr.SetHp(m_Player.p_Hp);
+                m_Player.setPlayerHp((m_Player.p_Hp - _param.m_Damage));
+                if (m_Player.p_Hp <= 0)
+                {
+                    m_Player.ChangePlayerFSM(PlayerStateName.DEAD);
+
+                    if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
+                        m_PlayerUIMgr.SetHp(m_Player.p_Hp);
             
-            m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
-            Debug.Log("플레이어 사망");
-            return 1;
+                    m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
+                    Debug.Log("플레이어 사망");
+                    return 1;
+                }
+
+                if(m_BlinkCoroutine != null)
+                    StopCoroutine(m_BlinkCoroutine);
+        
+                m_BlinkCoroutine = StartCoroutine(ActivatePlayerBlink());
+
+                if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
+                    m_PlayerUIMgr.SetHp(m_Player.p_Hp);
+        
+                m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
+                return 1;
+                break;
+            
+            case 2:
+                // Roll에게 신호 줘야 함
+                m_HitCount++;
+                break;
         }
 
-        if(m_BlinkCoroutine != null)
-            StopCoroutine(m_BlinkCoroutine);
-        
-        m_BlinkCoroutine = StartCoroutine(ActivatePlayerBlink());
-
-        if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
-            m_PlayerUIMgr.SetHp(m_Player.p_Hp);
-        
-        m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
-//        Debug.Log("플레이어에게 " + _param.m_Damage + "데미지!");
-        return 1;
+        return 0;
     }
-
     private IEnumerator ActivatePlayerBlink()
     {
         m_PlayerMatMgr.ActivateBlink(true);
