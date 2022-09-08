@@ -44,7 +44,7 @@ public class ParticleMgr : MonoBehaviour
     }
 
     // Functions
-    public void MakeParticle(Vector2 _position, Transform _transform, float _speed, UnityAction _action = null)
+    public void MakeParticle(Vector2 _position, Transform _transform, float _speed, Action _action)
     {
         var instance = m_PulledPaticleList[m_Idx];
         instance.gameObject.SetActive(false);

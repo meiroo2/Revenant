@@ -263,7 +263,7 @@ public class Player_ROLL : PlayerFSM
                 {
                     // 저스트 회피
                     m_Player.m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
-                    m_Player.m_BulletTimeMgr.ActivateBulletTime(0.2f);
+                    m_Player.m_BulletTimeMgr.ActivateTimeScale(0.2f);
                     m_Player.m_ScreenEffectUI.ActivateLensDistortEffect(0.2f);
                     
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
