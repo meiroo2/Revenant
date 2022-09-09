@@ -18,7 +18,7 @@ public class Negotiator_Player : BasicWeapon_Player
     private Player_HitscanRay m_PlayerHitscanRay;
     private SoundMgr m_SoundMgr;
     private Transform m_AimCursorTransform;
-    private BulletTimeMgr _mBulletTimeMgr;
+    private BulletTimeMgr m_BulletTimeMgr;
     private ParticleMgr m_ParticleMgr;
 
     private RageGauge_UI m_RageGauge;
@@ -42,7 +42,7 @@ public class Negotiator_Player : BasicWeapon_Player
         m_Player_Arm = m_Player.m_playerRotation.gameObject.transform;
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
         m_BulletLaserMgr = tempIns.GetComponentInChildren<BulletLaserMgr>();
-        _mBulletTimeMgr = tempIns.GetComponentInChildren<BulletTimeMgr>();
+        m_BulletTimeMgr = tempIns.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = tempIns.GetComponentInChildren<ParticleMgr>();
 
         m_RageGauge = tempIns.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
@@ -142,23 +142,17 @@ public class Negotiator_Player : BasicWeapon_Player
             case 2:
                 // 조준 성공
                 IHotBox hotBox = result.m_RayHitPoint.collider.GetComponent<IHotBox>();
-                IHotBoxParam hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos,
-                    WeaponType.BULLET);
-                
-                hotBox.HitHotBox(hotBoxParam);
-                m_ParticleMgr.MakeParticle(result.m_RayDestinationPos, m_Player.p_CenterTransform, 8f,
-                    RageGaugeUp);
-                
-                switch (hotBox.m_HitBoxInfo)
+                IHotBoxParam hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue,
+                    m_AimCursorTransform.position, WeaponType.BULLET);
+
+                // 현재 불릿타임 여부에 따라 발사할지 예약할지 선택
+                if (m_BulletTimeMgr.m_BulletTimeActivating)
+                    m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam));
+                else
                 {
-                    case HitBoxPoint.HEAD:
-                        m_HitSFXMaker.EnableNewObj(1, result.m_RayDestinationPos);
-                        break;
-                    
-                    case HitBoxPoint.BODY:
-                        m_HitSFXMaker.EnableNewObj(0, result.m_RayDestinationPos);
-                        break;
+                    hotBox.HitHotBox(hotBoxParam);
                 }
+                
                 
                 m_SoundMgr.MakeSound(result.m_RayDestinationPos, true, SOUNDTYPE.BULLET);
                 m_SoundMgr.MakeSound(m_AimCursorTransform.position, true, SOUNDTYPE.BULLET);
@@ -181,10 +175,5 @@ public class Negotiator_Player : BasicWeapon_Player
         
         // UI 업데이트 필요
         m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
-    }
-
-    private void RageGaugeUp()
-    {
-        m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue + m_RageGauge.p_Gauge_Refill_Attack);
     }
 }

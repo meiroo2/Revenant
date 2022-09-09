@@ -22,10 +22,13 @@ public class Player_InputMgr : MonoBehaviour
     public bool m_IsPushReloadKey { get; private set; }
     public bool m_IsPushAttackKey { get; private set; }
     public bool m_IsPushSideAttackKey { get; private set; }
+    public bool m_IsPushBulletTimeKey { get; private set; }
 
+    // 좌우 이동
     private bool m_LKeyInput = false;
     private bool m_RKeyInput = false;
 
+    // 계단 업다운
     private bool m_UKeyInput = false;
     private bool m_DKeyInput = false;
 
@@ -56,6 +59,7 @@ public class Player_InputMgr : MonoBehaviour
             m_IsPushReloadKey = Input.GetKey(KeyCode.R);
             m_IsPushAttackKey = Input.GetMouseButtonDown(0);
             m_IsPushSideAttackKey = Input.GetMouseButtonDown(1);
+            m_IsPushBulletTimeKey = Input.GetKey(KeyCode.Q); 
             yield return null;
         }
     }
