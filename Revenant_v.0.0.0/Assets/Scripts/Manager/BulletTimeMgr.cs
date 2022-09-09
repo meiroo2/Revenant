@@ -25,6 +25,11 @@ public class BulletTimeMgr : MonoBehaviour
     public GameObject p_Marker;
     
     // Member Variables
+    public bool m_CanUseBulletTime { get; private set; } = false;
+
+    private BasicWeapon m_Negotiator;
+    private Player_InputMgr m_InputMgr;
+    
     private HitSFXMaker m_HitSFXMaker;
     private SoundPlayer m_SFXSoundMgr;
 
@@ -34,9 +39,9 @@ public class BulletTimeMgr : MonoBehaviour
     private List<BulletTimeParam> m_BulletTimeParamList = new List<BulletTimeParam>();
     private Coroutine m_Coroutine;
 
-    private bool m_BulletTimeActivating = false;
-    
-    
+    public bool m_BulletTimeActivating { get; private set; } = false;
+
+
     // Constructors
 
     private void Start()
@@ -52,6 +57,8 @@ public class BulletTimeMgr : MonoBehaviour
         var instance = InstanceMgr.GetInstance();
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_SFXSoundMgr = instance.GetComponentInChildren<SoundPlayer>();
+        m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
+        m_Negotiator = instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr.m_CurWeapon;
     }
 
 
@@ -59,6 +66,48 @@ public class BulletTimeMgr : MonoBehaviour
 
 
     // Functions
+
+    
+    /// <summary>
+    /// BulletTimeMgr의 BulletTime 사용을 가능하게 변경합니다.
+    /// </summary>
+    public void SetCanUseBulletTime()
+    {
+        if (m_CanUseBulletTime)
+            return;
+        
+        m_CanUseBulletTime = true;
+        StartCoroutine(CheckBulletTimeStart());
+    }
+
+    /// <summary>
+    /// BulletTime 사용이 가능하게 바뀌었을 때, 입력 타이밍을 체크합니다.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator CheckBulletTimeStart()
+    {
+        while (true)
+        {
+            if (m_InputMgr.m_IsPushBulletTimeKey)
+            {
+                break;
+            }
+            yield return null;
+        }
+        
+        ActivateBulletTime(true);
+
+        while (true)
+        {
+            if (m_Negotiator.m_LeftRounds == 0)
+                break;
+            
+            yield return null;
+        }
+        
+        ActivateBulletTime(false);
+        FireAll();
+    }
     
     /// <summary>
     /// BulletTime을 시작합니다. Timescale이 0이 됩니다.
@@ -68,10 +117,12 @@ public class BulletTimeMgr : MonoBehaviour
     {
         if (_isStart)
         {
-            Time.timeScale = 0f;
+            m_BulletTimeActivating = true;
+            Time.timeScale = 0.05f;
         }
         else
         {
+            m_BulletTimeActivating = false;
             Time.timeScale = 1f;
 
             foreach (var element in m_MarkerList)
@@ -88,17 +139,13 @@ public class BulletTimeMgr : MonoBehaviour
     }
     
     /// <summary>
-    /// BulletTime을 지정한 시간 동안 작동시킵니다. Timescale이 0이 됩니다.
+    /// 오직 시간만을 잠시 수정합니다. Timescale이 0이 됩니다.
     /// </summary>
     /// <param name="_time">지정 시간</param>
-    public void ActivateBulletTime(float _time)
+    public void ActivateTimeScale(float _time)
     {
-        if (m_BulletTimeActivating)
-            return;
-        
-        m_BulletTimeActivating = true;
         Time.timeScale = 0f;
-        StartCoroutine(CheckBulletTimePassed(_time));
+        StartCoroutine(CheckTimePassed(_time));
     }
     
     /// <summary>
@@ -107,7 +154,7 @@ public class BulletTimeMgr : MonoBehaviour
     /// <param name="_param">사격 정보</param>
     public void BookFire(BulletTimeParam _param)
     {
-        if (m_MarkerIdx > 7)
+        if (m_MarkerIdx > 6)
             return;
         
         m_BulletTimeParamList.Add(_param);
@@ -140,11 +187,7 @@ public class BulletTimeMgr : MonoBehaviour
         int markerIdx = 0;
         foreach (var element in m_BulletTimeParamList)
         {
-            m_HitSFXMaker.EnableNewObj(element.m_HotBox.m_HitBoxInfo == HitBoxPoint.HEAD ? 1 : 0,
-                element.m_HotBoxParam.m_contactPoint);
-            
-            m_SFXSoundMgr.playAttackedSound(MatType.Normal, element.m_HotBoxParam.m_contactPoint);
-
+            Debug.Log("wow" + markerIdx);
             element.m_HotBox.HitHotBox(element.m_HotBoxParam);
             m_MarkerList[markerIdx].SetActive(false);
             markerIdx++;
@@ -156,22 +199,9 @@ public class BulletTimeMgr : MonoBehaviour
         yield break;
     }
 
-    private IEnumerator CheckBulletTimePassed(float _time)
+    private IEnumerator CheckTimePassed(float _time)
     {
         yield return new WaitForSecondsRealtime(_time);
         Time.timeScale = 1f;
-
-        foreach (var element in m_MarkerList)
-        {
-            element.transform.parent = this.transform;
-            element.SetActive(false);
-        }
-            
-        m_MarkerIdx = 0;
-            
-        m_BulletTimeParamList.Clear();
-        m_BulletTimeParamList.TrimExcess();
-
-        m_BulletTimeActivating = false;
     }
 }

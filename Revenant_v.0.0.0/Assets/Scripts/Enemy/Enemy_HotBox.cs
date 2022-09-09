@@ -20,6 +20,11 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     private Player_UI m_PlayerUI;
     private RageGauge_UI m_RageUI;
     private SoundPlayer m_SoundMgr;
+    private Transform m_PlayerCenterTransform;
+    
+    // For SFX
+    private ParticleMgr m_ParticleMgr;
+    private HitSFXMaker m_HitSFXMaker;
     
     
     // Constructors
@@ -36,6 +41,10 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         m_PlayerUI = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
         m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
+       m_PlayerCenterTransform= instance.GetComponentInChildren<Player_Manager>().m_Player.p_CenterTransform;
+
+        m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
+        m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
     }
 
     public GameObject m_ParentObj { get; set; }
@@ -49,19 +58,36 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         switch (p_HitBoxPoint)
         {
             case HitBoxPoint.HEAD:
+                m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
                 m_SoundMgr.playAttackedSound(MatType.Target_Head, transform.position);
                 m_PlayerUI.ActiveHitmark(0);
+
+                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
+                    () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
+                                                    (_param.m_Damage * p_DamageMultiples) *
+                                                    m_RageUI.p_Gauge_Refill_Attack));
+                
                 break;
             
             case HitBoxPoint.BODY:
+                m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
                 m_SoundMgr.playAttackedSound(MatType.Target_Body, transform.position);
                 m_PlayerUI.ActiveHitmark(1);
+                
+                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
+                    () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
+                                                    (_param.m_Damage * p_DamageMultiples) *
+                                                    m_RageUI.p_Gauge_Refill_Attack));
+                
                 break;
             
             case HitBoxPoint.COGNITION:
                 
                 break;
         }
+        
+        // 파티클 생성 필요(함수 넘겨야 함)
+        
         
         m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMultiples, _param.m_stunValue);
 

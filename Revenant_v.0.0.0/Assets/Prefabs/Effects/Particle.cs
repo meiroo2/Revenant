@@ -15,7 +15,8 @@ public class Particle : MonoBehaviour
     private ParticleMgr m_ParticleMgr;
     private Transform m_DestinationTransform;
     private float m_Speed;
-    private UnityEvent m_Event = new UnityEvent();
+
+    private Action m_Action;
 
     private Vector2 m_Direction;
     private Coroutine m_Coroutine;
@@ -35,27 +36,27 @@ public class Particle : MonoBehaviour
 
     private void OnDisable()
     {
-        m_Event.RemoveAllListeners();
+        m_Action = null;
         if (!ReferenceEquals(m_Coroutine, null))
         {
             StopCoroutine(m_Coroutine);
         }
     }
-    public void InitParticle(Transform _transform, float _speed, UnityAction _action)
+    
+    public void InitParticle(Transform _transform, float _speed, Action _action)
     {
         m_Trail.time = 0f;
         
         m_DestinationTransform = _transform;
         m_Speed = _speed;
-        
-        if (!ReferenceEquals(_action, null))
-            m_Event.AddListener(_action);
+
+        m_Action = _action;
 
         m_Rigid.AddForce(StaticMethods.GetRotatedVec(Vector2.up, Random.Range(0f, 360f)) * 0.3f, ForceMode2D.Impulse);
         m_Coroutine = StartCoroutine(Waiting());
     }
-    
-    
+
+
     // Updates
 
 
@@ -97,8 +98,8 @@ public class Particle : MonoBehaviour
 
             yield return null;
         }
-        if (!ReferenceEquals(m_Event, null))
-            m_Event.Invoke();
+
+        m_Action?.Invoke();
         
         gameObject.SetActive(false);
     }
