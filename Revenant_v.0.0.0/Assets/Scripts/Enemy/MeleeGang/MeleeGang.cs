@@ -10,6 +10,10 @@ public class MeleeGang : BasicEnemy
     [field: SerializeField, BoxGroup("MeleeGang Values")] public bool p_IsLookAround = false;
     [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_LookAroundDelay = 1f;
     [field: SerializeField, BoxGroup("MeleeGang Values"),Range(0.0f, 1.0f)] public float p_AttackTiming;
+    
+    [field: SerializeField, Space(10f)] public Enemy_HotBox p_HeadBox;
+    [field: SerializeField] public Enemy_HotBox p_BodyBox;
+
 
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
@@ -80,13 +84,16 @@ public class MeleeGang : BasicEnemy
         
         p_Hp = _mgr.M_HP;
         p_MoveSpeed = _mgr.M_Speed;
-        p_StunAlertSpeed = _mgr.M_StunTime;
-        p_StunHp = _mgr.M_StunThreshold;
         p_VisionDistance = _mgr.M_Vision_Distance;
         p_MeleeDistance = _mgr.M_MeleeAttack_Distance;
         p_AttackTiming = _mgr.M_PointAttackTime;
+        p_HeadBox.p_DamageMultiples = _mgr.M_HeadDmgRatio;
+        p_BodyBox.p_DamageMultiples = _mgr.M_BodyDmgRatio;
+        
         #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
+                EditorUtility.SetDirty(p_HeadBox);
+                EditorUtility.SetDirty(p_BodyBox);
         #endif
     }
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
@@ -112,10 +119,11 @@ public class MeleeGang : BasicEnemy
             return;
         }
 
+        // MeleeGang Stun 없음
         if (m_CurStunValue >= p_StunHp)
         {
             m_CurStunValue = 0;
-            ChangeEnemyFSM(EnemyStateName.STUN);
+            //ChangeEnemyFSM(EnemyStateName.STUN);
         }
     }
     public override void ChangeEnemyFSM(EnemyStateName _name)

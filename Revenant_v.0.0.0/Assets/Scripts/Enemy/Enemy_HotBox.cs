@@ -12,7 +12,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     public HitBoxPoint p_HitBoxPoint { get; private set; }
 
     [field: SerializeField, BoxGroup("HotBox Values")]
-    public int p_DamageMultiples { get; private set; }
+    public int p_DamageMultiples { get; set; }
 
 
     // Member Variables

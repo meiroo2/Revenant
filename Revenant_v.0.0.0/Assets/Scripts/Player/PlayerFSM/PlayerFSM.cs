@@ -45,15 +45,17 @@ public abstract class PlayerFSM
 
 public class Player_IDLE : PlayerFSM
 {
+    private RageGauge_UI m_RageGauge;
     
     public Player_IDLE(Player _player) : base(_player)
     {
-
+        
     }
 
     public override void StartState()
     {
         InitFunc();
+        m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_CanHide = true;
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
     }
@@ -64,10 +66,9 @@ public class Player_IDLE : PlayerFSM
         
         if(m_InputMgr.GetDirectionalKeyInput() != 0)
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
-        else if(m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
+        else if(m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
-        else if(m_InputMgr.m_IsPushSideAttackKey &&
-                m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Melee))
+        else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
     }
 
@@ -89,17 +90,20 @@ public class Player_WALK : PlayerFSM
     private float m_KeyInput = 0f;
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
+    private RageGauge_UI m_RageGauge;
 
     private int m_PreInput = 0;
     private int m_CurInput = 0;
 
     public Player_WALK(Player _player) : base(_player)
     {
-
+        
     }
     
     public override void StartState()
     {
+        m_RageGauge = m_Player.m_RageGauge;
+        
         m_Player.m_CanHide = true;
         _mFootMgr = m_Player.m_PlayerFootMgr;
         m_Rigid = m_Player.m_PlayerRigid;
@@ -145,12 +149,12 @@ public class Player_WALK : PlayerFSM
         if(m_CurInput != m_PreInput)
             m_Player.m_PlayerAniMgr.playplayerAnim();
         
-        if (m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
+        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
         {
             m_Player.setisRightHeaded(m_CurInput > 0);
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
-        else if(m_InputMgr.m_IsPushSideAttackKey)
+        else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
     }
 
@@ -176,6 +180,7 @@ public class Player_ROLL : PlayerFSM
     private Animator m_PlayerAnimator;
     private CoroutineElement m_CoroutineElement;
     private BulletTimeMgr m_BulletTimeMgr;
+    private RageGauge_UI m_RageGauge;
 
     public Player_ROLL(Player _player) : base(_player)
     {
@@ -184,6 +189,10 @@ public class Player_ROLL : PlayerFSM
     
     public override void StartState()
     {
+        m_RageGauge = m_Player.m_RageGauge;
+        m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue -
+                                     m_RageGauge.p_Gauge_Consume_Roll);
+        
         m_Player.m_ArmMgr.StopReload();
         
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
@@ -304,14 +313,16 @@ public class Player_HIDDEN : PlayerFSM
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
     private SoundPlayer m_SFXMgr;
+    private RageGauge_UI m_RageGauge;
 
     public Player_HIDDEN(Player _player) : base(_player)
     {
-        
+       
     }
 
     public override void StartState()
     {
+        m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_ArmMgr.StopReload();
         m_SFXMgr = m_Player.m_SFXMgr;
         m_Player.m_CanAttack = false;
@@ -331,7 +342,7 @@ public class Player_HIDDEN : PlayerFSM
 
         m_KeyInput = m_InputMgr.GetDirectionalKeyInput();
 
-        if (m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
+        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
         {
             if(m_KeyInput > 0)
                 m_Player.setisRightHeaded(true);

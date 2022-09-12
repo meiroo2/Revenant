@@ -39,6 +39,11 @@ public class NormalGang : BasicEnemy
     [field: SerializeField, BoxGroup("NormalGang Values")]
     public BasicWeapon_Enemy p_MeleeWeapon { get; private set; }
 
+    [field: SerializeField, BoxGroup("NormalGang Values")]
+    public Enemy_HotBox p_HeadBox;
+
+    [field: SerializeField, BoxGroup("NormalGang Values")]
+    public Enemy_HotBox p_BodyBox;
 
     // Member Variables
     public Enemy_Rotation m_EnemyRotation { get; private set; }
@@ -146,15 +151,19 @@ public class NormalGang : BasicEnemy
 
         p_Hp = _mgr.N_HP;
         p_MoveSpeed = _mgr.N_Speed;
-        p_StunAlertSpeed = _mgr.N_StunTime;
         p_StunHp = _mgr.N_StunThreshold;
         p_VisionDistance = _mgr.N_Vision_Distance;
         p_AttackDistance = _mgr.N_GunFire_Distance;
         p_MeleeDistance = _mgr.N_MeleeAttack_Distance;
         p_AlertSpeed = _mgr.N_AlertSpeedRatio;
+        p_StunAlertSpeed = _mgr.N_StunAlertSpeedRatio;
+        p_HeadBox.p_DamageMultiples = _mgr.N_HeadDmgRatio;
+        p_BodyBox.p_DamageMultiples = _mgr.N_BodyDmgRatio;
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(p_HeadBox);
+            EditorUtility.SetDirty(p_BodyBox);
         #endif
     }
 
