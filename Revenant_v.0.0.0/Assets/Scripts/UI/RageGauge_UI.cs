@@ -163,6 +163,8 @@ public class RageGauge_UI : MonoBehaviour
         {
             m_BulletTimeMgr.SetCanUseBulletTime();
             p_BulletTimeIndicator.enabled = true;
+            
+            m_BulletTimeMgr.AddFinaleAction(() => p_BulletTimeIndicator.enabled = false);
         }
         
         m_SafetyLock = false;

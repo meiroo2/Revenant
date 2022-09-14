@@ -9,7 +9,7 @@ public class Shield : MonoBehaviour, IHotBox
 {
     // Visible Member Variables
     public int p_Shield_Hp = 30;
-    
+    public int p_ShieldDmgMulti = 1;
     
     // Member Variables
     private ShieldGang m_ShieldGang;
@@ -49,7 +49,7 @@ public class Shield : MonoBehaviour, IHotBox
         if (p_Shield_Hp <= 0)
             return 0;
         
-        p_Shield_Hp -= _param.m_Damage;
+        p_Shield_Hp -= _param.m_Damage * p_ShieldDmgMulti;
 
         if (p_Shield_Hp <= 0)
         {

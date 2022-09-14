@@ -81,27 +81,34 @@ public class MeleeGang : BasicEnemy
     {
         if (p_OverrideEnemyMgr) 
             return;
+
+        var meleeWeapon = GetComponentInChildren<MeleeWeapon_Enemy>();
         
         p_Hp = _mgr.M_HP;
+        meleeWeapon.p_BulletDamage = _mgr.M_MeleeDamage;
         p_MoveSpeed = _mgr.M_Speed;
         p_VisionDistance = _mgr.M_Vision_Distance;
         p_MeleeDistance = _mgr.M_MeleeAttack_Distance;
         p_AttackTiming = _mgr.M_PointAttackTime;
-        p_HeadBox.p_DamageMultiples = _mgr.M_HeadDmgRatio;
-        p_BodyBox.p_DamageMultiples = _mgr.M_BodyDmgRatio;
+        p_HeadBox.p_DamageMulti = _mgr.M_HeadDmgMulti;
+        p_BodyBox.p_DamageMulti = _mgr.M_BodyDmgMulti;
+
         
         #if UNITY_EDITOR
-                EditorUtility.SetDirty(this);
-                EditorUtility.SetDirty(p_HeadBox);
-                EditorUtility.SetDirty(p_BodyBox);
+            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(p_HeadBox);
+            EditorUtility.SetDirty(p_BodyBox);
+            EditorUtility.SetDirty(meleeWeapon);
         #endif
     }
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
     {
+        Debug.Log(_damage);
+        
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
-        
-        p_Hp -= _damage * (_point == HitBoxPoint.HEAD ? 2 : 1);
+
+        p_Hp -= _damage;
         m_CurStunValue += _stunValue;
 
         if (p_Hp <= 0)

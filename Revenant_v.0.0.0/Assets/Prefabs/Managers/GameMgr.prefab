@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 4450013778084396112}
   - component: {fileID: 8453996313248045505}
   - component: {fileID: 8798066901285890878}
+  - component: {fileID: 1900004413932140605}
   m_Layer: 0
   m_Name: GameMgr
-  m_TagString: Untagged
+  m_TagString: GameMgr
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <p_CoroutineHandler>k__BackingField: {fileID: 8798066901285890878}
+  m_CanInputAnyKey: 0
 --- !u!114 &8798066901285890878
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,3 +61,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   p_CoroutineElement: {fileID: 1587050042152399053, guid: d8190ac19f50017449a8694dd02616a1, type: 3}
+--- !u!114 &1900004413932140605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796319072097737523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6e53343d7ae4972a5f3bcd27aae76d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  N_HP: 0
+  N_Speed: 0
+  N_StunThreshold: 0
+  N_Vision_Distance: 0
+  N_GunFire_Distance: 0
+  N_MeleeAttack_Distance: 0
+  N_AlertSpeedRatio: 0
+  N_StunAlertSpeedRatio: 0
+  N_HeadDmgRatio: 0
+  N_BodyDmgRatio: 0
+  M_HP: 0
+  M_Speed: 0
+  M_Vision_Distance: 0
+  M_MeleeAttack_Distance: 0
+  M_PointAttackTime: 0
+  M_HeadDmgRatio: 0
+  M_BodyDmgRatio: 0
+  D_HP: 0
+  D_Speed: 0
+  D_AlertSpeedRatio: 0
+  D_RushSpeedRatio: 0
+  D_ToRush_Distance: 0
+  D_WiggleSpeed: 0
+  D_WigglePower: 0
+  D_BombRadius: 0

@@ -202,6 +202,15 @@ public class Player : Human
         m_CurPlayerFSM.UpdateState();
     }
 
+    
+    private void FixedUpdate()
+    {
+        if (m_InputMgr.m_IsPushRightKey)
+        {
+            m_PlayerRigid.AddForce(Vector2.right * 10f);
+        }
+    }
+
 
     // Player FSM Functions
     // ReSharper disable Unity.PerformanceAnalysis

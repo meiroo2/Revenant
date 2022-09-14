@@ -30,18 +30,21 @@ public class AimCursor : MonoBehaviour
     private Coroutine m_UpdateCoroutine;
 
     private List<Collider2D> m_ColList;
-
+    
     RaycastHit2D[] m_Lists = new RaycastHit2D[10];
-    private int hitcount;
-
+    private int m_HitCount;
+    private int m_LayerMask;
 
     // Constructors
     private void Awake()
     {
         m_ColList = new List<Collider2D>();
-
         m_MainCamera = Camera.main;
+        
         m_UpdateCoroutine = StartCoroutine(UpdateRoutine());
+        
+        m_LayerMask =
+            (1 << LayerMask.NameToLayer("HotBoxes"));
     }
 
     private void Start()
@@ -61,84 +64,35 @@ public class AimCursor : MonoBehaviour
     // Updates
     private IEnumerator UpdateRoutine()
     {
-
-
         while (true)
         {
             transform.position = m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-            int layermask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Object")) |
-                            (1 << LayerMask.NameToLayer("HotBoxes"));
-            Ray2D ray = new Ray2D(transform.position, Vector2.zero);
-            hitcount = Physics2D.RaycastNonAlloc(ray.origin, ray.direction, m_Lists, 1f, layermask);
-
-            Debug.DrawRay(transform.position, Vector3.forward * 30f, Color.blue);
-            Debug.Log(hitcount.ToString());
-
-            if (hitcount > 0)
-            {
-                for (int i = 0; i < hitcount; i++)
-                {
-                    Debug.Log(m_Lists[i].collider.name);
-                }
-            }
-
+            CalculateAimRaycast();
 
             yield return null;
         }
     }
 
 
-    // Physics
-    private void OnTriggerEnter2D(Collider2D col)
-    {
-        // Debug.Log("Sans");
-        m_ColList.Add(col);
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        m_ColList.Remove(other);
-    }
-
-
     // Functions
+    
+    /// <summary>
+    /// 현재 위치에 충돌하고 있는 HotBox를 검출합니다.
+    /// </summary>
+    private void CalculateAimRaycast()
+    {
+        m_HitCount = Physics2D.RaycastNonAlloc(transform.position,
+            Vector2.zero, m_Lists, 1f, m_LayerMask);
+    }
+    
+    
+    /// <summary>
+    /// m_HitCount의 Ray 판정 검사 후, 가장 가까운 콜라이더를 리턴합니다.
+    /// </summary>
+    /// <returns></returns>
     public AimedColInfo GetAimedColInfo()
     {
-        /*
-        Vector2 aimPos = transform.position;
-
-        switch (m_ColList.Count)
-        {
-            case <= 0:
-                return null;
-                break;
-            
-            case 1:
-                return new AimedColInfo(m_ColList[0], aimPos);
-                break;
-            
-            default:
-                Collider2D returnCol = m_ColList[0];
-                float minDistance = (aimPos - (Vector2)returnCol.transform.position).sqrMagnitude;
-                for (int i = 1; i < m_ColList.Count; i++)
-                {
-                    float distance = (aimPos - (Vector2)m_ColList[i].transform.position).sqrMagnitude;
-                    if (distance < minDistance)
-                    {
-                        returnCol = m_ColList[i];
-                        minDistance = distance;
-                    }
-                }
-
-                return new AimedColInfo(returnCol, aimPos);
-                break;
-        }
-
-    }
-    */
-
-        switch (hitcount)
+        switch (m_HitCount)
         {
             case 0:
                 return null;
@@ -151,9 +105,10 @@ public class AimCursor : MonoBehaviour
             case > 1:
                 Collider2D returnCol = m_Lists[0].collider;
                 float minDistance = (transform.position - returnCol.transform.position).sqrMagnitude;
+                
                 for (int i = 1; i < m_ColList.Count; i++)
                 {
-                    float distance = (transform.position - m_Lists[0].collider.transform.position).sqrMagnitude;
+                    float distance = (transform.position - m_Lists[i].collider.transform.position).sqrMagnitude;
 
                     if (distance < minDistance)
                     {

@@ -120,21 +120,25 @@ public class Negotiator_Player : BasicWeapon_Player
         StartCoroutine(SetShotDelay());
         m_LeftRounds--;
         
-        MSoundPlayer.playGunFireSound(0, gameObject);
 
         HitscanResult result = m_PlayerHitscanRay.GetHitscanResult();
         switch (result.m_ResultCheckNum)
         {
             case 0:
                 // 빈 곳(Ray 발사해도 아무것도 감지 X)
+                MSoundPlayer.playGunFireSound(0, gameObject);
+                SpawnSFX(result.m_RayDestinationPos);
                 break;
             
             case 1:
                 // 조준 실패로 근처 벽
+                MSoundPlayer.playGunFireSound(0, gameObject);
+                
                 result.m_RayHitPoint.collider.GetComponent<IHotBox>().HitHotBox(
                     new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos, WeaponType.BULLET));
-                m_HitSFXMaker.EnableNewObj(0, result.m_RayDestinationPos);
-
+                
+                SpawnSFX(result.m_RayDestinationPos);
+                
                 m_SoundMgr.MakeSound(result.m_RayDestinationPos, true, SOUNDTYPE.BULLET);
                 m_SoundMgr.MakeSound(m_AimCursorTransform.position, true, SOUNDTYPE.BULLET);
                 break;
@@ -147,9 +151,14 @@ public class Negotiator_Player : BasicWeapon_Player
 
                 // 현재 불릿타임 여부에 따라 발사할지 예약할지 선택
                 if (m_BulletTimeMgr.m_BulletTimeActivating)
+                {
+                    m_BulletTimeMgr.AddHotBoxAction(() => SpawnSFX(result.m_RayDestinationPos));
                     m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam));
+                }
                 else
                 {
+                    MSoundPlayer.playGunFireSound(0, gameObject);
+                    SpawnSFX(result.m_RayDestinationPos);
                     hotBox.HitHotBox(hotBoxParam);
                 }
                 
@@ -158,22 +167,25 @@ public class Negotiator_Player : BasicWeapon_Player
                 m_SoundMgr.MakeSound(m_AimCursorTransform.position, true, SOUNDTYPE.BULLET);
                 break;
         }
-        // Laser 소환
-        m_BulletLaserMgr.PoolingBulletLaser(p_LaserStartPos.position, result.m_RayDestinationPos);
 
-        
-        p_MuzFlashPuller.EnableNewObj();
-        
-        
+        // UI 업데이트 필요
+        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
+    }
+
+    private void MakeShell()
+    {
         if(m_Player.m_IsRightHeaded)
             m_ShellMgr.MakeShell(m_ShellPos.transform.position,
                 new Vector2(Random.Range(-0.8f, -1.5f), Random.Range(0.8f, 1.5f)));
         else
             m_ShellMgr.MakeShell(m_ShellPos.transform.position,
                 new Vector2(Random.Range(0.8f, 1.5f), Random.Range(0.8f, 1.5f)));
-        
-        
-        // UI 업데이트 필요
-        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
+    }
+    
+    private void SpawnSFX(Vector2 _rayDestPos)
+    {
+        MakeShell();
+        p_MuzFlashPuller.EnableNewObj();
+        m_BulletLaserMgr.PoolingBulletLaser(p_LaserStartPos.position, _rayDestPos);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player_ValueManipulator : MonoBehaviour
 {
-    [Header("ÇÃ·¹ÀÌ¾î ¼öÁ¤°ª")]
+    [Header("í”Œë ˆì´ì–´ ì„¤ì •ê°’")]
     public int Hp = 50;
     public float StunInvincibleTime = 2f;
     public float Speed = 1f;
@@ -15,7 +15,7 @@ public class Player_ValueManipulator : MonoBehaviour
     public float RollCountRecoverSpeed = 1f;
 
     [Space(20f)]
-    [Header("Negotiator(±ÇÃÑ) ¼³Á¤°ª")]
+    [Header("Negotiator ì„¤ì •ê°’")]
     public float BulletSpeed = 15;
     public int BulletDamage = 10;
     public int StunValue = 1;
@@ -24,7 +24,7 @@ public class Player_ValueManipulator : MonoBehaviour
     public int MagCount = 10;
     public float ReloadSpeed = 1f;
 
-    [Space(20f)] [Header("UI ¼³Á¤°ª")] 
+    [Space(20f)] [Header("UI ì„¤ì •ê°’")] 
     public float HitmarkRemainTime = 0.2f;
 
     private void Start()

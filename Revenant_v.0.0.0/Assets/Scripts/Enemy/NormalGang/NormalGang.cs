@@ -149,21 +149,27 @@ public class NormalGang : BasicEnemy
         if (p_OverrideEnemyMgr)
             return;
 
+        var tripleshot = GetComponentInChildren<TripleShot_Enemy>();
+        
         p_Hp = _mgr.N_HP;
         p_MoveSpeed = _mgr.N_Speed;
         p_StunHp = _mgr.N_StunThreshold;
         p_VisionDistance = _mgr.N_Vision_Distance;
         p_AttackDistance = _mgr.N_GunFire_Distance;
         p_MeleeDistance = _mgr.N_MeleeAttack_Distance;
-        p_AlertSpeed = _mgr.N_AlertSpeedRatio;
-        p_StunAlertSpeed = _mgr.N_StunAlertSpeedRatio;
-        p_HeadBox.p_DamageMultiples = _mgr.N_HeadDmgRatio;
-        p_BodyBox.p_DamageMultiples = _mgr.N_BodyDmgRatio;
+        p_AlertSpeed = _mgr.N_AlertSpeedMulti;
+        p_StunAlertSpeed = _mgr.N_StunAlertSpeedMulti;
+        p_HeadBox.p_DamageMulti = _mgr.N_HeadDmgMulti;
+        p_BodyBox.p_DamageMulti = _mgr.N_BodyDmgMulti;
+
+        tripleshot.p_BulletDamage = _mgr.N_BulletDamage;
+        tripleshot.p_FireDelay = _mgr.N_FireDelay;
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
             EditorUtility.SetDirty(p_HeadBox);
             EditorUtility.SetDirty(p_BodyBox);
+            EditorUtility.SetDirty(tripleshot);
         #endif
     }
 

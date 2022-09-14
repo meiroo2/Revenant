@@ -57,11 +57,14 @@ public class Player_IDLE : PlayerFSM
         InitFunc();
         m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_CanHide = true;
-        m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
+        //m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
     public override void UpdateState()
     {
+        if(Input.GetKeyDown(KeyCode.W))
+            m_Player.m_PlayerRigid.AddForce(Vector2.up * 3f, ForceMode2D.Impulse);
+        
         CheckNull();
         
         if(m_InputMgr.GetDirectionalKeyInput() != 0)
@@ -95,6 +98,8 @@ public class Player_WALK : PlayerFSM
     private int m_PreInput = 0;
     private int m_CurInput = 0;
 
+    private Vector2 JumpVec = Vector2.zero;
+
     public Player_WALK(Player _player) : base(_player)
     {
         
@@ -126,14 +131,14 @@ public class Player_WALK : PlayerFSM
         if (!m_Player.m_CanMove) 
             return;
 
-
+        
         if (m_Player.GetIsPlayerWalkStraight())
         {
-            if (m_Player.m_IsRightHeaded)   // 우측
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
+            if (m_Player.m_IsRightHeaded) // 우측
+                m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) *
                                    (m_Player.p_MoveSpeed);
-            else                            // 좌측
-                m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
+            else // 좌측
+                m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) *
                                    (m_Player.p_MoveSpeed);
         }
         else
@@ -145,6 +150,7 @@ public class Player_WALK : PlayerFSM
                 m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
                                    (m_Player.p_MoveSpeed * m_Player.p_BackWalkSpeedRatio);
         }
+        
         
         if(m_CurInput != m_PreInput)
             m_Player.m_PlayerAniMgr.playplayerAnim();
@@ -272,7 +278,7 @@ public class Player_ROLL : PlayerFSM
                 {
                     // 저스트 회피
                     m_Player.m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
-                    m_Player.m_BulletTimeMgr.ActivateTimeScale(0.2f);
+                    m_Player.m_BulletTimeMgr.ModifyTimeScale(0.2f);
                     m_Player.m_ScreenEffectUI.ActivateLensDistortEffect(0.2f);
                     
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
