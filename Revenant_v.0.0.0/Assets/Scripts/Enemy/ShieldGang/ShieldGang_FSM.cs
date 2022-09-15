@@ -322,7 +322,7 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
             yield return null;
             aniInfo = animator.GetCurrentAnimatorStateInfo(0);
             
-            if (!atkFinished && aniInfo.normalizedTime >= m_Enemy.p_ParticularAtkTime)
+            if (!atkFinished && aniInfo.normalizedTime >= m_Enemy.p_PointAtkTime)
             {
                 atkFinished = true;
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
@@ -375,7 +375,7 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
             yield return null;
             aniInfo = animator.GetCurrentAnimatorStateInfo(0);
             
-            if (!atkFinished && aniInfo.normalizedTime >= m_Enemy.p_ParticularAtkTime)
+            if (!atkFinished && aniInfo.normalizedTime >= m_Enemy.p_PointAtkTime)
             {
                 atkFinished = true;
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();

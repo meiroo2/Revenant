@@ -94,6 +94,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   p_Shield_Hp: 30
+  p_ShieldDmgMulti: 1
 --- !u!61 &531429147666289226
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -668,7 +669,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_HitBoxPoint: 1
+  <p_HitBoxPoint>k__BackingField: 1
+  <p_DamageMulti>k__BackingField: 0
 --- !u!61 &3025478184395922920
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -801,7 +803,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_HitBoxPoint: 0
+  <p_HitBoxPoint>k__BackingField: 0
+  <p_DamageMulti>k__BackingField: 0
 --- !u!58 &7999154008068201902
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -882,13 +885,14 @@ MonoBehaviour:
   <p_VisionDistance>k__BackingField: 1.5
   p_Shield_Hp: 50
   p_AttackDistance: 0.4
-  p_AttackSpeed: 1
   p_AttackDamage: 10
   p_GapDistance: 1.5
-  p_BackMoveSpeedRatio: 0.5
-  p_BrokenStateSpeedRatio: 2
-  p_ParticularAtkTime: 0.5
+  p_BackMoveSpeedMulti: 0.8
+  p_BrokenSpeedMulti: 1.5
+  p_PointAtkTime: 0.5
   p_AtkHoldTime: 0.5
+  p_HeadHotBox: {fileID: 3025478184462977684}
+  p_BodyHotBox: {fileID: 3025478184395922921}
   m_IsFoundPlayer: 0
 --- !u!50 &3025478185464052577
 Rigidbody2D:

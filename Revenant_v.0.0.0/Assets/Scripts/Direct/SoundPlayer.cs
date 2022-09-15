@@ -84,6 +84,7 @@ public class SoundPlayer : MonoBehaviour
         switch (_matType)
         {
             case MatType.Normal:
+                //Debug.Log("사운드재생");
                 FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Enemy/BulletHit/Enemy_BulletHit_Metal", _position);
                 break;
 

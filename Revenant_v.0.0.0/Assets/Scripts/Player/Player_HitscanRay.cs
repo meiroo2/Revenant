@@ -77,6 +77,7 @@ public class Player_HitscanRay : MonoBehaviour
             // 아무것도 검출되지 않음(멀리 있는 좌표 반환)
             if (m_HitCount <= 0 || IsThereNoObstacle() == true)
             {
+                
                 Debug.Log("아무것도 조준 X, 검출 X");
                 return new HitscanResult(0, m_RayStartPos, m_RayStartPos += GetRayDirection() * 5f);
             }
