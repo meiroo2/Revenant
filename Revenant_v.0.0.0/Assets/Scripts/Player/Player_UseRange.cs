@@ -92,6 +92,10 @@ public class Player_UseRange : MonoBehaviour
                 m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
                 break;
 
+            case UseableObjList.CHECKPOINT:
+                m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
+                break;
+
             case UseableObjList.HIDEPOS:
                 if (Vector2.Distance(transform.position,  m_UseableObjs[m_ShortestIDX].m_Obj.transform.position) > 0.3f)
                     break;
