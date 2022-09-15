@@ -21,12 +21,13 @@ public enum UseableObjList
     HIDEPOS,
     OBJECT,
     LAYERDOOR,
+    CHECKPOINT,
 }
 
 public interface IUseableObj
 {
-    /// <summary> IUseableObj¸¦ »ó¼Ó¹ÞÀº ¿ÀºêÁ§Æ®ÀÇ OutlineÀ» È°¼ºÈ­½ÃÅµ´Ï´Ù. </summary>
-    /// <param name="_isOn"> ÄÑÁü/²¨Áü ¿©ºÎ </param>
+    /// <summary> IUseableObjï¿½ï¿½ ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Outlineï¿½ï¿½ È°ï¿½ï¿½È­ï¿½ï¿½Åµï¿½Ï´ï¿½. </summary>
+    /// <param name="_isOn"> ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ </param>
     public void ActivateOutline(bool _isOn)
     {
     }
@@ -35,5 +36,5 @@ public interface IUseableObj
 
     public UseableObjList m_ObjProperty { get; set; }
     public bool m_isOn { get; set; }
-    public int useObj(IUseableObjParam _param);               // ¿ÀºêÁ§Æ®¸¦ »ç¿ë ½Ã È£ÃâµÇ´Â ÇÔ¼ö(ÇÏÀ§ ¿ÀºêÁ§Æ®¿¡ ³»¿ë Ãß°¡ÇÒ °Í)
+    public int useObj(IUseableObjParam _param);               // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ È£ï¿½ï¿½Ç´ï¿½ ï¿½Ô¼ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½)
 }

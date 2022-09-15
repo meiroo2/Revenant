@@ -424,7 +424,9 @@ public class Player_MELEE : PlayerFSM
 public class Player_DEAD : PlayerFSM
 {
     private Rigidbody2D m_Rigid;
-
+    
+    private CoroutineHandler m_CoroutineHandler;
+    private CoroutineElement m_CoroutineElement;
 
     public Player_DEAD(Player _player) : base(_player)
     {
@@ -433,6 +435,8 @@ public class Player_DEAD : PlayerFSM
     
     public override void StartState()
     {
+        m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
+        
         m_Rigid = m_Player.m_PlayerRigid;
         m_Player.m_PlayerHotBox.setPlayerHotBoxCol(false);
         m_Player.m_PlayerAnimator.Play("Dead");
@@ -442,8 +446,11 @@ public class Player_DEAD : PlayerFSM
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
         m_Player.m_PlayerAniMgr.setSprites(false, false, false, false, false);
+
+        // Respawn in 5 seconds
+        m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
         
-        GameMgr.GetInstance().PlayerDead();
+        //GameMgr.GetInstance().PlayerDead();
     }
 
     public override void UpdateState()
@@ -453,6 +460,7 @@ public class Player_DEAD : PlayerFSM
 
     public override void ExitState()
     {
+        Debug.Log("Player Dead ExitState");
         m_Player.m_CanMove = true;
         m_Player.m_CanAttack = true;
         m_Player.m_playerRotation.m_doRotate = true;
@@ -464,5 +472,19 @@ public class Player_DEAD : PlayerFSM
     public override void NextPhase()
     {
 
+    }
+    
+    /** Delay Respawn at CheckPoints */
+    IEnumerator DelayGetActiveCheckPointPosition(float DeltaSeconds)
+    {
+        yield return new WaitForSeconds(DeltaSeconds);
+        
+        // Change the Player transform to Activated CheckPoint
+        m_Player.transform.position = CheckPoint.GetActiveCheckPointPosition();
+        
+        ExitState();
+        m_Player.setPlayerHp(500);
+        
+        m_CoroutineElement.StopCoroutine_Element();
     }
 }
