@@ -45,29 +45,33 @@ public abstract class PlayerFSM
 
 public class Player_IDLE : PlayerFSM
 {
+    private RageGauge_UI m_RageGauge;
     
     public Player_IDLE(Player _player) : base(_player)
     {
-
+        
     }
 
     public override void StartState()
     {
         InitFunc();
+        m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_CanHide = true;
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
     public override void UpdateState()
     {
+        if(Input.GetKeyDown(KeyCode.W))
+            m_Player.m_PlayerRigid.AddForce(Vector2.up * 3f, ForceMode2D.Impulse);
+        
         CheckNull();
         
         if(m_InputMgr.GetDirectionalKeyInput() != 0)
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
-        else if(m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
+        else if(m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
-        else if(m_InputMgr.m_IsPushSideAttackKey &&
-                m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Melee))
+        else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
     }
 
@@ -89,17 +93,22 @@ public class Player_WALK : PlayerFSM
     private float m_KeyInput = 0f;
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
+    private RageGauge_UI m_RageGauge;
 
     private int m_PreInput = 0;
     private int m_CurInput = 0;
 
+    private Vector2 JumpVec = Vector2.zero;
+
     public Player_WALK(Player _player) : base(_player)
     {
-
+        
     }
     
     public override void StartState()
     {
+        m_RageGauge = m_Player.m_RageGauge;
+        
         m_Player.m_CanHide = true;
         _mFootMgr = m_Player.m_PlayerFootMgr;
         m_Rigid = m_Player.m_PlayerRigid;
@@ -122,35 +131,36 @@ public class Player_WALK : PlayerFSM
         if (!m_Player.m_CanMove) 
             return;
 
-
+        
         if (m_Player.GetIsPlayerWalkStraight())
         {
-            if (m_Player.m_IsRightHeaded)   // 우측
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
+            if (m_Player.m_IsRightHeaded) // 우측
+                m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) *
                                    (m_Player.p_MoveSpeed);
-            else                            // 좌측
-                m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
+            else // 좌측
+                m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) *
                                    (m_Player.p_MoveSpeed);
         }
         else
         {
             if (m_Player.m_IsRightHeaded)   // 오른쪽 보고 뒤로
                 m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_MoveSpeed * m_Player.p_BackWalkSpeedRatio);
+                                   (m_Player.p_MoveSpeed * m_Player.p_BackSpeedMulti);
             else                           // 왼쪽 보고 뒤로
                 m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_MoveSpeed * m_Player.p_BackWalkSpeedRatio);
+                                   (m_Player.p_MoveSpeed * m_Player.p_BackSpeedMulti);
         }
+        
         
         if(m_CurInput != m_PreInput)
             m_Player.m_PlayerAniMgr.playplayerAnim();
         
-        if (m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
+        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
         {
             m_Player.setisRightHeaded(m_CurInput > 0);
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
-        else if(m_InputMgr.m_IsPushSideAttackKey)
+        else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
     }
 
@@ -176,6 +186,7 @@ public class Player_ROLL : PlayerFSM
     private Animator m_PlayerAnimator;
     private CoroutineElement m_CoroutineElement;
     private BulletTimeMgr m_BulletTimeMgr;
+    private RageGauge_UI m_RageGauge;
 
     public Player_ROLL(Player _player) : base(_player)
     {
@@ -184,6 +195,10 @@ public class Player_ROLL : PlayerFSM
     
     public override void StartState()
     {
+        m_RageGauge = m_Player.m_RageGauge;
+        m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue -
+                                     m_RageGauge.p_Gauge_Consume_Roll);
+        
         m_Player.m_ArmMgr.StopReload();
         
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
@@ -215,9 +230,9 @@ public class Player_ROLL : PlayerFSM
         m_PlayerNormalVec = m_Player.m_PlayerFootMgr.m_PlayerNormal;
 
         if (m_Player.m_IsRightHeaded)   // 우측 구르기
-            m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedRatio);
+            m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedMulti);
         else
-            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedRatio);
+            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedMulti);
         
         if(m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
@@ -263,7 +278,7 @@ public class Player_ROLL : PlayerFSM
                 {
                     // 저스트 회피
                     m_Player.m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
-                    m_Player.m_BulletTimeMgr.ActivateTimeScale(0.2f);
+                    m_Player.m_BulletTimeMgr.ModifyTimeScale(0.2f);
                     m_Player.m_ScreenEffectUI.ActivateLensDistortEffect(0.2f);
                     
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
@@ -304,14 +319,16 @@ public class Player_HIDDEN : PlayerFSM
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
     private SoundPlayer m_SFXMgr;
+    private RageGauge_UI m_RageGauge;
 
     public Player_HIDDEN(Player _player) : base(_player)
     {
-        
+       
     }
 
     public override void StartState()
     {
+        m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_ArmMgr.StopReload();
         m_SFXMgr = m_Player.m_SFXMgr;
         m_Player.m_CanAttack = false;
@@ -327,11 +344,9 @@ public class Player_HIDDEN : PlayerFSM
 
     public override void UpdateState()
     {
-        CheckNull();
-
         m_KeyInput = m_InputMgr.GetDirectionalKeyInput();
 
-        if (m_InputMgr.m_IsPushRollKey && m_Player.m_LeftRollCount >= 1f)
+        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
         {
             if(m_KeyInput > 0)
                 m_Player.setisRightHeaded(true);

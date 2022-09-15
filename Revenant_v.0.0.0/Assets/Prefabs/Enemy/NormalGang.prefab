@@ -228,6 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c75dd68cd3f9404bb4aba849c7c3e62c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <m_Animator>k__BackingField: {fileID: 5643937347912235846}
 --- !u!95 &5643937347912235846
 Animator:
   serializedVersion: 4
@@ -478,7 +479,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_HitBoxPoint: 1
+  <p_HitBoxPoint>k__BackingField: 0
+  <p_DamageMulti>k__BackingField: 0
 --- !u!61 &6785627411127605371
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -550,7 +552,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_HitBoxPoint: 0
+  <p_HitBoxPoint>k__BackingField: 0
+  <p_DamageMulti>k__BackingField: 0
 --- !u!58 &1789468904418629693
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -744,6 +747,8 @@ MonoBehaviour:
   <p_NormalAnimator>k__BackingField: {fileID: 9100000, guid: e58ce86fef670c34db81731d832acca6, type: 2}
   <p_AttackAnimator>k__BackingField: {fileID: 9100000, guid: ecb4d1de47d6fea45b8043a32e0a4a3a, type: 2}
   <p_MeleeWeapon>k__BackingField: {fileID: 2842429624096680963}
+  p_HeadBox: {fileID: 6785627411194760967}
+  p_BodyBox: {fileID: 6785627411127605370}
 --- !u!50 &6785627412206059250
 Rigidbody2D:
   serializedVersion: 4

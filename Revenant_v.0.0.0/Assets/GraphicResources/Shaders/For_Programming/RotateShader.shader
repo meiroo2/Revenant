@@ -117,6 +117,10 @@ Shader "Universal Render Pipeline/2D/Sprite-Lit-Default4Rotate_ver2"
                 main.r =  main.r + (1 * _WhiteIntensity);
                 main.g =  main.g + (1 * _WhiteIntensity);
                 main.b =  main.b + (1 * _WhiteIntensity);
+                //float abs = main.r + main.g +main.b;
+                //main.r = abs / 3;
+                //main.g = abs / 3;
+                //main.b = abs/3;
                 InitializeSurfaceData(main.rgb, main.a, mask, surfaceData);
                 InitializeInputData(i.uv, i.lightingUV, inputData);
 

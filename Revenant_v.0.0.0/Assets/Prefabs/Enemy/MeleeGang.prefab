@@ -283,8 +283,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6785627411127605368}
-  - component: {fileID: 6785627411127605371}
   - component: {fileID: 6785627411127605370}
+  - component: {fileID: 6785627411127605371}
   m_Layer: 19
   m_Name: Body
   m_TagString: Untagged
@@ -307,6 +307,20 @@ Transform:
   m_Father: {fileID: 6785627412206059249}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6785627411127605370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6785627411127605369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <p_HitBoxPoint>k__BackingField: 1
+  <p_DamageMultiples>k__BackingField: 0
 --- !u!61 &6785627411127605371
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -333,19 +347,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.2, y: 0.4}
   m_EdgeRadius: 0
---- !u!114 &6785627411127605370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6785627411127605369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  p_HitBoxPoint: 1
 --- !u!1 &6785627411194760986
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,7 +392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_HitBoxPoint: 0
+  <p_HitBoxPoint>k__BackingField: 0
+  <p_DamageMultiples>k__BackingField: 0
 --- !u!58 &1789468904418629693
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -578,6 +580,8 @@ MonoBehaviour:
   p_IsLookAround: 0
   p_LookAroundDelay: 1
   p_AttackTiming: 0
+  p_HeadBox: {fileID: 6785627411194760967}
+  p_BodyBox: {fileID: 6785627411127605370}
   m_IsFoundPlayer: 0
 --- !u!50 &6785627412206059250
 Rigidbody2D:

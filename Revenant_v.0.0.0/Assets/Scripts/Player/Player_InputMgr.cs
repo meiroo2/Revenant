@@ -59,7 +59,7 @@ public class Player_InputMgr : MonoBehaviour
             m_IsPushReloadKey = Input.GetKey(KeyCode.R);
             m_IsPushAttackKey = Input.GetMouseButtonDown(0);
             m_IsPushSideAttackKey = Input.GetMouseButtonDown(1);
-            m_IsPushBulletTimeKey = Input.GetKey(KeyCode.Q); 
+            m_IsPushBulletTimeKey = Input.GetKeyDown(KeyCode.Q); 
             yield return null;
         }
     }

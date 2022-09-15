@@ -12,7 +12,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     public HitBoxPoint p_HitBoxPoint { get; private set; }
 
     [field: SerializeField, BoxGroup("HotBox Values")]
-    public int p_DamageMultiples { get; private set; }
+    public int p_DamageMulti { get; set; }
 
 
     // Member Variables
@@ -59,24 +59,24 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         {
             case HitBoxPoint.HEAD:
                 m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
-                m_SoundMgr.playAttackedSound(MatType.Target_Head, transform.position);
+                m_SoundMgr.playAttackedSound(MatType.Normal,  new Vector3(transform.position.x,transform.position.y, 0) );
                 m_PlayerUI.ActiveHitmark(0);
 
                 m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
                     () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
-                                                    (_param.m_Damage * p_DamageMultiples) *
+                                                    (_param.m_Damage * p_DamageMulti) *
                                                     m_RageUI.p_Gauge_Refill_Attack));
                 
                 break;
             
             case HitBoxPoint.BODY:
                 m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
-                m_SoundMgr.playAttackedSound(MatType.Target_Body, transform.position);
+                m_SoundMgr.playAttackedSound(MatType.Normal, new Vector3(transform.position.x,transform.position.y, 0) );
                 m_PlayerUI.ActiveHitmark(1);
                 
                 m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
                     () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
-                                                    (_param.m_Damage * p_DamageMultiples) *
+                                                    (_param.m_Damage * p_DamageMulti) *
                                                     m_RageUI.p_Gauge_Refill_Attack));
                 
                 break;
@@ -89,7 +89,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         // 파티클 생성 필요(함수 넘겨야 함)
         
         
-        m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMultiples, _param.m_stunValue);
+        m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti, _param.m_stunValue);
 
         return 1;
     }

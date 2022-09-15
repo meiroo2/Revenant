@@ -20,11 +20,13 @@ public class Drone : BasicEnemy
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_WigglePower { get; protected set; } = 1f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public int p_BombHp { get; protected set; } = 20;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_BombRange { get; protected set; } = 2f;
-    [field: SerializeField, BoxGroup("DroneGang Values")]public float p_BreakPower = 1f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_BreakPower = 1f;
 
     [Space(20f)] [Header("확인용 변수 모음")] 
     public int m_DeadReason = -1;
     public BombWeapon_Enemy m_BombWeapon;
+    public Enemy_HotBox p_HeadHotBox;
+    public Enemy_HotBox p_BodyHotBox;
     
     
     // FSMs
@@ -113,17 +115,24 @@ public class Drone : BasicEnemy
         if (p_OverrideEnemyMgr)
             return;
 
+        var bombWeapon = GetComponentInChildren<BombWeapon_Enemy>();
+        
         p_Hp = _mgr.D_HP;
+        bombWeapon.p_BulletDamage = _mgr.D_BombDamage;
+        bombWeapon.p_BombRadius = _mgr.D_BombRadius;
+        p_BreakPower = _mgr.D_BreakPower;
         p_MoveSpeed = _mgr.D_Speed;
-        p_AlertSpeedRatio = _mgr.D_AlertSpeedRatio;
-        p_RushSpeedRatio = _mgr.D_RushSpeedRatio;
-        p_ToRushXDistance = _mgr.D_ToRush_Distance;
-        p_WiggleSpeed = _mgr.D_WiggleSpeed;
-        p_WigglePower = _mgr.D_WigglePower;
-        m_BombWeapon.p_BombRadius = _mgr.D_BombRadius;
+        p_RushSpeedRatio = _mgr.D_RushSpeedMulti;
+        p_ToRushXDistance = _mgr.D_ToRushXDistance;
+        p_HeadHotBox.p_DamageMulti = _mgr.D_DroneDmgMulti;
+        p_BodyHotBox.p_DamageMulti = _mgr.D_BombDmgMulti;
+        
 
         #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);
+                EditorUtility.SetDirty(p_HeadHotBox);
+                EditorUtility.SetDirty(p_BodyHotBox);
+                EditorUtility.SetDirty(bombWeapon);
         #endif
     }
 

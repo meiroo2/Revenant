@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class UseableObjInfo
@@ -93,10 +92,6 @@ public class Player_UseRange : MonoBehaviour
                 m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
                 break;
 
-            case UseableObjList.CHECKPOINT:
-                m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
-                break;
-            
             case UseableObjList.HIDEPOS:
                 if (Vector2.Distance(transform.position,  m_UseableObjs[m_ShortestIDX].m_Obj.transform.position) > 0.3f)
                     break;
@@ -104,17 +99,17 @@ public class Player_UseRange : MonoBehaviour
                 switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam))
                 {
                     case 0:
-                        // ���� ����
+                        // 숨기 실패
                         break;
 
                     case 1:
-                        // ���� ����
+                        // 숨기 성공
                         m_CurHiddenSlot = m_UseableObjs[m_ShortestIDX].m_ObjScript;
                         m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
                         break;
 
                     case 2:
-                        // ���� ����
+                        // 숨기 해제
                         m_CurHiddenSlot = null;
                         m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
                         break;
