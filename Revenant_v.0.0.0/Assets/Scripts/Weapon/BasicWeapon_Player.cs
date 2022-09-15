@@ -8,7 +8,7 @@ using UnityEditor;
 public class BasicWeapon_Player : BasicWeapon
 {
     // Visible Member Variables
-    [field: SerializeField] public float p_ReloadTime { get; protected set; }
+    [HideInInspector] public float p_ReloadTime;
 
     
     // Member Variables

@@ -3027,18 +3027,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105661aab8d2c664b9b490428fd7d006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <p_Hp>k__BackingField: 50
-  <p_MoveSpeed>k__BackingField: 1
+  <p_Hp>k__BackingField: 10
+  <p_MoveSpeed>k__BackingField: 2
   <p_StunHp>k__BackingField: 0
-  <p_StunAlertSpeed>k__BackingField: 0
+  <p_StunAlertSpeed>k__BackingField: 2
   <p_RollCountRecoverSpeed>k__BackingField: 1
-  <p_RollSpeedRatio>k__BackingField: 2
-  <p_BackWalkSpeedRatio>k__BackingField: 0.7
+  <p_RollSpeedMulti>k__BackingField: 2
+  <p_BackSpeedMulti>k__BackingField: 0.7
   <p_RunSpeedRatio>k__BackingField: 1.5
   <p_MaxRollCount>k__BackingField: 3
-  <p_MeleeSpeedMulti>k__BackingField: 8.5
-  <p_JustEvadeNormalizeTime>k__BackingField: {x: 0, y: 0.30242825}
-  p_JustEvadeStopTime: 0.2
+  <p_MeleeSpeedMulti>k__BackingField: 2
+  <p_JustEvadeNormalizeTime>k__BackingField: {x: 0, y: 0.30475694}
+  p_JustEvadeStopTime: 0.1
   <p_CenterTransform>k__BackingField: {fileID: 5349450568617132045}
 --- !u!50 &6699025932106853841
 Rigidbody2D:
@@ -5549,7 +5549,7 @@ PrefabInstance:
       objectReference: {fileID: 6699025931668223613}
     - target: {fileID: 4188078021910403264, guid: df3132bddb624964a98df92c9dcc9a7f, type: 3}
       propertyPath: p_MinimumShotDelay
-      value: 0.1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df3132bddb624964a98df92c9dcc9a7f, type: 3}

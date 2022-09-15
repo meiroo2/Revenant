@@ -23,10 +23,10 @@ public class Player : Human
     public float p_RollCountRecoverSpeed { get; private set; } = 1f;
 
     [field: SerializeField, BoxGroup("Player Values")]
-    public float p_RollSpeedRatio { get; private set; } = 1.3f;
+    public float p_RollSpeedMulti { get; private set; } = 1.3f;
 
     [field: SerializeField, BoxGroup("Player Values")]
-    public float p_BackWalkSpeedRatio { get; private set; } = 0.7f;
+    public float p_BackSpeedMulti { get; private set; } = 0.7f;
 
     [field: SerializeField, BoxGroup("Player Values")]
     public float p_RunSpeedRatio { get; private set; } = 1.5f;
@@ -159,36 +159,33 @@ public class Player : Human
         m_CurPlayerFSM.StartState();
     }
 
-    public void InitPlayerValue(Player_ValueManipulator _input)
+    public void SetPlayer(PlayerManipulator _input)
     {
-        p_Hp = _input.Hp;
-        p_StunAlertSpeed = _input.StunInvincibleTime;
-        p_MoveSpeed = _input.Speed;
-        p_BackWalkSpeedRatio = _input.BackSpeedRatio;
-        p_RunSpeedRatio = _input.RunSpeedRatio;
-        p_RollSpeedRatio = _input.RollSpeedRatio;
-        p_MaxRollCount = _input.RollCountMax;
-        m_LeftRollCount = p_MaxRollCount;
-        p_RollCountRecoverSpeed = _input.RollCountRecoverSpeed;
+        p_Hp = _input.P_HP;
+        p_StunAlertSpeed = _input.P_StunInvincibleTime;
+        p_MoveSpeed = _input.P_Speed;
+        p_BackSpeedMulti = _input.P_BackSpeedMulti;
+        p_RollSpeedMulti = _input.P_RollSpeedMulti;
+        p_MeleeSpeedMulti = _input.P_MeleeSpeedMulti;
+        
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+        #endif
+    }
 
-        m_WeaponMgr.m_CurWeapon.p_MaxBullet = _input.BulletCount;
-        m_WeaponMgr.m_CurWeapon.p_MaxMag = _input.MagCount;
-
-        m_WeaponMgr.m_CurWeapon.m_LeftRounds = _input.BulletCount;
-        m_WeaponMgr.m_CurWeapon.m_LeftMags = _input.MagCount;
-
-        // 강제 Player_UIMgr 할당
-        m_PlayerUIMgr = InstanceMgr.GetInstance().m_MainCanvas.GetComponentInChildren<Player_UI>();
-        m_PlayerUIMgr.SetMaxHp(_input.Hp);
-        m_PlayerUIMgr.SetLeftRoundsNMag(_input.BulletCount, _input.MagCount);
-        m_PlayerUIMgr.m_ReloadSpeed = _input.ReloadSpeed;
-        m_PlayerUIMgr.m_HitmarkRemainTime = _input.HitmarkRemainTime;
-
-        // 스폰과 동시에 InitPlayerValue가 호출되기 때문에 Prefab 데이터를 저장하진 않음.
-#if UNITY_EDITOR
-        EditorUtility.SetDirty(this);
-        EditorUtility.SetDirty(m_PlayerUIMgr);
-#endif
+    public void SetNegotiator(PlayerManipulator _input)
+    {
+        var nego = GetComponentInChildren<Negotiator_Player>();
+        nego.p_BulletDamage = _input.N_Damage;
+        nego.p_StunValue = _input.N_StunValue;
+        nego.p_MinFireDelay = _input.N_MinFireDelay;
+        nego.p_MaxBullet = _input.N_MaxBullet;
+        nego.p_MaxMag = _input.N_MaxMag;
+        nego.p_ReloadTime = _input.N_ReloadSpeed;
+        
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(nego);
+        #endif
     }
 
 
@@ -201,6 +198,7 @@ public class Player : Human
 
         m_CurPlayerFSM.UpdateState();
     }
+    
 
 
     // Player FSM Functions

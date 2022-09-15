@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -12,27 +13,31 @@ public class ShieldGang : BasicEnemy
     public float p_AttackDistance = 0.4f;
 
     [field: SerializeField, BoxGroup("ShieldGang Values")]
-    public float p_AttackSpeed = 1f;
-
-    [field: SerializeField, BoxGroup("ShieldGang Values")]
     public int p_AttackDamage = 10;
 
     [field: SerializeField, BoxGroup("ShieldGang Values")]
     public float p_GapDistance = 1f;
 
     [field: SerializeField, BoxGroup("ShieldGang Values")]
-    public float p_BackMoveSpeedRatio = 0.8f;
+    public float p_BackMoveSpeedMulti = 0.8f;
     
     [field: SerializeField, BoxGroup("ShieldGang Values")]
-    public float p_BrokenStateSpeedRatio = 1.5f;
+    public float p_BrokenSpeedMulti = 1.5f;
 
     [field: SerializeField, BoxGroup("ShieldGang Values"), Range(0f, 1f)]
-    public float p_ParticularAtkTime = 0.5f;
+    public float p_PointAtkTime = 0.5f;
+
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public float p_BreakWaitTime = 1f;
 
     [field: SerializeField, BoxGroup("ShieldGang Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)]
     public float p_AtkHoldTime = 0.5f;
+
     
-    
+    [field: SerializeField] public Enemy_HotBox p_HeadHotBox;
+    [field: SerializeField] public Enemy_HotBox p_BodyHotBox;
+
+
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
 
@@ -46,6 +51,7 @@ public class ShieldGang : BasicEnemy
     private BREAK_ShieldGang m_BREAK;
     
     public Shield m_Shield { get; private set; }
+    [HideInInspector]
     public bool m_IsFoundPlayer = false;
     public bool m_IsShieldBroken { get; private set; } = false;
 
@@ -97,6 +103,36 @@ public class ShieldGang : BasicEnemy
 
 
     // Functions
+
+    public override void SetEnemyValues(EnemyMgr _mgr)
+    {
+        if (p_OverrideEnemyMgr)
+            return;
+
+        m_Shield = GetComponentInChildren<Shield>();
+        
+        p_Hp = _mgr.S_HP;
+        m_Shield.p_Shield_Hp = _mgr.S_ShieldHp;
+        p_AttackDamage = _mgr.S_MeleeDamage;
+        p_MoveSpeed = _mgr.S_Speed;
+        p_BackMoveSpeedMulti = _mgr.S_BackSpeedMulti;
+        p_BrokenSpeedMulti = _mgr.S_BrokenSpeedMulti;
+        p_VisionDistance = _mgr.S_VisionDistance;
+        p_AttackDistance = _mgr.S_AttackDistance;
+        p_GapDistance = _mgr.S_GapDistance;
+        p_PointAtkTime = _mgr.S_PointAtkTime;
+        p_AtkHoldTime = _mgr.S_AtkHoldTime;
+        m_Shield.p_ShieldDmgMulti = _mgr.S_ShieldDmgMulti;
+        p_HeadHotBox.p_DamageMulti = _mgr.S_HeadDmgMulti;
+        p_BodyHotBox.p_DamageMulti = _mgr.S_BodyDmgMulti;
+        
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(p_HeadHotBox);
+            EditorUtility.SetDirty(p_BodyHotBox);
+            EditorUtility.SetDirty(m_Shield);
+        #endif
+    }
     public void ShieldBroken()
     {
         m_IsShieldBroken = true;
@@ -111,12 +147,12 @@ public class ShieldGang : BasicEnemy
             if (m_IsRightHeaded)
             {
                 if (GetIsLeftThenPlayer() == !_isRight)
-                    moveSpeed *= p_BackMoveSpeedRatio;
+                    moveSpeed *= p_BackMoveSpeedMulti;
             }
             else
             {
                 if (GetIsLeftThenPlayer() == _isRight)
-                    moveSpeed *= p_BackMoveSpeedRatio;
+                    moveSpeed *= p_BackMoveSpeedMulti;
             }
 
             if (_isRight)
@@ -135,14 +171,14 @@ public class ShieldGang : BasicEnemy
                 if(!m_IsRightHeaded)
                     setisRightHeaded(true);
 
-                m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed * p_BrokenStateSpeedRatio);
+                m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed * p_BrokenSpeedMulti);
             }
             else
             {
                 if(m_IsRightHeaded)
                     setisRightHeaded(false);
             
-                m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed * p_BrokenStateSpeedRatio);
+                m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed * p_BrokenSpeedMulti);
             }
         }
     }

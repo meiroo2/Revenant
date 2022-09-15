@@ -92,6 +92,10 @@ public class Player_UseRange : MonoBehaviour
                 m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
                 break;
 
+            case UseableObjList.CHECKPOINT:
+                m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
+                break;
+
             case UseableObjList.HIDEPOS:
                 if (Vector2.Distance(transform.position,  m_UseableObjs[m_ShortestIDX].m_Obj.transform.position) > 0.3f)
                     break;
@@ -99,17 +103,17 @@ public class Player_UseRange : MonoBehaviour
                 switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam))
                 {
                     case 0:
-                        // 见扁 角菩
+                        // 靾赴 鞁ろ尐
                         break;
 
                     case 1:
-                        // 见扁 己傍
+                        // 靾赴 靹标车
                         m_CurHiddenSlot = m_UseableObjs[m_ShortestIDX].m_ObjScript;
                         m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
                         break;
 
                     case 2:
-                        // 见扁 秦力
+                        // 靾赴 頃挫牅
                         m_CurHiddenSlot = null;
                         m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
                         break;

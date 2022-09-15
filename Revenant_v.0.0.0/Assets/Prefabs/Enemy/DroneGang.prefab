@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_HitBoxPoint: 0
+  <p_HitBoxPoint>k__BackingField: 0
+  <p_DamageMultiples>k__BackingField: 2
 --- !u!61 &2275787039257512237
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -164,7 +165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_HitBoxPoint: 1
+  <p_HitBoxPoint>k__BackingField: 1
+  <p_DamageMultiples>k__BackingField: 1
 --- !u!61 &2275787039324577360
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -364,6 +366,8 @@ MonoBehaviour:
   p_BreakPower: 2
   m_DeadReason: -1
   m_BombWeapon: {fileID: 5155922780340698784}
+  p_HeadHotBox: {fileID: 2275787039257512236}
+  p_BodyHotBox: {fileID: 2275787039324577361}
   m_WeponMgr: {fileID: 2275787039284907377}
 --- !u!50 &2275787040404207833
 Rigidbody2D:
@@ -585,6 +589,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c75dd68cd3f9404bb4aba849c7c3e62c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <m_Animator>k__BackingField: {fileID: 0}
 --- !u!95 &5155922781041278210
 Animator:
   serializedVersion: 4
@@ -654,6 +659,6 @@ SpriteRenderer:
   m_Size: {x: 0.28, y: 0.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0

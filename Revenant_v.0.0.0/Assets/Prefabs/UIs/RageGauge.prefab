@@ -31,11 +31,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4512983135114146449}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 15.72, y: -0.1}
+  m_AnchoredPosition: {x: 35.5, y: 0.000006102}
   m_SizeDelta: {x: 28, y: 26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5628758183007611276
@@ -112,7 +112,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 5}
+  m_SizeDelta: {x: 60, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4512983134692262083
 CanvasRenderer:
@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 4512983134968788739}
   - component: {fileID: 4512983134968788740}
   m_Layer: 5
-  m_Name: Natural
+  m_Name: GaugeImg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -188,7 +188,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 5}
+  m_SizeDelta: {x: 60, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4512983134968788739
 CanvasRenderer:
@@ -211,7 +211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -223,7 +223,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -259,7 +259,6 @@ RectTransform:
   m_Children:
   - {fileID: 4512983134692262085}
   - {fileID: 4512983134968788741}
-  - {fileID: 4512983136480201185}
   - {fileID: 4512983135153763749}
   - {fileID: 6230556902361308957}
   m_Father: {fileID: 0}
@@ -267,7 +266,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 500}
+  m_AnchoredPosition: {x: 0, y: -453}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1683800367418319240
@@ -282,19 +281,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8db1e0c5ab4ce18bfe237dbf327b48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_NaturalImg: {fileID: 4512983134968788740}
-  p_RageImg: {fileID: 4512983136480201184}
+  p_GaugeImg: {fileID: 4512983134968788740}
   p_BulletTimeIndicator: {fileID: 6139550249798373280}
-  <p_Gauge_TickTime>k__BackingField: 0.1
-  <p_Gauge_Max>k__BackingField: 1000
+  <p_Gauge_Max>k__BackingField: 100
   <p_Gauge_Refill_Nature>k__BackingField: 10
-  <p_Gauge_Refill_Attack>k__BackingField: 5
+  <p_Gauge_Refill_Attack>k__BackingField: 1
   <p_Gauge_Refill_Evade>k__BackingField: 5
   <p_Gauge_Refill_JustEvade>k__BackingField: 20
-  <p_Gauge_Refill_Limit>k__BackingField: 300
-  <p_Gauge_Consume_Nature>k__BackingField: 20
-  <p_Gauge_Consume_Roll>k__BackingField: 300
-  <p_Gauge_Consume_Melee>k__BackingField: 200
+  <p_Gauge_Refill_Limit>k__BackingField: 50
+  <p_Gauge_Consume_Nature>k__BackingField: 5
+  <p_Gauge_Consume_Roll>k__BackingField: 30
+  <p_Gauge_Consume_Melee>k__BackingField: 10
 --- !u!1 &4512983135153763750
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,12 +323,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4512983135114146449}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 5}
+  m_SizeDelta: {x: 60, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4512983135153763747
 CanvasRenderer:
@@ -367,82 +364,6 @@ MonoBehaviour:
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!1 &4512983136480201186
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4512983136480201185}
-  - component: {fileID: 4512983136480201183}
-  - component: {fileID: 4512983136480201184}
-  m_Layer: 5
-  m_Name: Rage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &4512983136480201185
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4512983136480201186}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4512983135114146449}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 5}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &4512983136480201183
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4512983136480201186}
-  m_CullTransparentMesh: 1
---- !u!114 &4512983136480201184
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4512983136480201186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c11b8739500a3704eaeacb9662668ea9, type: 3}
-  m_Type: 3
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 0
-  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0

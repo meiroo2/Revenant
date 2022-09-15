@@ -10,6 +10,10 @@ public class MeleeGang : BasicEnemy
     [field: SerializeField, BoxGroup("MeleeGang Values")] public bool p_IsLookAround = false;
     [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_LookAroundDelay = 1f;
     [field: SerializeField, BoxGroup("MeleeGang Values"),Range(0.0f, 1.0f)] public float p_AttackTiming;
+    
+    [field: SerializeField, Space(10f)] public Enemy_HotBox p_HeadBox;
+    [field: SerializeField] public Enemy_HotBox p_BodyBox;
+
 
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
@@ -77,24 +81,34 @@ public class MeleeGang : BasicEnemy
     {
         if (p_OverrideEnemyMgr) 
             return;
+
+        var meleeWeapon = GetComponentInChildren<MeleeWeapon_Enemy>();
         
         p_Hp = _mgr.M_HP;
+        meleeWeapon.p_BulletDamage = _mgr.M_MeleeDamage;
         p_MoveSpeed = _mgr.M_Speed;
-        p_StunAlertSpeed = _mgr.M_StunTime;
-        p_StunHp = _mgr.M_StunThreshold;
         p_VisionDistance = _mgr.M_Vision_Distance;
         p_MeleeDistance = _mgr.M_MeleeAttack_Distance;
         p_AttackTiming = _mgr.M_PointAttackTime;
+        p_HeadBox.p_DamageMulti = _mgr.M_HeadDmgMulti;
+        p_BodyBox.p_DamageMulti = _mgr.M_BodyDmgMulti;
+
+        
         #if UNITY_EDITOR
-                EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(p_HeadBox);
+            EditorUtility.SetDirty(p_BodyBox);
+            EditorUtility.SetDirty(meleeWeapon);
         #endif
     }
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
     {
+        Debug.Log(_damage);
+        
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
-        
-        p_Hp -= _damage * (_point == HitBoxPoint.HEAD ? 2 : 1);
+
+        p_Hp -= _damage;
         m_CurStunValue += _stunValue;
 
         if (p_Hp <= 0)
@@ -112,10 +126,11 @@ public class MeleeGang : BasicEnemy
             return;
         }
 
+        // MeleeGang Stun 없음
         if (m_CurStunValue >= p_StunHp)
         {
             m_CurStunValue = 0;
-            ChangeEnemyFSM(EnemyStateName.STUN);
+            //ChangeEnemyFSM(EnemyStateName.STUN);
         }
     }
     public override void ChangeEnemyFSM(EnemyStateName _name)

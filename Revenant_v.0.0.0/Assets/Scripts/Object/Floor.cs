@@ -12,7 +12,12 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     public bool m_isEnemys { get; set; } = false;
     public int m_hotBoxType { get; set; } = 1;
     public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.OBJECT;
-    private SoundPlayer _mSoundPlayer;
+    private SoundPlayer m_SoundPlayer;
+    
+    
+    // Member Variables
+    private HitSFXMaker m_HitSFXMaker;
+    
 
     // Constructors
     private void Awake()
@@ -23,7 +28,10 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     }
     private void Start()
     {
-        _mSoundPlayer = InstanceMgr.GetInstance().GetComponentInChildren<SoundPlayer>();
+        var instance = InstanceMgr.GetInstance();
+
+        m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
+        m_SoundPlayer = instance.GetComponentInChildren<SoundPlayer>();
     }
 
     // Updates
@@ -35,10 +43,10 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     // Functions
     public int HitHotBox(IHotBoxParam _param)
     {
-        _mSoundPlayer.playAttackedSound(m_matType, _param.m_contactPoint);
+        m_SoundPlayer.playAttackedSound(m_matType, _param.m_contactPoint);
 
+        m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
+        
         return 1;
     }
-
-    // ��Ÿ �з��ϰ� ���� ���� ���� ���
 }
