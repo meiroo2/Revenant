@@ -9,10 +9,13 @@ using UnityEngine;
 
 public class CW_EnemyManipulator : OdinEditorWindow
 {
-    [MenuItem(("Window/EnemyManipulator"))]
+    private const float m_LabelWidth = 150f;
+    
+    [MenuItem(("에디터/적 변수 수정기"))]
     private static void OpenWindow()
     {
         var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
+        
         TransferNormalGangValues(false);
         TransferMeleeGangValues(false);
         TransferDroneGangValues(false);
@@ -21,96 +24,115 @@ public class CW_EnemyManipulator : OdinEditorWindow
         GetWindow<CW_EnemyManipulator>().Show();
     }
 
+    private void OnBecameVisible()
+    {
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
+        TransferNormalGangValues(false);
+        TransferMeleeGangValues(false);
+        TransferDroneGangValues(false);
+        TransferShieldGangValues(false);
+    }
+
+    private void OnProjectChange()
+    {
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
+        TransferNormalGangValues(false);
+        TransferMeleeGangValues(false);
+        TransferDroneGangValues(false);
+        TransferShieldGangValues(false);
+    }
+    
+
     #region NormalGang
 
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static int N_HP;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static int N_BulletDamage;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static float N_FireDelay;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static float N_Speed;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static int N_StunThreshold;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static float N_Vision_Distance;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static float N_GunFire_Distance;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static float N_MeleeAttack_Distance;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static float N_AlertSpeedMulti;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static float N_StunAlertSpeedMulti;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static int N_HeadDmgMulti;
-    [TabGroup("NormalGang"), ShowInInspector, TableList] public static int N_BodyDmgMulti;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_HP;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_BulletDamage;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_FireDelay;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_Speed;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_StunThreshold;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_Vision_Distance;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_GunFire_Distance;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_MeleeAttack_Distance;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_AlertSpeedMulti;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_StunAlertSpeedMulti;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_HeadDmgMulti;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_BodyDmgMulti;
 
     #endregion
 
 
     #region MeleeGang
     
-    [TabGroup("MeleeGang"), ShowInInspector, TableList] public static int M_HP;
-    [TabGroup("MeleeGang"), ShowInInspector, TableList] public static int M_MeleeDamage;
-    [TabGroup("MeleeGang"), ShowInInspector, TableList] public static float M_Speed;
-    [TabGroup("MeleeGang"), ShowInInspector, TableList] public static float M_Vision_Distance;
-    [TabGroup("MeleeGang"), ShowInInspector, TableList] public static float M_MeleeAttack_Distance;
-    [TabGroup("MeleeGang"), ShowInInspector, TableList, Range(0.0f, 1.0f)]
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_HP;
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_MeleeDamage;
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float M_Speed;
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float M_Vision_Distance;
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float M_MeleeAttack_Distance;
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth), Range(0.0f, 1.0f)]
     public static float M_PointAttackTime;
-    [TabGroup("MeleeGang"), ShowInInspector, TableList] public static int M_HeadDmgMulti;
-    [TabGroup("MeleeGang"), ShowInInspector, TableList] public static int M_BodyDmgMulti;
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_HeadDmgMulti;
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_BodyDmgMulti;
 
     #endregion
     
 
     #region DroneGang
 
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static int D_HP;
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static int D_BombDamage;
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static float D_BombRadius;
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static float D_BreakPower;
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static float D_Speed;
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static float D_RushSpeedMulti;
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static float D_ToRushXDistance;
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static int D_DroneDmgMulti;
-    [TabGroup("DroneGang"), ShowInInspector, TableList] public static int D_BombDmgMulti;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int D_HP;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int D_BombDamage;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_BombRadius;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_BreakPower;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_Speed;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_RushSpeedMulti;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_ToRushXDistance;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int D_DroneDmgMulti;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int D_BombDmgMulti;
 
     #endregion
     
 
     #region ShieldGang
 
-    [TabGroup("ShieldGang"), ShowInInspector, TableList] 
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]  
     public static int S_HP;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList]
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] 
     public static int S_ShieldHp;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList]
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] 
     public static int S_MeleeDamage;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList]
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] 
     public static float S_Speed;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList] 
-    public static float S_BackSpeedRatio;
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]  
+    public static float S_BackSpeedMulti;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList] 
-    public static float S_BrokenSpeedRatio;
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]  
+    public static float S_BrokenSpeedMulti;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList] 
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]  
     public static float S_VisionDistance;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList] 
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]  
     public static float S_AttackDistance;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList] 
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]  
     public static float S_GapDistance;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList, Range(0.0f, 1.0f)] 
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth), Range(0.0f, 1.0f)] 
     public static float S_PointAtkTime;
     
-    [TabGroup("ShieldGang"), ShowInInspector, TableList]
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] 
     public static float S_AtkHoldTime;
 
-    [TabGroup("ShieldGang"), ShowInInspector, TableList]
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] 
     public static int S_ShieldDmgMulti;
 
-    [TabGroup("ShieldGang"), ShowInInspector, TableList]
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] 
     public static int S_HeadDmgMulti;
 
-    [TabGroup("ShieldGang"), ShowInInspector, TableList]
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] 
     public static int S_BodyDmgMulti;
 
     #endregion
@@ -129,7 +151,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("MeleeGang")]
     private void MeleeGang_적용하기()
     {
-        var enemyMgr = GameObject.FindWithTag("GameMgr").GetComponent<EnemyMgr>();
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
         TransferMeleeGangValues(true);
         
         enemyMgr.SetMeleeGangs();
@@ -138,7 +160,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("DroneGang")]
     private void DroneGang_적용하기()
     {
-        var enemyMgr = GameObject.FindWithTag("GameMgr").GetComponent<EnemyMgr>();
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
         TransferDroneGangValues(true);
         
         enemyMgr.SetDrones();
@@ -147,7 +169,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("ShieldGang")]
     private void ShieldGang_적용하기()
     {
-        var enemyMgr = GameObject.FindWithTag("GameMgr").GetComponent<EnemyMgr>();
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
         TransferShieldGangValues(true);
         
         enemyMgr.SetShieldGangs();
@@ -159,7 +181,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     /// <param name="_toEnemyMgr">True시 EnemyMgr로 전송</param>
     private static void TransferNormalGangValues(bool _toEnemyMgr)
     {
-        var enemyMgr = GameObject.FindWithTag("GameMgr").GetComponent<EnemyMgr>();
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
 
         if (_toEnemyMgr)
         {
@@ -204,7 +226,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     /// <param name="_toEnemyMgr">True시 EnemyMgr로 전송</param>
     private static void TransferMeleeGangValues(bool _toEnemyMgr)
     {
-        var enemyMgr = GameObject.FindWithTag("GameMgr").GetComponent<EnemyMgr>();
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
 
         if (_toEnemyMgr)
         {
@@ -241,7 +263,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     /// <param name="_toEnemyMgr">True시 EnemyMgr로 전송</param>
     private static void TransferDroneGangValues(bool _toEnemyMgr)
     {
-        var enemyMgr = GameObject.FindWithTag("GameMgr").GetComponent<EnemyMgr>();
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
 
         if (_toEnemyMgr)
         {
@@ -280,7 +302,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     /// <param name="_toEnemyMgr">True시 EnemyMgr로 전송</param>
     private static void TransferShieldGangValues(bool _toEnemyMgr)
     {
-        var enemyMgr = GameObject.FindWithTag("GameMgr").GetComponent<EnemyMgr>();
+        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
 
         if (_toEnemyMgr)
         {
@@ -288,8 +310,8 @@ public class CW_EnemyManipulator : OdinEditorWindow
             enemyMgr.S_ShieldHp = S_ShieldHp;
             enemyMgr.S_MeleeDamage = S_MeleeDamage;
             enemyMgr.S_Speed = S_Speed;
-            enemyMgr.S_BackSpeedMulti = S_BackSpeedRatio;
-            enemyMgr.S_BrokenSpeedMulti = S_BrokenSpeedRatio;
+            enemyMgr.S_BackSpeedMulti = S_BackSpeedMulti;
+            enemyMgr.S_BrokenSpeedMulti = S_BrokenSpeedMulti;
             enemyMgr.S_VisionDistance = S_VisionDistance;
             enemyMgr.S_AttackDistance = S_AttackDistance;
             enemyMgr.S_GapDistance = S_GapDistance;
@@ -305,8 +327,8 @@ public class CW_EnemyManipulator : OdinEditorWindow
             S_ShieldHp = enemyMgr.S_ShieldHp;
             S_MeleeDamage = enemyMgr.S_MeleeDamage;
             S_Speed = enemyMgr.S_Speed;
-            S_BackSpeedRatio = enemyMgr.S_BackSpeedMulti;
-            S_BrokenSpeedRatio = enemyMgr.S_BrokenSpeedMulti;
+            S_BackSpeedMulti = enemyMgr.S_BackSpeedMulti;
+            S_BrokenSpeedMulti = enemyMgr.S_BrokenSpeedMulti;
             S_VisionDistance = enemyMgr.S_VisionDistance;
             S_AttackDistance = enemyMgr.S_AttackDistance;
             S_GapDistance = enemyMgr.S_GapDistance;
@@ -320,5 +342,19 @@ public class CW_EnemyManipulator : OdinEditorWindow
         #if UNITY_EDITOR
             EditorUtility.SetDirty(enemyMgr);
         #endif
+    }
+
+
+    private void DataSaveNLoad()
+    {
+        TransferNormalGangValues(true);
+        TransferMeleeGangValues(true);
+        TransferDroneGangValues(true);
+        TransferShieldGangValues(true);
+        
+        TransferNormalGangValues(false);
+        TransferMeleeGangValues(false);
+        TransferDroneGangValues(false);
+        TransferShieldGangValues(false);
     }
 }

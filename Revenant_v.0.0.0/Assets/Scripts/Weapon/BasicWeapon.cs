@@ -14,7 +14,7 @@ public class BasicWeapon : MonoBehaviour
     public float p_BulletSpeed;
     public int p_BulletDamage;
     public int p_StunValue;
-    public float p_MinimumShotDelay;
+    public float p_MinFireDelay;
     public int p_MaxBullet;
     public int p_MaxMag;
 
@@ -62,7 +62,7 @@ public class BasicWeapon : MonoBehaviour
     }
     protected IEnumerator SetShotDelay()
     {
-        yield return new WaitForSeconds(p_MinimumShotDelay);
+        yield return new WaitForSeconds(p_MinFireDelay);
         m_isShotDelayEnd = true;
     }
 }

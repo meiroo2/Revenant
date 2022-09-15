@@ -13,7 +13,7 @@ public class Enemy_Alert : MonoBehaviour
     public Animator m_Animator { get; private set; }
     private SpriteRenderer m_Renderer;
     
-    public delegate void AlertDelegate();
+    public delegate void AlertDelegate(); 
     private AlertDelegate m_Callback = null;
     private AnimatorStateInfo m_CurAniState;
     

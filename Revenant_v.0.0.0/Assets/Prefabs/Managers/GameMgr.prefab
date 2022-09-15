@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8453996313248045505}
   - component: {fileID: 8798066901285890878}
   - component: {fileID: 1900004413932140605}
+  - component: {fileID: 4718642478766582402}
   m_Layer: 0
   m_Name: GameMgr
   m_TagString: GameMgr
@@ -74,27 +75,70 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   N_HP: 0
+  N_BulletDamage: 0
+  N_FireDelay: 0
   N_Speed: 0
   N_StunThreshold: 0
   N_Vision_Distance: 0
   N_GunFire_Distance: 0
   N_MeleeAttack_Distance: 0
-  N_AlertSpeedRatio: 0
-  N_StunAlertSpeedRatio: 0
-  N_HeadDmgRatio: 0
-  N_BodyDmgRatio: 0
+  N_AlertSpeedMulti: 0
+  N_StunAlertSpeedMulti: 0
+  N_HeadDmgMulti: 0
+  N_BodyDmgMulti: 0
   M_HP: 0
+  M_MeleeDamage: 0
   M_Speed: 0
   M_Vision_Distance: 0
   M_MeleeAttack_Distance: 0
   M_PointAttackTime: 0
-  M_HeadDmgRatio: 0
-  M_BodyDmgRatio: 0
+  M_HeadDmgMulti: 0
+  M_BodyDmgMulti: 0
   D_HP: 0
-  D_Speed: 0
-  D_AlertSpeedRatio: 0
-  D_RushSpeedRatio: 0
-  D_ToRush_Distance: 0
-  D_WiggleSpeed: 0
-  D_WigglePower: 0
+  D_BombDamage: 0
   D_BombRadius: 0
+  D_BreakPower: 0
+  D_Speed: 0
+  D_RushSpeedMulti: 0
+  D_ToRushXDistance: 0
+  D_DroneDmgMulti: 0
+  D_BombDmgMulti: 0
+  S_HP: 0
+  S_ShieldHp: 0
+  S_MeleeDamage: 0
+  S_Speed: 0
+  S_BackSpeedMulti: 0
+  S_BrokenSpeedMulti: 0
+  S_VisionDistance: 0
+  S_AttackDistance: 0
+  S_GapDistance: 0
+  S_PointAtkTime: 0
+  S_AtkHoldTime: 0
+  S_ShieldDmgMulti: 0
+  S_HeadDmgMulti: 0
+  S_BodyDmgMulti: 0
+--- !u!114 &4718642478766582402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796319072097737523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1cc164786c6d354ba2d8bf7303ad3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_Player: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+  P_HP: 50
+  P_StunInvincibleTime: 2
+  P_Speed: 1
+  P_BackSpeedMulti: 0.7
+  P_RollSpeedMulti: 2
+  P_MeleeSpeedMulti: 2
+  P_Damage: 10
+  P_StunValue: 1
+  P_MinFireDelay: 0.1
+  P_MaxBullet: 150
+  P_MaxMag: 10
+  P_ReloadSpeed: 1

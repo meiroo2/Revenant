@@ -57,7 +57,7 @@ public class Player_IDLE : PlayerFSM
         InitFunc();
         m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_CanHide = true;
-        //m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
+        m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
     public override void UpdateState()
@@ -145,10 +145,10 @@ public class Player_WALK : PlayerFSM
         {
             if (m_Player.m_IsRightHeaded)   // 오른쪽 보고 뒤로
                 m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_MoveSpeed * m_Player.p_BackWalkSpeedRatio);
+                                   (m_Player.p_MoveSpeed * m_Player.p_BackSpeedMulti);
             else                           // 왼쪽 보고 뒤로
                 m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_MoveSpeed * m_Player.p_BackWalkSpeedRatio);
+                                   (m_Player.p_MoveSpeed * m_Player.p_BackSpeedMulti);
         }
         
         
@@ -230,9 +230,9 @@ public class Player_ROLL : PlayerFSM
         m_PlayerNormalVec = m_Player.m_PlayerFootMgr.m_PlayerNormal;
 
         if (m_Player.m_IsRightHeaded)   // 우측 구르기
-            m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedRatio);
+            m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedMulti);
         else
-            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedRatio);
+            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedMulti);
         
         if(m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
@@ -344,8 +344,6 @@ public class Player_HIDDEN : PlayerFSM
 
     public override void UpdateState()
     {
-        CheckNull();
-
         m_KeyInput = m_InputMgr.GetDirectionalKeyInput();
 
         if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
