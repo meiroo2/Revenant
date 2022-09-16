@@ -15,7 +15,7 @@ public class BasicWeapon : MonoBehaviour
     public int p_BulletDamage;
     public int p_StunValue;
     public float p_MinFireDelay;
-    public int p_MaxBullet;
+    public int p_MaxRound;
     public int p_MaxMag;
 
 

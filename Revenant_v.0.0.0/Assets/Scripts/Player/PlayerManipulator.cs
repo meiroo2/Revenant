@@ -25,18 +25,7 @@ public class PlayerManipulator : MonoBehaviour
     public int N_MaxMag = 10;
     public float N_ReloadSpeed = 1f;
 
-    [Space(20f)] [Header("RageGauge 설정값")] 
-    public float R_Gauge_Max;
-    public float R_Gauge_Refill_Nature;
-    public float R_Gauge_Refill_Attack_Multi;
-    public float R_Gauge_Refill_Evade;
-    public float R_Gauge_Refill_JustEvade;
-    public float R_Gauge_Refill_Limit;
-    public float R_Gauge_Consume_Nature;
-    public float R_Gauge_Consume_Roll;
-    public float R_Gauge_Consume_Melee;
-    
-    
+
     private void Start()
     {
         InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.
@@ -58,14 +47,6 @@ public class PlayerManipulator : MonoBehaviour
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(p_Player);
-        #endif
-    }
-
-    public void SetRageGauge()
-    {
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(p_RageGauge);
         #endif
     }
 }

@@ -27,6 +27,7 @@ public class Negotiator_Player : BasicWeapon_Player
     private void Awake()
     {
         m_isShotDelayEnd = true;
+        ReloadWeaponData();
     }
     private new void Start()
     {
@@ -48,8 +49,16 @@ public class Negotiator_Player : BasicWeapon_Player
         m_RageGauge = tempIns.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
 
         m_PlayerUI = m_Player.m_PlayerUIMgr;
+        
+        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
     }
 
+    public override void ReloadWeaponData()
+    {
+        m_LeftRounds = p_MaxRound;
+        m_LeftMags = p_MaxMag;
+    }
+    
     public override int Fire()
     {
         if (!m_isShotDelayEnd || m_isReloading)
@@ -75,7 +84,7 @@ public class Negotiator_Player : BasicWeapon_Player
 
     public override int GetCanReload()
     {
-        if (m_LeftMags <= 0 || m_LeftRounds > p_MaxBullet)
+        if (m_LeftMags <= 0 || m_LeftRounds > p_MaxRound)
             return 0;
         else
         {
@@ -89,12 +98,12 @@ public class Negotiator_Player : BasicWeapon_Player
         {
             case 0:
                 m_LeftMags--;
-                m_LeftRounds = p_MaxBullet;
+                m_LeftRounds = p_MaxRound;
                 break;
 
             case > 0:
                 m_LeftMags--;
-                m_LeftRounds = p_MaxBullet + 1;
+                m_LeftRounds = p_MaxRound + 1;
                 break;
 
             default:

@@ -65,7 +65,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
                     () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
                                                     (_param.m_Damage * p_DamageMulti) *
-                                                    m_RageUI.p_Gauge_Refill_Attack));
+                                                    m_RageUI.p_Gauge_Refill_Attack_Multi));
                 
                 break;
             
@@ -77,7 +77,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
                     () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
                                                     (_param.m_Damage * p_DamageMulti) *
-                                                    m_RageUI.p_Gauge_Refill_Attack));
+                                                    m_RageUI.p_Gauge_Refill_Attack_Multi));
                 
                 break;
             

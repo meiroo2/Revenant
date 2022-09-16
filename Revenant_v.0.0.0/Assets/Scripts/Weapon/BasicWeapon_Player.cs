@@ -34,4 +34,8 @@ public class BasicWeapon_Player : BasicWeapon
     protected virtual void Internal_Reload()
     {
     }
+
+    public virtual void ReloadWeaponData()
+    {
+    }
 }
