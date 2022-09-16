@@ -37,7 +37,7 @@ public class Negotiator_Player : BasicWeapon_Player
 
         m_AimCursorTransform = tempIns.GetComponentInChildren<AimCursor>().transform;
         m_SoundMgr = tempIns.GetComponentInChildren<SoundMgr>();
-        MSoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
         m_Player = tempIns.GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerHitscanRay = m_Player.m_PlayerHitscanRay;
         m_Player_Arm = m_Player.m_playerRotation.gameObject.transform;
@@ -131,42 +131,65 @@ public class Negotiator_Player : BasicWeapon_Player
         
 
         HitscanResult result = m_PlayerHitscanRay.GetHitscanResult();
+
+        IHotBox hotBox;
+        IHotBoxParam hotBoxParam;
+        
         switch (result.m_ResultCheckNum)
         {
             case 0:
                 // 빈 곳(Ray 발사해도 아무것도 감지 X)
-                MSoundPlayer.playGunFireSound(0, gameObject);
-                SpawnSFX(result.m_RayDestinationPos);
+                if (m_BulletTimeMgr.m_BulletTimeActivating)
+                {
+                    m_BulletTimeMgr.BookFire(m_AimCursorTransform.position, ()=> SpawnSFX(result.m_RayDestinationPos));
+                }
+                else
+                {
+                    m_SoundPlayer.playGunFireSound(0, gameObject);
+                    SpawnSFX(result.m_RayDestinationPos);
+                }
                 break;
             
             case 1:
                 // 조준 실패로 근처 벽
-                MSoundPlayer.playGunFireSound(0, gameObject);
-                
-                result.m_RayHitPoint.collider.GetComponent<IHotBox>().HitHotBox(
-                    new IHotBoxParam(p_BulletDamage, p_StunValue, result.m_RayDestinationPos, WeaponType.BULLET));
-                
-                SpawnSFX(result.m_RayDestinationPos);
-                
+                hotBox = result.m_RayHitPoint.collider.GetComponent<IHotBox>();
+                hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue,
+                    result.m_RayDestinationPos, WeaponType.BULLET);
+
+                if (m_BulletTimeMgr.m_BulletTimeActivating)
+                {
+                    m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam, m_AimCursorTransform.position,
+                        () => SpawnSFX(result.m_RayDestinationPos)));
+                }
+                else
+                {
+                    m_SoundPlayer.playGunFireSound(0, gameObject);
+                    SpawnSFX(result.m_RayDestinationPos);
+                    hotBox.HitHotBox(hotBoxParam);
+                }
+
                 m_SoundMgr.MakeSound(result.m_RayDestinationPos, true, SOUNDTYPE.BULLET);
                 m_SoundMgr.MakeSound(m_AimCursorTransform.position, true, SOUNDTYPE.BULLET);
                 break;
             
             case 2:
                 // 조준 성공
-                IHotBox hotBox = result.m_RayHitPoint.collider.GetComponent<IHotBox>();
-                IHotBoxParam hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue,
+                hotBox = result.m_RayHitPoint.collider.GetComponent<IHotBox>();
+                hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue,
                     m_AimCursorTransform.position, WeaponType.BULLET);
 
                 // 현재 불릿타임 여부에 따라 발사할지 예약할지 선택
                 if (m_BulletTimeMgr.m_BulletTimeActivating)
                 {
-                    m_BulletTimeMgr.AddHotBoxAction(() => SpawnSFX(result.m_RayDestinationPos));
-                    m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam));
+                    hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue,
+                        m_AimCursorTransform.position, WeaponType.BULLET, false);
+                    
+                    m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam, m_AimCursorTransform.position,
+                        () => SpawnSFX(result.m_RayDestinationPos)));
                 }
                 else
                 {
-                    MSoundPlayer.playGunFireSound(0, gameObject);
+                    m_SoundPlayer.playGunFireSound(0, gameObject);
                     SpawnSFX(result.m_RayDestinationPos);
                     hotBox.HitHotBox(hotBoxParam);
                 }

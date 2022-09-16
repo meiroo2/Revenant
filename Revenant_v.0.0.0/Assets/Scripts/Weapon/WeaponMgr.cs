@@ -30,7 +30,7 @@ public class WeaponMgr : MonoBehaviour
         SoundPlayer SFXMgr = InstanceMgr.GetInstance().GetComponentInChildren<SoundPlayer>();
         for (int i = 0; i < p_Weapons.Count; i++)
         {
-            p_Weapons[i].MSoundPlayer = SFXMgr;
+            p_Weapons[i].m_SoundPlayer = SFXMgr;
         }
         
         for (int i = 0; i < p_Weapons.Count; i++)

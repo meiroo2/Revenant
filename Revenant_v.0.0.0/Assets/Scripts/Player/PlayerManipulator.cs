@@ -15,6 +15,8 @@ public class PlayerManipulator : MonoBehaviour
     public float P_BackSpeedMulti = 0.7f;
     public float P_RollSpeedMulti = 2f;
     public float P_MeleeSpeedMulti = 2f;
+    public int P_MeleeDamage = 10;
+    public int P_MeleeStunValue = 10;
     
     [Space(20f)]
     [Header("Negotiator 설정값")]

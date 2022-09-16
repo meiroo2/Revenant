@@ -169,9 +169,12 @@ public class Player : Human
         p_BackSpeedMulti = _input.P_BackSpeedMulti;
         p_RollSpeedMulti = _input.P_RollSpeedMulti;
         p_MeleeSpeedMulti = _input.P_MeleeSpeedMulti;
+        m_MeleeAttack.m_Damage = _input.P_MeleeDamage;
+        m_MeleeAttack.m_StunValue = _input.P_MeleeStunValue;
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(m_MeleeAttack);
         #endif
     }
 

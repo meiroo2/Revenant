@@ -7,7 +7,7 @@ public class Player_MeleeAttack : MonoBehaviour
 {
     // Visible Member Variables
     public int m_Damage = 10;
-    
+    public int m_StunValue = 10;
     
     // Member Variables
     private SoundPlayer m_SoundSFXMgr;
@@ -55,7 +55,7 @@ public class Player_MeleeAttack : MonoBehaviour
         {
             if (hotBox.m_HitBoxInfo is HitBoxPoint.BODY or HitBoxPoint.OBJECT)
             {
-                hotBox.HitHotBox(new IHotBoxParam(m_Damage, 0,
+                hotBox.HitHotBox(new IHotBoxParam(m_Damage, m_StunValue,
                     transform.position, WeaponType.KNIFE));
                 
                 m_SFXMaker.EnableNewObj(3, col.ClosestPoint(transform.position), m_Player.m_IsRightHeaded);

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1151316218289765921}
   m_Layer: 0
   m_Name: PIstol_Shell
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 4790650998433361360}
   m_Layer: 0
   m_Name: Negotiator
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -117,7 +117,7 @@ SpriteRenderer:
   m_Size: {x: 0.48, y: 0.53}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &4188078021910403264
@@ -137,10 +137,10 @@ MonoBehaviour:
   p_BulletSpeed: 20
   p_BulletDamage: 10
   p_StunValue: 0
-  p_MinimumShotDelay: 0.1
-  p_MaxBullet: 10
+  p_MinFireDelay: 0
+  p_MaxRound: 0
   p_MaxMag: 10
-  <p_ReloadTime>k__BackingField: 3
+  p_ReloadTime: 0
   p_LaserStartPos: {fileID: 714915458798667734}
   p_MuzFlashPuller: {fileID: 1151316219598366800}
   m_ShellPos: {fileID: 1151316218289765921}
@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 1151316219598366800}
   m_Layer: 0
   m_Name: Pistol_GunFireGen
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -218,7 +218,7 @@ GameObject:
   - component: {fileID: 714915458798667734}
   m_Layer: 0
   m_Name: LaserStartPos
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

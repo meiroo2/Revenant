@@ -44,7 +44,7 @@ public class BulletPuller : MonoBehaviour
     
 
     // Functions
-    public virtual void MakeBullet(ref BulletParam _param)
+    public virtual void MakeBullet(BulletParam _param)
     {
         m_PulledBulletArr[m_Idx].gameObject.SetActive(false);
         m_PulledBulletArr[m_Idx].gameObject.SetActive(true);
