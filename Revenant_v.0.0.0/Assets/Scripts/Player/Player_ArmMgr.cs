@@ -40,8 +40,8 @@ public class Player_ArmMgr : MonoBehaviour
     private bool m_isRecoilLerping = false;
     private float m_RecoilTimer = 1f;
 
-    private Vector2[] m_LongArmEffectorOriginPos = new Vector2[2];  // ±äÆÈÀÇ ¿øº» ÀÌÆåÅÍÆ÷Áö¼Ç (¹Ù±ù, ¾È)
-    private Vector2[] m_ShortArmEffectorOriginPos = new Vector2[2]; // ÂªÀºÆÈÀÇ ¿øº» ÀÌÆåÅÍ Æ÷Áö¼Ç (¹Ù±ù, ¾È)
+    private Vector2[] m_LongArmEffectorOriginPos = new Vector2[2];  // ê¸´íŒ”ì˜ ì›ë³¸ ì´í™í„°í¬ì§€ì…˜ (ë°”ê¹¥, ì•ˆ)
+    private Vector2[] m_ShortArmEffectorOriginPos = new Vector2[2]; // ì§§ì€íŒ”ì˜ ì›ë³¸ ì´í™í„° í¬ì§€ì…˜ (ë°”ê¹¥, ì•ˆ)
 
     private Vector2 m_HeadEffectorOriginPos;
 
@@ -96,19 +96,19 @@ public class Player_ArmMgr : MonoBehaviour
         switch (m_WeaponMgr.m_CurWeapon.Fire())
         {
             case 0:
-                // ¹ß»ç ½ÇÆĞ
-                Debug.Log("ÇÃ·¹ÀÌ¾î ¹ß»ç ½ÇÆĞ");
+                // ë°œì‚¬ ì‹¤íŒ¨
+                Debug.Log("í”Œë ˆì´ì–´ ë°œì‚¬ ì‹¤íŒ¨");
                 break;
 
             case 1:
-                // ¹ß»ç ¼º°ø
+                // ë°œì‚¬ ì„±ê³µ
                 m_RecoilTimer = 1f;
                 doRecoil();
                 StartCoroutine(RecoilLerp());
                 break;
 
             case 2:
-                // ÃÑ¾Ë ¾øÀ½ (ÀÚµ¿ ÀçÀåÀü)
+                // ì´ì•Œ ì—†ìŒ (ìë™ ì¬ì¥ì „)
                 m_Player.m_SFXMgr.playPlayerSFXSound(1);
                 if (!m_IsReloading)
                     DoReload();
@@ -209,5 +209,5 @@ public class Player_ArmMgr : MonoBehaviour
         }
     }
 
-    // ±âÅ¸ ºĞ·ùÇÏ°í ½ÍÀº °ÍÀÌ ÀÖÀ» °æ¿ì
+    // ê¸°íƒ€ ë¶„ë¥˜í•˜ê³  ì‹¶ì€ ê²ƒì´ ìˆì„ ê²½ìš°
 }

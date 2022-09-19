@@ -463,7 +463,7 @@ public class Player_DEAD : PlayerFSM
         m_Player.m_PlayerAniMgr.setSprites(false, false, false, false, false);
 
         // Respawn in 5 seconds
-        m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
+        //m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
         
         //GameMgr.GetInstance().PlayerDead();
     }

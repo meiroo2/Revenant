@@ -22,6 +22,7 @@ public class AimCursor : MonoBehaviour
 {
     // Visible Member Variables
     [ReadOnly] public GameObject p_AimedObj;
+    public float p_AimRaycastRadius = 0.5f;
 
     // Member Variables
     private Camera m_MainCamera;
@@ -81,11 +82,18 @@ public class AimCursor : MonoBehaviour
     /// </summary>
     private void CalculateAimRaycast()
     {
-        m_HitCount = Physics2D.RaycastNonAlloc(transform.position,
-            Vector2.zero, m_Lists, 1f, m_LayerMask);
+        m_HitCount = Physics2D.CircleCastNonAlloc(transform.position,
+            p_AimRaycastRadius, Vector2.zero, m_Lists, 1f, m_LayerMask);
     }
-    
-    
+
+    /*
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position, p_AimRaycastRadius);
+    }
+    */
+
     /// <summary>
     /// m_HitCount의 Ray 판정 검사 후, 가장 가까운 콜라이더를 리턴합니다.
     /// </summary>
@@ -116,7 +124,6 @@ public class AimCursor : MonoBehaviour
                         minDistance = distance;
                     }
                 }
-
                 return new AimedColInfo(returnCol, transform.position);
                 break;
         }

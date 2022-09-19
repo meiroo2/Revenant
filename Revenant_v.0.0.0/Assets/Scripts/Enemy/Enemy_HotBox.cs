@@ -62,10 +62,11 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 m_SoundMgr.playAttackedSound(MatType.Normal,  new Vector3(transform.position.x,transform.position.y, 0) );
                 m_PlayerUI.ActiveHitmark(0);
 
-                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
-                    () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
-                                                    (_param.m_Damage * p_DamageMulti) *
-                                                    m_RageUI.p_Gauge_Refill_Attack));
+                if (_param.m_MakeRageParticle)
+                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
+                        () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
+                                                        (_param.m_Damage * p_DamageMulti) *
+                                                        m_RageUI.p_Gauge_Refill_Attack_Multi));
                 
                 break;
             
@@ -73,11 +74,12 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
                 m_SoundMgr.playAttackedSound(MatType.Normal, new Vector3(transform.position.x,transform.position.y, 0) );
                 m_PlayerUI.ActiveHitmark(1);
-                
-                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
-                    () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
-                                                    (_param.m_Damage * p_DamageMulti) *
-                                                    m_RageUI.p_Gauge_Refill_Attack));
+
+                if (_param.m_MakeRageParticle)
+                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
+                        () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
+                                                        (_param.m_Damage * p_DamageMulti) *
+                                                        m_RageUI.p_Gauge_Refill_Attack_Multi));
                 
                 break;
             

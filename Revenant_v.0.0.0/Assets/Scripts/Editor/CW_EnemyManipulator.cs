@@ -47,6 +47,8 @@ public class CW_EnemyManipulator : OdinEditorWindow
 
     [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_HP;
     [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_BulletDamage;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_BulletSpeed;
+    [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_BulletRandomRotation;
     [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_FireDelay;
     [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float N_Speed;
     [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_StunThreshold;
@@ -187,6 +189,8 @@ public class CW_EnemyManipulator : OdinEditorWindow
         {
             enemyMgr.N_HP = N_HP;
             enemyMgr.N_BulletDamage = N_BulletDamage;
+            enemyMgr.N_BulletSpeed = N_BulletSpeed;
+            enemyMgr.N_BulletRandomRotation = N_BulletRandomRotation;
             enemyMgr.N_FireDelay = N_FireDelay;
             enemyMgr.N_Speed = N_Speed;
             enemyMgr.N_StunThreshold = N_StunThreshold;
@@ -202,6 +206,8 @@ public class CW_EnemyManipulator : OdinEditorWindow
         {
             N_HP = enemyMgr.N_HP;
             N_BulletDamage = enemyMgr.N_BulletDamage;
+            N_BulletSpeed = enemyMgr.N_BulletSpeed;
+            N_BulletRandomRotation = enemyMgr.N_BulletRandomRotation;
             N_FireDelay = enemyMgr.N_FireDelay;
             N_Speed = enemyMgr.N_Speed;
             N_StunThreshold = enemyMgr.N_StunThreshold;

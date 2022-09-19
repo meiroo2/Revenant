@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class TripleShot_Enemy : BasicWeapon_Enemy
 {
     // Visible Member Variables
+    public float p_BulletRandomRotation = 5f;
     public float p_FireDelay = 0.05f;
     public ObjectPuller p_MuzFlashPuller;
     public Transform m_ShellPos;
@@ -28,7 +29,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
     {
         var tempIns = InstanceMgr.GetInstance();
         
-        MSoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
         m_Player = tempIns.GetComponentInChildren<Player_Manager>().m_Player;
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
         m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
@@ -48,12 +49,18 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
     {
         m_LeftFire--;
         
-        MSoundPlayer.playGunFireSound(1, gameObject);
+        m_SoundPlayer.playGunFireSound(1, gameObject);
 
         m_BulletParam.m_IsRightHeaded = m_Enemy.m_IsRightHeaded;
         m_BulletParam.m_Position = m_Enemy_Arm.position;
         m_BulletParam.m_Rotation = m_Enemy_Arm.rotation;
-        m_Puller.MakeBullet(ref m_BulletParam);
+        
+        // 불릿 랜덤 로테이션
+        float randomRotation = Random.Range(-p_BulletRandomRotation, p_BulletRandomRotation);
+        m_BulletParam.m_Rotation = Quaternion.Euler(m_BulletParam.m_Rotation.eulerAngles.x,
+            m_BulletParam.m_Rotation.eulerAngles.y, m_BulletParam.m_Rotation.eulerAngles.z + randomRotation);
+        
+        m_Puller.MakeBullet(m_BulletParam);
         
         p_MuzFlashPuller.EnableNewObj();
         
