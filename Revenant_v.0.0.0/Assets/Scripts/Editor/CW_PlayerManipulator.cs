@@ -32,6 +32,12 @@ public class CW_PlayerManipulator : OdinEditorWindow
 
     [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static float P_MeleeSpeedMulti;
+
+    [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static int P_MeleeDamage;
+
+    [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static int P_MeleeStunValue;
     
     #endregion
 
@@ -58,6 +64,13 @@ public class CW_PlayerManipulator : OdinEditorWindow
 
     #endregion
 
+    #region Aim
+
+    [TabGroup("Aim"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static float A_AimCursorRadius;
+
+    #endregion
+
     // Constructor
     [MenuItem(("에디터/플레이어 변수 수정기"))]
     private static void OpenWindow()
@@ -66,6 +79,7 @@ public class CW_PlayerManipulator : OdinEditorWindow
         
         TransferPlayerValues(false);
         TransferNegotiatorValues(false);
+        TransferAimValues(false);
     }
     
     // Functions
@@ -88,6 +102,12 @@ public class CW_PlayerManipulator : OdinEditorWindow
         p_ValMani.SetNegotiator();
     }
     
+    [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("Aim")]
+    private void Aim_적용하기()
+    {
+        TransferAimValues(true);
+    }
+    
     /// <summary>
     /// 각종 Player 데이터를 Player_ValueManipulator로 넘기거나 가져옵니다.
     /// </summary>
@@ -104,6 +124,8 @@ public class CW_PlayerManipulator : OdinEditorWindow
             p_ValMani.P_BackSpeedMulti = P_BackSpeedMulti;
             p_ValMani.P_RollSpeedMulti = P_RollSpeedMulti;
             p_ValMani.P_MeleeSpeedMulti = P_MeleeSpeedMulti;
+            p_ValMani.P_MeleeDamage = P_MeleeDamage;
+            p_ValMani.P_MeleeStunValue = P_MeleeStunValue;
         }
         else
         {
@@ -113,6 +135,8 @@ public class CW_PlayerManipulator : OdinEditorWindow
             P_BackSpeedMulti = p_ValMani.P_BackSpeedMulti;
             P_RollSpeedMulti = p_ValMani.P_RollSpeedMulti;
             P_MeleeSpeedMulti = p_ValMani.P_MeleeSpeedMulti;
+            P_MeleeDamage = p_ValMani.P_MeleeDamage;
+            P_MeleeStunValue = p_ValMani.P_MeleeStunValue;
         }
         
         #if UNITY_EDITOR
@@ -149,6 +173,29 @@ public class CW_PlayerManipulator : OdinEditorWindow
 
         #if UNITY_EDITOR
             EditorUtility.SetDirty(p_ValMani);
+        #endif
+    }
+    
+    /// <summary>
+    /// 각종 Aim 데이터를 AimCursor로 넘기거나 가져옵니다.
+    /// </summary>
+    /// <param name="_toAimCursor"></param>
+    private static void TransferAimValues(bool _toAimCursor)
+    {
+        var aimCursor = GameObject.FindGameObjectWithTag("InstanceMgr").
+            GetComponent<InstanceMgr>().p_AimCursor.GetComponent<AimCursor>();
+
+        if (_toAimCursor)
+        {
+            aimCursor.p_AimRaycastRadius = A_AimCursorRadius;
+        }
+        else
+        {
+            A_AimCursorRadius = aimCursor.p_AimRaycastRadius;
+        }
+
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(aimCursor);
         #endif
     }
 }

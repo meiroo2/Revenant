@@ -11,6 +11,8 @@ public class EnemyMgr : MonoBehaviour
     [Header("원거리 적 변수 목록")] 
     public int N_HP;
     public int N_BulletDamage;
+    public float N_BulletSpeed;
+    public float N_BulletRandomRotation;
     public float N_FireDelay;
     public float N_Speed;
     public int N_StunThreshold;

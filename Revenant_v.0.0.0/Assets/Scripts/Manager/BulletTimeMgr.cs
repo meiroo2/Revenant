@@ -12,23 +12,31 @@ public class BulletTimeParam
 {
     public IHotBox m_HotBox { get; private set; }
     public IHotBoxParam m_HotBoxParam { get; private set; }
+    public Vector2 m_MarkerPos { get; private set; }
 
-    public BulletTimeParam(IHotBox _box, IHotBoxParam _param)
+    public Action m_FinalAction { get; private set; }
+
+    public BulletTimeParam(IHotBox _box, IHotBoxParam _param, Vector2 _markerPos, Action _action)
     {
         m_HotBox = _box;
         m_HotBoxParam = _param;
+        m_MarkerPos = _markerPos;
+        m_FinalAction = _action;
     }
 }
 
 public class BulletTimeMgr : MonoBehaviour
 {
     // Visible Member Variables
+    public float p_BulletTimeLimit = 2f;
     public float p_ShotDelayTime = 0.1f;
     public GameObject p_Marker;
     
     // Member Variables
     public bool m_CanUseBulletTime { get; private set; } = false;
 
+    private const int m_NumofMarker = 8;
+    
     private BasicWeapon m_Negotiator;
     private Player_InputMgr m_InputMgr;
     
@@ -42,7 +50,6 @@ public class BulletTimeMgr : MonoBehaviour
     private List<BulletTimeParam> m_BulletTimeParamList = new List<BulletTimeParam>();
     private Coroutine m_Coroutine;
     
-    private List<Action> m_HitBoxActionList = new List<Action>();
     private List<Action> m_FinaleActionList = new List<Action>();
 
     public bool m_BulletTimeActivating { get; private set; } = false;
@@ -57,7 +64,7 @@ public class BulletTimeMgr : MonoBehaviour
     private void Start()
     {
         // Awake시 마커용 오브젝트풀 생성
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < m_NumofMarker - 1; i++)
         {
             var element = Instantiate(p_Marker, this.transform, true);
             m_MarkerList.Add(element);
@@ -77,15 +84,15 @@ public class BulletTimeMgr : MonoBehaviour
 
     // Functions
 
-    /// <summary>
-    /// BulletTime이 끝나고 전탄 발사시, 차례로 히트박스를 때릴 함수를 추가합니다.
-    /// </summary>
-    /// <param name="_actionFunc">HitHotBox 함수</param>
-    public void AddHotBoxAction(Action _actionFunc)
+    private IEnumerator CheckBulletTimeLimit()
     {
-        m_HitBoxActionList.Add(_actionFunc);
+        yield return new WaitForSecondsRealtime(p_BulletTimeLimit);
+        if (m_BulletTimeActivating)
+        {
+            ActivateBulletTime(false);
+            FireAll();
+        }
     }
-
     
     /// <summary>
     /// 전탄 발사가 끝난 후 호출될 함수를 추가합니다.
@@ -150,6 +157,7 @@ public class BulletTimeMgr : MonoBehaviour
     {
         if (_isStart)
         {
+            StartCoroutine(CheckBulletTimeLimit());
             m_BulletTimeActivating = true;
             Time.timeScale = 0f;
         }
@@ -182,7 +190,7 @@ public class BulletTimeMgr : MonoBehaviour
     /// <param name="_param">사격 정보</param>
     public void BookFire(BulletTimeParam _param)
     {
-        if (m_MarkerIdx > 6)
+        if (m_MarkerIdx > m_MarkerList.Count - 1)
             return;
         
         m_BulletTimeParamList.Add(_param);
@@ -190,8 +198,27 @@ public class BulletTimeMgr : MonoBehaviour
         
         var marker = m_MarkerList[m_MarkerIdx];
         marker.SetActive(true);
-        marker.transform.position = _param.m_HotBoxParam.m_contactPoint;
+        marker.transform.position = _param.m_MarkerPos;
         marker.transform.parent = _param.m_HotBox.m_ParentObj.transform;
+
+        m_MarkerIdx++;
+    }
+
+    /// <summary>
+    /// 빈 곳을 조준했을 때 사용하는 BookFire입니다.
+    /// </summary>
+    /// <param name="_markerPos"></param>
+    /// <param name="_action"></param>
+    public void BookFire(Vector2 _markerPos, Action _action)
+    {
+        if (m_MarkerIdx > m_MarkerList.Count - 1)
+            return;
+        
+        m_BulletTimeParamList.Add(new BulletTimeParam(null, null, _markerPos, _action));
+        
+        var marker = m_MarkerList[m_MarkerIdx];
+        marker.SetActive(true);
+        marker.transform.position = _markerPos;
 
         m_MarkerIdx++;
     }
@@ -212,12 +239,20 @@ public class BulletTimeMgr : MonoBehaviour
     {
         for (int i = 0; i < m_BulletTimeParamList.Count; i++)
         {
-            m_BulletTimeParamList[i].m_HotBox.HitHotBox(m_BulletTimeParamList[i].m_HotBoxParam);
-            m_MarkerList[i].SetActive(false);
+            if (ReferenceEquals(m_BulletTimeParamList[i].m_HotBox, null))
+            {
+                m_MarkerList[i].SetActive(false);
+                m_SoundPlayer.playGunFireSound(0, gameObject);
+                m_BulletTimeParamList[i].m_FinalAction?.Invoke();
+            }
+            else
+            {
+                m_BulletTimeParamList[i].m_HotBox.HitHotBox(m_BulletTimeParamList[i].m_HotBoxParam);
+                m_MarkerList[i].SetActive(false);
             
-            m_SoundPlayer.playGunFireSound(0, gameObject);
-            m_HitBoxActionList[i].Invoke();
-
+                m_SoundPlayer.playGunFireSound(0, gameObject);
+                m_BulletTimeParamList[i].m_FinalAction?.Invoke();
+            }
             yield return new WaitForSecondsRealtime(p_ShotDelayTime);
         }
 
@@ -232,8 +267,6 @@ public class BulletTimeMgr : MonoBehaviour
         m_MarkerIdx = 0;
         m_FinaleActionList.Clear();
         m_FinaleActionList.TrimExcess();
-        m_HitBoxActionList.Clear();
-        m_HitBoxActionList.TrimExcess();
         m_BulletTimeParamList.Clear();
         m_BulletTimeParamList.TrimExcess();
         

@@ -164,6 +164,9 @@ public class NormalGang : BasicEnemy
 
         tripleshot.p_BulletDamage = _mgr.N_BulletDamage;
         tripleshot.p_FireDelay = _mgr.N_FireDelay;
+        tripleshot.p_BulletSpeed = _mgr.N_BulletSpeed;
+        tripleshot.p_BulletRandomRotation = _mgr.N_BulletRandomRotation;
+        
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);

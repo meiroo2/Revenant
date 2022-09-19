@@ -69,6 +69,8 @@ public class Player : Human
     public ScreenEffect_UI m_ScreenEffectUI { get; private set; }
 
     public ParticleMgr m_ParticleMgr { get; private set; }
+    public Negotiator_Player m_Negotiator { get; private set; }
+
 
     private bool m_isRecoveringRollCount = false;
     public float m_LeftRollCount { get; set; }
@@ -121,7 +123,7 @@ public class Player : Human
         m_ObjInteractor = GetComponentInChildren<Player_ObjInteracter>();
         m_MeleeAttack = GetComponentInChildren<Player_MeleeAttack>();
         m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
-
+        m_Negotiator = GetComponentInChildren<Negotiator_Player>();
 
         m_IDLE = new Player_IDLE(this);
         m_WALK = new Player_WALK(this);
@@ -167,19 +169,23 @@ public class Player : Human
         p_BackSpeedMulti = _input.P_BackSpeedMulti;
         p_RollSpeedMulti = _input.P_RollSpeedMulti;
         p_MeleeSpeedMulti = _input.P_MeleeSpeedMulti;
+        m_MeleeAttack.m_Damage = _input.P_MeleeDamage;
+        m_MeleeAttack.m_StunValue = _input.P_MeleeStunValue;
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(m_MeleeAttack);
         #endif
     }
 
     public void SetNegotiator(PlayerManipulator _input)
     {
         var nego = GetComponentInChildren<Negotiator_Player>();
+        
         nego.p_BulletDamage = _input.N_Damage;
         nego.p_StunValue = _input.N_StunValue;
         nego.p_MinFireDelay = _input.N_MinFireDelay;
-        nego.p_MaxBullet = _input.N_MaxBullet;
+        nego.p_MaxRound = _input.N_MaxBullet;
         nego.p_MaxMag = _input.N_MaxMag;
         nego.p_ReloadTime = _input.N_ReloadSpeed;
         

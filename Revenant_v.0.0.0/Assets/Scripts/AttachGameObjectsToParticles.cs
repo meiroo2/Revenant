@@ -21,7 +21,6 @@ public class AttachGameObjectsToParticles : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        
         int count = m_ParticleSystem.GetParticles(m_Particles);
         m_Particles[0].position = Vector2.zero;
         m_ParticleSystem.SetParticles(m_Particles, count);

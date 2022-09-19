@@ -12,26 +12,17 @@ public class RageGauge_UI : MonoBehaviour
     [Tooltip("게이지 이미지")] public Image p_GaugeImg;
     public Image p_BulletTimeIndicator;
 
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Max { get; private set; } = 100;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Max = 100;
 
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Refill_Nature { get; private set; } = 1;
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Refill_Attack { get; private set; } = 1;
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Refill_Evade { get; private set; } = 1;
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Refill_JustEvade { get; private set; } = 5;
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Refill_Limit { get; private set; } = 50;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Refill_Nature = 1;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Refill_Attack_Multi = 1;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Refill_Evade = 1;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Refill_JustEvade = 5;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Refill_Limit = 50;
 
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Consume_Nature { get; private set; } = 1;
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Consume_Roll { get; private set; } = 1;
-    [field: SerializeField, BoxGroup("게이지 구성요소")]
-    public float p_Gauge_Consume_Melee { get; private set; } = 1;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Consume_Nature = 1;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Consume_Roll = 1;
+    [BoxGroup("게이지 구성요소")] public float p_Gauge_Consume_Melee = 1;
     
     
     // Member Variables
@@ -101,8 +92,6 @@ public class RageGauge_UI : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RefillGauge()
     {
-        float timer = 0f;
-
         // Timescale에 영향이 가지 않도록 Realtime 기준으로 작동합니다.
         while (true)
         {
@@ -130,6 +119,8 @@ public class RageGauge_UI : MonoBehaviour
                 {
                     p_GaugeImg.color = m_RegenColor;
                 }
+                
+                
             }
 
             yield return null;
