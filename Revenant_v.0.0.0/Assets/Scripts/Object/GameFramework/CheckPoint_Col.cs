@@ -6,7 +6,6 @@ using UnityEngine;
 public class CheckPoint_Col : MonoBehaviour, IUseableObj
 {
     private CheckPoint _checkPoint;
-    private Player _player;
 
     public bool m_IsOutlineActivated { get; set; }
     public UseableObjList m_ObjProperty { get; set; }
@@ -16,7 +15,6 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     {
         m_ObjProperty = UseableObjList.CHECKPOINT;
         
-        _player = GetComponent<Player>();
         _checkPoint = GetComponent<CheckPoint>();
     }
 
@@ -27,9 +25,17 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     
     public int useObj(IUseableObjParam _param)
     {
+        for (int i = 0; i < _checkPoint.EnemyListToActivate.Count; i++)
+        {
+            if (_checkPoint.EnemyListToActivate[i].activeSelf == false)
+            {
+                _checkPoint.EnemyListToActivate.RemoveAt(i);
+            }
+        }
+        
         // 성공하면 1, 실패하면 0을 반환
         // If player interacted Checkpoint, activate it
-        if (_checkPoint.bCanInteract == true)
+        if (_checkPoint.bCanInteract == true && _checkPoint.EnemyListToActivate.Count == 0)
         {
             Debug.Log("Player Use The CheckPoint Box");
             _checkPoint.ActivateCheckPoint();

@@ -18,13 +18,12 @@ public class CheckPoint : MonoBehaviour
     /** List with all checkpoints objects in the scene */
     public static List<GameObject> CheckPointsList;
 
-    private Player _player;
+    public List<GameObject> EnemyListToActivate;
     
     private void Awake()
     {
         bCanInteract = false;
         _Renderer = GetComponent<SpriteRenderer>();
-        _player = GetComponent<Player>();
     }
 
     void Start()
