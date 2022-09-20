@@ -47,7 +47,7 @@ public class Player : Human
 
 
     // Member Variables
-    public PlayerRotation m_playerRotation { get; private set; }
+    [field : SerializeField] public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
     public Player_AniMgr m_PlayerAniMgr { get; private set; }
@@ -117,7 +117,6 @@ public class Player : Human
         m_PlayerAniMgr = GetComponentInChildren<Player_AniMgr>();
         m_PlayerHotBox = GetComponentInChildren<Player_HotBox>();
         m_PlayerFootMgr = GetComponentInChildren<Player_FootMgr>();
-        m_playerRotation = GetComponentInChildren<PlayerRotation>();
         m_WeaponMgr = GetComponentInChildren<Player_WeaponMgr>();
         m_useRange = GetComponentInChildren<Player_UseRange>();
         m_ObjInteractor = GetComponentInChildren<Player_ObjInteracter>();
@@ -211,8 +210,9 @@ public class Player : Human
     // ReSharper disable Unity.PerformanceAnalysis
     public void ChangePlayerFSM(PlayerStateName _name)
     {
+        m_PlayerAniMgr.ExitPlayerAnim();
+        
         //Debug.Log("상태 전이" + _name);
-        m_PlayerAniMgr.exitplayerAnim();
         m_CurPlayerFSMName = _name;
 
         m_CurPlayerFSM.ExitState();
@@ -248,7 +248,7 @@ public class Player : Human
         }
 
         m_CurPlayerFSM.StartState();
-        m_PlayerAniMgr.playplayerAnim();
+        m_PlayerAniMgr.PlayPlayerAnim();
     }
 
 
@@ -341,7 +341,7 @@ public class Player : Human
 
         _mPlayerMatMgr.FlipAllNormalsToRight(m_IsRightHeaded);
 
-        m_PlayerAniMgr.playplayerAnim();
+        m_PlayerAniMgr.PlayPlayerAnim();
     }
 
     public void setPlayerHp(int _value)
