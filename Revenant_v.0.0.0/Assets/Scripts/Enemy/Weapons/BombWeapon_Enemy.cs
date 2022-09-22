@@ -25,7 +25,8 @@ public class BombWeapon_Enemy : BasicWeapon_Enemy
     // Constructors
     private void Awake()
     {
-        m_HotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, Vector2.zero, WeaponType.GRENADE);
+        m_isPlayers = false;
+        m_HotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, Vector2.zero, WeaponType.GRENADE, false);
         GetComponent<CircleCollider2D>().radius = p_BombRadius;
     }
 

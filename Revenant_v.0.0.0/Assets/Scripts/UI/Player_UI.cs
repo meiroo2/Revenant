@@ -36,7 +36,7 @@ public class Player_UI : MonoBehaviour
     private SoundPlayer m_SoundMgr;
     private CameraMove m_Maincam;
     private Player_ArmMgr m_ArmMgr;
-    public float m_ReloadSpeed { get; set; } = 1f;
+    
     public float m_HitmarkRemainTime { get; set; } = 0.2f;
     private int m_MaxHp = 0;
     private float m_HpUnit = 0;
@@ -54,6 +54,9 @@ public class Player_UI : MonoBehaviour
     private Sprite m_ReloadBackupSprite;
 
     private CanvasRenderer[] m_AllVisibleObjs;
+
+    private Player m_Player;
+    private float m_ReloadSpeed = 1f;
     
     
     // Constructors
@@ -77,7 +80,8 @@ public class Player_UI : MonoBehaviour
     {
         var instance = InstanceMgr.GetInstance();
         m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
-        m_ArmMgr = instance.GetComponentInChildren<Player_Manager>().m_Player.m_ArmMgr;
+        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
+        m_ArmMgr = m_Player.m_ArmMgr;
     }
 
 
@@ -114,6 +118,8 @@ public class Player_UI : MonoBehaviour
 
     private IEnumerator Internal_Reload()
     {
+        m_ReloadSpeed = m_Player.m_Negotiator.p_ReloadTime;
+        
         while (p_ReloadCircle.fillAmount < 1)
         {
             p_ReloadCircle.fillAmount += Time.deltaTime * m_ReloadSpeed;
