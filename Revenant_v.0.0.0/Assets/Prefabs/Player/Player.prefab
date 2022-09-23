@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 878420619705013}
   m_Layer: 0
   m_Name: FullBody_VPart
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -403,7 +403,7 @@ GameObject:
   - component: {fileID: 2464477419953813576}
   m_Layer: 0
   m_Name: UpperBody_VPart
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -586,20 +586,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105661aab8d2c664b9b490428fd7d006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <p_Hp>k__BackingField: 10
-  <p_MoveSpeed>k__BackingField: 1.2
+  <p_Hp>k__BackingField: 30
+  <p_MoveSpeed>k__BackingField: 1
   <p_StunHp>k__BackingField: 0
-  <p_StunAlertSpeed>k__BackingField: 1
+  <p_StunAlertSpeed>k__BackingField: 2
   <p_RollCountRecoverSpeed>k__BackingField: 1
-  <p_RollSpeedMulti>k__BackingField: 2
-  <p_BackSpeedMulti>k__BackingField: 0.55
+  <p_RollSpeedMulti>k__BackingField: 4
+  <p_BackSpeedMulti>k__BackingField: 0.7
   <p_RunSpeedRatio>k__BackingField: 1.5
   <p_MaxRollCount>k__BackingField: 3
-  <p_MeleeSpeedMulti>k__BackingField: 5
-  <p_JustEvadeNormalizeTime>k__BackingField: {x: 0, y: 0.30475694}
+  <p_MeleeSpeedMulti>k__BackingField: 8
+  <p_RollDecelerationSpeedMulti>k__BackingField: 6
+  <p_JustEvadeNormalizeTime>k__BackingField: {x: 0, y: 0.5}
   p_JustEvadeStopTime: 0.1
   <p_CenterTransform>k__BackingField: {fileID: 5349450568617132045}
   <m_playerRotation>k__BackingField: {fileID: 6699025932563789977}
+  <m_MeleeAttack>k__BackingField: {fileID: 2855590271983462353}
 --- !u!50 &6699025932106853841
 Rigidbody2D:
   serializedVersion: 4
@@ -1079,7 +1081,7 @@ GameObject:
   - component: {fileID: 4856855997676567115}
   m_Layer: 0
   m_Name: LowerBody_VPart
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1272,7 +1274,7 @@ GameObject:
   - component: {fileID: 5704196316244093976}
   m_Layer: 0
   m_Name: Arm_VPart
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1489,7 +1491,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4188078021910403264, guid: df3132bddb624964a98df92c9dcc9a7f, type: 3}
       propertyPath: p_StunValue
-      value: 1
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4188078021910403264, guid: df3132bddb624964a98df92c9dcc9a7f, type: 3}
       propertyPath: p_ReloadTime

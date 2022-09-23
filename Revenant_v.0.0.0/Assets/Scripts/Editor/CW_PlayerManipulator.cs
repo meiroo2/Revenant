@@ -38,7 +38,13 @@ public class CW_PlayerManipulator : OdinEditorWindow
 
     [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static int P_MeleeStunValue;
-    
+
+    [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth), Title("JustEvade")]
+    public static float p_JustEvadeStartTime;
+
+    [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static float p_JustEvadeEndTime;
+
     #endregion
 
     
@@ -126,6 +132,8 @@ public class CW_PlayerManipulator : OdinEditorWindow
             p_ValMani.P_MeleeSpeedMulti = P_MeleeSpeedMulti;
             p_ValMani.P_MeleeDamage = P_MeleeDamage;
             p_ValMani.P_MeleeStunValue = P_MeleeStunValue;
+            p_ValMani.P_JustEvadeStartTime = p_JustEvadeStartTime;
+            p_ValMani.P_JustEvadeEndTime = p_JustEvadeEndTime;
         }
         else
         {
@@ -137,6 +145,8 @@ public class CW_PlayerManipulator : OdinEditorWindow
             P_MeleeSpeedMulti = p_ValMani.P_MeleeSpeedMulti;
             P_MeleeDamage = p_ValMani.P_MeleeDamage;
             P_MeleeStunValue = p_ValMani.P_MeleeStunValue;
+            p_JustEvadeStartTime =  p_ValMani.P_JustEvadeStartTime ;
+             p_JustEvadeEndTime = p_ValMani.P_JustEvadeEndTime ;
         }
         
         #if UNITY_EDITOR

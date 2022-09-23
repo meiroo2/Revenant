@@ -15,6 +15,7 @@ public class Particle : MonoBehaviour
     private ParticleMgr m_ParticleMgr;
     private Transform m_DestinationTransform;
     private float m_Speed;
+    private float m_WaitTime;
 
     private Action m_Action;
 
@@ -43,17 +44,16 @@ public class Particle : MonoBehaviour
         }
     }
     
-    public void InitParticle(Transform _transform, float _speed, Action _action)
+    public void InitParticle(Transform _transform, float _speed,float _waitTime, Action _action)
     {
         m_Trail.time = 0f;
         
         m_DestinationTransform = _transform;
         m_Speed = _speed;
-
+        m_WaitTime = _waitTime;
         m_Action = _action;
-
-        m_Rigid.AddForce(StaticMethods.GetRotatedVec(Vector2.up, Random.Range(0f, 360f)) * 0.3f, ForceMode2D.Impulse);
-        m_Coroutine = StartCoroutine(Waiting());
+        
+        m_Coroutine = StartCoroutine(Following());
     }
 
 
@@ -62,45 +62,29 @@ public class Particle : MonoBehaviour
 
 
     // Functions
-    private IEnumerator Waiting()
+    private IEnumerator Following()
     {
-        float Timer = 0f;
+        Vector2 direction = (m_DestinationTransform.position - transform.position).normalized;
+        yield return new WaitForSeconds(m_WaitTime);
+
         while (true)
         {
-            yield return null;
-            Timer += Time.deltaTime;
-
-            transform.localScale = new Vector3(transform.localScale.x + Timer * 0.02f, transform.localScale.y + Timer * 0.02f,
-                transform.localScale.z);
-            
-            if (Timer >= 1f)
-                break;
-        }
-
-        m_Rigid.isKinematic = false;
-        
-        float duration = m_Speed * 0.1f;
-        float time = 0.0f;
-        Vector3 start = transform.position;
-        Vector3 end = m_DestinationTransform.position;
-
-        while(time < duration)
-        {
+            direction = (m_DestinationTransform.position - transform.position).normalized;
             m_Trail.time += Time.deltaTime;
-            end = m_DestinationTransform.position;
-            time += Time.deltaTime;
-            float linearT = time / duration;
-            float heightT = m_ParticleMgr.p_Curve.Evaluate(linearT);
+            
+            transform.Translate(direction * m_Speed);
 
-            float height = Mathf.Lerp(0.0f, 1f, heightT);
-
-            transform.position = Vector2.Lerp(start, end, linearT) + new Vector2(0.0f, height);
-
-            yield return null;
+            if (Vector2.Distance(transform.position, 
+                    m_DestinationTransform.position) < 0.1f)
+                break;
+            
+            yield return new WaitForFixedUpdate();
         }
 
         m_Action?.Invoke();
         
         gameObject.SetActive(false);
+
+        yield break;
     }
 }

@@ -76,6 +76,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   N_HP: 0
   N_BulletDamage: 0
+  N_BulletSpeed: 0
+  N_BulletRandomRotation: 0
   N_FireDelay: 0
   N_Speed: 0
   N_StunThreshold: 0
@@ -130,15 +132,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   p_Player: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+  p_RageGauge: {fileID: 1683800367418319240, guid: bab938c805fb63f4ea78c6706d061dd9, type: 3}
   P_HP: 50
   P_StunInvincibleTime: 2
   P_Speed: 1
   P_BackSpeedMulti: 0.7
   P_RollSpeedMulti: 2
   P_MeleeSpeedMulti: 2
-  P_Damage: 10
-  P_StunValue: 1
-  P_MinFireDelay: 0.1
-  P_MaxBullet: 150
-  P_MaxMag: 10
-  P_ReloadSpeed: 1
+  P_MeleeDamage: 10
+  P_MeleeStunValue: 10
+  N_Damage: 10
+  N_StunValue: 1
+  N_MinFireDelay: 0.1
+  N_MaxBullet: 150
+  N_MaxMag: 10
+  N_ReloadSpeed: 1

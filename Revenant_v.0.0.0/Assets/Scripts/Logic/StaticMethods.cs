@@ -62,10 +62,10 @@ public static class StaticMethods
     }
 
     /// <summary>
-    /// ¼öÁ÷ÀÎ º¤ÅÍ¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
+    /// ì™¼ìª½ì„ í–¥í•˜ê³  ì§êµí•˜ëŠ” ë²¡í„°ë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="_rawVec"> ³ÖÀ» º¤ÅÍ </param>
-    /// <returns> ³ÖÀº º¤ÅÍ¿¡ ¼öÁ÷ÀÎ º¤ÅÍ </returns>
+    /// <param name="_rawVec"> ì¸ì ë²¡í„° </param>
+    /// <returns> ì§êµí•˜ëŠ” ë²¡í„° </returns>
     public static Vector2 getLPerpVec(Vector2 _rawVec)
     {
         m_TempVec2.x = -_rawVec.y;

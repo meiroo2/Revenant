@@ -131,6 +131,8 @@ public class Player_ArmMgr : MonoBehaviour
     
     private void DoReload()
     {
+        m_PlayerAniMgr.ChangeAniModeToFight(false);
+        
         m_Player.m_SFXMgr.playPlayerSFXSound(2);
         m_Player.m_PlayerUIMgr.ResetCallback();
         m_Player.m_PlayerUIMgr.AddCallback(m_WeaponMgr.m_CurWeapon.Reload);

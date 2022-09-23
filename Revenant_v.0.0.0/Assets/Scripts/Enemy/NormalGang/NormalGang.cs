@@ -126,7 +126,7 @@ public class NormalGang : BasicEnemy
 
 
     // Functions
-    public override void StartPlayerCognition()
+    public override void StartPlayerCognition(bool _instant = false)
     {
         if (m_CurEnemyStateName == EnemyStateName.DEAD || m_PlayerCognition) 
             return;

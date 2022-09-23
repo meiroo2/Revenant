@@ -42,6 +42,7 @@ public class BulletTimeMgr : MonoBehaviour
     
     private HitSFXMaker m_HitSFXMaker;
     private SoundPlayer m_SoundPlayer;
+    private MatChanger m_MatChanger;
 
     private List<GameObject> m_MarkerList = new List<GameObject>();
     private int m_MarkerIdx = 0;
@@ -75,6 +76,7 @@ public class BulletTimeMgr : MonoBehaviour
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_SoundPlayer = instance.GetComponentInChildren<SoundPlayer>();
         m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
+        m_MatChanger = instance.GetComponentInChildren<MatChanger>();
         m_Negotiator = instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr.m_CurWeapon;
     }
 
@@ -159,11 +161,13 @@ public class BulletTimeMgr : MonoBehaviour
         {
             StartCoroutine(CheckBulletTimeLimit());
             m_BulletTimeActivating = true;
+            m_MatChanger.ChangeMat();
             Time.timeScale = 0f;
         }
         else
         {
             m_BulletTimeActivating = false;
+            m_MatChanger.ResotreMat();
             Time.timeScale = 1f;
 
             foreach (var element in m_MarkerList)
@@ -180,6 +184,7 @@ public class BulletTimeMgr : MonoBehaviour
     /// <param name="_time">지정 시간</param>
     public void ModifyTimeScale(float _time)
     {
+        m_MatChanger.ChangeMat();
         Time.timeScale = 0.3f;
         StartCoroutine(CheckTimePassed(_time));
     }
@@ -282,6 +287,7 @@ public class BulletTimeMgr : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(_time);
         Time.timeScale = 1f;
+        m_MatChanger.ResotreMat();
 
         yield break;
     }

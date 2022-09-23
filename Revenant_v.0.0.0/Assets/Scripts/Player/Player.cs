@@ -36,6 +36,9 @@ public class Player : Human
 
     [field: SerializeField, BoxGroup("Player Values")]
     public float p_MeleeSpeedMulti { get; private set; } = 2f;
+    
+    [field: SerializeField, BoxGroup("Player Values")]
+    public float p_RollDecelerationSpeedMulti { get; private set; } = 1f;
 
     [field: SerializeField, MinMaxSlider(0f, 1f), Title("Evade Values"), BoxGroup("Player Values")]
     public Vector2 p_JustEvadeNormalizeTime { get; private set; } = Vector2.zero;
@@ -61,7 +64,7 @@ public class Player : Human
     public Player_InputMgr m_InputMgr { get; private set; }
     public Player_HitscanRay m_PlayerHitscanRay { get; private set; }
     public Player_ObjInteracter m_ObjInteractor { get; private set; }
-    public Player_MeleeAttack m_MeleeAttack { get; private set; }
+    [field : SerializeField]public Player_MeleeAttack m_MeleeAttack { get; private set; }
     public Player_ArmMgr m_ArmMgr { get; private set; }
     public RageGauge_UI m_RageGauge { get; private set; }
     public BulletTimeMgr m_BulletTimeMgr { get; private set; }
@@ -170,6 +173,7 @@ public class Player : Human
         p_MeleeSpeedMulti = _input.P_MeleeSpeedMulti;
         m_MeleeAttack.m_Damage = _input.P_MeleeDamage;
         m_MeleeAttack.m_StunValue = _input.P_MeleeStunValue;
+        p_JustEvadeNormalizeTime = new Vector2(_input.P_JustEvadeStartTime, _input.P_JustEvadeEndTime);
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
