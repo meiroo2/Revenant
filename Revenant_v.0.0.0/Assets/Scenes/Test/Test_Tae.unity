@@ -182,6 +182,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 43e9e5cd9eddb8c4b9a2a74f34e059c5, type: 2}
+    - target: {fileID: 2116663443595651243, guid: c1e5ab2f6129ad547ae34d405ad9a43c, type: 3}
+      propertyPath: m_Hp
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1e5ab2f6129ad547ae34d405ad9a43c, type: 3}
 --- !u!1001 &160395105
@@ -200,12 +204,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: p_BulletSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_BulletDamage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: p_BulletRandomRotation
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_AlertSpeed
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_MeleeDistance
@@ -217,7 +229,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_MoveSpeed>k__BackingField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_AttackDistance>k__BackingField
@@ -348,7 +360,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.8175062, y: 1}
+    m_SensorSize: {x: 2.102857, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -850,7 +862,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: N_Speed
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: S_Speed
@@ -881,6 +893,10 @@ PrefabInstance:
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
+      propertyPath: N_BulletSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: S_AtkHoldTime
       value: 2
       objectReference: {fileID: 0}
@@ -907,6 +923,10 @@ PrefabInstance:
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: N_BodyDmgMulti
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
+      propertyPath: N_BulletDamage
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: N_HeadDmgMulti
@@ -955,6 +975,10 @@ PrefabInstance:
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: M_Vision_Distance
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
+      propertyPath: N_AlertSpeedMulti
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: N_AlertSpeedRatio
@@ -1069,12 +1093,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: p_BulletSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_BulletDamage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: p_BulletRandomRotation
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_AlertSpeed
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_MeleeDistance
@@ -1086,7 +1118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_MoveSpeed>k__BackingField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_AttackDistance>k__BackingField
@@ -1155,6 +1187,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6785627412206059254, guid: 43712787576e5074883d025042d922ca, type: 3}
   m_PrefabInstance: {fileID: 669386306}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &669386310 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
+  m_PrefabInstance: {fileID: 669386306}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669386307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2a6e9ddf18c4133aad9ddf550569132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &676625945 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2116663442746928321, guid: c1e5ab2f6129ad547ae34d405ad9a43c, type: 3}
@@ -2076,12 +2119,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4048058449507994536, guid: 7ff5f4aa58a6c1945a92f3b972ff4d5c, type: 3}
       propertyPath: p_WillSpawnEnemys.Array.size
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4048058449507994536, guid: 7ff5f4aa58a6c1945a92f3b972ff4d5c, type: 3}
       propertyPath: p_WillSpawnEnemys.Array.data[0]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1728438277}
+    - target: {fileID: 4048058449507994536, guid: 7ff5f4aa58a6c1945a92f3b972ff4d5c, type: 3}
+      propertyPath: p_WillSpawnEnemys.Array.data[1]
+      value: 
+      objectReference: {fileID: 160395106}
     - target: {fileID: 4048058449507994537, guid: 7ff5f4aa58a6c1945a92f3b972ff4d5c, type: 3}
       propertyPath: m_Name
       value: EnemySpawner
@@ -2677,6 +2724,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b52af0d719aae744a601383247564b6, type: 3}
+--- !u!114 &1502712126 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4048058449507994536, guid: 7ff5f4aa58a6c1945a92f3b972ff4d5c, type: 3}
+  m_PrefabInstance: {fileID: 1093728019}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7d01070dc2a48bbaac52b51fd29dff3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1540842009
 GameObject:
   m_ObjectHideFlags: 0
@@ -2919,12 +2977,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: p_BulletSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_BulletDamage
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: p_BulletRandomRotation
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_AlertSpeed
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_MeleeDistance
@@ -2936,7 +3002,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_MoveSpeed>k__BackingField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_AttackDistance>k__BackingField
@@ -4246,17 +4312,21 @@ PrefabInstance:
       value: CheckPoint (1)
       objectReference: {fileID: 0}
     - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: bEnemyListToActivate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
       propertyPath: EnemyListToActivate.Array.size
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
       propertyPath: EnemyListToActivate.Array.data[0]
       value: 
-      objectReference: {fileID: 1728438277}
+      objectReference: {fileID: 669386310}
     - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
       propertyPath: EnemyListToActivate.Array.data[1]
       value: 
-      objectReference: {fileID: 160395106}
+      objectReference: {fileID: 669386307}
     - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
       propertyPath: EnemyListToActivate.Array.data[2]
       value: 
@@ -4516,21 +4586,53 @@ PrefabInstance:
       value: CheckPoint
       objectReference: {fileID: 0}
     - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
-      propertyPath: EnemyListToActivate.Array.size
+      propertyPath: bEnemyListToActivate
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: AssignedObjectsList.Array.size
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
-      propertyPath: EnemyListToActivate.Array.data[0]
+      propertyPath: EnemyListToActivate.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: bEnemyListToActivateFromSpawner
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: AssignedObjectsList.Array.data[0]
       value: 
       objectReference: {fileID: 1728438277}
     - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
-      propertyPath: EnemyListToActivate.Array.data[1]
+      propertyPath: AssignedObjectsList.Array.data[1]
       value: 
       objectReference: {fileID: 160395106}
     - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
-      propertyPath: EnemyListToActivate.Array.data[2]
+      propertyPath: AssignedObjectsList.Array.data[2]
       value: 
       objectReference: {fileID: 669386307}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: EnemyListToActivate.Array.data[0]
+      value: 
+      objectReference: {fileID: 669386310}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: EnemyListToActivate.Array.data[1]
+      value: 
+      objectReference: {fileID: 669386310}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: EnemyListToActivate.Array.data[2]
+      value: 
+      objectReference: {fileID: 669386310}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: EnemyListToActivateFromSpawner.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9090362203490211683, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
+      propertyPath: EnemyListToActivateFromSpawner.Array.data[0]
+      value: 
+      objectReference: {fileID: 1502712126}
     - target: {fileID: 9090362203490211684, guid: f72c57e1a006c7747b44cb801989dbb8, type: 3}
       propertyPath: m_RootOrder
       value: 2

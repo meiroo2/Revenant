@@ -18,11 +18,23 @@ public class CheckPoint : MonoBehaviour
     /** List with all checkpoints objects in the scene */
     public static List<GameObject> CheckPointsList;
 
-    public List<GameObject> EnemyListToActivate;
+    [Header("체크포인트 활성화 조건 버튼 - 맵 배치 적")] 
+    public bool bEnemyListToActivate;
+    public List<BasicEnemy> EnemyListToActivate;
+
+    [Header("체크포인트 활성화 조건 버튼 - 스포너")] 
+    public bool bEnemyListToActivateFromSpawner;
+    public List<EnemySpawner> EnemyListToActivateFromSpawner;
+
+    [Header("체크포인트 섹션 오브젝트")] 
+    public List<GameObject> AssignedObjectsList;
+
+    public int SectionNumber;
     
     private void Awake()
     {
         bCanInteract = false;
+
         _Renderer = GetComponent<SpriteRenderer>();
     }
 
@@ -32,6 +44,11 @@ public class CheckPoint : MonoBehaviour
 
         // Search all the checkpoints in the current scene
         CheckPointsList = GameObject.FindGameObjectsWithTag("CheckPoint").ToList();
+    }
+
+    private void Update()
+    {
+        
     }
 
     /** Get position of the last activated checkpoint */
@@ -71,6 +88,30 @@ public class CheckPoint : MonoBehaviour
         // Activated the current checkpoint
         Activated = true;
         //thisAnimator.SetBool("Active", true);
+    }
+
+    public void SetActiveObjects()
+    {
+        int index = 0;
+        foreach (GameObject CheckPointGameObject in CheckPointsList)
+        {
+            if (Activated == true && CheckPointGameObject.Equals(CheckPointsList[index]))
+            {
+                SectionNumber = index;
+                
+                Debug.Log(SectionNumber);
+
+                for (int i = 0; i < AssignedObjectsList.Count; i++)
+                {
+                    AssignedObjectsList[i].SetActive(true);
+                    Debug.Log(AssignedObjectsList[i].gameObject.activeSelf);
+                }
+                
+                index++;
+            }
+
+        }
+
     }
     
     public void ActivateBothOutline(bool _isOn)

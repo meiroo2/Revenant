@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public abstract class PlayerFSM
@@ -462,9 +463,12 @@ public class Player_DEAD : PlayerFSM
         m_Player.m_playerRotation.m_doRotate = false;
         m_Player.m_PlayerAniMgr.setSprites(false, false, false, false, false);
 
-        // Respawn in 5 seconds
-        //m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
+        int scene = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(scene, LoadSceneMode.Single);
         
+        // Respawn in 5 seconds
+        m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
+
         //GameMgr.GetInstance().PlayerDead();
     }
 
@@ -493,6 +497,9 @@ public class Player_DEAD : PlayerFSM
     IEnumerator DelayGetActiveCheckPointPosition(float DeltaSeconds)
     {
         yield return new WaitForSeconds(DeltaSeconds);
+        
+        //GameMgr.GetInstance().CurSceneReload();
+        
         
         // Change the Player transform to Activated CheckPoint
         m_Player.transform.position = CheckPoint.GetActiveCheckPointPosition();
