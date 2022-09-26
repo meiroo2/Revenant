@@ -11,8 +11,6 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     public bool m_IsOutlineActivated { get; set; }
     public UseableObjList m_ObjProperty { get; set; }
     public bool m_isOn { get; set; }
-    
-    private List<GameObject> EnemyListFromSpawner;
 
     private int GetEnemyNumFromEnemyList;
     private int GetEnemyNumFromSpawnerList;
@@ -22,8 +20,10 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
         m_ObjProperty = UseableObjList.CHECKPOINT;
 
         _checkPoint = GetComponent<CheckPoint>();
+    }
 
-        SetUpEnemyList();
+    private void Start()
+    {
         SetUpGetEnemyNum();
     }
 
@@ -38,24 +38,30 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     {
         // 성공하면 1, 실패하면 0을 반환
         // 플레이어가 체크포인트 범위안에 들어있고, 등록된 적 리스트가 비워져 있다면 인터랙션 가능
-        if (_checkPoint.bCanInteract == true && GetEnemyNumFromEnemyList == 0 && GetEnemyNumFromSpawnerList == 0)
+        if (_checkPoint.bCanInteract && GetEnemyNumFromEnemyList == 0 && GetEnemyNumFromSpawnerList == 0)
         {
             Debug.Log("Player Use The CheckPoint Box");
+            // 체크포인트 활성화
             _checkPoint.ActivateCheckPoint();
+            // 체크포인트 번호 저장
+            DataHandleManager.Instance.CheckPointSectionNumber = _checkPoint.SectionNumber;
+            
+            // 저장된 체크포인트가 활성화되어 있으면
+            if (CheckPoint.CheckPointsList[_checkPoint.SectionNumber - 1].GetComponent<CheckPoint>().bActivated)
+            {
+                // 저장된 체크포인트의 활성화 여부를 DataHandleManager에 저장
+                DataHandleManager.Instance.IsCheckPointActivated = CheckPoint.CheckPointsList[_checkPoint.SectionNumber - 1].GetComponent<CheckPoint>().bActivated;
+                // 플레이어가 스폰할 체크포인트의 위치를 DataHandleManager에 저장
+                DataHandleManager.Instance.PlayerPositionVector = CheckPoint.GetActiveCheckPointPosition();
+            }
+
+            Debug.Log(DataHandleManager.Instance.PlayerPositionVector);
             return 1;
         }
         return 0;
     }
 
-    void SetUpEnemyList()
-    {
-        // 스포너 적 리스트 초기화
-        for (int i = 0; i < _checkPoint.EnemyListToActivateFromSpawner.Count; i++)
-        {
-            EnemyListFromSpawner = new List<GameObject>(_checkPoint.EnemyListToActivateFromSpawner[i].p_WillSpawnEnemys);
-        }
-    }
-
+    /** 리스트에 적이 있는지 판별 후 초기화하는 함수 */
     void SetUpGetEnemyNum()
     {
         // 배치된 적 리스트가 존재 할 때
@@ -66,11 +72,12 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
         
         // 스포너 리스트가 존재 할 때
         if (_checkPoint.EnemyListToActivateFromSpawner.Count != 0)
-            GetEnemyNumFromSpawnerList = EnemyListFromSpawner.Count;
+            GetEnemyNumFromSpawnerList = _checkPoint.EnemyListFromSpawner.Count;
         else
             GetEnemyNumFromSpawnerList = 0;
     }
 
+    /** 적을 리스트에서 지우는 함수 */
     void RemoveEnemyListToActivate()
     {
         // 체크포인트 활성화 조건 버튼이 켜져있고 리스트에 "맵에 배치된" 적이 있을 때
@@ -100,15 +107,15 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
         // 스포너 내 적 리스트 제거
         if (_checkPoint.bEnemyListToActivateFromSpawner == true && _checkPoint.EnemyListToActivateFromSpawner.Count != 0)
         {
-            for (int i = 0; i < EnemyListFromSpawner.Count; i++)
+            for (int i = 0; i < _checkPoint.EnemyListFromSpawner.Count; i++)
             {
                 // 적이 죽으면
-                if (EnemyListFromSpawner[i].gameObject.activeSelf == false)
+                if (_checkPoint.EnemyListFromSpawner[i].gameObject.activeSelf == false)
                 {
                     // 리스트에서 죽은 적을 제거
-                    EnemyListFromSpawner.RemoveAt(i);
+                    _checkPoint.EnemyListFromSpawner.RemoveAt(i);
                     // 리스트에 있는 적 숫자 갱신
-                    GetEnemyNumFromSpawnerList = EnemyListFromSpawner.Count;
+                    GetEnemyNumFromSpawnerList = _checkPoint.EnemyListFromSpawner.Count;
                 }
             }
         }

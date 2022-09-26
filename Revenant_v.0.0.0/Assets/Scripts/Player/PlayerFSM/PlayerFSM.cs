@@ -463,9 +463,9 @@ public class Player_DEAD : PlayerFSM
         m_Player.m_playerRotation.m_doRotate = false;
         m_Player.m_PlayerAniMgr.setSprites(false, false, false, false, false);
 
-        int scene = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(scene, LoadSceneMode.Single);
-        
+        // int scene = SceneManager.GetActiveScene().buildIndex;
+        // SceneManager.LoadScene(scene, LoadSceneMode.Single);
+
         // Respawn in 5 seconds
         m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
 
@@ -497,15 +497,14 @@ public class Player_DEAD : PlayerFSM
     IEnumerator DelayGetActiveCheckPointPosition(float DeltaSeconds)
     {
         yield return new WaitForSeconds(DeltaSeconds);
+
+        GameMgr.GetInstance().CurSceneReload();
         
-        //GameMgr.GetInstance().CurSceneReload();
-        
-        
-        // Change the Player transform to Activated CheckPoint
-        m_Player.transform.position = CheckPoint.GetActiveCheckPointPosition();
-        
-        ExitState();
-        m_Player.setPlayerHp(500);
+        // // Change the Player transform to Activated CheckPoint
+        // m_Player.transform.position = CheckPoint.GetActiveCheckPointPosition();
+        //
+        // ExitState();
+        // m_Player.setPlayerHp(500);
         
         m_CoroutineElement.StopCoroutine_Element();
     }

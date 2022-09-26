@@ -10,6 +10,8 @@ public class DataHandleManager : MonoBehaviour
     public bool IsCheckPointActivated { get; set; }
     public int CheckPointSectionNumber { get; set; }
 
+    public Vector2 PlayerPositionVector { get; set; }
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -18,17 +20,5 @@ public class DataHandleManager : MonoBehaviour
             Instance = this;
         else if (Instance != this)
             Destroy(gameObject);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
