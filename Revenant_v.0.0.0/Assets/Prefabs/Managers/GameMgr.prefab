@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8798066901285890878}
   - component: {fileID: 1900004413932140605}
   - component: {fileID: 4718642478766582402}
+  - component: {fileID: 587487288167801870}
   m_Layer: 0
   m_Name: GameMgr
   m_TagString: GameMgr
@@ -89,6 +90,7 @@ MonoBehaviour:
   N_HeadDmgMulti: 0
   N_BodyDmgMulti: 0
   M_HP: 0
+  M_StunThreshold: 0
   M_MeleeDamage: 0
   M_Speed: 0
   M_Vision_Distance: 0
@@ -96,6 +98,9 @@ MonoBehaviour:
   M_PointAttackTime: 0
   M_HeadDmgMulti: 0
   M_BodyDmgMulti: 0
+  M_FollowSpeedMulti: 0
+  M_DelayAfterAttack: 0
+  M_StunWaitTime: 0
   D_HP: 0
   D_BombDamage: 0
   D_BombRadius: 0
@@ -141,9 +146,23 @@ MonoBehaviour:
   P_MeleeSpeedMulti: 2
   P_MeleeDamage: 10
   P_MeleeStunValue: 10
+  P_JustEvadeStartTime: 0
+  P_JustEvadeEndTime: 1
   N_Damage: 10
   N_StunValue: 1
   N_MinFireDelay: 0.1
   N_MaxBullet: 150
   N_MaxMag: 10
   N_ReloadSpeed: 1
+--- !u!114 &587487288167801870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796319072097737523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79049e9a158a460283536f69fc1ac706, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
