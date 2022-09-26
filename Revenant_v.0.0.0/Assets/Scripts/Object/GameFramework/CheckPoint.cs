@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Schema;
+using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class CheckPoint : MonoBehaviour
     public bool bCanInteract { get; set; }
 
     /** Indicate if the checkpoint is activated */
-    public bool bActivated = false;
+    [ReadOnly] public bool bActivated = false;
 
     /** For animation */
     // private Animator thisAnimator;
@@ -50,10 +51,6 @@ public class CheckPoint : MonoBehaviour
         SetUpSectionNumber();
         SetUpIsActivated();
         DestroyAssignedObjects();
-    }
-
-    private void Update()
-    {
     }
 
     /** 적 리스트 초기화 함수 */

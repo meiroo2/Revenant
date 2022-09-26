@@ -455,7 +455,7 @@ public class Player_DEAD : PlayerFSM
         
         m_Rigid = m_Player.m_PlayerRigid;
         m_Player.m_PlayerHotBox.setPlayerHotBoxCol(false);
-        m_Player.m_PlayerAnimator.Play("Dead");
+        //m_Player.m_PlayerAnimator.Play("Dead");
         
         m_Rigid.velocity = Vector2.zero;
         m_Player.m_CanMove = false;
