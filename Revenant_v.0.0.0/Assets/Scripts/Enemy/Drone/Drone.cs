@@ -213,7 +213,7 @@ public class Drone : BasicEnemy
     }
     
     /// <summary>파라미터에 기반하여 왼쪽 혹은 오른쪽 방향대로 velocity를 수정합니다.</summary>
-    public override void MoveByDirection(bool _isRight)
+    public override void SetRigidByDirection(bool _isRight)
     {
         if (_isRight)
         {
@@ -236,7 +236,7 @@ public class Drone : BasicEnemy
         m_MovePoint = (_destinationPos - (Vector2)transform.position).normalized;
     }
     
-    public override void MoveToPoint_FUpdate()
+    public override void SetRigidToPoint()
     {
         m_EnemyRigid.velocity = m_MovePoint * (p_MoveSpeed * p_RushSpeedRatio);
     }

@@ -70,8 +70,11 @@ public class BasicEnemy : Human
         }
     }
     
-    /// <summary> 해당 적이 플레이어 인지를 시작하도록 합니다. </summary>
-    public virtual void StartPlayerCognition()
+    /// <summary>
+    /// 해당 적이 플레이어 인지를 시작합니다.
+    /// </summary>
+    /// <param name="_instant">즉시 시작 여부</param>
+    public virtual void StartPlayerCognition(bool _instant = false)
     {
     }
 
@@ -171,7 +174,19 @@ public class BasicEnemy : Human
         
         m_CurEnemyFSM.StartState();
     }
-
+    
+    /// <summary>
+    /// 대상의 위치가 적이 바라보는 방향에 있나 판단합니다.
+    /// </summary>
+    /// <param name="_objective">대상 위치</param>
+    /// <returns></returns>
+    public virtual bool IsExistInEnemyView(Vector2 _objective)
+    {
+        bool isRight = !(transform.position.x - _objective.x > 0);
+        
+        return m_IsRightHeaded ? isRight : !isRight;
+    }
+    
     public virtual void SetViewDirectionToPlayer()
     {
         if (transform.position.x > m_PlayerTransform.position.x && m_IsRightHeaded)
@@ -185,14 +200,25 @@ public class BasicEnemy : Human
         m_MovePoint = _destinationPos;
     }
     
-    public virtual void MoveToPoint_FUpdate()
+    /// <summary>
+    /// MovePoint 방향으로 Rigid의 Velocity를 변경합니다.
+    /// </summary>
+    public virtual void SetRigidToPoint()
     {
-        MoveByDirection(m_MovePoint.x > transform.position.x);
+        SetRigidByDirection(m_MovePoint.x > transform.position.x);
     }
 
-    /// <summary>파라미터에 따라 발 밑 Normal벡터에 직교하는 방향대로 이동합니다.</summary>
-    /// /// <param name="_isRight">True시 오른쪽으로 이동</param>
-    public virtual void MoveByDirection(bool _isRight)
+    public void ResetRigid()
+    {
+        m_EnemyRigid.velocity = Vector2.zero;
+    }
+
+
+    /// <summary>
+    /// 파라미터에 따라 발 밑 Normal벡터에 직교하는 방향대로 이동합니다.
+    /// </summary>
+    /// <param name="_isRight">True시 오른쪽으로 이동</param>
+    public virtual void SetRigidByDirection(bool _isRight)
     {
         if (_isRight)
         {
@@ -217,13 +243,13 @@ public class BasicEnemy : Human
             // 적과 플레이어의 방이 같을 경우
             
             // 적과 플레이어의 좌우판별
-            MoveByDirection(!(transform.position.x > m_PlayerTransform.position.x));
+            SetRigidByDirection(!(transform.position.x > m_PlayerTransform.position.x));
         }
         else
         {
             // 적과 플레이어의 방이 다를 경우
             SetDestinationToPlayer();
-            MoveToPoint_FUpdate();
+            SetRigidToPoint();
         }
     }
 

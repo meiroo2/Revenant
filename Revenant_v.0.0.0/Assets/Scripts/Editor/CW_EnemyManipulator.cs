@@ -66,6 +66,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     #region MeleeGang
     
     [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_HP;
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_StunThreshold;
     [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_MeleeDamage;
     [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float M_Speed;
     [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float M_Vision_Distance;
@@ -74,6 +75,15 @@ public class CW_EnemyManipulator : OdinEditorWindow
     public static float M_PointAttackTime;
     [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_HeadDmgMulti;
     [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int M_BodyDmgMulti;
+
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static float M_FollowSpeedMulti;
+
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static float M_DelayAfterAttack;
+
+    [TabGroup("MeleeGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static float M_StunWaitTime;
 
     #endregion
     
@@ -237,6 +247,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
         if (_toEnemyMgr)
         {
             enemyMgr.M_HP = M_HP;
+            enemyMgr.M_StunThreshold = M_StunThreshold;
             enemyMgr.M_MeleeDamage = M_MeleeDamage;
             enemyMgr.M_Speed = M_Speed;
             enemyMgr.M_Vision_Distance = M_Vision_Distance;
@@ -244,10 +255,14 @@ public class CW_EnemyManipulator : OdinEditorWindow
             enemyMgr.M_PointAttackTime = M_PointAttackTime;
             enemyMgr.M_HeadDmgMulti = M_HeadDmgMulti;
             enemyMgr.M_BodyDmgMulti = M_BodyDmgMulti;
+            enemyMgr.M_FollowSpeedMulti = M_FollowSpeedMulti;
+            enemyMgr.M_DelayAfterAttack = M_DelayAfterAttack;
+            enemyMgr.M_StunWaitTime = M_StunWaitTime;
         }
         else
         {
             M_HP = enemyMgr.M_HP;
+            M_StunThreshold = enemyMgr.M_StunThreshold;
             M_MeleeDamage = enemyMgr.M_MeleeDamage;
             M_Speed = enemyMgr.M_Speed;
             M_Vision_Distance = enemyMgr.M_Vision_Distance;
@@ -255,9 +270,12 @@ public class CW_EnemyManipulator : OdinEditorWindow
             M_PointAttackTime = enemyMgr.M_PointAttackTime;
             M_HeadDmgMulti = enemyMgr.M_HeadDmgMulti;
             M_BodyDmgMulti = enemyMgr.M_BodyDmgMulti;
+            M_FollowSpeedMulti = enemyMgr.M_FollowSpeedMulti;
+            M_DelayAfterAttack = enemyMgr.M_DelayAfterAttack;
+            M_StunWaitTime = enemyMgr.M_StunWaitTime;
         }
 
-        #if UNITY_EDITOR
+    #if UNITY_EDITOR
             EditorUtility.SetDirty(enemyMgr);
         #endif
     }

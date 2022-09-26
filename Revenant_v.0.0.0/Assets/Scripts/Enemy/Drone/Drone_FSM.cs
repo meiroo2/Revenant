@@ -95,12 +95,12 @@ public class FOLLOW_Drone : Drone_FSM
                 {
                     if (m_DistanceBetPlayer.x > 0) // 적이 더 오른쪽
                     {
-                        m_Enemy.MoveByDirection(false);
+                        m_Enemy.SetRigidByDirection(false);
                         m_Phase = 1;
                     }
                     else // 적이 더 왼쪽
                     {
-                        m_Enemy.MoveByDirection(true);
+                        m_Enemy.SetRigidByDirection(true);
                         m_Phase = 2;
                     }
                 }
@@ -182,7 +182,7 @@ public class RUSH_Drone : Drone_FSM
                 m_Stateinfo = m_Animator.GetCurrentAnimatorStateInfo(0);
                 if (m_Stateinfo.IsName("At"))
                 {
-                    m_Enemy.MoveToPoint_FUpdate();
+                    m_Enemy.SetRigidToPoint();
                     m_Phase = 1;
                 }
                 break;

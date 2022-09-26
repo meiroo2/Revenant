@@ -96,7 +96,7 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
         {
             if (m_DistanceBetPlayer > m_Enemy.p_AttackDistance)
             {
-                m_Enemy.MoveByDirection(m_Enemy.GetIsLeftThenPlayer());
+                m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
             }
             else
             {
@@ -110,12 +110,12 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
                 // 이격거리보다 더 멀 경우
                 if (m_DistanceBetPlayer > m_Enemy.p_GapDistance)
                 {
-                    m_Enemy.MoveByDirection(m_Enemy.GetIsLeftThenPlayer());
+                    m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
                 }
                 // 이격거리보다 가까이 있음
                 else
                 {
-                    m_Enemy.MoveByDirection(!m_Enemy.GetIsLeftThenPlayer());
+                    m_Enemy.SetRigidByDirection(!m_Enemy.GetIsLeftThenPlayer());
                 }
             }
             else

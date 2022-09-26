@@ -27,6 +27,7 @@ public class EnemyMgr : MonoBehaviour
     [Space(10f)]
     [Header("근거리 적 변수 목록")] 
     public int M_HP;
+    public int M_StunThreshold;
     public int M_MeleeDamage;
     public float M_Speed;
     public float M_Vision_Distance;
@@ -34,6 +35,9 @@ public class EnemyMgr : MonoBehaviour
     [Range(0.0f, 1.0f)] public float M_PointAttackTime;
     public int M_HeadDmgMulti;
     public int M_BodyDmgMulti;
+    public float M_FollowSpeedMulti;
+    public float M_DelayAfterAttack;
+    public float M_StunWaitTime;
     
     [Space(10f)]
     [Header("드론 변수 목록")] 

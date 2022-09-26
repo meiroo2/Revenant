@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class MeleeGang_FSM : Enemy_FSM
 {
@@ -28,16 +30,21 @@ public class MeleeGang_FSM : Enemy_FSM
     }
 }
 
-public class IdleMeleeGang : MeleeGang_FSM
+public class IDLE_MeleeGang : MeleeGang_FSM
 {
     // Member Variables
-    private bool m_isPatrol = false;
     private int m_PatrolIdx = 0;
     private float m_InternalTimer = 0f;
     private Transform m_EnemyTransform;
+    private int m_Phase = 0;
+    private float m_Timer = 0;
+    private bool m_IsFirst = true;
     
+    private readonly int Turn = Animator.StringToHash("Turn");
+    private readonly int Walk = Animator.StringToHash("Walk");
+
     // Constructor
-    public IdleMeleeGang(MeleeGang _enemy)
+    public IDLE_MeleeGang(MeleeGang _enemy)
     {
         m_Enemy = _enemy;
         m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
@@ -46,39 +53,154 @@ public class IdleMeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
-        //m_EnemyAnimator.SetBool("isWalk", false);
         m_InternalTimer = m_Enemy.p_LookAroundDelay;
+
+        m_PatrolIdx = 0;
+        m_Phase = 0;
+        m_Timer = 0f;
     }
 
     public override void UpdateState()
     {
-        m_InternalTimer -= Time.deltaTime;
-        if (m_InternalTimer <= 0f)
+        if (m_Enemy.p_IsLookAround && !m_Enemy.m_IsPatrol)
         {
-            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
-            m_InternalTimer = m_Enemy.p_LookAroundDelay;
+           LookAround();
         }
-        
-        m_Enemy.RaycastVisionCheck();
-
-        if (!ReferenceEquals(m_Enemy.m_VisionHit.collider, null))
+        else if (!m_Enemy.p_IsLookAround && m_Enemy.m_IsPatrol)
         {
-            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+           Patrol();
+        }
+
+        m_Enemy.RaycastVisionCheck();
+        if (!ReferenceEquals(m_Enemy.m_VisionHit.collider, null) && !m_Enemy.m_PlayerCognition)
+        {
+            m_Enemy.StartPlayerCognition();
         }
     }
 
     public override void ExitState()
     {
-        
+        m_Enemy.m_IsTurning = false;
+        m_EnemyAnimator.SetInteger(Turn, 0);
     }
 
     public override void NextPhase()
     {
         
     }
+
+    private void LookAround()
+    {
+        // 좌우 반전만
+        switch (m_Phase)
+        {
+            case 0:
+                m_EnemyAnimator.SetInteger(Turn, 1);
+                m_Enemy.m_IsTurning = true;
+                m_Phase = 1;
+                break;
+                
+            case 1:
+                if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    m_EnemyAnimator.SetInteger(Turn, 0);
+                    m_Enemy.m_IsTurning = false;
+                    m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+                    m_Phase = 2;
+                }
+                break;
+                
+            case 2:
+                m_Timer += Time.deltaTime;
+                if (m_Timer >= m_Enemy.p_LookAroundDelay)
+                {
+                    m_Timer = 0f;
+                    m_Phase = 0;
+                }
+                break;
+        }
+    }
+
+    private void Patrol()
+    {
+        // Patrol
+           switch (m_Phase)
+           {
+               case 0:
+                   // 방향 판단
+                   m_Enemy.ResetMovePoint(m_Enemy.p_PatrolPosArr[m_PatrolIdx].position);
+                   if (m_Enemy.IsExistInEnemyView(m_Enemy.GetMovePoint()))
+                   {
+                       m_EnemyAnimator.SetInteger(Walk, 1);
+                       m_Enemy.SetRigidToPoint();
+                       m_Phase = 2;
+                   }
+                   else
+                   {
+                       m_Enemy.m_IsTurning = true;
+                       m_EnemyAnimator.SetInteger(Turn, 1);
+                       m_Phase = 1;
+                   }
+                   break;
+               
+               case 1:
+                   if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                   {
+                       m_Enemy.m_IsTurning = false;
+                       m_EnemyAnimator.SetInteger(Turn, 0);
+                       m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+                       
+                       m_EnemyAnimator.SetInteger(Walk, 1);
+                       m_Enemy.SetRigidToPoint();
+                       m_Phase = 2;
+                   }
+                   break;
+               
+               case 2:
+                   // 도착
+                   if (Mathf.Abs(m_EnemyTransform.position.x - m_Enemy.GetMovePoint().x) < 0.05f)
+                   {
+                       m_EnemyAnimator.SetInteger(Walk, 0);
+                       m_Enemy.ResetRigid();
+                       m_Phase = 3;
+                   }
+                   else if (!m_Enemy.IsExistInEnemyView(m_Enemy.GetMovePoint()))
+                   {
+                       m_EnemyAnimator.SetInteger(Walk, 0);
+                       m_Enemy.ResetRigid();
+                       m_Phase = 3;
+                   }
+                   break;
+               
+               case 3:
+                   m_Timer += Time.deltaTime;
+                   if (m_Timer <= m_Enemy.p_LookAroundDelay)
+                   {
+                       break;
+                   }
+                   
+                   if (m_Enemy.p_PatrolPosArr.Length == 1)
+                   {
+                       m_Phase = 4;
+                   }
+                   else if (m_PatrolIdx < m_Enemy.p_PatrolPosArr.Length - 1)
+                   {
+                       m_PatrolIdx++;
+                       m_Timer = 0f;
+                       m_Phase = 0;
+                   }
+                   else
+                   {
+                       m_PatrolIdx = 0;
+                       m_Timer = 0f;
+                       m_Phase = 0;
+                   }
+                   break;
+           }
+    }
 }
 
-public class FollowMeleeGang : MeleeGang_FSM
+public class FOLLOW_MeleeGang : MeleeGang_FSM
 {
     // Member Variables
     private float m_DistanceBetPlayer;
@@ -87,7 +209,7 @@ public class FollowMeleeGang : MeleeGang_FSM
     private int m_Phase = 0;
     
     // Constructor
-    public FollowMeleeGang(MeleeGang _enemy)
+    public FOLLOW_MeleeGang(MeleeGang _enemy)
     {
         m_Enemy = _enemy;
         m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
@@ -96,7 +218,6 @@ public class FollowMeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
-        m_EnemyAnimator.SetBool("IsFollow", true);
         m_Phase = 0;
     }
 
@@ -106,7 +227,7 @@ public class FollowMeleeGang : MeleeGang_FSM
 
         if (m_DistanceBetPlayer > m_Enemy.p_MeleeDistance)
         {
-            m_Enemy.MoveByDirection(m_Enemy.GetIsLeftThenPlayer());
+            m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
         }
         else // MinFollowDistance 안쪽일 경우
         {
@@ -116,7 +237,7 @@ public class FollowMeleeGang : MeleeGang_FSM
 
     public override void ExitState()
     {
-        m_EnemyAnimator.SetBool("IsFollow", false);
+        m_Enemy.ResetRigid();
     }
 
     public override void NextPhase()
@@ -125,18 +246,17 @@ public class FollowMeleeGang : MeleeGang_FSM
     }
 }
 
-public class AttackMeleeGang : MeleeGang_FSM
+public class ATTACK_MeleeGang : MeleeGang_FSM
 {
     // Member Variables
     private readonly Transform m_EnemyTransform;
     private readonly Transform m_PlayerTransform;
     private Vector2 m_DistanceBetPlayer;
     private int m_Phase = 0;
-    private int m_Angle = 0;
-    private float m_Timer = 1f;
+    private float m_Timer = 0f;
 
     // Constructor
-    public AttackMeleeGang(MeleeGang _enemy)
+    public ATTACK_MeleeGang(MeleeGang _enemy)
     {
         m_Enemy = _enemy;
         m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
@@ -146,6 +266,8 @@ public class AttackMeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
+        m_Phase = 0;
+        m_Timer = 0f;
         m_Enemy.m_EnemyRigid.constraints = RigidbodyConstraints2D.FreezeAll;
 
         // Attack 시작 시 우선 플레이어 바라봄
@@ -153,47 +275,45 @@ public class AttackMeleeGang : MeleeGang_FSM
 
         // Phase 0으로 초기화 & 공격 모션 시작
         m_Phase = 0;
-        Debug.Log(m_Phase);
-        
+
         // 애니메이터 -> 공격시작
-        m_EnemyAnimator.SetBool("IsAttackStart", true);
+        m_EnemyAnimator.SetInteger("Attack", 1);
     }
 
     public override void UpdateState()
     {
         switch (m_Phase)
         {
-            case 0:     // 휘두르는 애니 재생 중
-                if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= m_Enemy.p_AttackTiming)
+            case 0:
+                // AttackTiming에 공격판정
+                if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > m_Enemy.p_AttackTiming)
                 {
-                    // 0.9f 이상이면 칼 콜라이더 생성하고 1페이즈로
                     m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                     m_Phase = 1;
                 }
                 break;
             
-            case 1:     // 휘두르는 애니 재생 끝나면
+            case 1:
+                // 끝나면 딜레이
                 if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
-                    // 애니 끝나면 Attack_Idle 재생, 0.5초후 Follow 가야 함
-                    m_EnemyAnimator.SetBool("IsAttackEnd", true);
-                    m_Timer = 0.5f;
+                    m_EnemyAnimator.SetInteger("Attack", 2);
                     m_Phase = 2;
                 }
                 break;
             
-            case 2:     // 0.5초 대기
-                m_Timer -= Time.deltaTime;
-                if (m_Timer <= 0f)
+            case 2:
+                m_Timer += Time.deltaTime;
+                if (m_Timer > m_Enemy.p_DelayAfterAttack)
                 {
+                    m_EnemyAnimator.SetInteger("Attack", 0);
+                    m_Timer = 0f;
                     m_Phase = 3;
                 }
                 break;
-            
-            case 3:     // 공격 종료
-                m_EnemyAnimator.SetBool("IsAttackEnd", false);
-                // 사정거리 이내인지 계산
-                if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_MeleeDistance)
+
+            case 3:    
+                if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_MeleeDistance)
                 {
                     // 플레이어 방향 바라보고 다시 공격페이즈
                     m_Enemy.SetViewDirectionToPlayer();
@@ -211,10 +331,8 @@ public class AttackMeleeGang : MeleeGang_FSM
 
     public override void ExitState()
     {
+        m_EnemyAnimator.SetInteger("Attack", 0);
         m_Enemy.m_EnemyRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
-        
-        m_EnemyAnimator.SetBool("IsAttackEnd", false);
-        m_EnemyAnimator.SetBool("IsAttackStart", false);
     }
 
     public override void NextPhase()
@@ -223,13 +341,13 @@ public class AttackMeleeGang : MeleeGang_FSM
     }
 }
 
-public class DeadMeleeGang : MeleeGang_FSM
+public class DEAD_MeleeGang : MeleeGang_FSM
 {
     // Member Variables
     private float m_Time = 3f;
     
     // Constructor
-    public DeadMeleeGang(MeleeGang _enemy)
+    public DEAD_MeleeGang(MeleeGang _enemy)
     {
         m_Enemy = _enemy;
         m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
@@ -237,7 +355,7 @@ public class DeadMeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
-        //m_Enemy.m_Alert.gameObject.SetActive(false);d
+        m_Enemy.SetEnemyHotBox(false);
         m_Enemy.SendDeathAlarmToSpawner();
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
     }
@@ -251,7 +369,110 @@ public class DeadMeleeGang : MeleeGang_FSM
 
     public override void ExitState()
     {
+        m_Enemy.SetEnemyHotBox(true);
+    }
+
+    public override void NextPhase()
+    {
         
+    }
+}
+
+public class CHANGE_MeleeGang : MeleeGang_FSM
+{
+    // Member Variables
+    private readonly int Change = Animator.StringToHash("Change");
+    
+    
+    // Constructor
+    public CHANGE_MeleeGang(MeleeGang _enemy)
+    {
+        m_Enemy = _enemy;
+        m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
+    }
+
+    public override void StartState()
+    {
+        m_Enemy.ResetRigid();
+        m_EnemyAnimator.SetInteger(Change, 1);
+    }
+
+    public override void UpdateState()
+    {
+        if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+        {
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        }   
+    }
+
+    public override void ExitState()
+    {
+        m_EnemyAnimator.SetInteger(Change, 0);
+        m_EnemyAnimator.runtimeAnimatorController = m_Enemy.p_FightAniCont;
+    }
+
+    public override void NextPhase()
+    {
+        
+    }
+}
+
+public class STUN_MeleeGang : MeleeGang_FSM
+{
+    // Member Variables
+    private int m_Phase = 0;
+    private float m_Timer = 0f;
+    private readonly int Hit = Animator.StringToHash("Hit");
+    
+
+    public STUN_MeleeGang(MeleeGang _enemy)
+    {
+        m_Enemy = _enemy;
+    }
+    
+    public override void StartState()
+    {
+        m_EnemyAnimator = m_Enemy.m_Animator;
+        
+        m_Phase = 0;
+        m_Timer = 0f;
+        
+        m_EnemyAnimator.SetInteger(Hit, 1);
+    }
+
+    public override void UpdateState()
+    {
+        switch (m_Phase)
+        {
+            case 0:
+                if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    if (m_Enemy.m_CurStunValue >= m_Enemy.p_StunHp)
+                    {
+                        m_Phase = 1;
+                        break;
+                    }
+
+                    m_Phase = -1;
+                    m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+                }
+                break;
+            
+            case 1:
+                m_Timer += Time.deltaTime;
+                if (m_Timer >= m_Enemy.p_StunWaitTime)
+                {
+                    m_Enemy.ResetStunThreshold();
+                    m_Phase = -1;
+                    m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+                }
+                break;
+        }
+    }
+
+    public override void ExitState()
+    {
+        m_EnemyAnimator.SetInteger(Hit, 0);
     }
 
     public override void NextPhase()
