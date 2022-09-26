@@ -10,7 +10,15 @@ public class MeleeGang : BasicEnemy
     [field: SerializeField, BoxGroup("MeleeGang Values")] public bool p_IsLookAround = false;
     [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_LookAroundDelay = 1f;
     [field: SerializeField, BoxGroup("MeleeGang Values"),Range(0.0f, 1.0f)] public float p_AttackTiming;
-    
+    [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_FollowSpeedMulti;
+
+    [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_DelayAfterAttack = 0.1f;
+
+    [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_StunWaitTime { get; private set; } = 0.5f;
+
+    [field: SerializeField, BoxGroup("MeleeGang Values")] public Transform[] p_PatrolPosArr { get; private set; } = null;
+    [field: SerializeField] public RuntimeAnimatorController p_NormalAniCont;
+    [field: SerializeField] public RuntimeAnimatorController p_FightAniCont;
     [field: SerializeField, Space(10f)] public Enemy_HotBox p_HeadBox;
     [field: SerializeField] public Enemy_HotBox p_BodyBox;
 
@@ -19,15 +27,16 @@ public class MeleeGang : BasicEnemy
     public WeaponMgr m_WeaponMgr { get; private set; }
     private IHotBox[] m_HotBoxes;
 
-    private IdleMeleeGang m_IDLE;
-    private FollowMeleeGang m_FOLLOW;
-    private AttackMeleeGang m_ATTACK;
-    private DeadMeleeGang m_DEAD;
-
-    public bool m_IsFoundPlayer = false;
+    private IDLE_MeleeGang m_IDLE;
+    private FOLLOW_MeleeGang m_FOLLOW;
+    private ATTACK_MeleeGang m_ATTACK;
+    private DEAD_MeleeGang m_DEAD;
+    private CHANGE_MeleeGang m_CHANGE;
+    private STUN_MeleeGang m_STUN;
+    
+    [HideInInspector] public bool m_IsTurning = false;
+    public bool m_IsPatrol { get; private set; } = false;
     private Vector2 m_DistBetPlayer;
-
-    private bool m_IsChangeing = false;
 
 
     // Constructor
@@ -46,14 +55,21 @@ public class MeleeGang : BasicEnemy
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
         
-        m_CurEnemyFSM = new IdleMeleeGang(this);
+        m_CurEnemyFSM = new IDLE_MeleeGang(this);
         m_CurEnemyStateName = EnemyStateName.IDLE;
         m_CurEnemyFSM.StartState();
         
-        m_IDLE = new IdleMeleeGang(this);
-        m_FOLLOW = new FollowMeleeGang(this);
-        m_ATTACK = new AttackMeleeGang(this);
-        m_DEAD = new DeadMeleeGang(this);
+        m_IDLE = new IDLE_MeleeGang(this);
+        m_FOLLOW = new FOLLOW_MeleeGang(this);
+        m_ATTACK = new ATTACK_MeleeGang(this);
+        m_DEAD = new DEAD_MeleeGang(this);
+        m_CHANGE = new CHANGE_MeleeGang(this);
+        m_STUN = new STUN_MeleeGang(this);
+
+        if (p_PatrolPosArr.Length > 0)
+            m_IsPatrol = true;
+
+        m_Animator.runtimeAnimatorController = p_NormalAniCont;
     }
 
     private void Start()
@@ -77,6 +93,45 @@ public class MeleeGang : BasicEnemy
 
 
     // Functions
+    public override void SetRigidByDirection(bool _isRight)
+    {
+        if (_isRight)
+        {
+            if(!m_IsRightHeaded)
+                setisRightHeaded(true);
+
+            if (!m_PlayerCognition)
+                m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
+            else
+                m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * p_FollowSpeedMulti);
+        }
+        else
+        {
+            if(m_IsRightHeaded)
+                setisRightHeaded(false);
+
+            if (!m_PlayerCognition)
+                m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
+            else
+                m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * p_FollowSpeedMulti);
+        }
+    }
+
+    public override void StartPlayerCognition(bool _instant = false)
+    {
+        if (_instant)
+        {
+            m_Animator.runtimeAnimatorController = p_FightAniCont;
+            m_PlayerCognition = true;
+            ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        }
+        else
+        {
+            m_PlayerCognition = true;
+            ChangeEnemyFSM(EnemyStateName.CHANGE);
+        }
+    }
+    
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
         if (p_OverrideEnemyMgr) 
@@ -85,6 +140,7 @@ public class MeleeGang : BasicEnemy
         var meleeWeapon = GetComponentInChildren<MeleeWeapon_Enemy>();
         
         p_Hp = _mgr.M_HP;
+        p_StunHp = _mgr.M_StunThreshold;
         meleeWeapon.p_BulletDamage = _mgr.M_MeleeDamage;
         p_MoveSpeed = _mgr.M_Speed;
         p_VisionDistance = _mgr.M_Vision_Distance;
@@ -92,6 +148,9 @@ public class MeleeGang : BasicEnemy
         p_AttackTiming = _mgr.M_PointAttackTime;
         p_HeadBox.p_DamageMulti = _mgr.M_HeadDmgMulti;
         p_BodyBox.p_DamageMulti = _mgr.M_BodyDmgMulti;
+        p_FollowSpeedMulti = _mgr.M_FollowSpeedMulti;
+        p_DelayAfterAttack = _mgr.M_DelayAfterAttack;
+        p_StunWaitTime = _mgr.M_StunWaitTime;
 
         
         #if UNITY_EDITOR
@@ -103,14 +162,20 @@ public class MeleeGang : BasicEnemy
     }
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
     {
-        Debug.Log(_damage);
-        
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
 
         p_Hp -= _damage;
-        m_CurStunValue += _stunValue;
 
+        // Turn 도중 피격 - NormalMode시
+        if (m_IsTurning)
+        {
+            if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.5f)
+            {
+                setisRightHeaded(!m_IsRightHeaded);       
+            }
+        }
+        
         if (p_Hp <= 0)
         {
             if(_point == HitBoxPoint.HEAD)
@@ -118,21 +183,35 @@ public class MeleeGang : BasicEnemy
             else if(_point == HitBoxPoint.BODY)
                 m_Animator.Play("Body");
 
-            foreach (Enemy_HotBox ele in m_HotBoxes)
-            {
-                ele.gameObject.SetActive(false);
-            }
             ChangeEnemyFSM(EnemyStateName.DEAD);
             return;
         }
-
-        // MeleeGang Stun 없음
-        if (m_CurStunValue >= p_StunHp)
+        
+        if (m_PlayerCognition == false && m_CurEnemyStateName != EnemyStateName.CHANGE)
         {
-            m_CurStunValue = 0;
-            //ChangeEnemyFSM(EnemyStateName.STUN);
+            StartPlayerCognition();
+            return;
         }
+
+
+        if (!m_PlayerCognition)
+            return;
+        
+        m_CurStunValue += _stunValue;
+        ChangeEnemyFSM(EnemyStateName.STUN);
     }
+
+    public void ResetStunThreshold()
+    {
+        p_StunHp = 0;
+    }
+
+    public void SetEnemyHotBox(bool _isOn)
+    {
+        p_HeadBox.gameObject.SetActive(_isOn);
+        p_BodyBox.gameObject.SetActive(_isOn);
+    }
+    
     public override void ChangeEnemyFSM(EnemyStateName _name)
     {
         Debug.Log("상태 전이" + _name);
@@ -158,6 +237,14 @@ public class MeleeGang : BasicEnemy
                 m_CurEnemyFSM = m_DEAD;
                 break; 
             
+            case EnemyStateName.CHANGE:
+                m_CurEnemyFSM = m_CHANGE;
+                break;
+            
+            case EnemyStateName.STUN:
+                m_CurEnemyFSM = m_STUN;
+                break;
+
             default:
                 Debug.Log("Enemy->ChangeEnemyFSM에서 존재하지 않는 상태 전이 요청");
                 break;

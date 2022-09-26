@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Player_VisualPartMgr : MonoBehaviour
 {
-    // 이 스크립트는 각 파트(머리, 몸 등)의 파트장 역할을 합니다.
-    // 아래의 IPlayerVisualPart는 각 파트의 하위 오브젝트들입니다.
-    // 예) 머리1, 머리2, 머리3....
     public IPlayerVisualPart[] m_EachPart;
 
     public int m_curVisiblePartIdx { get; private set; } = 0;

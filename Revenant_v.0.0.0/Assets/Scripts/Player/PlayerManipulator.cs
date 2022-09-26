@@ -17,7 +17,9 @@ public class PlayerManipulator : MonoBehaviour
     public float P_MeleeSpeedMulti = 2f;
     public int P_MeleeDamage = 10;
     public int P_MeleeStunValue = 10;
-    
+    public float P_JustEvadeStartTime = 0f;
+    public float P_JustEvadeEndTime = 1f;
+
     [Space(20f)]
     [Header("Negotiator 설정값")]
     public int N_Damage = 10;

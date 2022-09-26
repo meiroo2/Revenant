@@ -54,7 +54,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     
     public int HitHotBox(IHotBoxParam _param)
     {
-        m_Enemy.StartPlayerCognition();
+        //m_Enemy.StartPlayerCognition();
         switch (p_HitBoxPoint)
         {
             case HitBoxPoint.HEAD:
@@ -63,7 +63,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 m_PlayerUI.ActiveHitmark(0);
 
                 if (_param.m_MakeRageParticle)
-                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
+                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 
                         () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
                                                         (_param.m_Damage * p_DamageMulti) *
                                                         m_RageUI.p_Gauge_Refill_Attack_Multi));
@@ -76,7 +76,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 m_PlayerUI.ActiveHitmark(1);
 
                 if (_param.m_MakeRageParticle)
-                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
+                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 
                         () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
                                                         (_param.m_Damage * p_DamageMulti) *
                                                         m_RageUI.p_Gauge_Refill_Attack_Multi));

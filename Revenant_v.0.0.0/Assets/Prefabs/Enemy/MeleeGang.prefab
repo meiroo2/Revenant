@@ -320,7 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <p_HitBoxPoint>k__BackingField: 1
-  <p_DamageMultiples>k__BackingField: 0
+  <p_DamageMulti>k__BackingField: 0
 --- !u!61 &6785627411127605371
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -393,7 +393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <p_HitBoxPoint>k__BackingField: 0
-  <p_DamageMultiples>k__BackingField: 0
+  <p_DamageMulti>k__BackingField: 0
 --- !u!58 &1789468904418629693
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -505,7 +505,7 @@ Animator:
   m_GameObject: {fileID: 6785627411564734611}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2782b4d6d2007f14f81e6228d044c7e1, type: 2}
+  m_Controller: {fileID: 9100000, guid: ee81118abc67a9d43a25d37cfdb091eb, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -577,12 +577,18 @@ MonoBehaviour:
   <p_AngleLimit>k__BackingField: 5
   <p_VisionDistance>k__BackingField: 1.5
   <p_MeleeDistance>k__BackingField: 0.2
-  p_IsLookAround: 0
+  p_IsLookAround: 1
   p_LookAroundDelay: 1
   p_AttackTiming: 0
+  p_RushSpeedMulti: 0
+  p_AfterAttackDelay: 0.1
+  <p_StunWaitTime>k__BackingField: 0.5
+  <p_PatrolPosArr>k__BackingField: []
+  p_NormalAniCont: {fileID: 9100000, guid: ee81118abc67a9d43a25d37cfdb091eb, type: 2}
+  p_FightAniCont: {fileID: 9100000, guid: 2782b4d6d2007f14f81e6228d044c7e1, type: 2}
   p_HeadBox: {fileID: 6785627411194760967}
   p_BodyBox: {fileID: 6785627411127605370}
-  m_IsFoundPlayer: 0
+  m_IsTurning: 0
 --- !u!50 &6785627412206059250
 Rigidbody2D:
   serializedVersion: 4

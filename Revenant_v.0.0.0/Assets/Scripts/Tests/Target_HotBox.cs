@@ -56,7 +56,7 @@ public class Target_HotBox : MonoBehaviour, IHotBox
                 m_SoundPlayer.playAttackedSound(MatType.Normal,  transform.position );
                 m_Target.PrintTxt(p_Point + " " + _param.m_Damage * 2 + " DMG");
                 
-                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
+                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 
                     () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
                                                     (_param.m_Damage * p_DamageMultiples) *
                                                     m_RageUI.p_Gauge_Refill_Attack_Multi));
@@ -69,7 +69,7 @@ public class Target_HotBox : MonoBehaviour, IHotBox
                 m_SoundPlayer.playAttackedSound(MatType.Normal, transform.position) ;
                 m_Target.PrintTxt(p_Point + " " + _param.m_Damage + " DMG");
                 
-                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 8f,
+                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 
                     () => m_RageUI.ChangeGaugeValue(m_RageUI.m_CurGaugeValue +
                                                     (_param.m_Damage * p_DamageMultiples) *
                                                     m_RageUI.p_Gauge_Refill_Attack_Multi));

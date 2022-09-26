@@ -138,7 +138,7 @@ public class ShieldGang : BasicEnemy
         m_IsShieldBroken = true;
         ChangeEnemyFSM(EnemyStateName.BREAK);
     }
-    public override void MoveByDirection(bool _isRight)
+    public override void SetRigidByDirection(bool _isRight)
     {
         if (!m_IsShieldBroken)
         {
@@ -226,7 +226,7 @@ public class ShieldGang : BasicEnemy
 
         m_CurEnemyFSM.StartState();
     }
-    public override void StartPlayerCognition()
+    public override void StartPlayerCognition(bool _instant = false)
     {
         if (m_CurEnemyStateName == EnemyStateName.DEAD && m_PlayerCognition) 
             return;

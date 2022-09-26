@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public abstract class PlayerFSM
@@ -62,11 +64,6 @@ public class Player_IDLE : PlayerFSM
 
     public override void UpdateState()
     {
-        if(Input.GetKeyDown(KeyCode.W))
-            m_Player.m_PlayerRigid.AddForce(Vector2.up * 3f, ForceMode2D.Impulse);
-        
-        CheckNull();
-        
         if(m_InputMgr.GetDirectionalKeyInput() != 0)
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
         else if(m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
@@ -153,7 +150,7 @@ public class Player_WALK : PlayerFSM
         
         
         if(m_CurInput != m_PreInput)
-            m_Player.m_PlayerAniMgr.playplayerAnim();
+            m_Player.m_PlayerAniMgr.PlayPlayerAnim();
         
         if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
         {
@@ -180,13 +177,16 @@ public class Player_WALK : PlayerFSM
 
 public class Player_ROLL : PlayerFSM
 {
-    private Player_FootMgr _mFootMgr;
+    private Player_FootMgr m_FootMgr;
     private Rigidbody2D m_Rigid;
     private Vector2 m_PlayerNormalVec;
-    private Animator m_PlayerAnimator;
+    private Animator m_FullBodyAnimator;
     private CoroutineElement m_CoroutineElement;
     private BulletTimeMgr m_BulletTimeMgr;
     private RageGauge_UI m_RageGauge;
+    private Player_InputMgr m_InputMgr;
+    
+    private float m_DecelerationSpeed = 0f;
 
     public Player_ROLL(Player _player) : base(_player)
     {
@@ -195,29 +195,26 @@ public class Player_ROLL : PlayerFSM
     
     public override void StartState()
     {
+        m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
         m_RageGauge = m_Player.m_RageGauge;
+        m_FootMgr = m_Player.m_PlayerFootMgr;
+        m_Rigid = m_Player.m_PlayerRigid;
+        m_InputMgr = m_Player.m_InputMgr;
+        
+        m_Player.m_CanHide = true;
+        m_Player.m_CanMove = false;
+        m_Player.m_CanAttack = false;
+        m_Player.m_playerRotation.m_doRotate = false;
+        m_Player.m_PlayerHotBox.m_hotBoxType = 2;
+        m_DecelerationSpeed = 0f;
+        
+        m_Player.m_ArmMgr.StopReload();
+        m_Player.m_SFXMgr.playPlayerSFXSound(0);
+        m_Player.UseRollCount();
         m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue -
                                      m_RageGauge.p_Gauge_Consume_Roll);
         
-        m_Player.m_ArmMgr.StopReload();
-        
-        m_Player.m_SFXMgr.playPlayerSFXSound(0);
-
-        m_Player.m_CanHide = true;
-        _mFootMgr = m_Player.m_PlayerFootMgr;
-        m_Rigid = m_Player.m_PlayerRigid;
-        m_PlayerAnimator = m_Player.m_PlayerAnimator;
-
-        m_Player.m_CanMove = false;
-        m_Player.m_CanAttack = false;
-        
-        // 투과 히트박스로 변경
-        m_Player.m_PlayerHotBox.m_hotBoxType = 2;
-        
-        m_Player.UseRollCount();
-
-        m_Player.m_playerRotation.m_doRotate = false;
-        m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
+        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_RollSpeedMulti);
         
         // 코루틴 시작
         m_CoroutineElement = GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(CheckEvade());
@@ -225,17 +222,17 @@ public class Player_ROLL : PlayerFSM
 
     public override void UpdateState()
     {
-        CheckNull();
-        
-        m_PlayerNormalVec = m_Player.m_PlayerFootMgr.m_PlayerNormal;
+        if (m_InputMgr.m_IsPushSideAttackKey &&
+            m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
+        {
+            m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
+        }
 
-        if (m_Player.m_IsRightHeaded)   // 우측 구르기
-            m_Rigid.velocity = -StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedMulti);
-        else
-            m_Rigid.velocity = StaticMethods.getLPerpVec(m_PlayerNormalVec) * (m_Player.p_MoveSpeed * m_Player.p_RollSpeedMulti);
-        
-        if(m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+        if(m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
             m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
+
+        m_DecelerationSpeed -= Time.deltaTime * m_Player.p_RollDecelerationSpeedMulti;
+        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, (m_Player.p_RollSpeedMulti + m_DecelerationSpeed));
     }
 
     public override void ExitState()
@@ -244,7 +241,6 @@ public class Player_ROLL : PlayerFSM
         m_Player.m_CanAttack = true;
         m_Player.m_CanMove = true;
         m_Rigid.velocity = Vector2.zero;
-        m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
         m_Player.m_playerRotation.m_doRotate = true;
         m_Player.m_PlayerHotBox.m_hotBoxType = 0;
 
@@ -269,7 +265,7 @@ public class Player_ROLL : PlayerFSM
         Player_HotBox hotBox = m_Player.m_PlayerHotBox;
         while (true)
         {
-            normalTime = m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            normalTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
             if (m_Player.m_PlayerHotBox.m_HitCount > 0)
             {
@@ -282,7 +278,7 @@ public class Player_ROLL : PlayerFSM
                     m_Player.m_ScreenEffectUI.ActivateLensDistortEffect(0.2f);
                     
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
-                        m_Player.p_CenterTransform, 8f, JustEvadeGaugeUp);
+                        m_Player.p_CenterTransform,  JustEvadeGaugeUp);
                     
                     Debug.Log("저스트 회피!!");
                     yield break;
@@ -291,7 +287,7 @@ public class Player_ROLL : PlayerFSM
                 {
                     // 그냥 회피
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
-                        m_Player.p_CenterTransform, 8f, EvadeGaugeUp);
+                        m_Player.p_CenterTransform,  EvadeGaugeUp);
                     Debug.Log("그냥 회피");
                     yield break;
                 }
@@ -339,7 +335,6 @@ public class Player_HIDDEN : PlayerFSM
         m_SFXMgr.playPlayerSFXSound(5);
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
-        m_Player.m_PlayerAniMgr.setSprites(true, false, false, false, false);
     }
 
     public override void UpdateState()
@@ -352,9 +347,9 @@ public class Player_HIDDEN : PlayerFSM
                 m_Player.setisRightHeaded(true);
             else if(m_KeyInput < 0)
                 m_Player.setisRightHeaded(false);
-            else if(m_Player.m_playerRotation.getIsMouseRight())
+            else if(m_Player.m_playerRotation.GetIsMouseRight())
                 m_Player.setisRightHeaded(true);
-            else if(!m_Player.m_playerRotation.getIsMouseRight())
+            else if(!m_Player.m_playerRotation.GetIsMouseRight())
                 m_Player.setisRightHeaded(false);
             
             m_Player.m_ObjInteractor.ForceExitFromHideSlot();
@@ -367,7 +362,6 @@ public class Player_HIDDEN : PlayerFSM
     {
         m_Player.m_CanMove = true;
         m_Player.m_CanAttack = true;
-        m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
         m_SFXMgr.playPlayerSFXSound(6);
         ExitFinalProcess();
     }
@@ -380,9 +374,10 @@ public class Player_HIDDEN : PlayerFSM
 
 public class Player_MELEE : PlayerFSM
 {
-    private Animator m_PlayerAnimator;
+    private Animator m_FullBodyAnimator;
     private float m_CurAniTime;
     private bool m_IsAttackFinished = false;
+    private Player_InputMgr m_InputMgr;
 
     public Player_MELEE(Player _player) : base(_player)
     {
@@ -391,26 +386,32 @@ public class Player_MELEE : PlayerFSM
 
     public override void StartState()
     {
-        var gauge = m_Player.m_RageGauge;
-        gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
+        m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
+        m_InputMgr = m_Player.m_InputMgr;
         
-        m_Player.m_ArmMgr.StopReload();
         m_IsAttackFinished = false;
-        m_PlayerAnimator = m_Player.m_PlayerAnimator;
-        
-        m_Player.m_SFXMgr.playPlayerSFXSound(0);
-        
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
         
+        var gauge = m_Player.m_RageGauge;
+        gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
+        
         m_Player.m_MeleeAttack.StartMelee();
         m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
+        m_Player.m_ArmMgr.StopReload();
+        m_Player.m_SFXMgr.playPlayerSFXSound(0);
     }
 
     public override void UpdateState()
     {
-        m_CurAniTime = m_PlayerAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        if (m_Player.m_InputMgr.m_IsPushRollKey && 
+            m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Roll))
+        {
+            m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
+        }
+        
+        m_CurAniTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
 
         switch (m_CurAniTime)
         {
@@ -454,17 +455,19 @@ public class Player_DEAD : PlayerFSM
         
         m_Rigid = m_Player.m_PlayerRigid;
         m_Player.m_PlayerHotBox.setPlayerHotBoxCol(false);
-        m_Player.m_PlayerAnimator.Play("Dead");
+        //m_Player.m_PlayerAnimator.Play("Dead");
         
         m_Rigid.velocity = Vector2.zero;
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
-        m_Player.m_PlayerAniMgr.setSprites(false, false, false, false, false);
+
+        // int scene = SceneManager.GetActiveScene().buildIndex;
+        // SceneManager.LoadScene(scene, LoadSceneMode.Single);
 
         // Respawn in 5 seconds
-        //m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
-        
+        m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
+
         //GameMgr.GetInstance().PlayerDead();
     }
 
@@ -479,7 +482,6 @@ public class Player_DEAD : PlayerFSM
         m_Player.m_CanMove = true;
         m_Player.m_CanAttack = true;
         m_Player.m_playerRotation.m_doRotate = true;
-        m_Player.m_PlayerAniMgr.setSprites(false, true, true, true, true);
         m_Player.m_PlayerHotBox.setPlayerHotBoxCol(true);
         ExitFinalProcess();
     }
@@ -493,12 +495,14 @@ public class Player_DEAD : PlayerFSM
     IEnumerator DelayGetActiveCheckPointPosition(float DeltaSeconds)
     {
         yield return new WaitForSeconds(DeltaSeconds);
+
+        GameMgr.GetInstance().CurSceneReload();
         
-        // Change the Player transform to Activated CheckPoint
-        m_Player.transform.position = CheckPoint.GetActiveCheckPointPosition();
-        
-        ExitState();
-        m_Player.setPlayerHp(500);
+        // // Change the Player transform to Activated CheckPoint
+        // m_Player.transform.position = CheckPoint.GetActiveCheckPointPosition();
+        //
+        // ExitState();
+        // m_Player.setPlayerHp(500);
         
         m_CoroutineElement.StopCoroutine_Element();
     }

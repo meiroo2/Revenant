@@ -1,14 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// ë§ˆìš°ìŠ¤ ìœ„ì¹˜ì— ë”°ë¼ í•´ë‹¹ ìŠ¤í¬ë¦½íŠ¸ê°€ ë¶™ì€ ì˜¤ë¸Œì íŠ¸ë¥¼ íšŒì „ì‹œí‚µë‹ˆë‹¤.
+/// </summary>
 public class PlayerRotation : MonoBehaviour
 {
     // Visible Member Variables
-    [Header("È¸Àü °¢µµ´Â ÃÑ 5´ÜÀ§·Î ³ª´©¾îÁı´Ï´Ù.")]
+    public int p_PhaseCount = 13;
     public bool m_doRotate = true;
-    public float m_rotationHighLimitAngle { get; private set; } = 65f;
-    public float m_rotationLowLimitAngle { get; private set; } = -45f;
+    
+    [field : SerializeField]
+    public float m_rotationHighLimitAngle { get; private set; } = 60f;
+    
+    [field : SerializeField]
+    public float m_rotationLowLimitAngle { get; private set; } = -60f;
 
     [field: SerializeField] public float m_curActualAngle { get; private set; }
     [field: SerializeField] public float m_curAnglewithLimit { get; private set; }
@@ -19,13 +28,15 @@ public class PlayerRotation : MonoBehaviour
     private Camera m_mainCam;
     private Player m_Player;
 
-    private Vector2 mousePos;
-    private Vector2 m_Mousedistance;
+    private Vector2 m_mousePos;
+    private Vector2 m_MouseDistance;
     private Quaternion toRotation;
-    private float m_PhaseAngle = 0;
+    private float m_PhaseAngle = 0f;
     private float m_InitHighLimitAngle;
     private float m_InitLowLimitAngle;
 
+    // AnglePhaseê°€ ë°”ë€” ë–„ í˜¸ì¶œí•˜ëŠ” Action, ê·¸ëŸ°ë° ì•ˆ ì¨ìš”~
+    public Action<int> m_AnglePhaseAction; 
 
     // Constructors
     private void Awake()
@@ -33,7 +44,7 @@ public class PlayerRotation : MonoBehaviour
         m_InitHighLimitAngle = m_rotationHighLimitAngle;
         m_InitLowLimitAngle = m_rotationLowLimitAngle;
         m_mainCam = Camera.main;
-        m_PhaseAngle = (Mathf.Abs(m_rotationHighLimitAngle) + Mathf.Abs(m_rotationLowLimitAngle)) / 5;
+        m_PhaseAngle = (Mathf.Abs(m_rotationHighLimitAngle) + Mathf.Abs(m_rotationLowLimitAngle)) / p_PhaseCount;
     }
     private void Start()
     {
@@ -44,40 +55,37 @@ public class PlayerRotation : MonoBehaviour
     // Updates
     private void Update()
     {
+        GetAngle();
+
         if (!m_doRotate)
             return;
+        
+        DoRotate();
 
-        if (m_curActualAngle > 90f || m_curActualAngle < -90f)
+        if (m_curActualAngle is > 90f or < -90f)
         {
-            if (m_Player.m_IsRightHeaded)
-                m_Player.setisRightHeaded(false);
-            else
-                m_Player.setisRightHeaded(true);
+            m_Player.setisRightHeaded(!m_Player.m_IsRightHeaded);
         }
-
-        getAngle();
-        doRotate();
     }
 
 
     // Functions
-    
-    
-    private void getAngle()
+    private void GetAngle()
     {
-        mousePos = m_mainCam.ScreenToWorldPoint(Input.mousePosition);
-        m_Mousedistance = new Vector2(mousePos.x - transform.position.x, mousePos.y - transform.position.y);
-
+        m_mousePos = m_mainCam.ScreenToWorldPoint(Input.mousePosition);
+        m_MouseDistance = new Vector2(m_mousePos.x - transform.position.x, m_mousePos.y - transform.position.y);
+        
+        // í˜„ì¬ ë°”ë¼ë³´ëŠ” ë°©í–¥ì— ë”°ë¼ ì–‘ìˆ˜, ìŒìˆ˜ë¥¼ ê²°ì •
         if (m_Player.m_IsRightHeaded)
         {
-            m_curActualAngle = Mathf.Atan2(m_Mousedistance.y, m_Mousedistance.x) * Mathf.Rad2Deg;
+            m_curActualAngle = Mathf.Atan2(m_MouseDistance.y, m_MouseDistance.x) * Mathf.Rad2Deg;
         }
         else if (!m_Player.m_IsRightHeaded)
         {
-            m_curActualAngle = -(Mathf.Atan2(-m_Mousedistance.y, -m_Mousedistance.x) * Mathf.Rad2Deg);
+            m_curActualAngle = -(Mathf.Atan2(-m_MouseDistance.y, -m_MouseDistance.x) * Mathf.Rad2Deg);
         }
-
-        // Limit CutµÈ Angle ±¸ÇÏ±â
+        
+        // ê°ë„ ì œí•œ ë³´ì • (ë”± Limitê¹Œì§€ëŠ” ê°ë„ ì¸ì •)
         m_curAnglewithLimit = m_curActualAngle;
         if (m_curAnglewithLimit > m_rotationHighLimitAngle)
             m_curAnglewithLimit = m_rotationHighLimitAngle;
@@ -85,45 +93,48 @@ public class PlayerRotation : MonoBehaviour
             m_curAnglewithLimit = m_rotationLowLimitAngle;
 
 
-        // ½ÃÀÛ ½Ã °¢µµ»óÇÑ¼±°ú °¢µµÇÏÇÑ¼±À» ´õÇÑ ÈÄ 5·Î ³ª´²¼­ °¢µµ¸¦ ±¸ÇÔ.
-        // ÀÌ °¢µµ¸¦ ±âÁØÀ¸·Î »ç¿ë°¡´É °¢µµ ¹üÀ§¸¦ 5°³·Î ÂÉ°·
-        // À­°¢µµ´Â Æ÷ÇÔ, ¾Æ·§°¢µµ´Â Á¦¿Ü·Î °è»êÇÑ´Ù. ÀÌ ¹üÀ§ ¾È¿¡ ÀÖÀ¸¸é À§ÂÊºÎÅÍ 0, 1, 2, 3, 4·Î m_curAnglePhase¿¡ ÇÒ´ç
-        // ÇØ´ç °¢µµ´Â Init AngleÀ» ¹Ş¾Æ¿Í¼­ °è»ê. -> ¸¸¾à Limit°¡ ÁÙ¾îµé¾îµµ ÃÊ±â °ªÀ¸·Î m_curAnglePhase°¡ ¹Ù²ñ
-        for (int i = 0; i < 5; i++)
+
+        int originPhase = m_curAnglePhase;
+        // í˜„ì¬ í˜ì´ì¦ˆ ê³„ì‚°
+        for (int i = 0; i < p_PhaseCount; i++)
         {
-            if (m_curAnglewithLimit <= m_InitHighLimitAngle - m_PhaseAngle * i &&
+            if (m_curAnglewithLimit <= m_InitHighLimitAngle - m_PhaseAngle * i && 
                 m_curAnglewithLimit > m_InitHighLimitAngle - m_PhaseAngle * (i + 1))
             {
                 m_curAnglePhase = i;
                 break;
             }
         }
+
+        if (originPhase != m_curAnglePhase)
+        {
+            m_AnglePhaseAction?.Invoke(m_curAnglePhase);
+        }
     }
     
-    private void doRotate()
+    private void DoRotate()
     {
-        if (m_Player.m_IsRightHeaded)
-            toRotation = Quaternion.Euler(0f, 0f, m_curAnglewithLimit);
-        else
-            toRotation = Quaternion.Euler(0f, 0f, -m_curAnglewithLimit);
+        toRotation = 
+            m_Player.m_IsRightHeaded ? Quaternion.Euler(0f, 0f, m_curAnglewithLimit) : 
+                Quaternion.Euler(0f, 0f, -m_curAnglewithLimit);
 
         transform.rotation = toRotation;
     }
 
-    public void changeAngleLimit(float _HighLimit, float _LowLimit)
+    public void ChangeAngleLimit(float _HighLimit, float _LowLimit)
     {
         if (_HighLimit > 0f && _LowLimit < 0f)
         {
             m_rotationHighLimitAngle = _HighLimit;
             m_rotationLowLimitAngle = _LowLimit;
-
-            //m_PhaseAngle = (Mathf.Abs(m_rotationHighLimitAngle) + Mathf.Abs(m_rotationLowLimitAngle)) / 5;
+            GetAngle();
+            DoRotate();
         }
         else
             Debug.Log("PlayerRotation Angle Param Error");
     }
 
-    public bool getIsMouseRight()
+    public bool GetIsMouseRight()
     {
         return m_mainCam.ScreenToWorldPoint(Input.mousePosition).x > m_Player.transform.position.x;
     }

@@ -88,7 +88,7 @@ public class IDLE_NormalGang : NormalGang_FSM
                 switch (m_Phase)
                 {
                     case 0:     // 해당 포지션으로 이동
-                        m_Enemy.MoveToPoint_FUpdate();
+                        m_Enemy.SetRigidToPoint();
                         if (Mathf.Abs(m_Transform.position.x - m_Enemy.p_PatrolPos[m_PatrolIdx].position.x) < 0.1f)
                         {
                             m_PatrolIdx++;
@@ -289,7 +289,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM   // 추격입니다
     private void MoveTowardPlayer()
     {
         if (!(m_DistanceBetPlayer.magnitude > m_Enemy.p_AttackDistance)) return;
-        m_Enemy.MoveByDirection(!(m_DistanceBetPlayer.x > 0));
+        m_Enemy.SetRigidByDirection(!(m_DistanceBetPlayer.x > 0));
     }
 }
 

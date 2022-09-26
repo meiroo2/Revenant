@@ -10,9 +10,10 @@ public class ParticleMgr : MonoBehaviour
     // Visible Member Variables
     public GameObject p_ParticlePrefab;
     public int p_PullingLimit = 10;
-    public AnimationCurve p_Curve;
+    public float p_ParticleWaitTime = 1f;
+    public float p_ParticleSpeed = 1f;
 
-    
+
     // Member Variables
     private RageGauge_UI m_RageGauge;
     private List<Particle> m_PulledPaticleList;
@@ -44,15 +45,15 @@ public class ParticleMgr : MonoBehaviour
     }
 
     // Functions
-    public void MakeParticle(Vector2 _position, Transform _transform, float _speed, Action _action)
+    public void MakeParticle(Vector2 _position, Transform _transform, Action _action)
     {
         var instance = m_PulledPaticleList[m_Idx];
         instance.gameObject.SetActive(false);
         instance.gameObject.SetActive(true);
 
         instance.transform.position = _position;
-        instance.InitParticle(_transform, _speed, _action);
-        
+        instance.InitParticle(_transform, p_ParticleSpeed, p_ParticleWaitTime, _action);
+
         m_Idx++;
 
         if (m_Idx >= p_PullingLimit)

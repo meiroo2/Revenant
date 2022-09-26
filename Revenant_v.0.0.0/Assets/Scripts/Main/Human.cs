@@ -16,7 +16,7 @@ public class Human : ObjectDefine
 
 
     // Member Variables
-    protected int m_CurStunValue = 0;
+    public int m_CurStunValue { get; protected set; } = 0;
     public bool m_IsRightHeaded { get; protected set; } = true;
     public Vector2 m_OriginPos { get; protected set; } = Vector2.zero;
     public LocationInfo m_CurLocation { get; protected set; }

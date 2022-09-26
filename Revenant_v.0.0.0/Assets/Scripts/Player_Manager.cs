@@ -12,9 +12,22 @@ public class Player_Manager : MonoBehaviour
 
     private void Awake()
     {
-        m_PlayerSpawnPos = GameObject.Find("@PlayerSpawnPos");
-        InstantiatedPlayer = Instantiate(m_PlayerPrefab);
-        InstantiatedPlayer.transform.position = m_PlayerSpawnPos.transform.position;
-        m_Player = InstantiatedPlayer.GetComponent<Player>();
+        // 체크포인트가 활성화 되지 않았을 때 (시작할 때)
+        if (!DataHandleManager.Instance.IsCheckPointActivated)
+        {
+            m_PlayerSpawnPos = GameObject.Find("@PlayerSpawnPos");
+            SetUpPlayer(InstantiatedPlayer, m_PlayerSpawnPos.transform.position);
+        }
+        else
+        {
+            SetUpPlayer(InstantiatedPlayer, DataHandleManager.Instance.PlayerPositionVector);
+        }
+    }
+
+    void SetUpPlayer(GameObject PlayerPrefab, Vector2 PlayerLocation)
+    {
+        PlayerPrefab = Instantiate(m_PlayerPrefab);
+        PlayerPrefab.transform.position = PlayerLocation;
+        m_Player = PlayerPrefab.GetComponent<Player>();
     }
 }
