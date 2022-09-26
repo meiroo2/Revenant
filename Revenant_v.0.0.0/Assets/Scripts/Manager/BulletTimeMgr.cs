@@ -33,12 +33,10 @@ public class BulletTimeMgr : MonoBehaviour
     public GameObject p_Marker;
     
     // Member Variables
-    private RageGauge_UI m_RageGaugeUI;
     public bool m_CanUseBulletTime { get; private set; } = false;
 
     private const int m_NumofMarker = 8;
-
-    private Player m_Player;
+    
     private BasicWeapon m_Negotiator;
     private Player_InputMgr m_InputMgr;
     
@@ -75,13 +73,11 @@ public class BulletTimeMgr : MonoBehaviour
         }
         
         var instance = InstanceMgr.GetInstance();
-        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_SoundPlayer = instance.GetComponentInChildren<SoundPlayer>();
         m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
         m_MatChanger = instance.GetComponentInChildren<MatChanger>();
         m_Negotiator = instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr.m_CurWeapon;
-        m_RageGaugeUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
     }
 
 
@@ -92,28 +88,12 @@ public class BulletTimeMgr : MonoBehaviour
 
     private IEnumerator CheckBulletTimeLimit()
     {
-        float Timer = 0f;
-
-        while (true)
-        {
-            Timer += Time.unscaledDeltaTime;
-
-            m_RageGaugeUI.GetTimePassed(1f - (Timer / p_BulletTimeLimit));
-            
-            if (Timer > p_BulletTimeLimit)
-            {
-                break;
-            }
-            yield return null;
-        }
-        
+        yield return new WaitForSecondsRealtime(p_BulletTimeLimit);
         if (m_BulletTimeActivating)
         {
             ActivateBulletTime(false);
             FireAll();
         }
-
-        yield break;
     }
     
     /// <summary>
@@ -146,21 +126,12 @@ public class BulletTimeMgr : MonoBehaviour
     {
         while (true)
         {
-            if (m_InputMgr.m_IsPushBulletTimeKey)
+            if (m_InputMgr.m_IsPushBulletTimeKey && m_Negotiator.m_LeftRounds > 0)
             {
-                if (m_Negotiator.m_LeftRounds > 0 && (m_Player.m_CurPlayerFSMName == PlayerStateName.IDLE ||
-                                                      m_Player.m_CurPlayerFSMName == PlayerStateName.WALK))
-                {
-                    break;
-                }
-                else
-                {
-                    m_RageGaugeUI.CanConsume(9999999f);
-                }
+                break;
             }
             yield return null;
         }
-        
         Debug.Log("불릿타임 시작");
         ActivateBulletTime(true);
 
@@ -188,12 +159,6 @@ public class BulletTimeMgr : MonoBehaviour
     {
         if (_isStart)
         {
-            m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
-            m_Player.m_PlayerAniMgr.p_FullBody.m_Animator.SetInteger("BulletTime", 1);
-            m_RageGaugeUI.p_BulletTimeIndicator.enabled = false;
-            m_RageGaugeUI.GaugeToBulletTime(true);
-            m_RageGaugeUI.TempStopRageGauge(true);
-            
             StartCoroutine(CheckBulletTimeLimit());
             m_BulletTimeActivating = true;
             m_MatChanger.ChangeMat();
@@ -201,9 +166,6 @@ public class BulletTimeMgr : MonoBehaviour
         }
         else
         {
-            m_RageGaugeUI.GaugeToBulletTime(false);
-            m_RageGaugeUI.TempStopRageGauge(false);
-            
             m_BulletTimeActivating = false;
             m_MatChanger.ResotreMat();
             Time.timeScale = 1f;

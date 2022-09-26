@@ -7,7 +7,7 @@ using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class RageGauge_UI : MonoBehaviour
+public class RageGauge_UI : DynamicUI
 {
     // Visible Member Variables
     [BoxGroup("게이지 비주얼")] public Image p_BackImg;
@@ -27,8 +27,6 @@ public class RageGauge_UI : MonoBehaviour
     
     
     // Member Variables
-    private bool m_TempStop = false;
-    private DynamicUIMgr m_DynaUIMgr;
     public float m_CurGaugeValue { get; private set; } = 0;
     private bool m_SafetyLock = false;
     private Vector2 m_InitPos;
@@ -36,8 +34,6 @@ public class RageGauge_UI : MonoBehaviour
     private Vector2 m_InitBackImgScale;
     private Vector2 m_InitGaugeImgScale;
 
-    private Color m_InitGaugeColor;
-    
     private Vector2 m_RectInitPos;
 
     // 0-1의 Fill Amount 비례수
@@ -51,7 +47,6 @@ public class RageGauge_UI : MonoBehaviour
     // Constructors
     private void Awake()
     {
-        m_InitGaugeColor = p_GaugeImg.color;
         m_RectTransform = GetComponent<RectTransform>();
         m_RectInitPos = m_RectTransform.anchoredPosition;
         
@@ -69,7 +64,6 @@ public class RageGauge_UI : MonoBehaviour
 
     private void Start()
     {
-        m_DynaUIMgr = GameMgr.GetInstance().GetComponent<DynamicUIMgr>();
         var instance = InstanceMgr.GetInstance();
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
 
@@ -92,65 +86,26 @@ public class RageGauge_UI : MonoBehaviour
     // Updates
     private void Update()
     {
-       
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            Shake(m_RectTransform, m_RectTransform.anchoredPosition, 30f, 1500f, 10f, 30f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            RectTransform backForm = p_BackImg.rectTransform;
+            ExpandUI(backForm, backForm.localScale,
+                 new Vector2(backForm.localScale.x + 0.07f,backForm.localScale.y),
+                 5f);
+
+            RectTransform gaugeForm = p_GaugeImg.rectTransform;
+            ExpandUI(gaugeForm, gaugeForm.localScale,
+                new Vector2(gaugeForm.localScale.x + 0.05f, gaugeForm.localScale.y),
+                5f);
+        }
     }
 
     // Functions
-
-    /// <summary>
-    /// RageGauge를 일시적으로 Timer로 사용하기 위해 일반화된 시간값을 받습니다. (즉시 적용)
-    /// </summary>
-    /// <param name="_normalTime"></param>
-    public void GetTimePassed(float _normalTime)
-    {
-        //Debug.Log(p_GaugeImg.fillAmount);
-        p_GaugeImg.fillAmount = _normalTime;
-    }
-    
-    /// <summary>
-    /// 일시적으로 RageGauge의 Update를 중단/재개합니다.
-    /// </summary>
-    public void TempStopRageGauge(bool _isStop)
-    {
-        m_TempStop = _isStop;
-    }
-    
-    /// <summary>
-    /// BulletTime 작동시 Gauge의 Dynamic 애니메이션을 적용합니다.
-    /// </summary>
-    /// <param name="_isTrue"></param>
-    public void GaugeToBulletTime(bool _isTrue)
-    {
-        if (_isTrue)
-        {
-            RectTransform backForm = p_BackImg.rectTransform;
-            m_DynaUIMgr.ExpandUI(backForm, m_InitBackImgScale,
-                new Vector2(backForm.localScale.x + 0.07f, backForm.localScale.y),
-                5f);
-
-            RectTransform gaugeForm = p_GaugeImg.rectTransform;
-            m_DynaUIMgr.ExpandUI(gaugeForm, m_InitGaugeImgScale,
-                new Vector2(gaugeForm.localScale.x + 0.07f, gaugeForm.localScale.y),
-                5f);
-            
-            m_DynaUIMgr.ChangeColor(p_GaugeImg, m_InitGaugeColor, Color.white, 3f);
-        }
-        else
-        {
-            RectTransform backForm = p_BackImg.rectTransform;
-            m_DynaUIMgr.ExpandUI(backForm, backForm.localScale,
-                m_InitBackImgScale,
-                5f);
-
-            RectTransform gaugeForm = p_GaugeImg.rectTransform;
-            m_DynaUIMgr.ExpandUI(gaugeForm, gaugeForm.localScale,
-                m_InitGaugeImgScale,
-                5f);
-            
-            m_DynaUIMgr.ChangeColor(p_GaugeImg, Color.white, m_InitGaugeColor, 3f);
-        }
-    }
-    
     
     /// <summary>
     /// 원하는 양만큼 게이지 양이 충분한지 알려줍니다.
@@ -159,12 +114,7 @@ public class RageGauge_UI : MonoBehaviour
     /// <returns>소모 가능 여부</returns>
     public bool CanConsume(float _value)
     {
-        bool returnVal = m_CurGaugeValue - _value >= 0;
-        
-        if(!returnVal)
-            m_DynaUIMgr.Shake(m_RectTransform, m_InitPos, 30f, 1500f, 10f, 30f);
-        
-        return returnVal;
+        return m_CurGaugeValue - _value >= 0;
     }
 
     
@@ -178,7 +128,7 @@ public class RageGauge_UI : MonoBehaviour
         // Timescale에 영향이 가지 않도록 Realtime 기준으로 작동합니다.
         while (true)
         {
-            if (!m_SafetyLock && !m_TempStop)
+            if (!m_SafetyLock)
             {
                 if (m_CurGaugeValue < p_Gauge_Refill_Limit)
                 {
@@ -236,7 +186,7 @@ public class RageGauge_UI : MonoBehaviour
             m_BulletTimeMgr.SetCanUseBulletTime();
             p_BulletTimeIndicator.enabled = true;
             
-            //m_BulletTimeMgr.AddFinaleAction(() => p_BulletTimeIndicator.enabled = false);
+            m_BulletTimeMgr.AddFinaleAction(() => p_BulletTimeIndicator.enabled = false);
         }
         
         m_SafetyLock = false;
