@@ -13,6 +13,7 @@ public class RageGauge_UI : MonoBehaviour
     [BoxGroup("게이지 비주얼")] public Image p_BackImg;
     [BoxGroup("게이지 비주얼")] public Image p_GaugeImg;
     [BoxGroup("게이지 비주얼")] public Image p_BulletTimeIndicator;
+    [BoxGroup("게이지 비주얼")] public Text p_BulletTimeTxt;
 
     
     [BoxGroup("게이지 구성요소")] public float p_Gauge_Max = 100;
@@ -51,6 +52,7 @@ public class RageGauge_UI : MonoBehaviour
     // Constructors
     private void Awake()
     {
+        p_BulletTimeTxt.color = new Color(1f, 1f, 1f, 0f);
         m_InitGaugeColor = p_GaugeImg.color;
         m_RectTransform = GetComponent<RectTransform>();
         m_RectInitPos = m_RectTransform.anchoredPosition;
@@ -119,7 +121,7 @@ public class RageGauge_UI : MonoBehaviour
     /// BulletTime 작동시 Gauge의 Dynamic 애니메이션을 적용합니다.
     /// </summary>
     /// <param name="_isTrue"></param>
-    public void GaugeToBulletTime(bool _isTrue)
+    public void PlayGaugeAnimation(bool _isTrue)
     {
         if (_isTrue)
         {
@@ -130,10 +132,12 @@ public class RageGauge_UI : MonoBehaviour
 
             RectTransform gaugeForm = p_GaugeImg.rectTransform;
             m_DynaUIMgr.ExpandUI(gaugeForm, m_InitGaugeImgScale,
-                new Vector2(gaugeForm.localScale.x + 0.07f, gaugeForm.localScale.y),
+                new Vector2(gaugeForm.localScale.x + 0.05f, gaugeForm.localScale.y),
                 5f);
             
             m_DynaUIMgr.ChangeColor(p_GaugeImg, m_InitGaugeColor, Color.white, 3f);
+            
+            m_DynaUIMgr.FadeUI(p_BulletTimeTxt, true, 50f);
         }
         else
         {
@@ -148,6 +152,8 @@ public class RageGauge_UI : MonoBehaviour
                 5f);
             
             m_DynaUIMgr.ChangeColor(p_GaugeImg, Color.white, m_InitGaugeColor, 3f);
+            
+            m_DynaUIMgr.FadeUI(p_BulletTimeTxt, false, 50f);
         }
     }
     
@@ -182,8 +188,6 @@ public class RageGauge_UI : MonoBehaviour
             {
                 if (m_CurGaugeValue < p_Gauge_Refill_Limit)
                 {
-
-
                     ChangeGaugeValue(m_CurGaugeValue + (Time.deltaTime * p_Gauge_Refill_Nature));
                     
                     if (m_CurGaugeValue > p_Gauge_Refill_Limit)
@@ -231,7 +235,7 @@ public class RageGauge_UI : MonoBehaviour
         p_GaugeImg.fillAmount = m_CurGaugeValue * m_Multiply;
 
         // 만약 Max치를 찍었을 경우, 불릿타임 사용 가능 인디케이터를 띄웁니다.
-        if (m_CurGaugeValue >= p_Gauge_Max && !m_BulletTimeMgr.m_CanUseBulletTime)
+        if (m_CurGaugeValue >= p_Gauge_Max && !m_BulletTimeMgr.m_IsGaugeFull)
         {
             m_BulletTimeMgr.SetCanUseBulletTime();
             p_BulletTimeIndicator.enabled = true;

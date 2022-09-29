@@ -70,6 +70,13 @@ public class Player_IDLE : PlayerFSM
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
+        else if (m_InputMgr.m_IsPushBulletTimeKey)
+        {
+            if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
+                m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
+            else
+                m_Player.m_RageGauge.CanConsume(999999f);
+        }
     }
 
     public override void ExitState()
@@ -116,6 +123,15 @@ public class Player_WALK : PlayerFSM
     public override void UpdateState()
     {
         CheckNull();
+
+        if (m_InputMgr.m_IsPushBulletTimeKey)
+        {
+            if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
+                m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
+            else
+                m_Player.m_RageGauge.CanConsume(999999f);
+        }
+
         m_PreInput = m_CurInput;
         m_CurInput = m_InputMgr.GetDirectionalKeyInput();
         
@@ -505,5 +521,101 @@ public class Player_DEAD : PlayerFSM
         // m_Player.setPlayerHp(500);
         
         m_CoroutineElement.StopCoroutine_Element();
+    }
+}
+
+public class Player_BULLET_TIME : PlayerFSM
+{
+    private Animator m_PlayerAnimator;
+    private Player_AniMgr m_AniMgr;
+    private BulletTimeMgr m_BulletTimeMgr;
+    private readonly int h_BulletTime = Animator.StringToHash("BulletTime");
+    private int m_Phase = 0;
+    private float m_BulletTimeLimit = 0f;
+
+    private float m_Timer = 0f;
+
+    public Player_BULLET_TIME(Player _player) : base(_player)
+    {
+        InitFunc();
+    }
+
+    public override void StartState()
+    {
+        m_BulletTimeMgr = m_Player.m_BulletTimeMgr;
+        m_AniMgr = m_Player.m_PlayerAniMgr;
+        m_PlayerAnimator = m_AniMgr.p_FullBody.m_Animator;
+        
+        m_Phase = 0;
+        m_Timer = 0f;
+        
+        m_Player.m_PlayerRigid.velocity = Vector2.zero;
+        
+        // 플립제거
+        m_Player.m_playerRotation.m_BanFlip = true;
+
+        // AR 온
+        m_Player.m_ScreenEffectUI.ActivateAREffect(true);
+        
+        // 비네팅 온
+        m_Player.m_ScreenEffectUI.ActivateVignetteEffect(true);
+        
+        // 머터리얼 교체 온
+
+        m_AniMgr.ChangeAniModeToFight(false);
+        m_AniMgr.SetVisualParts(true,false,false,false);
+        m_AniMgr.p_FullBody.m_Animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 1);
+
+        m_BulletTimeMgr.ActivateBulletTime(true);
+        m_BulletTimeLimit = m_BulletTimeMgr.p_BulletTimeLimit;
+    }
+
+    public override void UpdateState()
+    {
+        switch (m_Phase)
+        {
+            case 0:
+                m_Timer += Time.unscaledDeltaTime;
+                if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer > m_BulletTimeLimit)
+                {
+                    // AR 끔
+                    m_Player.m_ScreenEffectUI.ActivateAREffect(false);
+                    // 비네팅 끔
+                    m_Player.m_ScreenEffectUI.ActivateVignetteEffect(false);
+                    m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 2);
+                    m_Phase = 1;
+                }
+                break;
+            
+            case 1:
+                if (m_AniMgr.p_FullBody.m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    m_BulletTimeMgr.ActivateBulletTime(false);
+                    m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 3);
+                    m_BulletTimeMgr.FireAll();
+                    m_Phase = 2;
+                }
+                break;
+            
+            case 2:
+                if (m_AniMgr.p_FullBody.m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
+                }
+                break;
+        }
+    }
+
+    public override void ExitState()
+    {
+        m_Player.m_playerRotation.m_BanFlip = false;
+        m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 0);
+        m_AniMgr.p_FullBody.m_Animator.updateMode = AnimatorUpdateMode.Normal;
+    }
+
+    public override void NextPhase()
+    {
+        
     }
 }

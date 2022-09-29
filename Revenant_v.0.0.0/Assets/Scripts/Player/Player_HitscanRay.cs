@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -56,7 +57,18 @@ public class Player_HitscanRay : MonoBehaviour
     // Functions
     private Vector2 GetRayDirection()
     {
-        return m_Player.m_IsRightHeaded ? transform.right : transform.right * -1;
+        // 불릿타임 작동 중에는 전방위 레이 검출
+        Vector2 rayDirection;
+        if (m_Player.m_BulletTimeMgr.m_IsBulletTimeActivating)
+        {
+            rayDirection = ((Vector2)m_Cursor.transform.position - (Vector2)m_RayStartPos).normalized;
+        }
+        else
+        {
+            rayDirection = m_Player.m_IsRightHeaded ? transform.right : transform.right * -1;
+        }
+
+        return rayDirection;
     }
 
     private void UpdateRayStartPos()
@@ -144,9 +156,9 @@ public class Player_HitscanRay : MonoBehaviour
 
         int layermask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Object")) |
                         (1 << LayerMask.NameToLayer("HotBoxes"));
-        
-        m_HitCount = Physics2D.RaycastNonAlloc(m_RayStartPos, GetRayDirection(), m_AimRayHits, p_RayLength,
-            layermask);
+
+        m_HitCount = Physics2D.CircleCastNonAlloc(m_RayStartPos, 0.05f, GetRayDirection(), m_AimRayHits,
+            p_RayLength, layermask);
     }
 
     // GetRayHits로 가져가서 다시 결과검출

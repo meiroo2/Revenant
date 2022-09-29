@@ -16,7 +16,11 @@ public class ScreenEffect_UI : MonoBehaviour
     
     public float p_LensDistortPower = -0.5f;
     public float p_LensDistortRestoreSpeed = 2f;
-    
+
+    public float p_VignettePower = 0.5f;
+    public float p_VignetteSpeed = 1f;
+
+    public float p_AREffectSpeed = 1f;
     
     // Member Variables
     private Color m_Color;
@@ -27,8 +31,12 @@ public class ScreenEffect_UI : MonoBehaviour
     private VolumeProfile m_CamVolumeProfile;
     private UnityEngine.Rendering.Universal.ChromaticAberration m_Chroma;
     private UnityEngine.Rendering.Universal.LensDistortion m_LensDistort;
+    private UnityEngine.Rendering.Universal.Vignette m_Vignette;
     private Coroutine m_LensDistortCoroutine;
     private Coroutine m_ColorDistortionCoroutine;
+    private Coroutine m_VignetteCoroutine;
+
+    private ScreenEffect_AR m_ScreenEffect_AR;
     
     
     // Constructor
@@ -56,13 +64,25 @@ public class ScreenEffect_UI : MonoBehaviour
             Debug.Log("MainCamera의 현재 Profile에 LensDistort 없음");
         }
 
+        if (m_CamVolumeProfile.TryGet(out m_Vignette))
+        {
+            m_Vignette.intensity.value = 0f;
+        }
+
 
         m_Image = GetComponentInChildren<Image>();
         m_Color = new Color(1, 1, 1, 0);
         m_Image.color = m_Color;
     }
-    
-    
+
+    private void Start()
+    {
+        var instance = InstanceMgr.GetInstance();
+        m_ScreenEffect_AR = instance.m_ScreenEffect_AR;
+        m_ScreenEffect_AR.p_FadeSpeed = p_AREffectSpeed;
+    }
+
+
     // Updates
     public void Update()
     {
@@ -75,6 +95,53 @@ public class ScreenEffect_UI : MonoBehaviour
 
 
     // Functions
+
+    public void ActivateAREffect(bool _isTrue)
+    {
+        m_ScreenEffect_AR.ActivateUsingFade(_isTrue);
+    }
+
+    /// <summary>
+    /// 카메라에 비네팅 효과를 부드럽게 넣거나 뻅니다.
+    /// </summary>
+    /// <param name="_isTrue">True면 넣음</param>
+    public void ActivateVignetteEffect(bool _isTrue)
+    {
+        m_Vignette.intensity.value = _isTrue ? 0f : p_VignettePower;
+
+        m_VignetteCoroutine = StartCoroutine(VignetteEffectCoroutine(_isTrue));
+    }
+
+    private IEnumerator VignetteEffectCoroutine(bool _isTrue)
+    {
+        while (true)
+        {
+            if (_isTrue)
+            {
+                m_Vignette.intensity.value += Time.unscaledDeltaTime * p_VignetteSpeed;
+                if (m_Vignette.intensity.value >= p_VignettePower)
+                {
+                    m_Vignette.intensity.value = p_VignettePower;
+                    break;
+                }
+            }
+            else
+            {
+                m_Vignette.intensity.value -= Time.unscaledDeltaTime * p_VignetteSpeed;
+                if (m_Vignette.intensity.value <= 0f)
+                {
+                    m_Vignette.intensity.value = 0f;
+                    break;
+                }
+            }
+            
+            yield return null;
+        }
+
+        yield break;
+    }
+    
+    
     
     /// <summary>
     /// 화면 가장자리에 유혈 효과를 생성합니다.

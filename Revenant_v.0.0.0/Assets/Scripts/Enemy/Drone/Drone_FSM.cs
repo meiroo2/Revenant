@@ -33,6 +33,8 @@ public class Drone_FSM : Enemy_FSM
 
 public class IDLE_Drone : Drone_FSM
 {
+    private float Timer = 0f;
+    
     public IDLE_Drone(Drone _enemy)
     {
         m_Enemy = _enemy;
@@ -41,14 +43,26 @@ public class IDLE_Drone : Drone_FSM
     
     public override void StartState()
     {
-        m_Animator.SetBool("IsMove", false);
-        m_Animator.SetBool("IsStop", false);
-        m_Animator.SetBool("IsExplode", false);
+        
     }
 
     public override void UpdateState()
     {
-       
+        if (m_Enemy.p_LookAround)
+        {
+            Timer += Time.deltaTime;
+            if (Timer >= m_Enemy.p_LookAroundDelay)
+            {
+                m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+                Timer = 0f;
+            }
+        }
+
+        m_Enemy.RaycastVisionCheck();
+        if (!ReferenceEquals(m_Enemy.m_VisionHit.collider, null) && !m_Enemy.m_PlayerCognition)
+        {
+            m_Enemy.StartPlayerCognition();
+        }
     }
 
     public override void ExitState()
@@ -81,7 +95,7 @@ public class FOLLOW_Drone : Drone_FSM
         m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
         m_Phase = 0;
 
-        m_Animator.SetBool("IsMove", true);
+        m_Animator.SetInteger("Move", 1);
     }
 
     public override void UpdateState()
@@ -125,23 +139,27 @@ public class FOLLOW_Drone : Drone_FSM
                 break;
             
             case 3:     // Stop 대기
-                m_Enemy.SetCoroutineCallback(NextPhase);
-                m_Enemy.VelocityBreak();
-                m_Animator.SetBool("IsStop", true);
+                m_Enemy.VelocityBreak(true);
+                m_Animator.SetInteger("Stop", 1);
                 m_Phase = 4;
                 break;
             
-            case 5:
-                m_Enemy.ChangeEnemyFSM(EnemyStateName.RUSH);
-                m_Phase = 6;
+            case 4:
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    m_Enemy.ChangeEnemyFSM(EnemyStateName.RUSH);
+                    m_Phase = 5;
+                }
                 break;
         }
     }
 
     public override void ExitState()
     {
-        m_Animator.SetBool("IsStop", false);
-        m_Animator.SetBool("IsMove", false);
+        m_Animator.SetInteger("Move", 0);
+        m_Animator.SetInteger("Stop", 0);
+        
+        m_Enemy.VelocityBreak(false);
     }
 
     public override void NextPhase()
@@ -170,24 +188,16 @@ public class RUSH_Drone : Drone_FSM
         m_Phase = 0;
         m_TargetPos = m_Enemy.m_Player.GetPlayerFootPos();
 
-        m_Animator.SetBool("IsDetect", true);
+        m_Animator.SetInteger("Attack", 1);
         m_Enemy.ResetMovePoint(m_TargetPos);
+        m_Enemy.SetRigidToPoint();
     }
 
     public override void UpdateState()
     {
         switch (m_Phase)
         {
-            case 0:     // 애니메이션 Attack까지 대기
-                m_Stateinfo = m_Animator.GetCurrentAnimatorStateInfo(0);
-                if (m_Stateinfo.IsName("At"))
-                {
-                    m_Enemy.SetRigidToPoint();
-                    m_Phase = 1;
-                }
-                break;
-            
-            case 1:     // 좌표 계산
+            case 0:     // 좌표 계산
                 if ((m_EnemyTransform.position.y - m_TargetPos.y) <= 0f)
                 {
                     m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
@@ -195,7 +205,7 @@ public class RUSH_Drone : Drone_FSM
                     m_Enemy.m_DeadReason = 2;
                     m_Enemy.ChangeEnemyFSM(EnemyStateName.DEAD);
 
-                    m_Phase = 2;
+                    m_Phase = 1;
                 }
                 break;
         }
@@ -203,7 +213,7 @@ public class RUSH_Drone : Drone_FSM
 
     public override void ExitState()
     {
-        
+        m_Animator.SetInteger("Attack", 0);
     }
 
     public override void NextPhase()
@@ -239,18 +249,21 @@ public class DEAD_Drone : Drone_FSM
                 m_Animator.SetTrigger("Head");
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());
+                m_Enemy.m_DeadReason = -1;
                 break;
             
             case 1: // 폭탄 피격
                 m_Animator.SetTrigger("Body");
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());
+                m_Enemy.m_DeadReason = -1;
                 break;
             
             case 2: // 잘 폭발
-                m_Animator.SetBool("IsExplode", true);
+                m_Animator.SetInteger("Explode", 1);
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());
+                m_Enemy.m_DeadReason = -1;
                 break;
         }
     }
@@ -262,7 +275,7 @@ public class DEAD_Drone : Drone_FSM
 
     public override void ExitState()
     {
-        
+        m_Animator.SetInteger("Explode", 0);
     }
 
     public override void NextPhase()

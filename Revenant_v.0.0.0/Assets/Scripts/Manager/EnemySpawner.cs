@@ -126,7 +126,7 @@ public class EnemySpawner : MonoBehaviour
         for (int i = 0; i < p_WillSpawnEnemys.Length; i++)
         {
             m_WillSpawnEnemyScripts[i].InitEnemy();
-            m_WillSpawnEnemyScripts[i].StartPlayerCognition();
+            m_WillSpawnEnemyScripts[i].StartPlayerCognition(true);
         }
     }
 

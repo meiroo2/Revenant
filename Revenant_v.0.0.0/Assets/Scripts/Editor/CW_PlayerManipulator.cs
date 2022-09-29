@@ -29,6 +29,9 @@ public class CW_PlayerManipulator : OdinEditorWindow
 
     [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static float P_RollSpeedMulti;
+    
+    [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static float p_RollDecelerationSpeedMulti;
 
     [TabGroup("Player"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static float P_MeleeSpeedMulti;
@@ -134,6 +137,7 @@ public class CW_PlayerManipulator : OdinEditorWindow
             p_ValMani.P_MeleeStunValue = P_MeleeStunValue;
             p_ValMani.P_JustEvadeStartTime = p_JustEvadeStartTime;
             p_ValMani.P_JustEvadeEndTime = p_JustEvadeEndTime;
+            p_ValMani.P_RollDecelerationSpeedMulti = p_RollDecelerationSpeedMulti;
         }
         else
         {
@@ -145,10 +149,11 @@ public class CW_PlayerManipulator : OdinEditorWindow
             P_MeleeSpeedMulti = p_ValMani.P_MeleeSpeedMulti;
             P_MeleeDamage = p_ValMani.P_MeleeDamage;
             P_MeleeStunValue = p_ValMani.P_MeleeStunValue;
-            p_JustEvadeStartTime =  p_ValMani.P_JustEvadeStartTime ;
-             p_JustEvadeEndTime = p_ValMani.P_JustEvadeEndTime ;
+            p_JustEvadeStartTime = p_ValMani.P_JustEvadeStartTime;
+            p_JustEvadeEndTime = p_ValMani.P_JustEvadeEndTime;
+            p_RollDecelerationSpeedMulti = p_ValMani.P_RollDecelerationSpeedMulti;
         }
-        
+
         #if UNITY_EDITOR
             EditorUtility.SetDirty(p_ValMani);
         #endif

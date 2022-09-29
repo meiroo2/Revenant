@@ -25,6 +25,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     // For SFX
     private ParticleMgr m_ParticleMgr;
     private HitSFXMaker m_HitSFXMaker;
+    private SimpleEffectPuller m_SEPuller;
     
     
     // Constructors
@@ -34,15 +35,16 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         m_ParentObj = gameObject;
         m_HitBoxInfo = p_HitBoxPoint;
     }
+
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        
+
         m_PlayerUI = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
         m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
-       m_PlayerCenterTransform= instance.GetComponentInChildren<Player_Manager>().m_Player.p_CenterTransform;
-
+        m_PlayerCenterTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.p_CenterTransform;
+        m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
     }
@@ -54,11 +56,16 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     
     public int HitHotBox(IHotBoxParam _param)
     {
-        //m_Enemy.StartPlayerCognition();
         switch (p_HitBoxPoint)
         {
             case HitBoxPoint.HEAD:
-                m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
+                if (_param.m_weaponType != WeaponType.BULLET_TIME)
+                    m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
+                else
+                {
+                    m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
+                }
+                
                 m_SoundMgr.playAttackedSound(MatType.Normal,  new Vector3(transform.position.x,transform.position.y, 0) );
                 m_PlayerUI.ActiveHitmark(0);
 
@@ -71,7 +78,13 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 break;
             
             case HitBoxPoint.BODY:
-                m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
+                if (_param.m_weaponType != WeaponType.BULLET_TIME)
+                    m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
+                else
+                {
+                    m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
+                }
+                
                 m_SoundMgr.playAttackedSound(MatType.Normal, new Vector3(transform.position.x,transform.position.y, 0) );
                 m_PlayerUI.ActiveHitmark(1);
 

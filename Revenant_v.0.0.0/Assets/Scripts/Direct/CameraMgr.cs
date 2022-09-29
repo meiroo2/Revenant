@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 using Image = UnityEngine.UI.Image;
 using Random = UnityEngine.Random;
 
-public class CameraMove : MonoBehaviour
+public class CameraMgr : MonoBehaviour
 {
     // Visible Member Variables
     public CamBoundMgr p_CamBoundMgr;
@@ -45,6 +45,8 @@ public class CameraMove : MonoBehaviour
     // Constructors
     private void Awake()
     {
+        Debug.Log("CameraMove.cs Awake");
+        
         m_MainCam = Camera.main;
         m_OriginCamZoomValue = m_MainCam.orthographicSize;
         Cursor.visible = true;

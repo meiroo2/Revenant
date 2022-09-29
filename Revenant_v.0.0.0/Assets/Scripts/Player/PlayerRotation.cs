@@ -28,6 +28,7 @@ public class PlayerRotation : MonoBehaviour
     private Camera m_mainCam;
     private Player m_Player;
 
+    public bool m_BanFlip = false;
     private Vector2 m_mousePos;
     private Vector2 m_MouseDistance;
     private Quaternion toRotation;
@@ -62,6 +63,9 @@ public class PlayerRotation : MonoBehaviour
         
         DoRotate();
 
+        if (m_BanFlip)
+            return;
+        
         if (m_curActualAngle is > 90f or < -90f)
         {
             m_Player.setisRightHeaded(!m_Player.m_IsRightHeaded);

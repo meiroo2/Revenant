@@ -34,7 +34,7 @@ public class Player_UI : MonoBehaviour
 
     // Member Variables
     private SoundPlayer m_SoundMgr;
-    private CameraMove m_Maincam;
+    private CameraMgr m_Maincam;
     private Player_ArmMgr m_ArmMgr;
     
     public float m_HitmarkRemainTime { get; set; } = 0.2f;
@@ -64,7 +64,7 @@ public class Player_UI : MonoBehaviour
     {
         m_AllVisibleObjs = this.gameObject.GetComponentsInChildren<CanvasRenderer>();
 
-        m_Maincam = Camera.main.GetComponent<CameraMove>();
+        m_Maincam = Camera.main.GetComponent<CameraMgr>();
         m_AimTransform = p_MainAimImg.transform;
         p_Hitmark.enabled = false;
         p_ReloadCircle.fillAmount = 0f;
