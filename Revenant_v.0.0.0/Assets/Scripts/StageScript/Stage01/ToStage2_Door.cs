@@ -11,7 +11,7 @@ public class ToStage2_Door : MonoBehaviour, IUseableObj
     // Member Variables
     public bool m_IsOutlineActivated { get; set; }
     public UseableObjList m_ObjProperty { get; set; } = UseableObjList.OBJECT;
-    public bool m_isOn { get; set; } = false;
+    public bool m_isOn { get; set; } = true;
     private SpriteOutline m_Outline;
 
     // Constructors
@@ -34,6 +34,7 @@ public class ToStage2_Door : MonoBehaviour, IUseableObj
             return 0;
 
         SceneManager.LoadScene(p_LoadSceneName);
+        Destroy(DataHandleManager.Instance);
         return 1;
     }
 
