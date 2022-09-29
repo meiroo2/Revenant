@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
@@ -26,11 +27,12 @@ public class InstanceMgr : MonoBehaviour
         Instance = this;
         
         SpawnInWorld();
-
+        
         for (int i = 0; i < m_ShouldBeMadeInCanvas.Length; i++)
         {
             Instantiate(m_ShouldBeMadeInCanvas[i], m_MainCanvas.transform);
         }
+
         Instantiate(p_Canvas_RageGauge, m_MainCanvas.transform);
     }
 

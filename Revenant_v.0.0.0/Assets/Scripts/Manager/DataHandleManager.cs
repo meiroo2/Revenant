@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DataHandleManager : MonoBehaviour
 {
@@ -9,16 +10,18 @@ public class DataHandleManager : MonoBehaviour
 
     public bool IsCheckPointActivated { get; set; }
     public int CheckPointSectionNumber { get; set; }
-
     public Vector2 PlayerPositionVector { get; set; }
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-        
+        DontDestroyOnLoad(transform.root.gameObject);
         if (Instance == null)
+        {
             Instance = this;
-        else if (Instance != this)
+        }
+        else if (Instance != null)
+        {
             Destroy(gameObject);
+        }
     }
 }
