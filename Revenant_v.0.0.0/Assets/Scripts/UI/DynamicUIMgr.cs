@@ -11,6 +11,63 @@ public class DynamicUIMgr : MonoBehaviour
     private Dictionary<RectTransform, Coroutine> m_ExpandDic = new Dictionary<RectTransform, Coroutine>();
     private Dictionary<RectTransform, Coroutine> m_ShakeDic = new Dictionary<RectTransform, Coroutine>();
     private Dictionary<Image, Coroutine> m_ColorDic = new Dictionary<Image, Coroutine>();
+    
+    
+    private Dictionary<Text, Coroutine> m_TextFadeDic = new Dictionary<Text, Coroutine>();
+
+    public void FadeUI(Text _text, bool _isFadeIn, float _speed)
+    {
+        if (m_TextFadeDic.TryGetValue(_text, out Coroutine element))
+        {
+            if (!ReferenceEquals(element, null))
+            {
+                StopCoroutine(element);
+            }
+            
+            m_TextFadeDic.Remove(_text);
+            
+            Color txtColor = _text.color;
+            txtColor.a = _isFadeIn ? 0f : 1f;
+            
+            _text.color = txtColor;
+        }
+        
+        m_TextFadeDic.Add(_text, StartCoroutine(FadeUI_TxtCoroutine(_text, _isFadeIn, _speed)));
+    }
+
+    private IEnumerator FadeUI_TxtCoroutine(Text _txt, bool _isFadeIn, float _speed)
+    {
+        Color txtColor = _txt.color;
+        
+        while (true)
+        {
+            if (_isFadeIn)
+            {
+                txtColor.a += Time.deltaTime * _speed;
+                if (txtColor.a >= 1f)
+                {
+                    txtColor.a = 1f;
+                    _txt.color = txtColor;
+                    break;
+                }
+            }
+            else
+            {
+                txtColor.a -= Time.deltaTime * _speed;
+                if (txtColor.a <= 1f)
+                {
+                    txtColor.a = 0f;
+                    _txt.color = txtColor;
+                    break;
+                }
+            }
+
+            _txt.color = txtColor;
+            yield return null;
+        }
+        
+        yield break;
+    }
 
     public void ChangeColor(Image _image, Color _initColor, Color _destColor, float _speed)
     {

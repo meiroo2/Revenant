@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// BulletTime 클래스에 사격 정보를 예약시 쓰는 파라미터용 클래스입니다.
@@ -30,14 +31,19 @@ public class BulletTimeMgr : MonoBehaviour
     // Visible Member Variables
     public float p_BulletTimeLimit = 2f;
     public float p_ShotDelayTime = 0.1f;
+    public float p_BeforeBTEffectDelay = 0.5f;
+    public float p_ThunderEffectDelay = 0.8f;
+
     public GameObject p_Marker;
+    
     
     // Member Variables
     private RageGauge_UI m_RageGaugeUI;
-    public bool m_CanUseBulletTime { get; private set; } = false;
+    public bool m_IsGaugeFull { get; private set; } = false;
 
     private const int m_NumofMarker = 8;
 
+    private SimpleEffectPuller m_SEPuller;
     private Player m_Player;
     private BasicWeapon m_Negotiator;
     private Player_InputMgr m_InputMgr;
@@ -55,7 +61,14 @@ public class BulletTimeMgr : MonoBehaviour
     
     private List<Action> m_FinaleActionList = new List<Action>();
 
-    public bool m_BulletTimeActivating { get; private set; } = false;
+    public bool m_IsBulletTimeActivating { get; private set; } = false;
+
+    private Coroutine m_SEThunderCoroutine;
+    private Coroutine m_SEBeforeBTCoroutine;
+
+    private ScreenEffect_AR m_ScreenEffect_AR;
+
+    public GameObject m_ARScreenEffect { get; private set; }
 
 
     // Constructors
@@ -82,6 +95,8 @@ public class BulletTimeMgr : MonoBehaviour
         m_MatChanger = instance.GetComponentInChildren<MatChanger>();
         m_Negotiator = instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr.m_CurWeapon;
         m_RageGaugeUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
+        m_ScreenEffect_AR = instance.m_ScreenEffect_AR;
     }
 
 
@@ -89,32 +104,39 @@ public class BulletTimeMgr : MonoBehaviour
 
 
     // Functions
-
-    private IEnumerator CheckBulletTimeLimit()
+    
+    /// <summary>
+    /// BulletTime 도중에 나오는 Thunder Effect Coroutine입니다.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SpawnThunderCoroutine()
     {
-        float Timer = 0f;
-
         while (true)
         {
-            Timer += Time.unscaledDeltaTime;
+            var effect = m_SEPuller.SpawnSimpleEffect(
+                Random.Range(2, 5), m_Player.transform, true);
 
-            m_RageGaugeUI.GetTimePassed(1f - (Timer / p_BulletTimeLimit));
-            
-            if (Timer > p_BulletTimeLimit)
-            {
-                break;
-            }
-            yield return null;
-        }
-        
-        if (m_BulletTimeActivating)
-        {
-            ActivateBulletTime(false);
-            FireAll();
+            yield return new WaitForSecondsRealtime(p_ThunderEffectDelay);
         }
 
         yield break;
     }
+
+    /// <summary>
+    /// BulletTime 키 입력을 받기 전까지 SE를 출력하는 Coroutine입니다.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SpawnBeforeBTPartCoroutine()
+    {
+        while (true)
+        {
+            var effect = m_SEPuller.SpawnSimpleEffect(
+                Random.Range(0, 2), m_Player.transform, true, new Vector2(Random.Range(-0.1f, 0.1f), 0f));
+
+            yield return new WaitForSecondsRealtime(p_BeforeBTEffectDelay);
+        }
+    }
+    
     
     /// <summary>
     /// 전탄 발사가 끝난 후 호출될 함수를 추가합니다.
@@ -127,15 +149,20 @@ public class BulletTimeMgr : MonoBehaviour
 
     
     /// <summary>
-    /// BulletTimeMgr의 BulletTime 사용을 가능하게 변경합니다.
+    /// BulletTimeMgr의 BulletTime 사용을 가능하게 변경합니다. 파티클도 출력합니다.
     /// </summary>
     public void SetCanUseBulletTime()
     {
-        if (m_CanUseBulletTime)
+        if (m_IsGaugeFull)
             return;
         
-        m_CanUseBulletTime = true;
-        StartCoroutine(CheckBulletTimeStart());
+        m_IsGaugeFull = true;
+        
+        if (!ReferenceEquals(m_SEBeforeBTCoroutine, null))
+        {
+            StopCoroutine(m_SEBeforeBTCoroutine);
+        } 
+        m_SEBeforeBTCoroutine = StartCoroutine(SpawnBeforeBTPartCoroutine());
     }
 
     /// <summary>
@@ -144,23 +171,9 @@ public class BulletTimeMgr : MonoBehaviour
     /// <returns></returns>
     private IEnumerator CheckBulletTimeStart()
     {
-        while (true)
-        {
-            if (m_InputMgr.m_IsPushBulletTimeKey)
-            {
-                if (m_Negotiator.m_LeftRounds > 0 && (m_Player.m_CurPlayerFSMName == PlayerStateName.IDLE ||
-                                                      m_Player.m_CurPlayerFSMName == PlayerStateName.WALK))
-                {
-                    break;
-                }
-                else
-                {
-                    m_RageGaugeUI.CanConsume(9999999f);
-                }
-            }
-            yield return null;
-        }
+       
         
+        StopCoroutine(m_SEBeforeBTCoroutine);
         Debug.Log("불릿타임 시작");
         ActivateBulletTime(true);
 
@@ -177,34 +190,34 @@ public class BulletTimeMgr : MonoBehaviour
         Debug.Log("불릿타임 끝");
         
         ActivateBulletTime(false);
-        FireAll();
+        //FireAll();
     }
     
     /// <summary>
     /// BulletTime을 시작합니다. Timescale이 0이 됩니다.
     /// </summary>
     /// <param name="_isStart">시작/중지 여부</param>
-    private void ActivateBulletTime(bool _isStart)
+    public void ActivateBulletTime(bool _isStart)
     {
         if (_isStart)
         {
-            m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
-            m_Player.m_PlayerAniMgr.p_FullBody.m_Animator.SetInteger("BulletTime", 1);
             m_RageGaugeUI.p_BulletTimeIndicator.enabled = false;
-            m_RageGaugeUI.GaugeToBulletTime(true);
+            m_RageGaugeUI.PlayGaugeAnimation(true);
             m_RageGaugeUI.TempStopRageGauge(true);
-            
-            StartCoroutine(CheckBulletTimeLimit());
-            m_BulletTimeActivating = true;
+
+            m_SEThunderCoroutine = StartCoroutine(SpawnThunderCoroutine());
+            m_IsBulletTimeActivating = true;
             m_MatChanger.ChangeMat();
             Time.timeScale = 0f;
         }
         else
         {
-            m_RageGaugeUI.GaugeToBulletTime(false);
+            m_RageGaugeUI.PlayGaugeAnimation(false);
             m_RageGaugeUI.TempStopRageGauge(false);
             
-            m_BulletTimeActivating = false;
+            StopCoroutine(m_SEThunderCoroutine);
+            
+            m_IsBulletTimeActivating = false;
             m_MatChanger.ResotreMat();
             Time.timeScale = 1f;
 
@@ -215,6 +228,7 @@ public class BulletTimeMgr : MonoBehaviour
             }
         }
     }
+    
     
     /// <summary>
     /// 오직 시간만을 잠시 수정합니다. Timescale이 0이 됩니다.
@@ -235,7 +249,7 @@ public class BulletTimeMgr : MonoBehaviour
     {
         if (m_MarkerIdx > m_MarkerList.Count - 1)
             return;
-        
+
         m_BulletTimeParamList.Add(_param);
         //Debug.Log("추가요" + m_BulletTimeParamList.Count);
         
@@ -269,7 +283,7 @@ public class BulletTimeMgr : MonoBehaviour
     /// <summary>
     /// 예약된 모든 사격 정보를 기반으로 발사합니다.
     /// </summary>
-    private void FireAll()
+    public void FireAll()
     {
         StartCoroutine(FireCoroutine());
     }
@@ -306,7 +320,7 @@ public class BulletTimeMgr : MonoBehaviour
         }
 
         // 초기화
-        m_CanUseBulletTime = false;
+        m_IsGaugeFull = false;
         m_MarkerIdx = 0;
         m_FinaleActionList.Clear();
         m_FinaleActionList.TrimExcess();

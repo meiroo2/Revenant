@@ -22,6 +22,11 @@ public class Drone : BasicEnemy
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_BombRange { get; protected set; } = 2f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_BreakPower = 1f;
 
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_DetectSpeed = 1f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public bool p_LookAround = false;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_LookAroundDelay = 1f;
+
+    
     [Space(20f)] [Header("확인용 변수 모음")] 
     public int m_DeadReason = -1;
     public BombWeapon_Enemy m_BombWeapon;
@@ -47,6 +52,9 @@ public class Drone : BasicEnemy
 
 
     private Coroutine m_Coroutine;
+
+    private Coroutine m_VelocityBreakCoroutine;
+    
     private Vector2 m_RushMoveVec;
     
     private float m_SinYValue = 0;
@@ -54,6 +62,8 @@ public class Drone : BasicEnemy
     
     public delegate void UpdateDelegate();
     private UpdateDelegate m_Callback = null;
+
+    private float m_VisionAngle = 0f;
     
 
 
@@ -63,6 +73,7 @@ public class Drone : BasicEnemy
         InitHuman();
         InitEnemy();
         
+        //m_Animator.SetFloat("DetectSpeed", p_DetectSpeed);
         
         m_Renderer = GetComponentInChildren<SpriteRenderer>();
         
@@ -83,11 +94,12 @@ public class Drone : BasicEnemy
         m_DEAD = new DEAD_Drone(this);
         
         m_CurEnemyStateName = EnemyStateName.FOLLOW;
-        m_CurEnemyFSM = m_FOLLOW;
+        m_CurEnemyFSM = m_IDLE;
     }
 
     public void Start()
     {
+        m_Animator.SetFloat("DetectSpeed", p_DetectSpeed);
         var instance = InstanceMgr.GetInstance();
         m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerTransform = m_Player.transform;
@@ -106,6 +118,44 @@ public class Drone : BasicEnemy
 
 
     // Functions
+    public override void RaycastVisionCheck()
+    {
+        Vector2 position = transform.position;
+        Vector2 direction = StaticMethods.GetRotatedVec(Vector2.right, m_IsRightHeaded ? m_VisionAngle : -m_VisionAngle);
+
+        m_VisionAngle -= 1f;
+        if (m_VisionAngle <= -60f)
+            m_VisionAngle = 0f;
+        
+        if (m_IsRightHeaded)
+        {
+            m_VisionHit = Physics2D.Raycast(position, direction, p_VisionDistance, LayerMask.GetMask("Player"));
+            Debug.DrawRay(position, direction * p_VisionDistance, Color.red);
+        }
+        else
+        {
+            m_VisionHit = Physics2D.Raycast( position, -direction, p_VisionDistance, LayerMask.GetMask("Player"));
+            Debug.DrawRay(position, (-direction * p_VisionDistance), Color.red);
+        }
+    }
+    
+    public override void StartPlayerCognition(bool _instant = false)
+    {
+        if (m_PlayerCognition)
+            return;
+        
+        if (_instant)
+        {
+            m_PlayerCognition = true;
+            ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        }
+        else
+        {
+            m_PlayerCognition = true;
+            ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        }
+    }
+    
     public void SetCoroutineCallback(CoroutineDelegate _input)
     {
         m_CoroutineCallback = _input;
@@ -126,6 +176,7 @@ public class Drone : BasicEnemy
         p_ToRushXDistance = _mgr.D_ToRushXDistance;
         p_HeadHotBox.p_DamageMulti = _mgr.D_DroneDmgMulti;
         p_BodyHotBox.p_DamageMulti = _mgr.D_BombDmgMulti;
+        p_DetectSpeed = _mgr.D_DetectSpeed;
         
 
         #if UNITY_EDITOR
@@ -241,9 +292,26 @@ public class Drone : BasicEnemy
         m_EnemyRigid.velocity = m_MovePoint * (p_MoveSpeed * p_RushSpeedRatio);
     }
 
-    public void VelocityBreak()
+    /// <summary>
+    /// 드론의 속도를 점차 낮춥니다. (물리적)
+    /// </summary>
+    /// <param name="_isBreak">false일 경우 즉시 정지</param>
+    public void VelocityBreak(bool _isBreak)
     {
-        StartCoroutine(VelocitySlowDown());
+        if (!ReferenceEquals(m_VelocityBreakCoroutine, null))
+        {
+            StopCoroutine(m_VelocityBreakCoroutine);
+        }
+        
+        if (_isBreak)
+        {
+            m_VelocityBreakCoroutine = StartCoroutine(VelocitySlowDown());
+        }
+        else
+        {
+            m_EnemyRigid.velocity = Vector2.zero;
+        }
+        
     }
 
     private IEnumerator VelocitySlowDown()

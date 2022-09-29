@@ -99,6 +99,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_ToRushXDistance;
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int D_DroneDmgMulti;
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int D_BombDmgMulti;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_DetectSpeed;
 
     #endregion
     
@@ -300,6 +301,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
             enemyMgr.D_ToRushXDistance = D_ToRushXDistance;
             enemyMgr.D_DroneDmgMulti = D_DroneDmgMulti;
             enemyMgr.D_BombDmgMulti = D_BombDmgMulti;
+            enemyMgr.D_DetectSpeed = D_DetectSpeed;
         }
         else
         {
@@ -312,6 +314,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
             D_ToRushXDistance = enemyMgr.D_ToRushXDistance;
             D_DroneDmgMulti = enemyMgr.D_DroneDmgMulti;
             D_BombDmgMulti = enemyMgr.D_BombDmgMulti;
+            D_DetectSpeed = enemyMgr.D_DetectSpeed;
         }
 
         #if UNITY_EDITOR

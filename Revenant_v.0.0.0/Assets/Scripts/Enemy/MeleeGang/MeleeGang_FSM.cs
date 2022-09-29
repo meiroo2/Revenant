@@ -358,6 +358,21 @@ public class DEAD_MeleeGang : MeleeGang_FSM
         m_Enemy.SetEnemyHotBox(false);
         m_Enemy.SendDeathAlarmToSpawner();
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
+
+        switch (m_Enemy.m_DeathReason)
+        {
+            case 0:
+                Debug.Log("ERR : MeleeGang DeathReason is 0");
+                break;
+            
+            case 1:
+                m_EnemyAnimator.SetInteger("Head", 1);
+                break;
+
+            case 2:
+                m_EnemyAnimator.SetInteger("Body", 1);
+                break;
+        }
     }
 
     public override void UpdateState()
@@ -369,6 +384,8 @@ public class DEAD_MeleeGang : MeleeGang_FSM
 
     public override void ExitState()
     {
+        m_EnemyAnimator.SetInteger("Head", 0);
+        m_EnemyAnimator.SetInteger("Body", 0);
         m_Enemy.SetEnemyHotBox(true);
     }
 

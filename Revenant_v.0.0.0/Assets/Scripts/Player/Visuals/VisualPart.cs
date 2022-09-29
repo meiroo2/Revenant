@@ -52,9 +52,7 @@ public class VisualPart : MonoBehaviour
     /// <param name="_isVisible">SpriteRenderer enabled?</param>
     public void SetVisible(bool _isVisible)
     {
-        if (_isVisible == m_isVisible)
-            return;
-        
+//        Debug.Log(_isVisible);
         m_isVisible = _isVisible;
         m_SpriteRenderer.enabled = m_isVisible;
     }
@@ -65,9 +63,6 @@ public class VisualPart : MonoBehaviour
     /// <param name="_isVisible">Animator enabled?</param>
     public void SetAniVisible(bool _isVisible)
     {
-        if (_isVisible == m_Animator.enabled)
-            return;
-            
         if (m_Animator)
             m_Animator.enabled = _isVisible;
     }
@@ -99,8 +94,10 @@ public class VisualPart : MonoBehaviour
     
     public void SetSprite(int _inputIdx)
     {
+        /*
         if (m_Animator.enabled == true)
             Debug.Log("ERR : VisualPart에서 Animator가 켜져있는데 SetSprite를 시도합니다.");
+        */
         
         if (p_Sprites.Length <= 1 || _inputIdx < 0 || _inputIdx >= p_Sprites.Length)
         {

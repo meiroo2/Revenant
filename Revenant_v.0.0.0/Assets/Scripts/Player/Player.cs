@@ -13,6 +13,7 @@ public enum PlayerStateName
     ROLL,
     HIDDEN,
     MELEE,
+    BULLET_TIME,
     DEAD
 }
 
@@ -88,6 +89,7 @@ public class Player : Human
     private Player_HIDDEN m_HIDDEN;
     private Player_MELEE m_MELEE;
     private Player_DEAD m_DEAD;
+    private Player_BULLET_TIME m_BULLETTIME;
 
     private HideSlot m_CurHideSlot;
 
@@ -133,6 +135,7 @@ public class Player : Human
         m_HIDDEN = new Player_HIDDEN(this);
         m_MELEE = new Player_MELEE(this);
         m_DEAD = new Player_DEAD(this);
+        m_BULLETTIME = new Player_BULLET_TIME(this);
 
 
         m_ObjectType = ObjectType.Human;
@@ -174,6 +177,7 @@ public class Player : Human
         m_MeleeAttack.m_Damage = _input.P_MeleeDamage;
         m_MeleeAttack.m_StunValue = _input.P_MeleeStunValue;
         p_JustEvadeNormalizeTime = new Vector2(_input.P_JustEvadeStartTime, _input.P_JustEvadeEndTime);
+        p_RollDecelerationSpeedMulti = _input.P_RollDecelerationSpeedMulti;
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
@@ -244,6 +248,10 @@ public class Player : Human
 
             case PlayerStateName.DEAD:
                 m_CurPlayerFSM = m_DEAD;
+                break;
+            
+            case PlayerStateName.BULLET_TIME:
+                m_CurPlayerFSM = m_BULLETTIME;
                 break;
 
             default:
