@@ -44,7 +44,12 @@ public class GameMgr : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
-        
+
+        if (!FindObjectOfType<DataHandleManager>())
+        {
+            Debug.Log("DataHandleManager 없음!!!! 배치 요망!!!");
+        }
+
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -60,7 +65,6 @@ public class GameMgr : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-
     private void OnSceneLoaded(Scene _scene, LoadSceneMode _mode)
     {
         if (!m_SceneStartWhiteOut)
@@ -72,7 +76,6 @@ public class GameMgr : MonoBehaviour
         AssignCanvasObjs();
         m_IngameUI.DoWhiteOut(true);
     }
-
 
     // Updates
     private void Update()
@@ -119,7 +122,7 @@ public class GameMgr : MonoBehaviour
 
     public void CurSceneReload()
     {
-        p_CoroutineHandler.UnregisterCoroutineHandler();
+        //p_CoroutineHandler.UnregisterCoroutineHandler();
         Scene curScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(curScene.name);
     }

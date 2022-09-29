@@ -80,8 +80,7 @@ public class CheckPoint : MonoBehaviour
     void SetUpIsActivated()
     {
         // 저장된 데이터 중 체크포인트가 활성화 되어있다면 체크포인트의 섹션을 판별
-        if (DataHandleManager.Instance.IsCheckPointActivated &&
-            DataHandleManager.Instance.CheckPointSectionNumber == SectionNumber)
+        if (DataHandleManager.Instance.IsCheckPointActivated && DataHandleManager.Instance.CheckPointSectionNumber == SectionNumber)
         {
             // 해당 체크포인트를 활성화
             CheckPointsList[SectionNumber - 1].bActivated = DataHandleManager.Instance.IsCheckPointActivated;
