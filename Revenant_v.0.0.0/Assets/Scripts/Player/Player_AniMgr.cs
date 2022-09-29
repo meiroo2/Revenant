@@ -78,9 +78,6 @@ public class Player_AniMgr : MonoBehaviour
             case PlayerStateName.DEAD:
                 SetVisualParts(true, false, false, false);
                 break;
-            
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
     
@@ -110,16 +107,19 @@ public class Player_AniMgr : MonoBehaviour
                 break;
 
             case PlayerStateName.ROLL:
+                ChangeAniModeToFight(false);
                 SetVisualParts(true, false, false, false);
                 p_FullBody.SetAnim_Int("Roll", 1);
                 break;
 
             case PlayerStateName.HIDDEN:
+                ChangeAniModeToFight(false);
                 SetVisualParts(true, false, false, false);
                 p_FullBody.SetAnim_Int("Hide", 1);
                 break;
             
             case PlayerStateName.MELEE:
+                ChangeAniModeToFight(false);
                 SetVisualParts(true, false, false, false);
                 p_FullBody.SetAnim_Int("Melee", 1);
                 break;
@@ -127,9 +127,6 @@ public class Player_AniMgr : MonoBehaviour
             case PlayerStateName.DEAD:
                 SetVisualParts(true, false, false, false);
                 break;
-            
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -143,8 +140,6 @@ public class Player_AniMgr : MonoBehaviour
         p_FullBody.SetVisible(_full);
         p_UpperBody.SetVisible(_upper);
         p_LowerBody.SetVisible(_low);
-
-        if (!m_IsFightMode)
-            p_Arm.SetVisible(_arm);
+        p_Arm.SetVisible(_arm);
     }
 }

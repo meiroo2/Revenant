@@ -23,7 +23,7 @@ public class MatChanger : MonoBehaviour
 
         for (int i = 0; i < spriteRenArr.Length; i++)
         {
-            if (!spriteRenArr[i].gameObject.CompareTag("Player"))
+            if (!spriteRenArr[i].gameObject.CompareTag("Player") && !spriteRenArr[i].gameObject.CompareTag("UI"))
             {
                 m_SpriteDic.Add(spriteRenArr[i], spriteRenArr[i].material);
             }

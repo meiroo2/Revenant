@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 using Image = UnityEngine.UI.Image;
 using Random = UnityEngine.Random;
 
-public class CameraMove : MonoBehaviour
+public class CameraMgr : MonoBehaviour
 {
     // Visible Member Variables
     public CamBoundMgr p_CamBoundMgr;

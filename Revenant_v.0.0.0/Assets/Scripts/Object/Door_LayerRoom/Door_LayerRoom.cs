@@ -15,7 +15,7 @@ public class Door_LayerRoom : MonoBehaviour
     // Member Variables
     [ReadOnly, ShowInInspector] public bool m_CanUse { get; private set; } = false;
     public Animator m_Animator { get; private set; }
-    private CameraMove m_MainCam;
+    private CameraMgr m_MainCam;
     private Coroutine m_CurCoroutine = null;
     [HideInInspector] public bool m_IsOpen = false;
 
@@ -28,20 +28,20 @@ public class Door_LayerRoom : MonoBehaviour
     // Constructors
     private void Awake()
     {
-        m_MainCam = Camera.main.GetComponent<CameraMove>();
+        m_MainCam = Camera.main.GetComponent<CameraMgr>();
 
         if(p_CenterPos == null)
-            Debug.Log(gameObject.name + "레이어룸 포탈의 CenterPos가 등록되어 있지 않음.");
+            Debug.Log(gameObject.name + "?????? ????? CenterPos?? ????? ???? ????.");
             
         if (p_OtherSide == null)
-            Debug.Log(gameObject.name + " 레이어룸 포탈의 OtherSide가 등록되어 있지 않음.");
+            Debug.Log(gameObject.name + " ?????? ????? OtherSide?? ????? ???? ????.");
         
         Animator animator;
         // ReSharper disable once AssignmentInConditionalExpression
         if (animator = GetComponentInChildren<Animator>())
             m_Animator = animator;
         else
-            Debug.Log(gameObject.name + " 레이어룸 포탈의 Animator가 없음");
+            Debug.Log(gameObject.name + " ?????? ????? Animator?? ????");
 
         if (p_IsInitStateCanUse)
         {
@@ -66,8 +66,8 @@ public class Door_LayerRoom : MonoBehaviour
        
     }
     
-    /// <summary> 레이어룸 문의 사용 가능 여부를 변경합니다. </summary>
-    /// <param name="_canUse"> 사용 가능 여부 </param>
+    /// <summary> ?????? ???? ??? ???? ???θ? ????????. </summary>
+    /// <param name="_canUse"> ??? ???? ???? </param>
     public void ChangeCanUse(bool _canUse)
     {
         m_CanUse = _canUse;
@@ -77,8 +77,8 @@ public class Door_LayerRoom : MonoBehaviour
         p_OtherSide.m_Animator.SetBool(CanUse, m_CanUse);
     }
 
-    /// <summary> 레이어룸 문의 열림/닫힘 애니메이션을 재생합니다. </summary>
-    /// <param name="_isOpen"> true일 경우 열리는 애니 </param>
+    /// <summary> ?????? ???? ????/???? ????????? ???????. </summary>
+    /// <param name="_isOpen"> true?? ??? ?????? ??? </param>
     public void PlayDoorAni(bool _isOpen)
     {
         if (ReferenceEquals(m_Animator, null))
@@ -87,16 +87,16 @@ public class Door_LayerRoom : MonoBehaviour
         m_Animator.SetInteger(IsOpen, _isOpen ? 1 : 0);
     }
 
-    /// <summary> 상호작용한 오브젝트를 반대 쪽에 위치한 레이어룸 문으로 이동시킵니다. </summary>
-    /// <param name="_obj"> 이동할 오브젝트의 트랜스폼 </param>
-    /// <param name="_isPlayer"> 플레이어 여부 </param>
+    /// <summary> ???????? ????????? ??? ??? ????? ?????? ?????? ?????????. </summary>
+    /// <param name="_obj"> ????? ????????? ??????? </param>
+    /// <param name="_isPlayer"> ?÷???? ???? </param>
     public void MoveToOtherSide(Transform _obj, bool _isPlayer)
     {
         if (!m_CanUse)
             return;
         
         
-        // 트랜스폼 이동
+        // ??????? ???
         if (_isPlayer)
         {
             float yGapBetPlayernDoor = _obj.transform.position.y - p_CenterPos.position.y;

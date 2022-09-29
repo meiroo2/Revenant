@@ -139,9 +139,9 @@ public class Negotiator_Player : BasicWeapon_Player
         {
             case 0:
                 // 빈 곳(Ray 발사해도 아무것도 감지 X)
-                if (m_BulletTimeMgr.m_BulletTimeActivating)
+                if (m_BulletTimeMgr.m_IsBulletTimeActivating)
                 {
-                    m_BulletTimeMgr.BookFire(m_AimCursorTransform.position, ()=> SpawnSFX(result.m_RayDestinationPos));
+                    m_BulletTimeMgr.BookFire(m_AimCursorTransform.position, null);
                 }
                 else
                 {
@@ -156,10 +156,10 @@ public class Negotiator_Player : BasicWeapon_Player
                 hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue,
                     result.m_RayDestinationPos, WeaponType.BULLET);
 
-                if (m_BulletTimeMgr.m_BulletTimeActivating)
+                if (m_BulletTimeMgr.m_IsBulletTimeActivating)
                 {
                     m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam, m_AimCursorTransform.position,
-                        () => SpawnSFX(result.m_RayDestinationPos)));
+                        null));
                 }
                 else
                 {
@@ -175,20 +175,20 @@ public class Negotiator_Player : BasicWeapon_Player
             case 2:
                 // 조준 성공
                 hotBox = result.m_RayHitPoint.collider.GetComponent<IHotBox>();
-                hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue,
-                    m_AimCursorTransform.position, WeaponType.BULLET);
-
+              
+                
                 // 현재 불릿타임 여부에 따라 발사할지 예약할지 선택
-                if (m_BulletTimeMgr.m_BulletTimeActivating)
+                if (m_BulletTimeMgr.m_IsBulletTimeActivating)
                 {
-                    hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue,
-                        m_AimCursorTransform.position, WeaponType.BULLET, false);
+                    hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, m_AimCursorTransform.position, WeaponType.BULLET_TIME, false);
                     
-                    m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam, m_AimCursorTransform.position,
-                        () => SpawnSFX(result.m_RayDestinationPos)));
+                    m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam, 
+                        m_AimCursorTransform.position, null));
                 }
                 else
                 {
+                    hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, m_AimCursorTransform.position, WeaponType.BULLET);
+                    
                     m_SoundPlayer.playGunFireSound(0, gameObject);
                     SpawnSFX(result.m_RayDestinationPos);
                     hotBox.HitHotBox(hotBoxParam);

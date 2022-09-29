@@ -38,6 +38,11 @@ public class MeleeGang : BasicEnemy
     public bool m_IsPatrol { get; private set; } = false;
     private Vector2 m_DistBetPlayer;
 
+    /// <summary>
+    /// 0 == 에러, 1 == 머리, 2 == 몸통
+    /// </summary>
+    public int m_DeathReason { get; private set; } = 0;
+
 
     // Constructor
     private void Awake()
@@ -178,10 +183,10 @@ public class MeleeGang : BasicEnemy
         
         if (p_Hp <= 0)
         {
-            if(_point == HitBoxPoint.HEAD)
-                m_Animator.Play("Head");
-            else if(_point == HitBoxPoint.BODY)
-                m_Animator.Play("Body");
+            if (_point == HitBoxPoint.HEAD)
+                m_DeathReason = 1;
+            else if (_point == HitBoxPoint.BODY)
+                m_DeathReason = 2;
 
             ChangeEnemyFSM(EnemyStateName.DEAD);
             return;
