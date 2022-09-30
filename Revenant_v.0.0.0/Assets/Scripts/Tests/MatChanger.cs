@@ -27,30 +27,14 @@ public class MatChanger : MonoBehaviour
     private static readonly int manualTimer = Shader.PropertyToID("_ManualTimer");
 
     // Constructor
+    private void Awake()
+    {
+        InitMatChanger();
+    }
+
     private void Start()
     {
-        m_Timer = 0f;
-        
-        var spriteRenArr = GameObject.FindObjectsOfType<SpriteRenderer>();
-        for (int i = 0; i < spriteRenArr.Length; i++)
-        {
-            if (spriteRenArr[i].gameObject.CompareTag("Player"))
-            {
-                m_PlayerMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
-            }
-            else if (spriteRenArr[i].gameObject.CompareTag("Enemy"))
-            {
-                m_EnemyMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
-            }
-            else if (spriteRenArr[i].gameObject.CompareTag("UI"))
-            {
-                m_UIMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
-            }
-            else
-            {
-                m_OtherMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
-            }
-        }
+        //InitMatChanger();
     }
     
     // Updates
@@ -75,6 +59,41 @@ public class MatChanger : MonoBehaviour
     }
 
     // Functions
+
+    public void InitMatChanger()
+    {
+        m_Timer = 0f;
+        
+        m_PlayerMatDic.Clear();
+        m_PlayerMatDic.TrimExcess();
+        m_EnemyMatDic.Clear();
+        m_EnemyMatDic.TrimExcess();
+        m_UIMatDic.Clear();
+        m_UIMatDic.TrimExcess();
+        m_OtherMatDic.Clear();
+        m_OtherMatDic.TrimExcess();
+        
+        var spriteRenArr = GameObject.FindObjectsOfType<SpriteRenderer>();
+        for (int i = 0; i < spriteRenArr.Length; i++)
+        {
+            if (spriteRenArr[i].gameObject.CompareTag("Player"))
+            {
+                m_PlayerMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
+            }
+            else if (spriteRenArr[i].gameObject.CompareTag("Enemy"))
+            {
+                m_EnemyMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
+            }
+            else if (spriteRenArr[i].gameObject.CompareTag("UI"))
+            {
+                m_UIMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
+            }
+            else
+            {
+                m_OtherMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
+            }
+        }
+    }
     
     /// <summary>
     /// 특정한 SpriteRenderer의 머터리얼을 변경합니다.
