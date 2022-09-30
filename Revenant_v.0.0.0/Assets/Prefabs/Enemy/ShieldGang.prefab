@@ -595,8 +595,8 @@ MonoBehaviour:
   p_BulletSpeed: 0
   p_BulletDamage: 0
   p_StunValue: 0
-  p_MinimumShotDelay: 0
-  p_MaxBullet: 0
+  p_MinFireDelay: 0
+  p_MaxRound: 0
   p_MaxMag: 0
 --- !u!61 &531429149648499280
 BoxCollider2D:
@@ -890,6 +890,7 @@ MonoBehaviour:
   p_BackMoveSpeedMulti: 0.8
   p_BrokenSpeedMulti: 1.5
   p_PointAtkTime: 0.5
+  p_BreakWaitTime: 1
   p_AtkHoldTime: 0.5
   p_HeadHotBox: {fileID: 3025478184462977684}
   p_BodyHotBox: {fileID: 3025478184395922921}
@@ -944,7 +945,7 @@ GameObject:
   - component: {fileID: 3025478185972067599}
   m_Layer: 0
   m_Name: Sprites
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -344,7 +344,9 @@ public class ATTACK_MeleeGang : MeleeGang_FSM
 public class DEAD_MeleeGang : MeleeGang_FSM
 {
     // Member Variables
-    private float m_Time = 3f;
+    private float m_Time = 0f;
+    private float m_Fade = 1f;
+    private int m_Phase = 0;
     
     // Constructor
     public DEAD_MeleeGang(MeleeGang _enemy)
@@ -355,6 +357,10 @@ public class DEAD_MeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
+        m_Phase = 0;
+        m_Time = 0f;
+        m_Fade = 1f;
+        
         m_Enemy.SetEnemyHotBox(false);
         m_Enemy.SendDeathAlarmToSpawner();
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
@@ -373,13 +379,34 @@ public class DEAD_MeleeGang : MeleeGang_FSM
                 m_EnemyAnimator.SetInteger("Body", 1);
                 break;
         }
+        
+        m_Enemy.m_MatChanger.ChangeMat(ObjectType.Enemy, m_Enemy.m_Renderer, 2);
     }
 
     public override void UpdateState()
     {
-        m_Time -= Time.deltaTime;
-        if(m_Time <= 0f)
-            m_Enemy.gameObject.SetActive(false);
+        m_Time += Time.deltaTime;
+
+        switch (m_Phase)
+        {
+            case 0:
+                if (m_Time > 2f)
+                {
+                    m_Phase = 1;
+                }
+                break;
+            
+            case 1:
+                m_Fade -= Time.deltaTime;
+                m_Enemy.m_Renderer.material.SetFloat("_Fade", m_Fade);
+                if (m_Fade <= 0f)
+                {
+                    m_Phase = -1;
+                    m_Enemy.gameObject.SetActive(false);
+                }
+
+                break;
+        }
     }
 
     public override void ExitState()

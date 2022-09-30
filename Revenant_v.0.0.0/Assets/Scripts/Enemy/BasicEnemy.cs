@@ -33,7 +33,7 @@ public class BasicEnemy : Human
 
 
     // Member Variables
-    protected SpriteRenderer m_Renderer;
+    public SpriteRenderer m_Renderer { get; protected set; }
     private List<EnemySpawner> m_EnemySpawnerList = new List<EnemySpawner>();
     protected Enemy_HotBox[] m_EnemyHotBoxes;
     protected Enemy_UseRange m_EnemyUseRange;

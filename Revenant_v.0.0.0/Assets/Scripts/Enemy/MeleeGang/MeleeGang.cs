@@ -25,6 +25,7 @@ public class MeleeGang : BasicEnemy
 
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
+    public MatChanger m_MatChanger { get; private set; }
     private IHotBox[] m_HotBoxes;
 
     private IDLE_MeleeGang m_IDLE;
@@ -33,7 +34,7 @@ public class MeleeGang : BasicEnemy
     private DEAD_MeleeGang m_DEAD;
     private CHANGE_MeleeGang m_CHANGE;
     private STUN_MeleeGang m_STUN;
-    
+
     [HideInInspector] public bool m_IsTurning = false;
     public bool m_IsPatrol { get; private set; } = false;
     private Vector2 m_DistBetPlayer;
@@ -59,7 +60,7 @@ public class MeleeGang : BasicEnemy
         m_Foot = GetComponentInChildren<Enemy_FootMgr>();
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
-        
+
         m_CurEnemyFSM = new IDLE_MeleeGang(this);
         m_CurEnemyStateName = EnemyStateName.IDLE;
         m_CurEnemyFSM.StartState();
@@ -84,6 +85,7 @@ public class MeleeGang : BasicEnemy
         Player tempPlayer = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
         m_PlayerTransform = tempPlayer.transform;
         m_PlayerLocationSensor = tempPlayer.m_PlayerLocationSensor;
+        m_MatChanger = InstanceMgr.GetInstance().GetComponentInChildren<MatChanger>();
     }
 
 

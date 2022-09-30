@@ -138,7 +138,7 @@ public class Player : Human
         m_BULLETTIME = new Player_BULLET_TIME(this);
 
 
-        m_ObjectType = ObjectType.Human;
+        m_ObjectType = ObjectType.Player;
         m_ObjectState = ObjectState.Active;
         m_LeftRollCount = p_MaxRollCount;
         m_CanAttacked = true;

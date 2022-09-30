@@ -4,7 +4,9 @@ using UnityEngine;
 
 public enum ObjectType
 {
-    Human,
+    Player,
+    Enemy,
+    UI,
     Bullet,
     Room,
     Door,
