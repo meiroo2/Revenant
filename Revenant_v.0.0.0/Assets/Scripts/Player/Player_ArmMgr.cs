@@ -241,8 +241,14 @@ public class Player_ArmMgr : MonoBehaviour
     /// 현재 들고 있는 무기를 재장전합니다.
     /// </summary>
     /// <param name="_force">true일 경우 탄창을 소모하지 않고, 애니 스킵후 강제 재장전</param>
-    private void DoReload(bool _force = false)
+    public void DoReload(bool _force = false)
     {
+        if (_force)
+        {
+            m_WeaponMgr.m_CurWeapon.Reload();
+            return;
+        }
+        
         m_PlayerAniMgr.ChangeAniModeToFight(false);
         
         m_Player.m_SFXMgr.playPlayerSFXSound(2);

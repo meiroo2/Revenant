@@ -70,7 +70,7 @@ public class Player_IDLE : PlayerFSM
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
-        else if (m_InputMgr.m_IsPushBulletTimeKey)
+        else if (m_InputMgr.m_IsPushBulletTimeKey && !m_Player.m_ArmMgr.m_IsReloading)
         {
             if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
                 m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
@@ -124,7 +124,7 @@ public class Player_WALK : PlayerFSM
     {
         CheckNull();
 
-        if (m_InputMgr.m_IsPushBulletTimeKey)
+        if (m_InputMgr.m_IsPushBulletTimeKey && !m_Player.m_ArmMgr.m_IsReloading)
         {
             if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
                 m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
@@ -561,6 +561,10 @@ public class Player_BULLET_TIME : PlayerFSM
         m_Player.m_ScreenEffectUI.ActivateVignetteEffect(true);
         
         // 머터리얼 교체 온
+        // 흠...
+        
+        // 강제 재장전
+        m_Player.m_WeaponMgr.m_CurWeapon.SetLeftRounds(m_Player.m_WeaponMgr.m_CurWeapon.p_MaxRound);
 
         m_AniMgr.ChangeAniModeToFight(false);
         m_AniMgr.SetVisualParts(true,false,false,false);
@@ -577,7 +581,8 @@ public class Player_BULLET_TIME : PlayerFSM
         {
             case 0:
                 m_Timer += Time.unscaledDeltaTime;
-                if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer > m_BulletTimeLimit)
+                m_Player.m_RageGauge.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit);
+                if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer >= m_BulletTimeLimit)
                 {
                     // AR 끔
                     m_Player.m_ScreenEffectUI.ActivateAREffect(false);

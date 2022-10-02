@@ -62,12 +62,14 @@ public class CW_PlayerManipulator : OdinEditorWindow
     [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static float N_MinFireDelay;
 
+    /*
     [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static int N_BulletCount;
 
     [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static int N_MagCount;
-
+    */
+    
     [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static float N_ReloadSpeed;
 
@@ -172,8 +174,10 @@ public class CW_PlayerManipulator : OdinEditorWindow
             p_ValMani.N_Damage = N_Damage;
             p_ValMani.N_StunValue = N_StunValue;
             p_ValMani.N_MinFireDelay = N_MinFireDelay;
+            /*
             p_ValMani.N_MaxBullet = N_BulletCount;
             p_ValMani.N_MaxMag = N_MagCount;
+            */
             p_ValMani.N_ReloadSpeed = N_ReloadSpeed;
         }
         else
@@ -181,8 +185,10 @@ public class CW_PlayerManipulator : OdinEditorWindow
             N_Damage = p_ValMani.N_Damage;
             N_StunValue = p_ValMani.N_StunValue;
             N_MinFireDelay = p_ValMani.N_MinFireDelay;
+            /*
             N_BulletCount = p_ValMani.N_MaxBullet;
             N_MagCount = p_ValMani.N_MaxMag;
+            */
             N_ReloadSpeed = p_ValMani.N_ReloadSpeed;
         }
 

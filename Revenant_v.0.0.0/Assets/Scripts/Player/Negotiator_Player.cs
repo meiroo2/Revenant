@@ -26,6 +26,10 @@ public class Negotiator_Player : BasicWeapon_Player
 
     private void Awake()
     {
+        p_WeaponType = 0;
+        m_LeftRounds = p_MaxRound;
+        p_MaxRound = 7;
+        
         m_isShotDelayEnd = true;
         ReloadWeaponData();
     }
@@ -50,15 +54,18 @@ public class Negotiator_Player : BasicWeapon_Player
 
         m_PlayerUI = m_Player.m_PlayerUIMgr;
         
-        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
-    }
-
-    public override void ReloadWeaponData()
-    {
-        m_LeftRounds = p_MaxRound;
-        m_LeftMags = p_MaxMag;
+        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
     }
     
+    
+    // Functions
+    
+    public override void SetLeftRounds(int _leftRounds)
+    {
+        m_LeftRounds = _leftRounds;
+        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
+    }
+
     public override int Fire()
     {
         if (!m_isShotDelayEnd || m_isReloading)
@@ -79,30 +86,13 @@ public class Negotiator_Player : BasicWeapon_Player
 
     public override void Reload()
     {
-        Internal_Reload();
-    }
-
-    public override int GetCanReload()
-    {
-        if (m_LeftMags <= 0 || m_LeftRounds > p_MaxRound)
-            return 0;
-        else
-        {
-            return 1;
-        }
-    }
-
-    protected override void Internal_Reload()
-    {
         switch (m_LeftRounds)
         {
             case 0:
-                m_LeftMags--;
                 m_LeftRounds = p_MaxRound;
                 break;
 
             case > 0:
-                m_LeftMags--;
                 m_LeftRounds = p_MaxRound + 1;
                 break;
 
@@ -110,7 +100,15 @@ public class Negotiator_Player : BasicWeapon_Player
                 break;
         }
         
-        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
+        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
+    }
+
+    public override int GetCanReload()
+    {
+        if (p_WeaponType != 0)
+            return 0;
+
+        return m_LeftRounds > p_MaxRound ? 0 : 1;
     }
 
     public override void InitWeapon()
@@ -201,7 +199,7 @@ public class Negotiator_Player : BasicWeapon_Player
         }
 
         // UI 업데이트 필요
-        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, m_LeftMags);
+        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
     }
 
     private void MakeShell()

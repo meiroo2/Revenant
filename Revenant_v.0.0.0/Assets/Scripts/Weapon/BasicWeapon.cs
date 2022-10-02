@@ -10,6 +10,7 @@ public class BasicWeapon : MonoBehaviour
     [field : SerializeField] public bool m_isPlayers { get; protected set; }
 
     [Space(20f)] [Header("여기서부터 설정값들")]
+    // 0 = 무한탄창, 1 = 제한탄창
     public int p_WeaponType;
     public float p_BulletSpeed;
     public int p_BulletDamage;
@@ -24,7 +25,7 @@ public class BasicWeapon : MonoBehaviour
     protected m_WeaponDelegate m_Callback = null;
     
     public SoundPlayer m_SoundPlayer { get; set; }
-    public int m_LeftRounds { get; set; } = 0;
+    public int m_LeftRounds { get; protected set; } = 0;
     public int m_LeftMags { get; set; } = 0;
     protected bool m_isShotDelayEnd = true;
 
@@ -39,6 +40,15 @@ public class BasicWeapon : MonoBehaviour
 
 
     // Functions
+    
+    /// <summary>
+    /// 남은 총알 수를 강제로 설정합니다. (UI 즉시 업데이트)
+    /// </summary>
+    /// <param name="_leftRound">남은 총알 수</param>
+    public virtual void SetLeftRounds(int _leftRound)
+    {
+    }
+
     public void SetCallback(m_WeaponDelegate _inputFunc, bool _resetDele = false)
     {
         if (_resetDele)

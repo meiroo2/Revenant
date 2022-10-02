@@ -192,8 +192,10 @@ public class Player : Human
         nego.p_BulletDamage = _input.N_Damage;
         nego.p_StunValue = _input.N_StunValue;
         nego.p_MinFireDelay = _input.N_MinFireDelay;
+        /*
         nego.p_MaxRound = _input.N_MaxBullet;
         nego.p_MaxMag = _input.N_MaxMag;
+        */
         nego.p_ReloadTime = _input.N_ReloadSpeed;
         
         #if UNITY_EDITOR
