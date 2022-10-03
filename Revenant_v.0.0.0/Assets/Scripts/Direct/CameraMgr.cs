@@ -45,8 +45,6 @@ public class CameraMgr : MonoBehaviour
     // Constructors
     private void Awake()
     {
-        Debug.Log("CameraMove.cs Awake");
-        
         m_MainCam = Camera.main;
         m_OriginCamZoomValue = m_MainCam.orthographicSize;
         Cursor.visible = true;

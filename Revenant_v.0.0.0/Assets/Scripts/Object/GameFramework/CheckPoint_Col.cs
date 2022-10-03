@@ -54,9 +54,8 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
                 // 플레이어가 스폰할 체크포인트의 위치를 DataHandleManager에 저장
                 DataHandleManager.Instance.PlayerPositionVector = CheckPoint.GetActiveCheckPointPosition();
             }
-
-
-            Debug.Log(DataHandleManager.Instance.PlayerPositionVector);
+            
+            Debug.Log("Current CheckPointPosition : " + DataHandleManager.Instance.PlayerPositionVector);
             return 1;
         }
         return 0;

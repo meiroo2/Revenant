@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -24,11 +26,14 @@ public class Door_LayerRoom : MonoBehaviour
     private static readonly int IsOpen = Animator.StringToHash("IsOpen");
     private static readonly int CanUse = Animator.StringToHash("CanUse");
 
+    private Player _player { get; set; }
+    private List<NormalGang> NormalGangList;
 
     // Constructors
     private void Awake()
     {
         m_MainCam = Camera.main.GetComponent<CameraMgr>();
+        NormalGangList = FindObjectsOfType<NormalGang>().ToList();
 
         if(p_CenterPos == null)
             Debug.Log(gameObject.name + "?????? ????? CenterPos?? ????? ???? ????.");
@@ -50,9 +55,12 @@ public class Door_LayerRoom : MonoBehaviour
         }
     }
 
-    
-    // Functions
+    private void Start()
+    {
+        _player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+    }
 
+    // Functions
     public void ActivateBothOutline(bool _isOn)
     {
         m_IsOpen = _isOn;
@@ -66,7 +74,7 @@ public class Door_LayerRoom : MonoBehaviour
        
     }
     
-    /// <summary> ?????? ???? ??? ???? ???¥è? ????????. </summary>
+    /// <summary> ?????? ???? ??? ???? ???ï¿½ï¿½? ????????. </summary>
     /// <param name="_canUse"> ??? ???? ???? </param>
     public void ChangeCanUse(bool _canUse)
     {
@@ -89,16 +97,22 @@ public class Door_LayerRoom : MonoBehaviour
 
     /// <summary> ???????? ????????? ??? ??? ????? ?????? ?????? ?????????. </summary>
     /// <param name="_obj"> ????? ????????? ??????? </param>
-    /// <param name="_isPlayer"> ?¡À???? ???? </param>
+    /// <param name="_isPlayer"> ?ï¿½ï¿½???? ???? </param>
     public void MoveToOtherSide(Transform _obj, bool _isPlayer)
     {
         if (!m_CanUse)
             return;
         
-        
         // ??????? ???
         if (_isPlayer)
         {
+            foreach (var normalGang in NormalGangList)
+            {
+                normalGang.bMoveToUsedDoor = true;
+                Debug.Log("_basicEnemy.bMoveToUsedDoor - " + normalGang.bMoveToUsedDoor);
+            }
+            _player.PlayerUsedDoorVector = p_CenterPos.position;
+
             float yGapBetPlayernDoor = _obj.transform.position.y - p_CenterPos.position.y;
             Vector2 movePos = new Vector2(p_OtherSide.p_CenterPos.position.x, p_OtherSide.p_CenterPos.position.y + yGapBetPlayernDoor);
 

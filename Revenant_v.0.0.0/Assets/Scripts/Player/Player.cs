@@ -105,7 +105,8 @@ public class Player : Human
 
     private Coroutine m_WalkSoundCoroutine;
 
-
+    
+    public Vector2 PlayerUsedDoorVector;
 
     // For Player_Managers
 

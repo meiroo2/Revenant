@@ -40,7 +40,6 @@ public class Player_UseRange : MonoBehaviour
     private UseableObjInfo m_NearestObj = null;
     private Coroutine m_Coroutine = null;
 
-
     // Constructors
     private void Awake()
     {

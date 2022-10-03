@@ -51,6 +51,8 @@ public class BasicEnemy : Human
     private Coroutine m_MatCoroutine;
 
     public bool m_PlayerCognition { get; set; } = false;
+    
+    public bool bMoveToUsedDoor = false;
 
     // Functions
     /// <summary>

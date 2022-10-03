@@ -50,7 +50,7 @@ public class CheckPoint : MonoBehaviour
         //thisAnimator = GetComponent<Animator>();
 
         // 현재 씬에 있는 모든 체크포인트를 찾기 (이름 순으로 정렬)
-        CheckPointsList = FindObjectsOfType<CheckPoint>().OrderBy(TCP => TCP.name).ToList();
+        CheckPointsList = FindObjectsOfType<CheckPoint>().OrderBy(CP => CP.name).ToList();
 
         SetUpSectionNumber();
         SetUpIsActivated();
@@ -119,8 +119,6 @@ public class CheckPoint : MonoBehaviour
     /** 마지막으로 활성화된 체크포인트를 가져오는 함수 */
     public static Vector2 GetActiveCheckPointPosition()
     {
-        Debug.Log("GetActivateCheckPointPoistion");
-
         // 플레이어가 체크포인트를 활성화 하지 않고 죽으면 기본 포지션 반환
         Vector2 result = new Vector2(0, 0);
 
