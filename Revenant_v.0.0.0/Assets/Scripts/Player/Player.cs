@@ -40,11 +40,17 @@ public class Player : Human
     
     [field: SerializeField, BoxGroup("Player Values")]
     public float p_RollDecelerationSpeedMulti { get; private set; } = 1f;
+    
+    [BoxGroup("Player Values")] public float p_ReloadSpeed = 1f;
+    
 
     [field: SerializeField, MinMaxSlider(0f, 1f), Title("Evade Values"), BoxGroup("Player Values")]
     public Vector2 p_JustEvadeNormalizeTime { get; private set; } = Vector2.zero;
-    [BoxGroup("Player Values")]
-    public float p_JustEvadeStopTime = 0.1f;
+    
+    [BoxGroup("Player Values")] public float p_JustEvadeStopTime = 0.1f;
+    
+    
+    
     
     [field: SerializeField] 
     public Transform p_CenterTransform { get; private set; }
@@ -178,6 +184,7 @@ public class Player : Human
         m_MeleeAttack.m_StunValue = _input.P_MeleeStunValue;
         p_JustEvadeNormalizeTime = new Vector2(_input.P_JustEvadeStartTime, _input.P_JustEvadeEndTime);
         p_RollDecelerationSpeedMulti = _input.P_RollDecelerationSpeedMulti;
+        p_ReloadSpeed = _input.P_ReloadSpeed;
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);

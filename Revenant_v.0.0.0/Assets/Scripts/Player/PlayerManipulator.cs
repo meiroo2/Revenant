@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerManipulator : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class PlayerManipulator : MonoBehaviour
     public float P_JustEvadeStartTime = 0f;
     public float P_JustEvadeEndTime = 1f;
     public float P_RollDecelerationSpeedMulti = 1f;
+    public float P_ReloadSpeed = 1f;
 
     [Space(20f)]
     [Header("Negotiator 설정값")]

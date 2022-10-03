@@ -221,10 +221,10 @@ public class Player_ROLL : PlayerFSM
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
+        m_Player.m_ArmMgr.StopReload();
         m_Player.m_PlayerHotBox.m_hotBoxType = 2;
         m_DecelerationSpeed = 0f;
         
-        m_Player.m_ArmMgr.StopReload();
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
         m_Player.UseRollCount();
         m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue -
@@ -351,6 +351,7 @@ public class Player_HIDDEN : PlayerFSM
         m_SFXMgr.playPlayerSFXSound(5);
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
+        m_Player.m_ArmMgr.StopReload();
     }
 
     public override void UpdateState()
@@ -404,7 +405,8 @@ public class Player_MELEE : PlayerFSM
     {
         m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
         m_InputMgr = m_Player.m_InputMgr;
-        
+     
+        m_Player.m_ArmMgr.StopReload();
         m_IsAttackFinished = false;
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
