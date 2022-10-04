@@ -104,10 +104,10 @@ public class Player : Human
     private Vector2 m_PlayerPosVec;
 
     private Coroutine m_WalkSoundCoroutine;
-
     
-    public Vector2 PlayerUsedDoorVector;
-
+    public Vector2 PlayerUsedObjectVector;
+    public bool bPlayerIsOnStairs = false;
+    
     // For Player_Managers
 
 

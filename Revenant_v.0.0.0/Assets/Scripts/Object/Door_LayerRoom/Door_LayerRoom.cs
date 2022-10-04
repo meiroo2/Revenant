@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 using UnityEngine.Serialization;
 
 public class Door_LayerRoom : MonoBehaviour
@@ -106,18 +108,22 @@ public class Door_LayerRoom : MonoBehaviour
         // ??????? ???
         if (_isPlayer)
         {
-            foreach (var normalGang in NormalGangList)
-            {
-                normalGang.bMoveToUsedDoor = true;
-                Debug.Log("_basicEnemy.bMoveToUsedDoor - " + normalGang.bMoveToUsedDoor);
-            }
-            _player.PlayerUsedDoorVector = p_CenterPos.position;
-
             float yGapBetPlayernDoor = _obj.transform.position.y - p_CenterPos.position.y;
             Vector2 movePos = new Vector2(p_OtherSide.p_CenterPos.position.x, p_OtherSide.p_CenterPos.position.y + yGapBetPlayernDoor);
 
+            
             _obj.position = movePos;
             m_MainCam.InstantMoveToPlayer(_obj.position, movePos);
+            
+            _player.PlayerUsedObjectVector = p_CenterPos.position;
+            Debug.Log("p_CenterPos.position - " + p_CenterPos.position);
+            Debug.Log("Player Position - " + _player.transform.position);
+            foreach (var normalGang in NormalGangList)
+            {
+                normalGang.bMoveToUsedDoor = true;
+                //Debug.Log("_basicEnemy.bMoveToUsedDoor - " + normalGang.bMoveToUsedDoor);
+            }
+
         }
         else
         {

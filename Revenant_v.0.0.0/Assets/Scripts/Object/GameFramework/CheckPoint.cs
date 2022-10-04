@@ -18,7 +18,7 @@ public class CheckPoint : MonoBehaviour
     [ReadOnly] public bool bActivated = false;
 
     /** For animation */
-    // private Animator thisAnimator;
+    public Animator thisAnimator;
 
     /** List with all checkpoints objects in the scene */
     public static List<CheckPoint> CheckPointsList;
@@ -148,13 +148,13 @@ public class CheckPoint : MonoBehaviour
         foreach (CheckPoint CheckPointGameObject in CheckPointsList)
         {
             CheckPointGameObject.bActivated = false;
-            //cp.GetComponent<Animator>().SetBool("Active", false);
+            CheckPointGameObject.GetComponent<Animator>().SetBool("Active", false);
         }
         // 현재 체크포인트 활성화
         bActivated = true;
         // 체크포인트 활성화 여부 저장
         DataHandleManager.Instance.IsCheckPointActivated = bActivated;
-        //thisAnimator.SetBool("Active", true);
+        thisAnimator.SetBool("Active", true);
     }
 
     public void ActivateBothOutline(bool _isOn)

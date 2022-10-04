@@ -55,6 +55,7 @@ public class IDLE_NormalGang : NormalGang_FSM
     {
         m_Enemy = _enemy;
         InitFSM();
+        _EnemyState = EnemyState.Idle;
     }
 
     public override void StartState()
@@ -235,6 +236,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
         switch (m_Phase)
         {
             case 0: // 체인지 애니메이션 대기 + 느낌표 출력
+                _EnemyState = EnemyState.Alert;
                 m_Enemy.m_Alert.SetAlertActive(true);
                 m_Animator.SetTrigger(IsChange);
                 m_Phase = 1;
@@ -254,23 +256,32 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
             case 3: // 인식은 했으나 사정거리 안에 들어오지 못함
                 //Debug.Log("사정거리 밖");
                 //m_Enemy.GoToPlayerRoom();
-                
+
                 // 플레이어에게 이동
+                _EnemyState = EnemyState.Chase;
+                
+                
                 if (m_Enemy.bMoveToUsedDoor)
                 {
-                    Debug.Log("NormalGang.FSM m_Enemy.bMoveToUsedDoor - " + m_Enemy.bMoveToUsedDoor);
+                    //Debug.Log("NormalGang.FSM m_Enemy.bMoveToUsedDoor - " + m_Enemy.bMoveToUsedDoor);
                     // 적이 플레이어가 사용한 문으로 이동
-                    m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.PlayerUsedDoorVector.x));
+                    m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.PlayerUsedObjectVector.x));
                 }
                 else
                 {
                     m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
                 }
-
+                
+                if (Mathf.Abs(m_Enemy.transform.position.y - m_Enemy.m_Player.transform.position.y) <= 0.5f)
+                {
+                    m_Enemy.bMoveToUsedDoor = false;
+                }
+                
                 if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AttackDistance)
                     m_Phase = 4;
                 break;
             case 4: // 사정거리 도달
+                _EnemyState = EnemyState.Attack;
                 m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
                 m_Phase = 5;
                 break;

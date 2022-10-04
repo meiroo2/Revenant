@@ -36,7 +36,7 @@ public class Enemy_UseRange : MonoBehaviour
         Debug.Log("OnTriggerEnter m_Enemy.bUsedDoor - " + m_Enemy.bMoveToUsedDoor);
         
         _door = col.GetComponent<Door_Col_LayerRoom>();
-        if (m_Enemy.bMoveToUsedDoor && _door)
+        if (m_Enemy.m_CurEnemyFSM._EnemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
         {
             _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
 
@@ -54,6 +54,20 @@ public class Enemy_UseRange : MonoBehaviour
 
     }
 
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+            return;
+        
+        _door = other.GetComponent<Door_Col_LayerRoom>();
+        if (m_Enemy.m_CurEnemyFSM._EnemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
+        {
+            m_Enemy.bMoveToUsedDoor = true;
+            if(m_Enemy.bMoveToUsedDoor)
+                _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
+        }
+    }
+
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -63,6 +77,7 @@ public class Enemy_UseRange : MonoBehaviour
         if (_door)
         {
             m_Enemy.bMoveToUsedDoor = false;
+            Debug.Log("Exit bMoveToUseDoor - " + m_Enemy.bMoveToUsedDoor);
         }
 
         // m_UseableObj = other.GetComponent<IUseableObj>();

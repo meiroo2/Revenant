@@ -45,7 +45,7 @@ public class BasicEnemy : Human
     public Transform m_PlayerTransform { get; protected set; }
     public Rigidbody2D m_EnemyRigid { get; protected set; }
     public RaycastHit2D m_VisionHit { get; protected set; }
-    protected Enemy_FSM m_CurEnemyFSM;
+    public Enemy_FSM m_CurEnemyFSM { get; set; }
     public EnemyStateName m_CurEnemyStateName { get; protected set; }
     protected Vector2 m_MovePoint;
     private Coroutine m_MatCoroutine;
