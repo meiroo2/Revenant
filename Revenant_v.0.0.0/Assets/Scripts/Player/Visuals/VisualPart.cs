@@ -17,6 +17,8 @@ public class VisualPart : MonoBehaviour
     public bool m_isAniVisible { get; private set; } = false;
     private int m_CurSpriteIdx = 0;
 
+    private bool m_IsAnimator = false;
+
     private void Awake()
     {
         if (TryGetComponent(out SpriteRenderer Sren))
@@ -26,17 +28,18 @@ public class VisualPart : MonoBehaviour
         }
         else
         {
-            Debug.Log("ERR : VisualPart¿¡ SpriteRenderer ¾øÀ½");
+            Debug.Log("ERR : VisualPartì— SpriteRenderer ì—†ìŒ");
         }
         
         if (TryGetComponent(out Animator Ani))
         {
             m_Animator = Ani;
             m_Animator.enabled = true;
+            m_IsAnimator = true;
         }
         else
         {
-            Debug.Log("ERR : VisualPart¿¡ Animator ¾øÀ½");
+            Debug.Log("ERR : VisualPartì— Animator ì—†ìŒ");
         }
     }
 
@@ -47,7 +50,7 @@ public class VisualPart : MonoBehaviour
     }
 
     /// <summary>
-    /// SpriteRendererÀÇ enabled ¿©ºÎ¸¦ ¼³Á¤ÇÕ´Ï´Ù.
+    /// SpriteRendererì˜ enabled ì—¬ë¶€ë¥¼ ì„¤ì •í•©ë‹ˆë‹¤.
     /// </summary>
     /// <param name="_isVisible">SpriteRenderer enabled?</param>
     public void SetVisible(bool _isVisible)
@@ -58,35 +61,48 @@ public class VisualPart : MonoBehaviour
     }
     
     /// <summary>
-    /// AnimatorÀÇ enabled ¿©ºÎ¸¦ °áÁ¤ÇÕ´Ï´Ù.
+    /// Animatorì˜ enabled ì—¬ë¶€ë¥¼ ê²°ì •í•©ë‹ˆë‹¤.
     /// </summary>
     /// <param name="_isVisible">Animator enabled?</param>
     public void SetAniVisible(bool _isVisible)
     {
-        if (m_Animator)
+        if (m_IsAnimator)
             m_Animator.enabled = _isVisible;
     }
     
     /// <summary>
-    /// AnimatorÀÇ º¯¼ö¸¦ Á¶ÀıÇÕ´Ï´Ù. (IntÇü)
+    /// Animatorì˜ ë³€ìˆ˜ë¥¼ ì¡°ì ˆí•©ë‹ˆë‹¤. (Intí˜•)
     /// </summary>
-    /// <param name="_ParamName">ÆÄ¶ó¹ÌÅÍ ÀÌ¸§</param>
-    /// <param name="_value">¹Ù²Ü °ª</param>
+    /// <param name="_ParamName">íŒŒë¼ë¯¸í„° ì´ë¦„</param>
+    /// <param name="_value">ë°”ê¿€ ê°’</param>
     public void SetAnim_Int(string _ParamName, int _value)
     {
-        if (m_Animator)
+        if (m_IsAnimator)
             m_Animator.SetInteger(_ParamName, _value);
+        else
+            Debug.Log("ERR : VisualPart_Animator_Null");
+    }
+
+    /// <summary>
+    /// Animatorì˜ ë³€ìˆ˜ë¥¼ ì¡°ì ˆí•©ë‹ˆë‹¤. (Floatí˜•)
+    /// </summary>
+    /// <param name="_ParamName">íŒŒë¼ë¯¸í„° ì´ë¦„</param>
+    /// <param name="_value">ë°”ê¿€ ê°’</param>
+    public void SetAnim_Float(string _ParamName, float _value)
+    {
+        if (m_IsAnimator)
+            m_Animator.SetFloat(_ParamName, _value);
         else
             Debug.Log("ERR : VisualPart_Animator_Null");
     }
     
     /// <summary>
-    /// AnimatorÀÇ º¯¼ö¸¦ Á¶ÀıÇÕ´Ï´Ù. (TriggerÇü)
+    /// Animatorì˜ ë³€ìˆ˜ë¥¼ ì¡°ì ˆí•©ë‹ˆë‹¤. (Triggerí˜•)
     /// </summary>
-    /// <param name="_ParamName">¹Ù²Ü °ª</param>
+    /// <param name="_ParamName">ë°”ê¿€ ê°’</param>
     public void SetAnim_Trigger(string _ParamName)
     {
-        if (m_Animator)
+        if (m_IsAnimator)
             m_Animator.SetTrigger(_ParamName);
         else
             Debug.Log("ERR : VisualPart_Animator_Null");
@@ -96,7 +112,7 @@ public class VisualPart : MonoBehaviour
     {
         /*
         if (m_Animator.enabled == true)
-            Debug.Log("ERR : VisualPart¿¡¼­ Animator°¡ ÄÑÁ®ÀÖ´Âµ¥ SetSprite¸¦ ½ÃµµÇÕ´Ï´Ù.");
+            Debug.Log("ERR : VisualPartì—ì„œ Animatorê°€ ì¼œì ¸ìˆëŠ”ë° SetSpriteë¥¼ ì‹œë„í•©ë‹ˆë‹¤.");
         */
         
         if (p_Sprites.Length <= 1 || _inputIdx < 0 || _inputIdx >= p_Sprites.Length)
@@ -106,5 +122,14 @@ public class VisualPart : MonoBehaviour
 
         m_CurSpriteIdx = _inputIdx;
         m_SpriteRenderer.sprite = p_Sprites[m_CurSpriteIdx];
+    }
+
+    /// <summary>
+    /// í˜„ì¬ ì¬ìƒ ì¤‘ì¸ ì• ë‹ˆë©”ì´ì…˜ì˜ NormalizedTimeì„ ë°˜í™˜í•©ë‹ˆë‹¤.
+    /// </summary>
+    /// <returns>float NormalizedTime</returns>
+    public float GetAniNormalTime()
+    {
+        return m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 }

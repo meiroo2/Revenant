@@ -40,11 +40,17 @@ public class Player : Human
     
     [field: SerializeField, BoxGroup("Player Values")]
     public float p_RollDecelerationSpeedMulti { get; private set; } = 1f;
+    
+    [BoxGroup("Player Values")] public float p_ReloadSpeed = 1f;
+    
 
     [field: SerializeField, MinMaxSlider(0f, 1f), Title("Evade Values"), BoxGroup("Player Values")]
     public Vector2 p_JustEvadeNormalizeTime { get; private set; } = Vector2.zero;
-    [BoxGroup("Player Values")]
-    public float p_JustEvadeStopTime = 0.1f;
+    
+    [BoxGroup("Player Values")] public float p_JustEvadeStopTime = 0.1f;
+    
+    
+    
     
     [field: SerializeField] 
     public Transform p_CenterTransform { get; private set; }
@@ -74,6 +80,7 @@ public class Player : Human
 
     public ParticleMgr m_ParticleMgr { get; private set; }
     public Negotiator_Player m_Negotiator { get; private set; }
+    public Player_WorldUI m_WorldUI { get; private set; }
 
 
     private bool m_isRecoveringRollCount = false;
@@ -104,9 +111,10 @@ public class Player : Human
     private Vector2 m_PlayerPosVec;
 
     private Coroutine m_WalkSoundCoroutine;
-
-
-
+    
+    public Vector2 PlayerUsedObjectVector;
+    public bool bPlayerIsOnStairs = false;
+    
     // For Player_Managers
 
 
@@ -128,7 +136,8 @@ public class Player : Human
         m_MeleeAttack = GetComponentInChildren<Player_MeleeAttack>();
         m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
         m_Negotiator = GetComponentInChildren<Negotiator_Player>();
-
+        m_WorldUI = GetComponentInChildren<Player_WorldUI>();
+        
         m_IDLE = new Player_IDLE(this);
         m_WALK = new Player_WALK(this);
         m_ROLL = new Player_ROLL(this);
@@ -138,7 +147,7 @@ public class Player : Human
         m_BULLETTIME = new Player_BULLET_TIME(this);
 
 
-        m_ObjectType = ObjectType.Human;
+        m_ObjectType = ObjectType.Player;
         m_ObjectState = ObjectState.Active;
         m_LeftRollCount = p_MaxRollCount;
         m_CanAttacked = true;
@@ -178,6 +187,7 @@ public class Player : Human
         m_MeleeAttack.m_StunValue = _input.P_MeleeStunValue;
         p_JustEvadeNormalizeTime = new Vector2(_input.P_JustEvadeStartTime, _input.P_JustEvadeEndTime);
         p_RollDecelerationSpeedMulti = _input.P_RollDecelerationSpeedMulti;
+        p_ReloadSpeed = _input.P_ReloadSpeed;
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
@@ -192,8 +202,10 @@ public class Player : Human
         nego.p_BulletDamage = _input.N_Damage;
         nego.p_StunValue = _input.N_StunValue;
         nego.p_MinFireDelay = _input.N_MinFireDelay;
+        /*
         nego.p_MaxRound = _input.N_MaxBullet;
         nego.p_MaxMag = _input.N_MaxMag;
+        */
         nego.p_ReloadTime = _input.N_ReloadSpeed;
         
         #if UNITY_EDITOR
@@ -307,16 +319,9 @@ public class Player : Human
         return false;
     }
 
-    public void GoToStairLayer(bool _input, Vector2 _movePos, Vector2 _normal)
+    public void GoToStairLayer(bool _input)
     {
-        if (_input)
-        {
-            gameObject.layer = 10;
-        }
-        else
-        {
-            gameObject.layer = 12;
-        }
+        gameObject.layer = _input ? 10 : 12;
     }
 
     public void UseRollCount()

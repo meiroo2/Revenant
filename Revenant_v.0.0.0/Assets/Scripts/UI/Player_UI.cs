@@ -51,7 +51,7 @@ public class Player_UI : MonoBehaviour
     private Color m_HitmarkColor = new Color(1, 1, 1, 1);
     private Vector2 m_HitmarkOriginScale;
 
-    private Sprite m_ReloadBackupSprite;
+    private Sprite m_ReloadBackupSprite = null;
 
     private CanvasRenderer[] m_AllVisibleObjs;
 
@@ -99,39 +99,26 @@ public class Player_UI : MonoBehaviour
             m_AllVisibleObjs[i].SetAlpha(_isVisible ? 1 : 0);
         }
     }
-    public void ForceStopReload()
-    {
-        if (!ReferenceEquals(m_ReloadCoroutine, null))
-            StopCoroutine(m_ReloadCoroutine);
 
-        p_MainAimImg.sprite = m_ReloadBackupSprite;
-        p_ReloadCircle.fillAmount = 0f;
-        m_ArmMgr.m_IsReloading = false;
-    }
-    public void StartReload()
+    /// <summary>
+    /// 플레이어 UI의 재장전 모드를 활성/비활성화합니다.
+    /// </summary>
+    /// <param name="_isOn">활성화 여부</param>
+    public void ActivateReloadMode(bool _isOn)
     {
-        m_ArmMgr.m_IsReloading = true;
-        m_ReloadBackupSprite = p_MainAimImg.sprite;
-        p_MainAimImg.sprite = p_ReloadAimImg;
-        m_ReloadCoroutine = StartCoroutine(Internal_Reload());
-    }
-
-    private IEnumerator Internal_Reload()
-    {
-        m_ReloadSpeed = m_Player.m_Negotiator.p_ReloadTime;
-        
-        while (p_ReloadCircle.fillAmount < 1)
+        if (_isOn)
         {
-            p_ReloadCircle.fillAmount += Time.deltaTime * m_ReloadSpeed;
-            yield return null;
+            m_ReloadBackupSprite = p_MainAimImg.sprite;
+            p_ReloadCircle.fillAmount = 0f;
         }
-
-        p_ReloadCircle.fillAmount = 0f;
-        m_ArmMgr.m_IsReloading = false;
-        m_Callback();
+        else
+        {
+            if (!ReferenceEquals(m_ReloadBackupSprite, null))
+                p_MainAimImg.sprite = m_ReloadBackupSprite;
+            p_ReloadCircle.fillAmount = 0f;
+        }
     }
-    
-    
+
     public void AddCallback(PlayerUIDelegate _input)
     {
         m_Callback += _input;

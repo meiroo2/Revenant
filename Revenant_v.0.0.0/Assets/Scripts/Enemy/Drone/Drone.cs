@@ -177,7 +177,7 @@ public class Drone : BasicEnemy
         p_HeadHotBox.p_DamageMulti = _mgr.D_DroneDmgMulti;
         p_BodyHotBox.p_DamageMulti = _mgr.D_BombDmgMulti;
         p_DetectSpeed = _mgr.D_DetectSpeed;
-        
+        p_VisionDistance = _mgr.D_VisionDistance;
 
         #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);

@@ -8,7 +8,7 @@ public class Door_Col_LayerRoom : MonoBehaviour, IUseableObj
 {
     public bool m_IsOutlineActivated { get; set; } = false;
     
-    private Door_LayerRoom m_Door;
+    public Door_LayerRoom m_Door;
     private static readonly int IsOpen = Animator.StringToHash("IsOpen");
 
     private void Awake()
@@ -23,8 +23,6 @@ public class Door_Col_LayerRoom : MonoBehaviour, IUseableObj
         
         m_Door.ActivateBothOutline(_isOn);
     }
-
-
 
     public UseableObjList m_ObjProperty { get; set; } = UseableObjList.LAYERDOOR;
     public bool m_isOn { get; set; } = false;

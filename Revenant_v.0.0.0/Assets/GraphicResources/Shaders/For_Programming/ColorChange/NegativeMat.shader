@@ -114,9 +114,9 @@ Shader "Universal Render Pipeline/2D/NegativeMat"
 
                 // For White Blink
                 const float mono = (main.r * 0.299) + (main.g * 0.587) + (main.b * 0.114);
-                main.r = mono;
-                main.g = mono;;
-                main.b = mono;;
+                main.r = mono * 0.8;
+                main.g = mono * 0.8;
+                main.b = mono * 0.8;
                 
                 InitializeSurfaceData(main.rgb, main.a, mask, surfaceData);
                 InitializeInputData(i.uv, i.lightingUV, inputData);

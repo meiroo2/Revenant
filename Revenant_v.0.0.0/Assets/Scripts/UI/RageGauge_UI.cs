@@ -102,10 +102,12 @@ public class RageGauge_UI : MonoBehaviour
     /// <summary>
     /// RageGauge를 일시적으로 Timer로 사용하기 위해 일반화된 시간값을 받습니다. (즉시 적용)
     /// </summary>
-    /// <param name="_normalTime"></param>
+    /// <param name="_normalTime">Normalized 된 시간값</param>
     public void GetTimePassed(float _normalTime)
     {
-        //Debug.Log(p_GaugeImg.fillAmount);
+
+        p_BulletTimeTxt.text = (Math.Truncate(_normalTime * 10) / 10).ToString();
+        
         p_GaugeImg.fillAmount = _normalTime;
     }
     
