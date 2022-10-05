@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
@@ -60,7 +61,6 @@ public class NormalGang : BasicEnemy
     private Vector2 m_DistBetPlayer;
     private Enemy_HotBox[] m_HotBoxes;
     public Transform m_GunPos { get; protected set; } = null;
-
 
     // Constructor
     private void Awake()
