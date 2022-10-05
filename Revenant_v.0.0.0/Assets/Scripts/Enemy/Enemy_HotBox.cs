@@ -16,7 +16,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
 
 
     // Member Variables
-    private BasicEnemy m_Enemy;
+    public BasicEnemy m_Enemy { get; private set; }
     private Player_UI m_PlayerUI;
     private RageGauge_UI m_RageUI;
     private SoundPlayer m_SoundMgr;

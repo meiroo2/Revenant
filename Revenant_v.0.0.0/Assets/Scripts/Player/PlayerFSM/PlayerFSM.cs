@@ -70,7 +70,7 @@ public class Player_IDLE : PlayerFSM
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
-        else if (m_InputMgr.m_IsPushBulletTimeKey)
+        else if (m_InputMgr.m_IsPushBulletTimeKey && !m_Player.m_ArmMgr.m_IsReloading)
         {
             if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
                 m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
@@ -124,7 +124,7 @@ public class Player_WALK : PlayerFSM
     {
         CheckNull();
 
-        if (m_InputMgr.m_IsPushBulletTimeKey)
+        if (m_InputMgr.m_IsPushBulletTimeKey && !m_Player.m_ArmMgr.m_IsReloading)
         {
             if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
                 m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
@@ -221,10 +221,10 @@ public class Player_ROLL : PlayerFSM
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
+        m_Player.m_ArmMgr.StopReload();
         m_Player.m_PlayerHotBox.m_hotBoxType = 2;
         m_DecelerationSpeed = 0f;
         
-        m_Player.m_ArmMgr.StopReload();
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
         m_Player.UseRollCount();
         m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue -
@@ -351,6 +351,7 @@ public class Player_HIDDEN : PlayerFSM
         m_SFXMgr.playPlayerSFXSound(5);
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
+        m_Player.m_ArmMgr.StopReload();
     }
 
     public override void UpdateState()
@@ -404,7 +405,8 @@ public class Player_MELEE : PlayerFSM
     {
         m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
         m_InputMgr = m_Player.m_InputMgr;
-        
+     
+        m_Player.m_ArmMgr.StopReload();
         m_IsAttackFinished = false;
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
@@ -414,13 +416,14 @@ public class Player_MELEE : PlayerFSM
         gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
         
         m_Player.m_MeleeAttack.StartMelee();
-        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
+        
         m_Player.m_ArmMgr.StopReload();
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
     }
 
     public override void UpdateState()
     {
+        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
         if (m_Player.m_InputMgr.m_IsPushRollKey && 
             m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Roll))
         {
@@ -561,6 +564,10 @@ public class Player_BULLET_TIME : PlayerFSM
         m_Player.m_ScreenEffectUI.ActivateVignetteEffect(true);
         
         // 머터리얼 교체 온
+        // 흠...
+        
+        // 강제 재장전
+        m_Player.m_WeaponMgr.m_CurWeapon.SetLeftRounds(m_Player.m_WeaponMgr.m_CurWeapon.p_MaxRound);
 
         m_AniMgr.ChangeAniModeToFight(false);
         m_AniMgr.SetVisualParts(true,false,false,false);
@@ -577,7 +584,8 @@ public class Player_BULLET_TIME : PlayerFSM
         {
             case 0:
                 m_Timer += Time.unscaledDeltaTime;
-                if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer > m_BulletTimeLimit)
+                m_Player.m_RageGauge.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit);
+                if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer >= m_BulletTimeLimit)
                 {
                     // AR 끔
                     m_Player.m_ScreenEffectUI.ActivateAREffect(false);

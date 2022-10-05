@@ -28,6 +28,8 @@ public class Player_AniMgr : MonoBehaviour
     {
         m_Player = GetComponent<Player>();
         m_PlayerRotation = m_Player.m_playerRotation;
+
+        p_UpperBody.SetAnim_Float("ReloadSpeed", m_Player.p_ReloadSpeed);
     }
 
     // Updates
@@ -130,6 +132,10 @@ public class Player_AniMgr : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 재장전 애니메이션을 재생하거나 멈춥니다.
+    /// </summary>
+    /// <param name="_isPlay"></param>
     public void PlayReloadAnim(bool _isPlay)
     {
         p_UpperBody.SetAnim_Int("Reload", _isPlay ? 1 : 0);

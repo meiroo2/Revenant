@@ -20,7 +20,7 @@ public class BasicWeapon_Player : BasicWeapon
     protected Player_UI m_PlayerUI;
 
     public bool m_isReloading { get; protected set; }
-
+    
     
     // Constructors
     protected void Start()

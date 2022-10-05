@@ -153,9 +153,21 @@ public class Player_HitscanRay : MonoBehaviour
     private void AimRaycast()
     {
         UpdateRayStartPos();
+        int layermask = 0;
 
-        int layermask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Object")) |
-                        (1 << LayerMask.NameToLayer("HotBoxes"));
+        switch (m_Player.gameObject.layer)
+        {
+            case 10:
+                layermask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Object")) |
+                            (1 << LayerMask.NameToLayer("HotBoxes")) | (1 << LayerMask.NameToLayer("Stair"));
+                break;
+            
+            case 12:
+                layermask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Object")) |
+                            (1 << LayerMask.NameToLayer("HotBoxes")) | (1 << LayerMask.NameToLayer("EmptyFloor"));
+                break;
+        }
+        
 
         m_HitCount = Physics2D.CircleCastNonAlloc(m_RayStartPos, 0.05f, GetRayDirection(), m_AimRayHits,
             p_RayLength, layermask);
@@ -178,7 +190,21 @@ public class Player_HitscanRay : MonoBehaviour
     private void UpdateNearObstacle()
     {
         UpdateRayStartPos();
-        int layermask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Object"));
+        int layermask = 0;
+
+        switch (m_Player.gameObject.layer)
+        {
+            case 10:
+                layermask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Object")) |
+                            (1 << LayerMask.NameToLayer("Stair"));
+                break;
+            
+            case 12:
+                layermask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Object")) |
+                            (1 << LayerMask.NameToLayer("EmptyFloor"));
+                break;
+        }
+        
         m_AimRayHit = Physics2D.Raycast(m_RayStartPos, GetRayDirection(), p_RayLength, layermask);
     }
 

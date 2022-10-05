@@ -53,14 +53,18 @@ public class BulletLaser : MonoBehaviour
 
         while (true)
         {
-            m_Color.a -= Time.deltaTime * 5f;
+            m_Color.a /= 1.17f;
             m_Renderer.startColor = m_Color;
             m_Renderer.endColor = m_Color;
 
-            if (m_Color.a <= 0f)
+            if (m_Color.a <= 0.02f)
                 break;
-            
-            yield return null;
+
+            yield return new WaitForFixedUpdate();
         }
+        
+        m_Color.a = 0f;
+        m_Renderer.startColor = m_Color;
+        m_Renderer.endColor = m_Color;
     }
 }

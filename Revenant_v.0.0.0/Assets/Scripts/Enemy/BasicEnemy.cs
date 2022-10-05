@@ -33,7 +33,7 @@ public class BasicEnemy : Human
 
 
     // Member Variables
-    protected SpriteRenderer m_Renderer;
+    public SpriteRenderer m_Renderer { get; protected set; }
     private List<EnemySpawner> m_EnemySpawnerList = new List<EnemySpawner>();
     protected Enemy_HotBox[] m_EnemyHotBoxes;
     protected Enemy_UseRange m_EnemyUseRange;
@@ -100,6 +100,11 @@ public class BasicEnemy : Human
         }
     }
 
+    public void GoToStairLayer(bool _input)
+    {
+        gameObject.layer = _input ? 9 : 11;
+    }
+    
     public void AddEnemySpawner(EnemySpawner _spawner)
     {
         m_EnemySpawnerList.Add(_spawner);

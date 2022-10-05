@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <p_HitBoxPoint>k__BackingField: 0
-  <p_DamageMultiples>k__BackingField: 2
+  <p_DamageMulti>k__BackingField: 0
 --- !u!61 &2275787039257512237
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <p_HitBoxPoint>k__BackingField: 1
-  <p_DamageMultiples>k__BackingField: 1
+  <p_DamageMulti>k__BackingField: 0
 --- !u!61 &2275787039324577360
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 2275787039627751095}
   m_Layer: 0
   m_Name: Sprites
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -364,6 +364,9 @@ MonoBehaviour:
   <p_BombHp>k__BackingField: 20
   <p_BombRange>k__BackingField: 2
   p_BreakPower: 2
+  p_DetectSpeed: 1
+  p_LookAround: 0
+  p_LookAroundDelay: 1
   m_DeadReason: -1
   m_BombWeapon: {fileID: 5155922780340698784}
   p_HeadHotBox: {fileID: 2275787039257512236}
@@ -440,8 +443,8 @@ MonoBehaviour:
   p_BulletSpeed: 0
   p_BulletDamage: 10
   p_StunValue: 0
-  p_MinimumShotDelay: 0
-  p_MaxBullet: 0
+  p_MinFireDelay: 0
+  p_MaxRound: 0
   p_MaxMag: 0
   p_BombRadius: 0.8
 --- !u!58 &5155922780340698787

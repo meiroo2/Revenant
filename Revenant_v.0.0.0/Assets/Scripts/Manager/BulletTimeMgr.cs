@@ -207,7 +207,10 @@ public class BulletTimeMgr : MonoBehaviour
 
             m_SEThunderCoroutine = StartCoroutine(SpawnThunderCoroutine());
             m_IsBulletTimeActivating = true;
-            m_MatChanger.ChangeMat();
+            
+            m_MatChanger.ChangeMat(ObjectType.Enemy, 1);
+            m_MatChanger.ChangeMat(ObjectType.Other, 0);
+            
             Time.timeScale = 0f;
         }
         else
@@ -218,7 +221,10 @@ public class BulletTimeMgr : MonoBehaviour
             StopCoroutine(m_SEThunderCoroutine);
             
             m_IsBulletTimeActivating = false;
-            m_MatChanger.ResotreMat();
+            
+            m_MatChanger.RestoreMat(ObjectType.Enemy);
+            m_MatChanger.RestoreMat(ObjectType.Other);
+            
             Time.timeScale = 1f;
 
             foreach (var element in m_MarkerList)
@@ -236,7 +242,6 @@ public class BulletTimeMgr : MonoBehaviour
     /// <param name="_time">지정 시간</param>
     public void ModifyTimeScale(float _time)
     {
-        m_MatChanger.ChangeMat();
         Time.timeScale = 0.3f;
         StartCoroutine(CheckTimePassed(_time));
     }
@@ -339,7 +344,6 @@ public class BulletTimeMgr : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(_time);
         Time.timeScale = 1f;
-        m_MatChanger.ResotreMat();
 
         yield break;
     }
