@@ -98,6 +98,11 @@ public class BasicEnemy : Human
         }
     }
 
+    public void GoToStairLayer(bool _input)
+    {
+        gameObject.layer = _input ? 9 : 11;
+    }
+    
     public void AddEnemySpawner(EnemySpawner _spawner)
     {
         m_EnemySpawnerList.Add(_spawner);

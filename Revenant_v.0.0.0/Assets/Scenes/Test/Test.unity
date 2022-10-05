@@ -848,7 +848,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 498860111}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
@@ -872,6 +872,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   p_CamBoundMgr: {fileID: 778309902}
   p_InitFollow: 1
+  p_YValue: 0
   p_ShakePower: 0.05
   p_RotatePower: 0
   p_ShakeRecoverSpeed: 30
@@ -1108,7 +1109,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: N_Speed
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: S_Speed
@@ -1260,7 +1261,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: N_GunFire_Distance
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1900004413932140605, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: S_BrokenSpeedMulti
@@ -1809,6 +1810,10 @@ PrefabInstance:
     - target: {fileID: 531429147666289227, guid: 34d6b16d6de471845a2170b907ee9d41, type: 3}
       propertyPath: p_Shield_Hp
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 531429147666289228, guid: 34d6b16d6de471845a2170b907ee9d41, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3025478184395922921, guid: 34d6b16d6de471845a2170b907ee9d41, type: 3}
       propertyPath: <p_DamageMulti>k__BackingField
@@ -2895,17 +2900,37 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6785627411127605370, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: <p_DamageMulti>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627411194760967, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: <p_DamageMulti>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6785627412115929189, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: p_BulletRandomRotation
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: p_MeleeDistance
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: <p_Hp>k__BackingField
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_MoveSpeed>k__BackingField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_AttackDistance>k__BackingField
-      value: 3
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: <p_StunAlertSpeed>k__BackingField
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_VisionDistance>k__BackingField
@@ -2962,6 +2987,10 @@ PrefabInstance:
     - target: {fileID: 6785627412206059254, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: m_Name
       value: NormalGang (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6785627412206059254, guid: 43712787576e5074883d025042d922ca, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 43712787576e5074883d025042d922ca, type: 3}
@@ -3519,11 +3548,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_MoveSpeed>k__BackingField
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_AttackDistance>k__BackingField
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6785627412206059248, guid: 43712787576e5074883d025042d922ca, type: 3}
       propertyPath: <p_StunAlertSpeed>k__BackingField

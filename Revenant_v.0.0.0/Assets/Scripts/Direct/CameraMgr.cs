@@ -12,7 +12,8 @@ public class CameraMgr : MonoBehaviour
     // Visible Member Variables
     public CamBoundMgr p_CamBoundMgr;
     public bool p_InitFollow = true;
-    
+
+    public float p_YValue = 0f;
     public float p_ShakePower = 1f;
     public float p_RotatePower = 0;
     public float p_ShakeRecoverSpeed = 5f;
@@ -87,8 +88,7 @@ public class CameraMgr : MonoBehaviour
             transform.position = p_CamBoundMgr.getNearCamPos(m_CameraPos);
         }
 
-        transform.position = new Vector3(transform.position.x + m_PlusVec.x,
-            transform.position.y + m_PlusVec.y, -10f);
+        transform.position = new Vector3(transform.position.x + m_PlusVec.x, transform.position.y + m_PlusVec.y + p_YValue, -10f);
 
         m_PlusVec = Vector3.Lerp(m_PlusVec, Vector3.zero, Time.deltaTime * p_ShakeRecoverSpeed);
 

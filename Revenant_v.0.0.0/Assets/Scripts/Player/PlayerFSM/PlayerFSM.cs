@@ -416,13 +416,14 @@ public class Player_MELEE : PlayerFSM
         gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
         
         m_Player.m_MeleeAttack.StartMelee();
-        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
+        
         m_Player.m_ArmMgr.StopReload();
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
     }
 
     public override void UpdateState()
     {
+        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
         if (m_Player.m_InputMgr.m_IsPushRollKey && 
             m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Roll))
         {

@@ -80,6 +80,7 @@ public class Player : Human
 
     public ParticleMgr m_ParticleMgr { get; private set; }
     public Negotiator_Player m_Negotiator { get; private set; }
+    public Player_WorldUI m_WorldUI { get; private set; }
 
 
     private bool m_isRecoveringRollCount = false;
@@ -134,7 +135,8 @@ public class Player : Human
         m_MeleeAttack = GetComponentInChildren<Player_MeleeAttack>();
         m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
         m_Negotiator = GetComponentInChildren<Negotiator_Player>();
-
+        m_WorldUI = GetComponentInChildren<Player_WorldUI>();
+        
         m_IDLE = new Player_IDLE(this);
         m_WALK = new Player_WALK(this);
         m_ROLL = new Player_ROLL(this);
@@ -316,16 +318,9 @@ public class Player : Human
         return false;
     }
 
-    public void GoToStairLayer(bool _input, Vector2 _movePos, Vector2 _normal)
+    public void GoToStairLayer(bool _input)
     {
-        if (_input)
-        {
-            gameObject.layer = 10;
-        }
-        else
-        {
-            gameObject.layer = 12;
-        }
+        gameObject.layer = _input ? 10 : 12;
     }
 
     public void UseRollCount()
