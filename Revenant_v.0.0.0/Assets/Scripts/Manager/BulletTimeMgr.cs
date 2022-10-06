@@ -175,8 +175,6 @@ public class BulletTimeMgr : MonoBehaviour
     /// <returns></returns>
     private IEnumerator CheckBulletTimeStart()
     {
-       
-        
         StopCoroutine(m_SEBeforeBTCoroutine);
         Debug.Log("불릿타임 시작");
         ActivateBulletTime(true);

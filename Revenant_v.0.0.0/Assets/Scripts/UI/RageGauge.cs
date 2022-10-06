@@ -77,7 +77,7 @@ public class RageGauge : MonoBehaviour
         bool returnVal = m_CurGaugeValue - _value >= 0;
 
         if (!returnVal)
-            p_RageGaugeUI.ShakeAction?.Invoke();
+            p_RageGaugeUI.OnNotAbleBulletTime?.Invoke();
 
 
 		return returnVal;
@@ -145,6 +145,7 @@ public class RageGauge : MonoBehaviour
         m_CurGaugeValue = _input;
         // p_GaugeImg.fillAmount = m_CurGaugeValue * m_Multiply;
         p_RageGaugeUI.p_GaugeImg.fillAmount = m_CurGaugeValue * m_Multiply;
+        p_RageGaugeUI.p_GaugeImg.color = Color.Lerp(p_RageGaugeUI.NatureRefillColor, p_RageGaugeUI.NatureConsumeColor, (m_CurGaugeValue - p_Gauge_Refill_Limit) / (p_Gauge_Max - p_Gauge_Refill_Limit));
 		// 만약 Max치를 찍었을 경우, 불릿타임 사용 가능 인디케이터를 띄웁니다.
 		if (m_CurGaugeValue >= p_Gauge_Max && !m_BulletTimeMgr.m_IsGaugeFull)
         {

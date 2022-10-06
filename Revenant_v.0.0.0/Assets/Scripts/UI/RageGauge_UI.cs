@@ -14,17 +14,20 @@ public class RageGauge_UI : MonoBehaviour
 	[BoxGroup("게이지 비주얼")] public Image p_BulletTimeIndicator; // 경우에 따라 옮기기
 	[BoxGroup("게이지 비주얼")] public Text p_BulletTimeTxt;
 
+	public Color NatureRefillColor;
+	public Color NatureConsumeColor;
+
 	private Vector2 m_InitPos;
 	private Vector2 m_InitBackImgScale;
 	private Vector2 m_InitGaugeImgScale;
 	private Color m_InitGaugeColor;
 
 	private RectTransform m_RectTransform;
-	private DynamicUIMgr m_DynaUIMgr;
+	private DynamicUIMgr m_DynamicUIMgr;
 
-	public Action ShakeAction;
-	public Action OnBulletTimeStart;
-	public Action OnBulletTimeEnd;
+	public Action OnNotAbleBulletTime;	// BulletTime 진입이 불가능할 때의 이벤트 
+	public Action OnBulletTimeStart;	// BulletTime 시작시 이벤트
+	public Action OnBulletTimeEnd;		// BulletTime 종료시 이벤트
 
 	private void Awake()
 	{
@@ -37,7 +40,7 @@ public class RageGauge_UI : MonoBehaviour
 			Debug.LogError("RageGauge_UI에서 이미지 할당되지 않음.");
 		}
 
-		//m_DynaUIMgr.Shake(m_RectTransform, m_InitPos, 30f, 1500f, 10f, 30f);
+		//m_DynamicUIMgr.Shake(m_RectTransform, m_InitPos, 30f, 1500f, 10f, 30f);
 		m_InitBackImgScale = p_BackImg.rectTransform.localScale;
 		m_InitGaugeImgScale = p_GaugeImg.rectTransform.localScale;
 		p_BulletTimeIndicator.enabled = false;
@@ -47,15 +50,13 @@ public class RageGauge_UI : MonoBehaviour
 	void Start()
 	{
 		m_InitPos = m_RectTransform.anchoredPosition;
-		m_DynaUIMgr = GameMgr.GetInstance().GetComponent<DynamicUIMgr>();
-		ShakeAction += ShakeTransform;
+		m_DynamicUIMgr = GameMgr.GetInstance().GetComponent<DynamicUIMgr>();
 
+		// UI 이벤트 추가
+		OnNotAbleBulletTime += ShakeTransform;
 		OnBulletTimeStart += PlayAnimationOnBulletTimeStart;
 		OnBulletTimeStart += delegate { p_BulletTimeIndicator.enabled = false;  };
-
-		OnBulletTimeEnd += PlayAnimationOnBulletTimeEnd;
-
-		//OnBulletTime
+		OnBulletTimeEnd   += PlayAnimationOnBulletTimeEnd;
 	}
 
     // Update is called once per frame
@@ -64,9 +65,9 @@ public class RageGauge_UI : MonoBehaviour
         
     }
 
-	public void ShakeTransform()
+	private void ShakeTransform()
 	{
-		m_DynaUIMgr.Shake(m_RectTransform, m_InitPos, 30f, 1500f, 10f, 30f);
+		m_DynamicUIMgr.Shake(m_RectTransform, m_InitPos, 30f, 1500f, 10f, 30f);
 	}
 
 	/// <summary>
@@ -85,15 +86,15 @@ public class RageGauge_UI : MonoBehaviour
 	private void PlayAnimationOnBulletTimeStart()
 	{
 		RectTransform backForm = p_BackImg.rectTransform;
-		m_DynaUIMgr.ExpandUI(backForm, m_InitBackImgScale,
+		m_DynamicUIMgr.ExpandUI(backForm, m_InitBackImgScale,
 		new Vector2(backForm.localScale.x + 0.07f, backForm.localScale.y), 5f);
 
 		RectTransform gaugeForm = p_GaugeImg.rectTransform;
-		m_DynaUIMgr.ExpandUI(gaugeForm, m_InitGaugeImgScale,
+		m_DynamicUIMgr.ExpandUI(gaugeForm, m_InitGaugeImgScale,
 		new Vector2(gaugeForm.localScale.x + 0.05f, gaugeForm.localScale.y), 5f);
 
-		m_DynaUIMgr.ChangeColor(p_GaugeImg, m_InitGaugeColor, Color.white, 3f);
-		m_DynaUIMgr.FadeUI(p_BulletTimeTxt, true, 50f);
+		m_DynamicUIMgr.ChangeColor(p_GaugeImg, m_InitGaugeColor, Color.white, 3f);
+		m_DynamicUIMgr.FadeUI(p_BulletTimeTxt, true, 50f);
 	}
 
 	/// <summary>
@@ -102,14 +103,14 @@ public class RageGauge_UI : MonoBehaviour
 	private void PlayAnimationOnBulletTimeEnd()
 	{
 		RectTransform backForm = p_BackImg.rectTransform;
-		m_DynaUIMgr.ExpandUI(backForm, backForm.localScale,
+		m_DynamicUIMgr.ExpandUI(backForm, backForm.localScale,
 		m_InitBackImgScale, 5f);
 
 		RectTransform gaugeForm = p_GaugeImg.rectTransform;
-		m_DynaUIMgr.ExpandUI(gaugeForm, gaugeForm.localScale,
+		m_DynamicUIMgr.ExpandUI(gaugeForm, gaugeForm.localScale,
 		m_InitGaugeImgScale, 5f);
 
-		m_DynaUIMgr.ChangeColor(p_GaugeImg, Color.white, m_InitGaugeColor, 3f);
-		m_DynaUIMgr.FadeUI(p_BulletTimeTxt, false, 50f);
+		m_DynamicUIMgr.ChangeColor(p_GaugeImg, Color.white, m_InitGaugeColor, 3f);
+		m_DynamicUIMgr.FadeUI(p_BulletTimeTxt, false, 50f);
 	}
 }
