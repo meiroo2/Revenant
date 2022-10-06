@@ -18,7 +18,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     // Member Variables
     public BasicEnemy m_Enemy { get; private set; }
     private Player_UI m_PlayerUI;
-    private RageGauge_UI m_RageUI;
+    private RageGauge m_RageUI;
     private SoundPlayer m_SoundMgr;
     private Transform m_PlayerCenterTransform;
     
@@ -41,7 +41,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         var instance = InstanceMgr.GetInstance();
 
         m_PlayerUI = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
-        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
         m_PlayerCenterTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.p_CenterTransform;
         m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();

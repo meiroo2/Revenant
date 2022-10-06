@@ -21,7 +21,7 @@ public class Negotiator_Player : BasicWeapon_Player
     private BulletTimeMgr m_BulletTimeMgr;
     private ParticleMgr m_ParticleMgr;
 
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
     
 
     private void Awake()
@@ -50,7 +50,7 @@ public class Negotiator_Player : BasicWeapon_Player
         m_BulletTimeMgr = tempIns.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = tempIns.GetComponentInChildren<ParticleMgr>();
 
-        m_RageGauge = tempIns.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_RageGauge = tempIns.m_MainCanvas.GetComponentInChildren<RageGauge>();
 
         m_PlayerUI = m_Player.m_PlayerUIMgr;
         

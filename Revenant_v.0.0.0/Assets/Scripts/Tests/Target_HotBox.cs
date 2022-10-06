@@ -16,7 +16,7 @@ public class Target_HotBox : MonoBehaviour, IHotBox
     public bool m_isEnemys { get; set; } = true;
     public HitBoxPoint m_HitBoxInfo { get; set; }
     private Target m_Target;
-    private RageGauge_UI m_RageUI;
+    private RageGauge m_RageUI;
 
     private SoundPlayer m_SoundPlayer;
 
@@ -38,7 +38,7 @@ public class Target_HotBox : MonoBehaviour, IHotBox
     {
         var instance = InstanceMgr.GetInstance();
         
-        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_PlayerUI = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();

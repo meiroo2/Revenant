@@ -39,6 +39,7 @@ public class InstanceMgr : MonoBehaviour
         {
             Instantiate(m_ShouldBeMadeInCanvas[i], m_MainCanvas.transform);
         }
+
         Instantiate(p_Canvas_RageGauge, m_MainCanvas.transform);
     }
 

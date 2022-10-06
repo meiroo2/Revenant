@@ -47,7 +47,7 @@ public abstract class PlayerFSM
 
 public class Player_IDLE : PlayerFSM
 {
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
     
     public Player_IDLE(Player _player) : base(_player)
     {
@@ -97,7 +97,7 @@ public class Player_WALK : PlayerFSM
     private float m_KeyInput = 0f;
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
 
     private int m_PreInput = 0;
     private int m_CurInput = 0;
@@ -199,7 +199,7 @@ public class Player_ROLL : PlayerFSM
     private Animator m_FullBodyAnimator;
     private CoroutineElement m_CoroutineElement;
     private BulletTimeMgr m_BulletTimeMgr;
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
     private Player_InputMgr m_InputMgr;
     
     private float m_DecelerationSpeed = 0f;
@@ -331,7 +331,7 @@ public class Player_HIDDEN : PlayerFSM
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
     private SoundPlayer m_SFXMgr;
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
 
     public Player_HIDDEN(Player _player) : base(_player)
     {
@@ -584,8 +584,9 @@ public class Player_BULLET_TIME : PlayerFSM
         {
             case 0:
                 m_Timer += Time.unscaledDeltaTime;
-                m_Player.m_RageGauge.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit);
-                if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer >= m_BulletTimeLimit)
+                var gaugeUI = GameObject.FindObjectOfType<RageGauge_UI>(); // 최적화 방법 생각하기
+				gaugeUI.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit); 
+				if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer >= m_BulletTimeLimit)
                 {
                     // AR 끔
                     m_Player.m_ScreenEffectUI.ActivateAREffect(false);
