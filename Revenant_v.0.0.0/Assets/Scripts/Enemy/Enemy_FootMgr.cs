@@ -47,7 +47,7 @@ public class Enemy_FootMgr : MonoBehaviour
                 break;
             
             case 11:
-                m_LayerMask = LayerMask.GetMask("Floor");
+                m_LayerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("EmptyFloor"));
                 break;
         }
 

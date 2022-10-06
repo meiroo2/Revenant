@@ -15,7 +15,6 @@ public class BulletLaserMgr : MonoBehaviour
     private int m_Idx = 0;
     
     
-    
     // Constructors
     private void Awake()
     {

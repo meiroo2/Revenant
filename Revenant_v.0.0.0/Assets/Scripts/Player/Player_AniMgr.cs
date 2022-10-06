@@ -1,6 +1,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -30,117 +31,38 @@ public class Player_AniMgr : MonoBehaviour
         m_PlayerRotation = m_Player.m_playerRotation;
 
         p_UpperBody.SetAnim_Float("ReloadSpeed", m_Player.p_ReloadSpeed);
+        SetVisualParts(false, true, true, false);
     }
 
+    
     // Updates
    
 
-    // Functions
     
+    // Functions
+  
+    
+
     /// <summary>
-    /// Player의 스프라이트 모드를 전투 모드로 전환합니다.
+    /// Player Arm의 스프라이트를 각도별 스프라이트 변경 모드로 바꿉니다.
     /// </summary>
-    /// <param name="_toFight">전투 모드 여부</param>
-    public void ChangeAniModeToFight(bool _toFight)
+    /// <param name="_toAngle">각도변경 모드</param>
+    public void ChangeArmAniToAngleChange(bool _toAngle)
     {
-        m_IsFightMode = _toFight;
+        m_IsFightMode = _toAngle;
         
         // UpperBody 애니메이터 끄고, 팔은 보임
-        p_UpperBody.SetAniVisible(!_toFight);
-        p_Arm.SetAniVisible(!_toFight);
-        
-        p_Arm.SetVisible(_toFight);
-    }
-    
-    
-    public void ExitPlayerAnim()
-    {
-        switch (m_Player.m_CurPlayerFSMName)
-        {
-            case PlayerStateName.IDLE:
-                break;
-
-            case PlayerStateName.WALK:
-                p_UpperBody.SetAnim_Int("Walk", 0);
-                p_LowerBody.SetAnim_Int("Walk", 0);
-                break;
-
-            case PlayerStateName.ROLL:
-                p_FullBody.SetAnim_Int("Roll", 0);
-                break;
-
-            case PlayerStateName.HIDDEN:
-                p_FullBody.SetAnim_Int("Hide", 0);
-                break;
-            
-            case PlayerStateName.MELEE:
-                p_FullBody.SetAnim_Int("Melee", 0);
-                break;
-
-            case PlayerStateName.DEAD:
-                SetVisualParts(true, false, false, false);
-                break;
-        }
-    }
-    
-    public void PlayPlayerAnim()
-    {
-        switch (m_Player.m_CurPlayerFSMName)
-        {
-            case PlayerStateName.IDLE:
-                SetVisualParts(false, true, true, false);
-                p_UpperBody.SetAnim_Int("Walk", 0);
-                p_LowerBody.SetAnim_Int("Walk", 0);
-                break;
-
-            case PlayerStateName.WALK:
-                SetVisualParts(false, true, true, false);
-                
-                if (m_Player.GetIsPlayerWalkStraight())
-                {
-                    p_UpperBody.SetAnim_Int("Walk", 1);
-                    p_LowerBody.SetAnim_Int("Walk", 1);
-                }
-                else
-                {
-                    p_UpperBody.SetAnim_Int("Walk", -1);
-                    p_LowerBody.SetAnim_Int("Walk", -1);
-                }
-                break;
-
-            case PlayerStateName.ROLL:
-                ChangeAniModeToFight(false);
-                SetVisualParts(true, false, false, false);
-                p_FullBody.SetAnim_Int("Roll", 1);
-                break;
-
-            case PlayerStateName.HIDDEN:
-                ChangeAniModeToFight(false);
-                SetVisualParts(true, false, false, false);
-                p_FullBody.SetAnim_Int("Hide", 1);
-                break;
-            
-            case PlayerStateName.MELEE:
-                ChangeAniModeToFight(false);
-                SetVisualParts(true, false, false, false);
-                p_FullBody.SetAnim_Int("Melee", 1);
-                break;
-
-            case PlayerStateName.DEAD:
-                SetVisualParts(true, false, false, false);
-                break;
-        }
+        p_UpperBody.SetAniVisible(!_toAngle);
+        p_Arm.SetVisible(_toAngle);
     }
 
     /// <summary>
-    /// 재장전 애니메이션을 재생하거나 멈춥니다.
+    /// Player의 각 VisualPart의 Visible 여부를 제어합니다.
     /// </summary>
-    /// <param name="_isPlay"></param>
-    public void PlayReloadAnim(bool _isPlay)
-    {
-        p_UpperBody.SetAnim_Int("Reload", _isPlay ? 1 : 0);
-    }
-   
+    /// <param name="_full"></param>
+    /// <param name="_upper"></param>
+    /// <param name="_low"></param>
+    /// <param name="_arm"></param>
     public void SetVisualParts(bool _full, bool _upper, bool _low, bool _arm)
     {
         p_FullBody.SetVisible(_full);

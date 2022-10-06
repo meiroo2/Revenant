@@ -48,6 +48,7 @@ public abstract class PlayerFSM
 public class Player_IDLE : PlayerFSM
 {
     private RageGauge_UI m_RageGauge;
+    private Player_ObjInteractor m_ObjInteracter;
     
     public Player_IDLE(Player _player) : base(_player)
     {
@@ -57,13 +58,27 @@ public class Player_IDLE : PlayerFSM
     public override void StartState()
     {
         InitFunc();
+        m_ObjInteracter = m_Player.m_ObjInteractor;
         m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_CanHide = true;
+        
+        m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
+        
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
     public override void UpdateState()
     {
+        if (m_InputMgr.m_IsPushAttackKey)
+        {
+            m_Player.m_ArmMgr.DoAttack();
+        }
+        else if (m_InputMgr.m_IsPushReloadKey)
+        {
+            m_Player.m_ArmMgr.DoReload();
+        }
+        
+        
         if(m_InputMgr.GetDirectionalKeyInput() != 0)
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
         else if(m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
@@ -77,10 +92,16 @@ public class Player_IDLE : PlayerFSM
             else
                 m_Player.m_RageGauge.CanConsume(999999f);
         }
+        else if (m_InputMgr.m_IsPushHideKey)
+        {
+            if(m_ObjInteracter.DoHide(true) == 1)
+                m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
+        }
     }
 
     public override void ExitState()
     {
+        m_Player.m_ArmMgr.StopReload();
         m_Player.m_CanHide = false;
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
         ExitFinalProcess();
@@ -94,15 +115,15 @@ public class Player_IDLE : PlayerFSM
 
 public class Player_WALK : PlayerFSM
 {
-    private float m_KeyInput = 0f;
-    private Player_FootMgr _mFootMgr;
-    private Rigidbody2D m_Rigid;
     private RageGauge_UI m_RageGauge;
-
-    private int m_PreInput = 0;
+    
     private int m_CurInput = 0;
 
-    private Vector2 JumpVec = Vector2.zero;
+    private VisualPart m_UpperBody;
+    private VisualPart m_LowerBody;
+    private Player_ObjInteractor m_Interactor;
+    private readonly int Walk = Animator.StringToHash("Walk");
+
 
     public Player_WALK(Player _player) : base(_player)
     {
@@ -111,77 +132,105 @@ public class Player_WALK : PlayerFSM
     
     public override void StartState()
     {
+        m_Interactor = m_Player.m_ObjInteractor;
         m_RageGauge = m_Player.m_RageGauge;
+        m_UpperBody = m_Player.m_PlayerAniMgr.p_UpperBody;
+        m_LowerBody = m_Player.m_PlayerAniMgr.p_LowerBody;
         
         m_Player.m_CanHide = true;
-        _mFootMgr = m_Player.m_PlayerFootMgr;
-        m_Rigid = m_Player.m_PlayerRigid;
         m_InputMgr = m_Player.m_InputMgr;
         m_Player.SetWalkSoundCoroutine(true);
+        m_CurInput = 0;
+
     }
 
     public override void UpdateState()
     {
-        CheckNull();
+        if (m_InputMgr.m_IsPushAttackKey)
+        {
+            m_Player.m_ArmMgr.DoAttack();
+        }
+        else if (m_InputMgr.m_IsPushReloadKey)
+        {
+            m_Player.m_ArmMgr.DoReload();
+        }
+        
+        m_CurInput = m_InputMgr.GetDirectionalKeyInput();
+        
+        if (m_Player.m_CanMove)
+        {
+            switch (m_CurInput)
+            {
+                case -1:
+                    if (m_Player.GetIsPlayerWalkStraight())
+                    {
+                        m_UpperBody.SetAnim_Int(Walk, 1);
+                        m_LowerBody.SetAnim_Int(Walk, 1);
+                        m_Player.MoveByDirection(-1);
+                    }
+                    else
+                    {
+                        m_UpperBody.SetAnim_Int(Walk, -1);
+                        m_LowerBody.SetAnim_Int(Walk, -1);
+                        m_Player.MoveByDirection(-1, m_Player.p_BackSpeedMulti);
+                    }
 
-        if (m_InputMgr.m_IsPushBulletTimeKey && !m_Player.m_ArmMgr.m_IsReloading)
+                    break;
+
+                case 0:
+                    m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
+                    break;
+
+                case 1:
+                    if (m_Player.GetIsPlayerWalkStraight())
+                    {
+                        m_UpperBody.SetAnim_Int(Walk, 1);
+                        m_LowerBody.SetAnim_Int(Walk, 1);
+                        m_Player.MoveByDirection(1);
+                    }
+                    else
+                    {
+                        m_UpperBody.SetAnim_Int(Walk, -1);
+                        m_LowerBody.SetAnim_Int(Walk, -1);
+                        m_Player.MoveByDirection(1, m_Player.p_BackSpeedMulti);
+                    }
+
+                    break;
+            }
+        }
+
+
+        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
+        {
+            m_Player.setisRightHeaded(m_CurInput > 0);
+            m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
+        }
+        else if (m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
+        {
+            m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
+        }
+        else if (m_InputMgr.m_IsPushBulletTimeKey && !m_Player.m_ArmMgr.m_IsReloading)
         {
             if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
                 m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
             else
                 m_Player.m_RageGauge.CanConsume(999999f);
         }
-
-        m_PreInput = m_CurInput;
-        m_CurInput = m_InputMgr.GetDirectionalKeyInput();
-        
-        if (m_CurInput == 0)
+        else if (m_InputMgr.m_IsPushHideKey)
         {
-            m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
-            return;
+            if(m_Interactor.DoHide(true) == 1)
+                m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
         }
-
-        if (!m_Player.m_CanMove) 
-            return;
-
-        
-        if (m_Player.GetIsPlayerWalkStraight())
-        {
-            if (m_Player.m_IsRightHeaded) // 우측
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) *
-                                   (m_Player.p_MoveSpeed);
-            else // 좌측
-                m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) *
-                                   (m_Player.p_MoveSpeed);
-        }
-        else
-        {
-            if (m_Player.m_IsRightHeaded)   // 오른쪽 보고 뒤로
-                m_Rigid.velocity = StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_MoveSpeed * m_Player.p_BackSpeedMulti);
-            else                           // 왼쪽 보고 뒤로
-                m_Rigid.velocity = -StaticMethods.getLPerpVec(_mFootMgr.m_PlayerNormal) * 
-                                   (m_Player.p_MoveSpeed * m_Player.p_BackSpeedMulti);
-        }
-        
-        
-        if(m_CurInput != m_PreInput)
-            m_Player.m_PlayerAniMgr.PlayPlayerAnim();
-        
-        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
-        {
-            m_Player.setisRightHeaded(m_CurInput > 0);
-            m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
-        }
-        else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
-            m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
     }
 
     public override void ExitState()
     {
+        m_UpperBody.SetAnim_Int(Walk, 0);
+        m_LowerBody.SetAnim_Int(Walk, 0);
+
         m_Player.m_CanHide = false;
         m_Player.SetWalkSoundCoroutine(false);
-        m_Rigid.velocity = Vector2.zero;
+        m_Player.MoveByDirection(0);
         ExitFinalProcess();
     }
 
@@ -193,16 +242,17 @@ public class Player_WALK : PlayerFSM
 
 public class Player_ROLL : PlayerFSM
 {
-    private Player_FootMgr m_FootMgr;
-    private Rigidbody2D m_Rigid;
     private Vector2 m_PlayerNormalVec;
     private Animator m_FullBodyAnimator;
     private CoroutineElement m_CoroutineElement;
-    private BulletTimeMgr m_BulletTimeMgr;
     private RageGauge_UI m_RageGauge;
     private Player_InputMgr m_InputMgr;
+    private Player_ObjInteractor m_Interactor;
     
     private float m_DecelerationSpeed = 0f;
+    private float m_Timer = 0f;
+    
+    private readonly int Roll = Animator.StringToHash("Roll");
 
     public Player_ROLL(Player _player) : base(_player)
     {
@@ -213,54 +263,64 @@ public class Player_ROLL : PlayerFSM
     {
         m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
         m_RageGauge = m_Player.m_RageGauge;
-        m_FootMgr = m_Player.m_PlayerFootMgr;
-        m_Rigid = m_Player.m_PlayerRigid;
         m_InputMgr = m_Player.m_InputMgr;
+        m_Interactor = m_Player.m_ObjInteractor;
         
-        m_Player.m_CanHide = true;
-        m_Player.m_CanMove = false;
+        m_Player.m_CanHide = false;
+        
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
         m_Player.m_ArmMgr.StopReload();
         m_Player.m_PlayerHotBox.m_hotBoxType = 2;
         m_DecelerationSpeed = 0f;
+        m_Timer = 0f;
+        
+        m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
+        m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Roll, 1);
         
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
-        m_Player.UseRollCount();
-        m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue -
-                                     m_RageGauge.p_Gauge_Consume_Roll);
-        
-        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_RollSpeedMulti);
-        
+        m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue - m_RageGauge.p_Gauge_Consume_Roll);
+
         // 코루틴 시작
         m_CoroutineElement = GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(CheckEvade());
     }
 
     public override void UpdateState()
     {
-        if (m_InputMgr.m_IsPushSideAttackKey &&
-            m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
+        m_Timer += Time.deltaTime;
+        
+        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, (m_Player.p_RollSpeedMulti - m_DecelerationSpeed));
+        if (m_Player.p_RollSpeedMulti - m_DecelerationSpeed > 0f)
+            m_DecelerationSpeed += m_Timer * m_Player.p_RollDecelerationSpeed;
+        
+        
+        if (m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
         {
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
         }
-
-        if(m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+        else if (m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+        {
             m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
-
-        m_DecelerationSpeed -= Time.deltaTime * m_Player.p_RollDecelerationSpeedMulti;
-        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, (m_Player.p_RollSpeedMulti + m_DecelerationSpeed));
+        }
+        else if (m_InputMgr.m_IsPushHideKey && m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f)
+        {
+            if (m_Interactor.DoHide(true) == 1)
+                m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
+        }
     }
 
     public override void ExitState()
     {
         m_Player.m_CanHide = false;
         m_Player.m_CanAttack = true;
-        m_Player.m_CanMove = true;
-        m_Rigid.velocity = Vector2.zero;
+
+        m_Player.MoveByDirection(0);
         m_Player.m_playerRotation.m_doRotate = true;
         m_Player.m_PlayerHotBox.m_hotBoxType = 0;
-
         m_Player.m_PlayerHotBox.m_HitCount = 0;
+        
+        m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Roll, 0);
+        m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         
         // 코루틴 끝
         m_CoroutineElement.StopCoroutine_Element();
@@ -282,7 +342,6 @@ public class Player_ROLL : PlayerFSM
         while (true)
         {
             normalTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-
             if (m_Player.m_PlayerHotBox.m_HitCount > 0)
             {
                 if (normalTime >= m_Player.p_JustEvadeNormalizeTime.x &&
@@ -290,7 +349,7 @@ public class Player_ROLL : PlayerFSM
                 {
                     // 저스트 회피
                     m_Player.m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
-                    m_Player.m_BulletTimeMgr.ModifyTimeScale(0.2f);
+                    m_Player.m_BulletTimeMgr.ModifyTimeScale(0.1f);
                     m_Player.m_ScreenEffectUI.ActivateLensDistortEffect(0.2f);
                     
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
@@ -332,6 +391,8 @@ public class Player_HIDDEN : PlayerFSM
     private Rigidbody2D m_Rigid;
     private SoundPlayer m_SFXMgr;
     private RageGauge_UI m_RageGauge;
+    private Player_ObjInteractor m_Interactor;
+    private readonly int Hide = Animator.StringToHash("Hide"); 
 
     public Player_HIDDEN(Player _player) : base(_player)
     {
@@ -342,16 +403,16 @@ public class Player_HIDDEN : PlayerFSM
     {
         m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_ArmMgr.StopReload();
-        m_SFXMgr = m_Player.m_SFXMgr;
         m_Player.m_CanAttack = false;
-        _mFootMgr = m_Player.m_PlayerFootMgr;
-        m_Rigid = m_Player.m_PlayerRigid;
         m_InputMgr = m_Player.m_InputMgr;
+        m_Interactor = m_Player.m_ObjInteractor;
         
-        m_SFXMgr.playPlayerSFXSound(5);
+        m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
+        m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Hide, 1);
+        
+        m_Player.m_SFXMgr.playPlayerSFXSound(5);
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
-        m_Player.m_ArmMgr.StopReload();
     }
 
     public override void UpdateState()
@@ -372,14 +433,24 @@ public class Player_HIDDEN : PlayerFSM
             m_Player.m_ObjInteractor.ForceExitFromHideSlot();
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
-        
+        else if (!m_InputMgr.m_IsPushHideKey)
+        {
+            if (m_Interactor.DoHide(false) == 1)
+            {
+                m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
+            }
+        }
     }
 
     public override void ExitState()
     {
+        m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Hide, 0);
+        m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
+
+        
         m_Player.m_CanMove = true;
         m_Player.m_CanAttack = true;
-        m_SFXMgr.playPlayerSFXSound(6);
+        m_Player.m_SFXMgr.playPlayerSFXSound(6);
         ExitFinalProcess();
     }
 
@@ -393,8 +464,9 @@ public class Player_MELEE : PlayerFSM
 {
     private Animator m_FullBodyAnimator;
     private float m_CurAniTime;
-    private bool m_IsAttackFinished = false;
     private Player_InputMgr m_InputMgr;
+    
+    private readonly int Melee = Animator.StringToHash("Melee");
 
     public Player_MELEE(Player _player) : base(_player)
     {
@@ -403,40 +475,40 @@ public class Player_MELEE : PlayerFSM
 
     public override void StartState()
     {
-        m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
         m_InputMgr = m_Player.m_InputMgr;
-     
         m_Player.m_ArmMgr.StopReload();
-        m_IsAttackFinished = false;
-        m_Player.m_CanMove = false;
+         
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
         
+        m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
+        m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
+        m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Melee, 1);
+
         var gauge = m_Player.m_RageGauge;
         gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
         
         m_Player.m_MeleeAttack.StartMelee();
-        
-        m_Player.m_ArmMgr.StopReload();
         m_Player.m_SFXMgr.playPlayerSFXSound(0);
     }
 
     public override void UpdateState()
     {
         m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
-        if (m_Player.m_InputMgr.m_IsPushRollKey && 
-            m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Roll))
-        {
-            m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
-        }
         
+                
         m_CurAniTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-
         switch (m_CurAniTime)
         {
             case >= 1f:
                 m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
                 break;
+        }
+        
+        if (m_Player.m_InputMgr.m_IsPushRollKey && 
+            m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Roll))
+        {
+            m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
     }
 
@@ -445,6 +517,9 @@ public class Player_MELEE : PlayerFSM
         m_Player.m_CanAttack = true;
         m_Player.m_CanMove = true;
         m_Player.m_playerRotation.m_doRotate = true;
+        
+        m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Melee, 0);
+        m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         
         m_Player.m_MeleeAttack.StopMelee();
         m_Player.MoveByDirection(0);
@@ -481,6 +556,8 @@ public class Player_DEAD : PlayerFSM
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
 
+        m_Player.m_PlayerAniMgr.SetVisualParts(false, false, false, false);
+        
         // int scene = SceneManager.GetActiveScene().buildIndex;
         // SceneManager.LoadScene(scene, LoadSceneMode.Single);
 
@@ -569,7 +646,7 @@ public class Player_BULLET_TIME : PlayerFSM
         // 강제 재장전
         m_Player.m_WeaponMgr.m_CurWeapon.SetLeftRounds(m_Player.m_WeaponMgr.m_CurWeapon.p_MaxRound);
 
-        m_AniMgr.ChangeAniModeToFight(false);
+        m_AniMgr.ChangeArmAniToAngleChange(false);
         m_AniMgr.SetVisualParts(true,false,false,false);
         m_AniMgr.p_FullBody.m_Animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 1);

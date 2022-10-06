@@ -7,8 +7,6 @@ public class VisualPart : MonoBehaviour
 {
     // Visible Member Variables
     public Sprite[] p_Sprites;
-    public bool p_InitSpriteOn = true;
-    public bool p_InitAnimatorOn = true;
 
     private SpriteRenderer m_SpriteRenderer;
     public Animator m_Animator { get; private set; }
@@ -43,19 +41,13 @@ public class VisualPart : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        if (m_SpriteRenderer && p_InitSpriteOn == false)
-            m_SpriteRenderer.enabled = false;
-    }
-
     /// <summary>
     /// SpriteRenderer의 enabled 여부를 설정합니다.
     /// </summary>
     /// <param name="_isVisible">SpriteRenderer enabled?</param>
     public void SetVisible(bool _isVisible)
     {
-//        Debug.Log(_isVisible);
+//       Debug.Log(_isVisible + gameObject.name);
         m_isVisible = _isVisible;
         m_SpriteRenderer.enabled = m_isVisible;
     }
@@ -82,6 +74,21 @@ public class VisualPart : MonoBehaviour
         else
             Debug.Log("ERR : VisualPart_Animator_Null");
     }
+    
+    
+    /// <summary>
+    /// Animator의 변수를 조절합니다. (Int형)
+    /// </summary>
+    /// <param name="_ParamHash">파라미터 이름</param>
+    /// <param name="_value">바꿀 값</param>
+    public void SetAnim_Int(int _ParamHash, int _value)
+    {
+        if (m_IsAnimator)
+            m_Animator.SetInteger(_ParamHash, _value);
+        else
+            Debug.Log("ERR : VisualPart_Animator_Null");
+    }
+    
 
     /// <summary>
     /// Animator의 변수를 조절합니다. (Float형)

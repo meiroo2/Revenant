@@ -242,7 +242,7 @@ public class BulletTimeMgr : MonoBehaviour
     /// <param name="_time">지정 시간</param>
     public void ModifyTimeScale(float _time)
     {
-        Time.timeScale = 0.3f;
+        //Time.timeScale = 0.3f;
         StartCoroutine(CheckTimePassed(_time));
     }
     
@@ -342,7 +342,35 @@ public class BulletTimeMgr : MonoBehaviour
     /// <returns></returns>
     private IEnumerator CheckTimePassed(float _time)
     {
-        yield return new WaitForSecondsRealtime(_time);
+        float timer = 0f;
+        float speed = 1.15f;
+        
+        while (true)
+        {
+            Time.timeScale /= speed;
+
+            if (Time.timeScale <= 0.15f)
+            {
+                break;
+            }
+
+            yield return new WaitForSecondsRealtime(0.02f);
+        }
+
+        
+        while (true)
+        {
+            Time.timeScale *= speed;
+
+            if (Time.timeScale >= 1f)
+            {
+                break;
+            }
+            
+            yield return new WaitForSecondsRealtime(0.02f);
+        }
+        
+
         Time.timeScale = 1f;
 
         yield break;

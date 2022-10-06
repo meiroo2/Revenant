@@ -37,7 +37,8 @@ public class Player_ArmMgr : MonoBehaviour
 
     private Coroutine m_RecoilCoroutine;
     private Coroutine m_ReloadCoroutine;
-    
+
+    private readonly int Reload = Animator.StringToHash("Reload");
 
 
 
@@ -68,6 +69,7 @@ public class Player_ArmMgr : MonoBehaviour
     // Updates
     private void Update()
     {
+        /*
         if (m_InputMgr.m_IsPushAttackKey && m_Player.m_CanAttack && !m_IsReloading)
             DoAttack();
         
@@ -77,6 +79,7 @@ public class Player_ArmMgr : MonoBehaviour
 
         if (!m_PlayerAniMgr.m_IsFightMode || m_BanVisualRotation)
             return;
+        */
     }
 
     // Physics
@@ -153,13 +156,25 @@ public class Player_ArmMgr : MonoBehaviour
     }
     
     
-    private void DoAttack()
+    /// <summary>
+    /// 플레이어의 공격을 실행합니다.
+    /// </summary>
+    /// <returns>0 = 실패, 1 = 성공, 2 = 재장전 시도</returns>
+    public int DoAttack()
     {
+        if (m_IsReloading)
+            return 0;
+        
+        if(m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0)
+            DoReload();
+        
         switch (m_WeaponMgr.m_CurWeapon.Fire())
         {
             case 0:
                 // 발사 실패
                 Debug.Log("플레이어 발사 실패");
+                
+                return 0;
                 break;
 
             case 1:
@@ -172,7 +187,7 @@ public class Player_ArmMgr : MonoBehaviour
                 // 전투모드 바꾸고 각도 초기화
                 if (!m_Player.m_BulletTimeMgr.m_IsBulletTimeActivating)
                 {
-                    m_PlayerAniMgr.ChangeAniModeToFight(true);
+                    m_PlayerAniMgr.ChangeArmAniToAngleChange(true);
                     ChangeRotatingVisualPart(m_PlayerRotation.m_curAnglePhase);
                 }
 
@@ -181,7 +196,8 @@ public class Player_ArmMgr : MonoBehaviour
                     StopCoroutine(m_BackToAttackCoroutine);
             
                 m_BackToAttackCoroutine = StartCoroutine(BackToAttackAnimTimer());
-                
+
+                return 1;
                 break;
 
             case 2:
@@ -189,26 +205,17 @@ public class Player_ArmMgr : MonoBehaviour
                 m_Player.m_SFXMgr.playPlayerSFXSound(1);
                 if (!m_IsReloading)
                     DoReload();
+                
+                return 2;
                 break;
         }
+
+        return -1;
     }
 
     private IEnumerator BackToAttackAnimTimer()
     {
-        float Timer = 0f;
-
-        while (true)
-        {
-            Timer += Time.deltaTime;
-            ChangeRotatingVisualPart(m_PlayerRotation.m_curAnglePhase);
-
-            if (Timer >= p_InitArmLerpDelayTime)
-            {
-                break;
-            }
-            
-            yield return null;
-        }
+        yield return new WaitForSeconds(p_InitArmLerpDelayTime);
 
         switch (m_PlayerRotation.m_curAnglePhase)
         {
@@ -234,7 +241,7 @@ public class Player_ArmMgr : MonoBehaviour
                 break;
         }
 
-        m_PlayerAniMgr.ChangeAniModeToFight(false);
+        m_PlayerAniMgr.ChangeArmAniToAngleChange(false);
     }
 
     
@@ -246,42 +253,64 @@ public class Player_ArmMgr : MonoBehaviour
     /// <param name="_force">true일 경우 탄창을 소모하지 않고, 애니 스킵후 강제 재장전</param>
     public void DoReload(bool _force = false)
     {
+        // 중복 재장전 금지, 재장전 불가능시 return
+        if (m_IsReloading || !m_WeaponMgr.m_CurWeapon.GetCanReload())
+            return;
+        
         if (_force)
         {
             m_WeaponMgr.m_CurWeapon.Reload();
             return;
         }
+   
+        // 사격 후딜, 재장전 코루틴 멈춤
+        if(!ReferenceEquals(m_BackToAttackCoroutine, null))
+            StopCoroutine(m_BackToAttackCoroutine);
         
-        // 일단 멈춤
-        StopReload();
+        if(!ReferenceEquals(m_ReloadCoroutine, null))
+            StopCoroutine(m_ReloadCoroutine);
+        
+        
+        m_PlayerAniMgr.SetVisualParts(false, true, true, false);
+        m_PlayerAniMgr.ChangeArmAniToAngleChange(false);
+        m_PlayerAniMgr.p_UpperBody.SetAnim_Int(Reload, 1);
+        
         
         // 사운드 재생
         m_IsReloading = true;
         m_Player.m_SFXMgr.playPlayerSFXSound(2);
         
-        m_PlayerAniMgr.ChangeAniModeToFight(false);
         m_PlayerUI.ActivateReloadMode(true);
-
+        
         m_ReloadCoroutine = StartCoroutine(ReloadCoroutine());
     }
 
+    
     /// <summary>
     /// Reload를 멈춥니다.(즉시 발동)
     /// </summary>
     public void StopReload()
     {
+        if(!ReferenceEquals(m_BackToAttackCoroutine, null))
+            StopCoroutine(m_BackToAttackCoroutine);
+        
         if (!ReferenceEquals(m_ReloadCoroutine, null))
             StopCoroutine(m_ReloadCoroutine);
         
         m_IsReloading = false;
         m_PlayerUI.ActivateReloadMode(false);
+        
+        m_PlayerAniMgr.p_UpperBody.SetAnim_Int(Reload, 0);
+        m_PlayerAniMgr.ChangeArmAniToAngleChange(false);
     }
 
+    
     private IEnumerator ReloadCoroutine()
     {
-        float normTime = 0f;
-        m_Player.m_PlayerAniMgr.PlayReloadAnim(true);
+        yield return null;
         
+        float normTime = 0f;
+
         while (true)
         {
             normTime = m_PlayerAniMgr.p_UpperBody.GetAniNormalTime();
@@ -294,7 +323,7 @@ public class Player_ArmMgr : MonoBehaviour
             yield return null;
         }
 
-        m_Player.m_PlayerAniMgr.PlayReloadAnim(false);
+        m_PlayerAniMgr.p_UpperBody.SetAnim_Int(Reload, 0);
         m_WeaponMgr.m_CurWeapon.Reload();
         m_PlayerUI.ActivateReloadMode(false);
         m_IsReloading = false;
