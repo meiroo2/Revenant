@@ -55,7 +55,6 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
                 DataHandleManager.Instance.PlayerPositionVector = CheckPoint.GetActiveCheckPointPosition();
             }
             
-            Debug.Log("Current CheckPointPosition : " + DataHandleManager.Instance.PlayerPositionVector);
             return 1;
         }
         return 0;

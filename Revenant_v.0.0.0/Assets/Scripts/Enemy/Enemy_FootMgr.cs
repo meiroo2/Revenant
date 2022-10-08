@@ -28,6 +28,7 @@ public class Enemy_FootMgr : MonoBehaviour
     public bool m_VirtualUpBtn = false;
     public bool m_VirtualDownBtn = false;
     
+    // VirtualUpBtn - true, DwonBtn - true로 만들면 계단 탐
     
     // Constructor
     private void Awake()
@@ -47,7 +48,7 @@ public class Enemy_FootMgr : MonoBehaviour
                 break;
             
             case 11:
-                m_LayerMask = LayerMask.GetMask("Floor");
+                m_LayerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("EmptyFloor"));
                 break;
         }
 
