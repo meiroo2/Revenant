@@ -52,7 +52,10 @@ public class BasicEnemy : Human
 
     public bool m_PlayerCognition { get; set; } = false;
     
-    public bool bMoveToUsedDoor = false;
+    public bool bMoveToUsedDoor { get; set; } = false;
+    public bool bMoveToUsedStair { get; set; } = false;
+    public bool bMoveToUseStairUp { get; set; } = false;
+    public bool bMoveToUseStairDown { get; set; } = false;
 
     // Functions
     /// <summary>

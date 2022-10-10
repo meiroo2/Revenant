@@ -112,7 +112,7 @@ public class Player : Human
 
     private Coroutine m_WalkSoundCoroutine;
     
-    public Vector2 PlayerUsedObjectVector;
+    public Vector2 PlayerUsedObjectVector { get; set; }
     public bool bPlayerIsOnStairs = false;
     
     // For Player_Managers
