@@ -9,8 +9,6 @@ using UnityEngine;
 
 public class CheckPoint : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer _Renderer;
-
     public bool bCanInteract { get; set; }
 
     /** Indicate if the checkpoint is activated */
@@ -24,7 +22,7 @@ public class CheckPoint : MonoBehaviour
 
     private GameObject test;
     private CheckPoint Test_2;
-    
+
     [Header("체크포인트 활성화 조건 버튼 - 맵 배치 적")] public bool bEnemyListToActivate;
     public List<BasicEnemy> EnemyListToActivate;
 
@@ -40,7 +38,6 @@ public class CheckPoint : MonoBehaviour
     {
         bCanInteract = false;
 
-        _Renderer = GetComponent<SpriteRenderer>();
         SetUpEnemyList();
     }
 
@@ -65,7 +62,7 @@ public class CheckPoint : MonoBehaviour
             EnemyListFromSpawner = new List<GameObject>(EnemyListToActivateFromSpawner[i].p_WillSpawnEnemys);
         }
     }
-    
+
     /** 섹션 번호 초기화 함수 */
     void SetUpSectionNumber()
     {
@@ -75,11 +72,12 @@ public class CheckPoint : MonoBehaviour
             CheckPointsList[i].SectionNumber = i + 1;
         }
     }
-    
+
     void SetUpIsActivated()
     {
         // 저장된 데이터 중 체크포인트가 활성화 되어있다면 체크포인트의 섹션을 판별
-        if (DataHandleManager.Instance.IsCheckPointActivated && DataHandleManager.Instance.CheckPointSectionNumber == SectionNumber)
+        if (DataHandleManager.Instance.IsCheckPointActivated &&
+            DataHandleManager.Instance.CheckPointSectionNumber == SectionNumber)
         {
             // 해당 체크포인트를 활성화
             CheckPointsList[SectionNumber - 1].bActivated = DataHandleManager.Instance.IsCheckPointActivated;
@@ -111,6 +109,7 @@ public class CheckPoint : MonoBehaviour
             // 오브젝트 제거
             Destroy(ObjectLists);
         }
+
         // 리스트 비우기
         TargetObjectsList.Clear();
     }
@@ -147,18 +146,30 @@ public class CheckPoint : MonoBehaviour
         foreach (CheckPoint CheckPointGameObject in CheckPointsList)
         {
             CheckPointGameObject.bActivated = false;
-            CheckPointGameObject.GetComponent<Animator>().SetBool("Active", false);
         }
+
         // 현재 체크포인트 활성화
         bActivated = true;
         // 체크포인트 활성화 여부 저장
         DataHandleManager.Instance.IsCheckPointActivated = bActivated;
         thisAnimator.SetBool("Active", true);
+        
+        // IDLE 애니메이션으로 돌림
+        StartCoroutine("BackToIdleAnimation");
     }
 
     public void ActivateBothOutline(bool _isOn)
     {
         // Collider 안에 (체크포인트 범위 안에) 플레이어가 들어오면 bCanInteract를 Set
         bCanInteract = _isOn;
+    }
+
+    IEnumerator BackToIdleAnimation()
+    {
+        yield return new WaitForSeconds(1f);
+        foreach (CheckPoint CheckPointGameObject in CheckPointsList)
+        {
+            CheckPointGameObject.GetComponent<Animator>().SetBool("Active", false);
+        }
     }
 }

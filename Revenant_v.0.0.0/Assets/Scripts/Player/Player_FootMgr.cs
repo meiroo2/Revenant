@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Player_FootMgr : MonoBehaviour
@@ -24,9 +25,14 @@ public class Player_FootMgr : MonoBehaviour
 
     private const float m_SensorXGap = 0.05f;
     private const float m_SensorYGap = 0.01f;
-    
-    
-    
+
+    private List<NormalGang> NormalGangList;
+
+    private void Awake()
+    {
+        NormalGangList = FindObjectsOfType<NormalGang>().ToList();
+    }
+
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
@@ -109,7 +115,7 @@ public class Player_FootMgr : MonoBehaviour
             m_StairPos = DownPos;
             m_StairPos.m_ParentStair.MoveOrder(16);
             
-            Debug.Log("À§·Î ¿Ã¶ó°¡±â ½ÃÀÛ");
+            Debug.Log("ìœ„ë¡œ ì˜¬ë¼ê°€ê¸° ì‹œì‘");
             m_Player.m_WorldUI.PrintSprite(-1);
             
             m_Player.GoToStairLayer(true);
@@ -130,7 +136,7 @@ public class Player_FootMgr : MonoBehaviour
             m_StairPos = UpPos;
             m_StairPos.m_ParentStair.MoveOrder(16);
             
-            Debug.Log("¾Æ·¡·Î ³»·Á°¡±â ½ÃÀÛ");
+            Debug.Log("ì•„ë˜ë¡œ ë‚´ë ¤ê°€ê¸° ì‹œì‘");
             m_Player.m_WorldUI.PrintSprite(-1);
             
             m_Player.GoToStairLayer(true);
@@ -153,7 +159,14 @@ public class Player_FootMgr : MonoBehaviour
             {
                 if (transform.position.y < m_StairPos.transform.position.y - m_SensorYGap)
                 {
-                    Debug.Log("À­¼¾¼­ Yº¸´Ù ³»·Á¿È");
+                    Debug.Log("ìœ—ì„¼ì„œ Yë³´ë‹¤ ë‚´ë ¤ì˜´");
+                    
+                    m_Player.PlayerUsedObjectVector = m_StairPos.transform.position;
+
+                    foreach (var Enemy in NormalGangList)
+                    {
+                        Enemy.bMoveToUsedStair = true;
+                    }
                     
                     if(!ReferenceEquals(m_StairCoroutine, null))
                         StopCoroutine(m_StairCoroutine);
@@ -163,12 +176,12 @@ public class Player_FootMgr : MonoBehaviour
 
                 if (isLeftUp)
                 {
-                    // À­¼¾¼­ XÁÂÇ¥º¸´Ù ¿ŞÂÊ == Å°´Ù¿îÈÄ ¿ŞÂÊÀ¸·Î ºüÁü
+                    // ìœ—ì„¼ì„œ Xì¢Œí‘œë³´ë‹¤ ì™¼ìª½ == í‚¤ë‹¤ìš´ í›„ ì™¼ìª½ìœ¼ë¡œ ë¹ ì§
                     if (transform.position.x < stairPosX - m_SensorXGap)
                     {
                         m_StairPos.m_ParentStair.MoveOrder(16);
                     
-                        Debug.Log("³»·Á°¡·Á´Ù°¡ ¿ŞÂÊÀ¸·Î ºüÁü");
+                        Debug.Log("ë‚´ë ¤ê°€ë ¤ë‹¤ê°€ ì™¼ìª½ìœ¼ë¡œ ë¹ ì§");
                         m_Player.m_WorldUI.PrintSprite(-1);
                         
                         m_Player.GoToStairLayer(false);
@@ -179,12 +192,12 @@ public class Player_FootMgr : MonoBehaviour
                 }
                 else
                 {
-                    // À­¼¾¼­ XÁÂÇ¥º¸´Ù ¿À¸¥ÂÊ == Å°´Ù¿îÈÄ ¿À¸¥ÂÊÀ¸·Î ºüÁü
+                    // ìœ—ì„¼ì„œ Xì¢Œí‘œë³´ë‹¤ ì˜¤ë¥¸ìª½ == í‚¤ë‹¤ìš´í›„ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë¹ ì§
                     if (transform.position.x > stairPosX + m_SensorXGap)
                     {
                         m_StairPos.m_ParentStair.MoveOrder(16);
                     
-                        Debug.Log("³»·Á°¡·Á´Ù°¡ ¿À¸¥ÂÊÀ¸·Î ºüÁü");
+                        Debug.Log("ë‚´ë ¤ê°€ë ¤ë‹¤ê°€ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë¹ ì§");
                         m_Player.m_WorldUI.PrintSprite(-1);
                         
                         m_Player.GoToStairLayer(false);
@@ -198,7 +211,7 @@ public class Player_FootMgr : MonoBehaviour
                 {
                     m_StairPos.m_ParentStair.MoveOrder(16);
                     
-                    Debug.Log("³»·Á°¡·Á´Ù°¡ Å° ¾÷");
+                    Debug.Log("ë‚´ë ¤ê°€ë ¤ë‹¤ê°€ í‚¤ ì—…");
                     m_Player.m_WorldUI.PrintSprite(-1);
                     
                     m_Player.GoToStairLayer(false);
@@ -214,10 +227,17 @@ public class Player_FootMgr : MonoBehaviour
         {
             while (true)
             {
-                 // ¾Æ·¡ -> À§ ¿Ã¶ó°¡´Â Áß
+                 // ì•„ë˜ -> ìœ„ ì˜¬ë¼ê°€ëŠ” ì¤‘
                 if (transform.position.y > m_StairPos.transform.position.y + m_SensorYGap)
                 {
-                    Debug.Log("¾Æ·¡¼¾¼­ YÁÂÇ¥º¸´Ù ¿Ã¶ó¿È");
+                    Debug.Log("ì•„ë˜ì„¼ì„œ Yì¢Œí‘œë³´ë‹¤ ì˜¬ë¼ì˜´");
+                    m_Player.PlayerUsedObjectVector = m_StairPos.transform.position;
+                    
+                    foreach (var Enemy in NormalGangList)
+                    {
+                        Enemy.bMoveToUsedStair = true;
+                    }
+                    
                     if(!ReferenceEquals(m_StairCoroutine, null))
                         StopCoroutine(m_StairCoroutine);
                     m_StairCoroutine = StartCoroutine(StairCoroutine(false));
@@ -230,7 +250,7 @@ public class Player_FootMgr : MonoBehaviour
                     {
                         m_StairPos.m_ParentStair.MoveOrder(10);
                     
-                        Debug.Log("¿Ã¶ó°¡·Á´Ù°¡ ¿À¸¥ÂÊÀ¸·Î ºüÁü");
+                        Debug.Log("ì˜¬ë¼ê°€ë ¤ë‹¤ê°€ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë¹ ì§");
                         m_Player.m_WorldUI.PrintSprite(-1);
                         
                         m_Player.GoToStairLayer(false);
@@ -245,7 +265,7 @@ public class Player_FootMgr : MonoBehaviour
                     {
                         m_StairPos.m_ParentStair.MoveOrder(10);
                     
-                        Debug.Log("¿Ã¶ó°¡·Á´Ù°¡ ¿ŞÂÊÀ¸·Î ºüÁü");
+                        Debug.Log("ì˜¬ë¼ê°€ë ¤ë‹¤ê°€ ì™¼ìª½ìœ¼ë¡œ ë¹ ì§");
                         m_Player.m_WorldUI.PrintSprite(-1);
                         
                         m_Player.GoToStairLayer(false);
@@ -260,7 +280,7 @@ public class Player_FootMgr : MonoBehaviour
                 {
                     m_StairPos.m_ParentStair.MoveOrder(10);
                     
-                    Debug.Log("¿Ã¶ó°¡·Á´Ù°¡ Å° ¾÷");
+                    Debug.Log("ì˜¬ë¼ê°€ë ¤ë‹¤ê°€ í‚¤ ì—…");
                     m_Player.m_WorldUI.PrintSprite(-1);
                     
                     m_Player.GoToStairLayer(false);
@@ -285,11 +305,11 @@ public class Player_FootMgr : MonoBehaviour
         {
             while (true)
             {
-                if (transform.position.x <= UpPosX) // À§ ¼¾¼­º¸´Ù ¿ŞÂÊ
+                if (transform.position.x <= UpPosX) // ìœ„ ì„¼ì„œë³´ë‹¤ ì™¼ìª½
                 {
                     m_StairPos.m_ParentStair.MoveOrder(16);
 
-                    Debug.Log("µ¹¾Æ¿Ó´ç");
+                    Debug.Log("ëŒì•„ì™”ë‹¹");
                     m_Player.m_WorldUI.PrintSprite(-1);
                 
                     m_Player.GoToStairLayer(false);
@@ -297,11 +317,11 @@ public class Player_FootMgr : MonoBehaviour
                     m_StairPos = null;
                     break;
                 }
-                else if (transform.position.x >= DownPosX)  // ¾Æ·¡ ¼¾¼­º¸´Ù ¿À¸¥ÂÊ
+                else if (transform.position.x >= DownPosX)  // ì•„ë˜ ì„¼ì„œë³´ë‹¤ ì˜¤ë¥¸ìª½
                 {
                     m_StairPos.m_ParentStair.MoveOrder(10);
 
-                    Debug.Log("µ¹¾Æ¿Ó´ç");
+                    Debug.Log("ëŒì•„ì™”ë‹¹");
                     m_Player.m_WorldUI.PrintSprite(-1);
                 
                     m_Player.GoToStairLayer(false);
@@ -321,7 +341,7 @@ public class Player_FootMgr : MonoBehaviour
                 {
                     m_StairPos.m_ParentStair.MoveOrder(16);
 
-                    Debug.Log("µ¹¾Æ¿Ó´ç");
+                    Debug.Log("ëŒì•„ì™”ë‹¹");
                     m_Player.m_WorldUI.PrintSprite(-1);
                 
                     m_Player.GoToStairLayer(false);
@@ -333,7 +353,7 @@ public class Player_FootMgr : MonoBehaviour
                 {
                     m_StairPos.m_ParentStair.MoveOrder(10);
 
-                    Debug.Log("µ¹¾Æ¿Ó´ç");
+                    Debug.Log("ëŒì•„ì™”ë‹¹");
                     m_Player.m_WorldUI.PrintSprite(-1);
                 
                     m_Player.GoToStairLayer(false);
