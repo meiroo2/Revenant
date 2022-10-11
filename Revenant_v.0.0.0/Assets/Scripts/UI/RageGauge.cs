@@ -150,7 +150,7 @@ public class RageGauge : MonoBehaviour
 		if (m_CurGaugeValue >= p_Gauge_Max && !m_BulletTimeMgr.m_IsGaugeFull)
         {
             m_BulletTimeMgr.SetCanUseBulletTime();
-            //p_BulletTimeIndicator.enabled = true;
+            p_RageGaugeUI.p_BulletTimeIndicator.enabled = true;
             
             //m_BulletTimeMgr.AddFinaleAction(() => p_BulletTimeIndicator.enabled = false);
         }

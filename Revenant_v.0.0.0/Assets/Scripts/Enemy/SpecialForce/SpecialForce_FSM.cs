@@ -160,13 +160,14 @@ public class SpecialForce_ROLL : SpecialForce_FSM
         m_Enemy = _enemy;
         InitFSM();
     }
-    
+
     public override void StartState()
     {
-       m_Enemy.SetHotBoxesActive(false);
-       m_Animator.SetInteger(Roll, 1);
+        m_Animator = m_Enemy.m_Animator;
+        m_Enemy.SetHotBoxesActive(false);
+        m_Animator.SetInteger(Roll, 1);
 
-       m_Element = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckRoll());
+        m_Element = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckRoll());
     }
 
     public override void UpdateState()

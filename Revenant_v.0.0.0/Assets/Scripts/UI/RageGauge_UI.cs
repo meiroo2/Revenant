@@ -60,12 +60,8 @@ public class RageGauge_UI : MonoBehaviour
 	}
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
-	private void ShakeTransform()
+    private void ShakeTransform()
 	{
 		m_DynamicUIMgr.Shake(m_RectTransform, m_InitPos, 30f, 1500f, 10f, 30f);
 	}
