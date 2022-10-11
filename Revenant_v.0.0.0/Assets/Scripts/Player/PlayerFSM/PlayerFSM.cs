@@ -638,6 +638,7 @@ public class Player_BULLET_TIME : PlayerFSM
         m_BulletTimeMgr = m_Player.m_BulletTimeMgr;
         m_AniMgr = m_Player.m_PlayerAniMgr;
         m_PlayerAnimator = m_AniMgr.p_FullBody.m_Animator;
+        m_InputMgr = m_Player.m_InputMgr;
         
         m_Phase = 0;
         m_Timer = 0f;
@@ -670,6 +671,11 @@ public class Player_BULLET_TIME : PlayerFSM
 
     public override void UpdateState()
     {
+        if (m_InputMgr.m_IsPushAttackKey && m_Player.m_Negotiator.m_LeftRounds > 0 && m_Phase == 0)
+        {
+            m_Player.m_ArmMgr.DoAttack();
+        }
+        
         switch (m_Phase)
         {
             case 0:

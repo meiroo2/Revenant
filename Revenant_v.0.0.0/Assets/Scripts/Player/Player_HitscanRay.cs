@@ -74,7 +74,7 @@ public class Player_HitscanRay : MonoBehaviour
     private void UpdateRayStartPos()
     {
         m_RayStartPos = transform.position;
-        m_RayStartPos += GetRayDirection() * 0.3f;
+        m_RayStartPos += GetRayDirection() * 0.5f;
     }
 
     public HitscanResult GetHitscanResult()

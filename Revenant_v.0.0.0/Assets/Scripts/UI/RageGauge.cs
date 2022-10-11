@@ -91,7 +91,7 @@ public class RageGauge : MonoBehaviour
     /// <returns></returns>
     private IEnumerator RefillGauge()
     {
-        Debug.Log("");
+        //Debug.Log("");
         // Timescale에 영향이 가지 않도록 Realtime 기준으로 작동합니다.
         while (true)
         {

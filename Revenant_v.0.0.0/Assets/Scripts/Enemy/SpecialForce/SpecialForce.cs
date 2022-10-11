@@ -129,6 +129,8 @@ public class SpecialForce : BasicEnemy
     
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
     {
+        Debug.Log(_point);
+        
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
 
