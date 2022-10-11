@@ -38,6 +38,7 @@ public class BulletTimeMgr : MonoBehaviour
     
     
     // Member Variables
+    private RageGauge m_RageGauge;
     private RageGauge_UI m_RageGaugeUI;
     public bool m_IsGaugeFull { get; private set; } = false;
 
@@ -94,10 +95,13 @@ public class BulletTimeMgr : MonoBehaviour
         m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
         m_MatChanger = instance.GetComponentInChildren<MatChanger>();
         m_Negotiator = instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr.m_CurWeapon;
-        m_RageGaugeUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
         m_ScreenEffect_AR = instance.m_ScreenEffect_AR;
-    }
+
+        m_RageGaugeUI = FindObjectOfType<RageGauge_UI>();
+
+	}
 
 
     // Updates
@@ -171,8 +175,6 @@ public class BulletTimeMgr : MonoBehaviour
     /// <returns></returns>
     private IEnumerator CheckBulletTimeStart()
     {
-       
-        
         StopCoroutine(m_SEBeforeBTCoroutine);
         Debug.Log("불릿타임 시작");
         ActivateBulletTime(true);
@@ -201,9 +203,8 @@ public class BulletTimeMgr : MonoBehaviour
     {
         if (_isStart)
         {
-            m_RageGaugeUI.p_BulletTimeIndicator.enabled = false;
-            m_RageGaugeUI.PlayGaugeAnimation(true);
-            m_RageGaugeUI.TempStopRageGauge(true);
+            m_RageGaugeUI.OnBulletTimeStart?.Invoke();
+			m_RageGauge.TempStopRageGauge(true);
 
             m_SEThunderCoroutine = StartCoroutine(SpawnThunderCoroutine());
             m_IsBulletTimeActivating = true;
@@ -215,8 +216,8 @@ public class BulletTimeMgr : MonoBehaviour
         }
         else
         {
-            m_RageGaugeUI.PlayGaugeAnimation(false);
-            m_RageGaugeUI.TempStopRageGauge(false);
+			m_RageGaugeUI.OnBulletTimeEnd?.Invoke();
+			m_RageGauge.TempStopRageGauge(false);
             
             StopCoroutine(m_SEThunderCoroutine);
             

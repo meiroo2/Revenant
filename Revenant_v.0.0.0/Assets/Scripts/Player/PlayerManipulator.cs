@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 public class PlayerManipulator : MonoBehaviour
 {
     public Player p_Player;
-    public RageGauge_UI p_RageGauge;
+    public RageGauge p_RageGauge;
     
     [Header("플레이어 설정값")]
     public int P_HP = 50;
