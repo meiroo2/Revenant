@@ -261,17 +261,19 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 _EnemyState = EnemyState.Chase;
                 
                 
-                if (m_Enemy.bMoveToUsedDoor)
+                if (m_Enemy.bMoveToUsedDoor || m_Enemy.bMoveToUsedStair)
                 {
                     //Debug.Log("NormalGang.FSM m_Enemy.bMoveToUsedDoor - " + m_Enemy.bMoveToUsedDoor);
+                    Debug.Log("FSM 상태는? - m_Enemy.bMoveToUsedStair" + m_Enemy.bMoveToUsedStair);
                     // 적이 플레이어가 사용한 문으로 이동
                     m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.PlayerUsedObjectVector.x));
+                    Debug.Log("플레이어가 사용한 오브젝트 위치? - " + m_Enemy.m_Player.PlayerUsedObjectVector);
                 }
                 else
                 {
                     m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
                 }
-                
+
                 if (Mathf.Abs(m_Enemy.transform.position.y - m_Enemy.m_Player.transform.position.y) <= 0.5f)
                 {
                     m_Enemy.bMoveToUsedDoor = false;

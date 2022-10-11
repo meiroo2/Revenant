@@ -53,8 +53,9 @@ public class CW_RageGauge : OdinEditorWindow
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("RageGauge")]
     private static void RageGauge_적용하기()
     {
-        var gauge = GameObject.FindGameObjectWithTag("InstanceMgr").
-            GetComponent<InstanceMgr>().p_Canvas_RageGauge.GetComponent<RageGauge_UI>();
+        //var gauge = GameObject.FindGameObjectWithTag("InstanceMgr").
+        //    GetComponent<InstanceMgr>().p_Canvas_RageGauge.GetComponent<RageGauge>();
+        var gauge = FindObjectOfType<RageGauge>();
 
         gauge.p_Gauge_Max = R_Gauge_Max;
         gauge.p_Gauge_Refill_Nature = R_Gauge_Refill_Nature;
@@ -75,10 +76,11 @@ public class CW_RageGauge : OdinEditorWindow
 
     private static void LoadRageGaugeData()
     {
-        var gauge = GameObject.FindGameObjectWithTag("InstanceMgr").GetComponent<InstanceMgr>().p_Canvas_RageGauge
-            .GetComponent<RageGauge_UI>();
+		//var gauge = GameObject.FindGameObjectWithTag("InstanceMgr").GetComponent<InstanceMgr>().p_Canvas_RageGauge
+		//    .GetComponent<RageGauge>();
+		var gauge = FindObjectOfType<RageGauge>();
 
-        R_Gauge_Max = gauge.p_Gauge_Max;
+		R_Gauge_Max = gauge.p_Gauge_Max;
         R_Gauge_Refill_Nature = gauge.p_Gauge_Refill_Nature;
         R_Gauge_Refill_Attack_Multi = gauge.p_Gauge_Refill_Attack_Multi;
         R_Gauge_Refill_Evade = gauge.p_Gauge_Refill_Evade;

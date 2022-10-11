@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6334064319044709329}
   - component: {fileID: 6334064319044709331}
+  - component: {fileID: 4719884245826557136}
   m_Layer: 20
   m_Name: AimCursor
   m_TagString: Untagged
@@ -46,3 +47,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   p_AimedObj: {fileID: 0}
   p_AimRaycastRadius: 0.05
+--- !u!58 &4719884245826557136
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6334064319044709332}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.1

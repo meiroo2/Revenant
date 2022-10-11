@@ -25,7 +25,8 @@ public class PlayerRotation : MonoBehaviour
 
 
     // Member Variables
-    private Camera m_mainCam;
+    private Transform m_AimCursor;
+    
     private Player m_Player;
 
     public bool m_BanFlip = false;
@@ -44,12 +45,12 @@ public class PlayerRotation : MonoBehaviour
     {
         m_InitHighLimitAngle = m_rotationHighLimitAngle;
         m_InitLowLimitAngle = m_rotationLowLimitAngle;
-        m_mainCam = Camera.main;
         m_PhaseAngle = (Mathf.Abs(m_rotationHighLimitAngle) + Mathf.Abs(m_rotationLowLimitAngle)) / p_PhaseCount;
     }
     private void Start()
     {
         m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_AimCursor = InstanceMgr.GetInstance().GetComponentInChildren<AimCursor>().transform;
     }
 
 
@@ -76,7 +77,7 @@ public class PlayerRotation : MonoBehaviour
     // Functions
     private void GetAngle()
     {
-        m_mousePos = m_mainCam.ScreenToWorldPoint(Input.mousePosition);
+        m_mousePos = m_AimCursor.position;
         m_MouseDistance = new Vector2(m_mousePos.x - transform.position.x, m_mousePos.y - transform.position.y);
         
         // 현재 바라보는 방향에 따라 양수, 음수를 결정
@@ -140,6 +141,6 @@ public class PlayerRotation : MonoBehaviour
 
     public bool GetIsMouseRight()
     {
-        return m_mainCam.ScreenToWorldPoint(Input.mousePosition).x > m_Player.transform.position.x;
+        return m_AimCursor.position.x > m_Player.transform.position.x;
     }
 }

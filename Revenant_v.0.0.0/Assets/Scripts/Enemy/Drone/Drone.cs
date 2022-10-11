@@ -264,21 +264,21 @@ public class Drone : BasicEnemy
     }
     
     /// <summary>파라미터에 기반하여 왼쪽 혹은 오른쪽 방향대로 velocity를 수정합니다.</summary>
-    public override void SetRigidByDirection(bool _isRight)
+    public override void SetRigidByDirection(bool _isRight, float _addSpeed = 1f)
     {
         if (_isRight)
         {
             if(!m_IsRightHeaded)
                 setisRightHeaded(true);
-            
-            m_EnemyRigid.velocity = Vector2.right * p_MoveSpeed;
+
+            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
         }
         else
         {
             if(m_IsRightHeaded)
                 setisRightHeaded(false);
             
-            m_EnemyRigid.velocity = Vector2.left * p_MoveSpeed;
+            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
         }
     }
     

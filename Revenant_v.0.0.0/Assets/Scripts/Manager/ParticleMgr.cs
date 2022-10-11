@@ -15,7 +15,7 @@ public class ParticleMgr : MonoBehaviour
 
 
     // Member Variables
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
     private List<Particle> m_PulledPaticleList;
     private int m_Idx = 0;
     
@@ -41,7 +41,7 @@ public class ParticleMgr : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
     }
 
     // Functions

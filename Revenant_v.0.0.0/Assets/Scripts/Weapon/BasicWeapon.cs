@@ -58,9 +58,9 @@ public class BasicWeapon : MonoBehaviour
     }
     public virtual int Fire() { return 0; } // 0 = Fail, 1 = Success, 2 = Fail(No Ammo)
     public virtual void Reload() { }
-    public virtual int GetCanReload()   // 0 = Fail, 1 = Success
+    public virtual bool GetCanReload()   // 0 = Fail, 1 = Success
     {
-        return 0;
+        return false;
     }
     public virtual void InitWeapon()
     {

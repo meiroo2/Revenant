@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 public class PlayerManipulator : MonoBehaviour
 {
     public Player p_Player;
-    public RageGauge_UI p_RageGauge;
+    public RageGauge p_RageGauge;
     
     [Header("플레이어 설정값")]
     public int P_HP = 50;
@@ -20,7 +20,7 @@ public class PlayerManipulator : MonoBehaviour
     public int P_MeleeStunValue = 10;
     public float P_JustEvadeStartTime = 0f;
     public float P_JustEvadeEndTime = 1f;
-    public float P_RollDecelerationSpeedMulti = 1f;
+    public float P_RollDecelerationSpeed = 1f;
     public float P_ReloadSpeed = 1f;
 
     [Space(20f)]

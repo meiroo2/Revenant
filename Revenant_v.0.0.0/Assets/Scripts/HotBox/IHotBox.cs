@@ -6,7 +6,8 @@ public enum WeaponType
     BULLET,
     GRENADE,
     KNIFE,
-    BULLET_TIME
+    BULLET_TIME,
+    MOUSE
 }
 
 public enum HitBoxPoint

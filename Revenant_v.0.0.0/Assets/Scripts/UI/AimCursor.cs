@@ -35,6 +35,7 @@ public class AimCursor : MonoBehaviour
     RaycastHit2D[] m_Lists = new RaycastHit2D[10];
     private int m_HitCount;
     private int m_LayerMask;
+    
 
     // Constructors
     private void Awake()
@@ -71,6 +72,28 @@ public class AimCursor : MonoBehaviour
             CalculateAimRaycast();
 
             yield return null;
+        }
+    }
+
+    
+    // Physics
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.TryGetComponent(out IHotBox hotBox))
+        {
+            if (hotBox.m_HitBoxInfo == HitBoxPoint.COGNITION)
+                hotBox.HitHotBox(new IHotBoxParam(10, 0, transform.position,
+                    WeaponType.MOUSE));
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.TryGetComponent(out IHotBox hotBox))
+        {
+            if (hotBox.m_HitBoxInfo == HitBoxPoint.COGNITION)
+                hotBox.HitHotBox(new IHotBoxParam(0, 0, transform.position,
+                    WeaponType.MOUSE));
         }
     }
 

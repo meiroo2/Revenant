@@ -18,6 +18,7 @@ public enum EnemyStateName
     ROTATION,
     CHANGE,
     BREAK,
+    ROLL,
     DEAD
 }
 
@@ -28,9 +29,12 @@ public class BasicEnemy : Human
     [field: SerializeField, BoxGroup("BasicEnemy Values")] protected bool p_OverrideEnemyMgr = false;
     [field: SerializeField, BoxGroup("BasicEnemy Values")] public int p_AngleLimit { get; protected set; } = 20;
     
-    [field: SerializeField, BoxGroup("BasicEnemy Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)] 
-    public float p_VisionDistance { get; protected set; }
+    [field: SerializeField, BoxGroup("BasicEnemy Values")] public float p_VisionDistance { get; protected set; }
 
+    
+    [ShowInInspector, ReadOnly, BoxGroup("BasicEnemy Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)]
+    public EnemyStateName m_CurEnemyStateName { get; protected set; }
+    
 
     // Member Variables
     public SpriteRenderer m_Renderer { get; protected set; }
@@ -45,14 +49,17 @@ public class BasicEnemy : Human
     public Transform m_PlayerTransform { get; protected set; }
     public Rigidbody2D m_EnemyRigid { get; protected set; }
     public RaycastHit2D m_VisionHit { get; protected set; }
-    public Enemy_FSM m_CurEnemyFSM { get; set; }
-    public EnemyStateName m_CurEnemyStateName { get; protected set; }
+    public Enemy_FSM m_CurEnemyFSM { get; protected set; }
+
     protected Vector2 m_MovePoint;
     private Coroutine m_MatCoroutine;
 
     public bool m_PlayerCognition { get; set; } = false;
     
-    public bool bMoveToUsedDoor = false;
+    public bool bMoveToUsedDoor { get; set; } = false;
+    public bool bMoveToUsedStair { get; set; } = false;
+    public bool bMoveToUseStairUp { get; set; } = false;
+    public bool bMoveToUseStairDown { get; set; } = false;
 
     // Functions
     /// <summary>
@@ -225,21 +232,21 @@ public class BasicEnemy : Human
     /// 파라미터에 따라 발 밑 Normal벡터에 직교하는 방향대로 이동합니다.
     /// </summary>
     /// <param name="_isRight">True시 오른쪽으로 이동</param>
-    public virtual void SetRigidByDirection(bool _isRight)
+    public virtual void SetRigidByDirection(bool _isRight, float _addSpeed = 1f)
     {
         if (_isRight)
         {
             if(!m_IsRightHeaded)
                 setisRightHeaded(true);
 
-            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
+            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
         }
         else
         {
             if(m_IsRightHeaded)
                 setisRightHeaded(false);
             
-            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * (p_MoveSpeed);
+            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
         }
     }
 
@@ -270,11 +277,25 @@ public class BasicEnemy : Human
     }
 
 
+    /// <summary>
+    /// Enemy의 Hotbox의 Active 상태를 조절합니다.
+    /// </summary>
+    /// <param name="_isOn"></param>
     public void SetHotBoxesActive(bool _isOn)
     {
         for (int i = 0; i < m_EnemyHotBoxes.Length; i++)
         {
             m_EnemyHotBoxes[i].gameObject.SetActive(_isOn);
         }
+    }
+
+
+    /// <summary>
+    /// 마우스가 Cognition 핫박스에 닿으면 해당 함수를 호출합니다.
+    /// </summary>
+    /// <param name="_isTouch">터치 / 터치취소</param>
+    public virtual void MouseTouched(bool _isTouch)
+    {
+        
     }
 }

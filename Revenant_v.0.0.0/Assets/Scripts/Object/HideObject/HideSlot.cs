@@ -29,5 +29,4 @@ public class HideSlot : MonoBehaviour
         m_isOn = _true;
         m_HideObj.UpdateHideSlotInfo();
     }
-    // 기타 분류하고 싶은 것이 있을 경우
 }

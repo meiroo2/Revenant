@@ -39,7 +39,7 @@ public class Player : Human
     public float p_MeleeSpeedMulti { get; private set; } = 2f;
     
     [field: SerializeField, BoxGroup("Player Values")]
-    public float p_RollDecelerationSpeedMulti { get; private set; } = 1f;
+    public float p_RollDecelerationSpeed { get; private set; } = 1f;
     
     [BoxGroup("Player Values")] public float p_ReloadSpeed = 1f;
     
@@ -70,10 +70,9 @@ public class Player : Human
     public LocationSensor m_PlayerLocationSensor { get; private set; }
     public Player_InputMgr m_InputMgr { get; private set; }
     public Player_HitscanRay m_PlayerHitscanRay { get; private set; }
-    public Player_ObjInteracter m_ObjInteractor { get; private set; }
     [field : SerializeField]public Player_MeleeAttack m_MeleeAttack { get; private set; }
     public Player_ArmMgr m_ArmMgr { get; private set; }
-    public RageGauge_UI m_RageGauge { get; private set; }
+    public RageGauge m_RageGauge { get; private set; }
     public BulletTimeMgr m_BulletTimeMgr { get; private set; }
 
     public ScreenEffect_UI m_ScreenEffectUI { get; private set; }
@@ -100,7 +99,7 @@ public class Player : Human
 
     private HideSlot m_CurHideSlot;
 
-    private RageGauge_UI m_RageUI;
+    private RageGauge m_RageUI;
     private Player_MatMgr _mPlayerMatMgr;
     public SoundPlayer m_SFXMgr { get; private set; }
     public HitSFXMaker m_HitSFXMaker { get; private set; }
@@ -113,9 +112,8 @@ public class Player : Human
     private Coroutine m_WalkSoundCoroutine;
     
     public Vector2 PlayerUsedObjectVector;
-    public bool bPlayerIsOnStairs = false;
-    
-    // For Player_Managers
+
+    private bool m_SafeFSMLock = false;
 
 
 
@@ -132,12 +130,12 @@ public class Player : Human
         m_PlayerFootMgr = GetComponentInChildren<Player_FootMgr>();
         m_WeaponMgr = GetComponentInChildren<Player_WeaponMgr>();
         m_useRange = GetComponentInChildren<Player_UseRange>();
-        m_ObjInteractor = GetComponentInChildren<Player_ObjInteracter>();
         m_MeleeAttack = GetComponentInChildren<Player_MeleeAttack>();
         m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
         m_Negotiator = GetComponentInChildren<Negotiator_Player>();
         m_WorldUI = GetComponentInChildren<Player_WorldUI>();
-        
+
+
         m_IDLE = new Player_IDLE(this);
         m_WALK = new Player_WALK(this);
         m_ROLL = new Player_ROLL(this);
@@ -157,7 +155,7 @@ public class Player : Human
     {
         var instance = InstanceMgr.GetInstance();
         m_PlayerUIMgr = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
-        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
         m_SoundMgr = instance.GetComponentInChildren<SoundMgr>();
         m_SFXMgr = instance.GetComponentInChildren<SoundPlayer>();
@@ -165,7 +163,7 @@ public class Player : Human
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
         
-        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
+        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_ScreenEffectUI = instance.m_MainCanvas.GetComponentInChildren<InGame_UI>()
             .GetComponentInChildren<ScreenEffect_UI>();
         
@@ -186,7 +184,7 @@ public class Player : Human
         m_MeleeAttack.m_Damage = _input.P_MeleeDamage;
         m_MeleeAttack.m_StunValue = _input.P_MeleeStunValue;
         p_JustEvadeNormalizeTime = new Vector2(_input.P_JustEvadeStartTime, _input.P_JustEvadeEndTime);
-        p_RollDecelerationSpeedMulti = _input.P_RollDecelerationSpeedMulti;
+        p_RollDecelerationSpeed = _input.P_RollDecelerationSpeed;
         p_ReloadSpeed = _input.P_ReloadSpeed;
         
         #if UNITY_EDITOR
@@ -218,21 +216,20 @@ public class Player : Human
     // Update
     private void Update()
     {
-        if (m_ObjectState == ObjectState.Pause) // Pause면 중지
+        if (m_SafeFSMLock ||m_ObjectState == ObjectState.Pause) // Pause면 중지
             return;
-
+        
         m_CurPlayerFSM.UpdateState();
     }
-    
 
 
     // Player FSM Functions
     // ReSharper disable Unity.PerformanceAnalysis
     public void ChangePlayerFSM(PlayerStateName _name)
     {
-        m_PlayerAniMgr.ExitPlayerAnim();
+        m_SafeFSMLock = true;
         
-        //Debug.Log("상태 전이" + _name);
+        Debug.Log("상태 전이" + _name);
         m_CurPlayerFSMName = _name;
 
         m_CurPlayerFSM.ExitState();
@@ -272,7 +269,7 @@ public class Player : Human
         }
 
         m_CurPlayerFSM.StartState();
-        m_PlayerAniMgr.PlayPlayerAnim();
+        m_SafeFSMLock = false;
     }
 
 
@@ -358,7 +355,7 @@ public class Player : Human
 
         _mPlayerMatMgr.FlipAllNormalsToRight(m_IsRightHeaded);
 
-        m_PlayerAniMgr.PlayPlayerAnim();
+        //m_PlayerAniMgr.PlayPlayerAnim();
     }
 
     public void setPlayerHp(int _value)
@@ -398,19 +395,13 @@ public class Player : Human
                 break;
 
             case 1:
-                if (!m_IsRightHeaded)
-                    setisRightHeaded(true);
-
                 m_PlayerRigid.velocity =
-                    -StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal).normalized * (p_MoveSpeed * _multi);
+                    -StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal) * (p_MoveSpeed * _multi);
                 break;
 
             case -1:
-                if (m_IsRightHeaded)
-                    setisRightHeaded(false);
-
                 m_PlayerRigid.velocity =
-                    StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal).normalized * (p_MoveSpeed * _multi);
+                    StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal) * (p_MoveSpeed * _multi);
                 break;
         }
     }
