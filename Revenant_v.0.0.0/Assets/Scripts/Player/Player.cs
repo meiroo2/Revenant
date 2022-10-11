@@ -70,7 +70,6 @@ public class Player : Human
     public LocationSensor m_PlayerLocationSensor { get; private set; }
     public Player_InputMgr m_InputMgr { get; private set; }
     public Player_HitscanRay m_PlayerHitscanRay { get; private set; }
-    public Player_ObjInteractor m_ObjInteractor { get; private set; }
     [field : SerializeField]public Player_MeleeAttack m_MeleeAttack { get; private set; }
     public Player_ArmMgr m_ArmMgr { get; private set; }
     public RageGauge m_RageGauge { get; private set; }
@@ -131,7 +130,6 @@ public class Player : Human
         m_PlayerFootMgr = GetComponentInChildren<Player_FootMgr>();
         m_WeaponMgr = GetComponentInChildren<Player_WeaponMgr>();
         m_useRange = GetComponentInChildren<Player_UseRange>();
-        m_ObjInteractor = GetComponentInChildren<Player_ObjInteractor>();
         m_MeleeAttack = GetComponentInChildren<Player_MeleeAttack>();
         m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
         m_Negotiator = GetComponentInChildren<Negotiator_Player>();

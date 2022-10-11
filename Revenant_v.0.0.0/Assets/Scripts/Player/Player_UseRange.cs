@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/*
 public class UseableObjInfo
 {
     public int m_ObjID;
@@ -19,6 +20,7 @@ public class UseableObjInfo
         m_Obj = _obj;
     }
 }
+*/
 
 public class Player_UseRange : MonoBehaviour
 {
@@ -26,175 +28,225 @@ public class Player_UseRange : MonoBehaviour
 
 
     // Member Variables
-    private List<UseableObjInfo> m_UseableObjs = new List<UseableObjInfo>();
     private Player m_Player;
-    private Player_InputMgr m_InputMgr;
-    private IUseableObjParam m_UseableObjParam;
-    private IUseableObj m_CurHiddenSlot = null;
-    
-    private int m_ShortestIDX = -1;
-    private int m_PreShortestIDX;
-    private float m_ShortestLength = 999f;
-    private bool m_IsDelayingInteract = false;
 
-    private UseableObjInfo m_NearestObj = null;
-    private Coroutine m_Coroutine = null;
+    private List<Collider2D> m_UseableObjList = new List<Collider2D>();
+    private List<Collider2D> m_HideSlotList;
+    private HideSlot m_CurHideSlot = null;
+    private bool m_IsHide = false;
+
+    private float m_UseDelayTime = 0.5f;
+    private bool m_UseDelay = false;
+    private Coroutine m_UseDelayCoroutine;
+    
+    
 
     // Constructors
     private void Awake()
     {
+        m_HideSlotList = new List<Collider2D>();
         m_Player = GetComponentInParent<Player>();
-        m_UseableObjParam = new IUseableObjParam(m_Player.transform, true, m_Player.GetInstanceID());
     }
-
-    private void Start()
-    {
-        var instance = InstanceMgr.GetInstance();
-        m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
-    }
+    
 
     // Updates
-    private void Update()
-    {
-        if (m_InputMgr.m_IsPushInteractKey)
-        {
-            if (m_IsDelayingInteract || m_UseableObjs.Count <= 0)
-                return;
-            
-            if(!ReferenceEquals(m_Coroutine, null))
-                StopCoroutine(m_Coroutine);
-            
-            UseNearestObj();
-            
-            m_Coroutine = StartCoroutine(DelayInteract());
-        }
-    }
-
-    private IEnumerator DelayInteract()
-    {
-        m_IsDelayingInteract = true;
-        yield return new WaitForSeconds(0.5f);
-        m_IsDelayingInteract = false;
-
-        yield break;
-    }
-
-    private void UseNearestObj()
-    {
-        switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.m_ObjProperty)
-        {
-            case UseableObjList.LAYERDOOR:
-                m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
-                break;
-
-            case UseableObjList.OBJECT:
-                m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
-                break;
-
-            case UseableObjList.CHECKPOINT:
-                m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam);
-                break;
-
-            case UseableObjList.HIDEPOS:
-                if (Vector2.Distance(transform.position,  m_UseableObjs[m_ShortestIDX].m_Obj.transform.position) > 0.3f)
-                    break;
-
-                switch (m_UseableObjs[m_ShortestIDX].m_ObjScript.useObj(m_UseableObjParam))
-                {
-                    case 0:
-                        // 숨기 실패
-                        break;
-
-                    case 1:
-                        // 숨기 성공
-                        m_CurHiddenSlot = m_UseableObjs[m_ShortestIDX].m_ObjScript;
-                        m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
-                        break;
-
-                    case 2:
-                        // 숨기 해제
-                        m_CurHiddenSlot = null;
-                        m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
-                        break;
-                }
-                break;
-        }
-    }
 
 
     // Physics
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        m_UseableObjs.Add(new UseableObjInfo(collision.gameObject.GetInstanceID(), collision.GetComponent<IUseableObj>(),
-            collision.transform.position, collision.gameObject));
-    }
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (m_UseableObjs.Count > 0)
+        switch (collision.tag)
         {
-            m_ShortestLength = 999f;
-
-            for (int i = 0; i < m_UseableObjs.Count; i++)
-            {
-                if (m_ShortestLength > ((Vector2)transform.position - m_UseableObjs[i].m_ObjPos).sqrMagnitude)
-                {
-                    m_ShortestLength = ((Vector2)transform.position - m_UseableObjs[i].m_ObjPos).sqrMagnitude;
-                    m_ShortestIDX = i;
-                }
-            }
+            case "UseableObj":
+                m_UseableObjList.Add(collision);
+                break;
+            
+            case "HideSlot":
+                m_HideSlotList.Add(collision);
+                HighlightbyDistance(true);
+                break;
+            
+            default:
+                Debug.Log("ERR : Player_UseRange에서 정의되지 않은 Tag 발견 " + collision.tag);
+                break;
         }
-
-        CalObjOutline();
     }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (m_UseableObjs.Count > 0 && m_UseableObjs.Count != 1)
+        switch (collision.tag)
         {
-            for (int i = 0; i < m_UseableObjs.Count; i++)
-            {
-                if (m_UseableObjs[i].m_ObjID == collision.gameObject.GetInstanceID())
-                {
-                    m_UseableObjs.RemoveAt(i);
-                    break;
-                }
-            }
-
-            if (m_UseableObjs.Count == 0)
-            {
-                m_ShortestIDX = -1;
-            }
-        }
-        else if(m_UseableObjs.Count == 1)
-        {
-            m_UseableObjs[0].m_ObjScript.ActivateOutline(false);
-            m_UseableObjs.RemoveAt(0);
-            m_ShortestIDX = -1;
+            case "UseableObj":
+                m_UseableObjList.Remove(collision);
+                break;
+            
+            case "HideSlot":
+                m_HideSlotList.Remove(collision);
+                
+                if (m_HideSlotList.Count > 0)
+                    HighlightbyDistance(true);
+                else
+                    m_CurHideSlot = null;
+                break;
+            
+            default:
+                Debug.Log("ERR : Player_UseRange에서 정의되지 않은 Tag 발견");
+                break;
         }
     }
     
     
     // Functions
-    public void ForceExitFromHiddenSlot()
+
+    /// <summary>
+    /// UseableObj를 사용합니다.
+    /// </summary>
+    /// <returns>0 = 실패, 1 = 성공</returns>
+    public int UseNearestObj()
     {
-        if(m_CurHiddenSlot is not null)
+        if (m_UseDelay || m_UseableObjList.Count <= 0)
+            return 0;
+
+        m_UseableObjList[GetNearestUseableObjIdx()].TryGetComponent(out IUseableObj IObj);
+        if (IObj.useObj(new IUseableObjParam(m_Player.transform, true, GetInstanceID())) == 1)
         {
-            m_CurHiddenSlot.useObj(m_UseableObjParam);
-            m_CurHiddenSlot = null;
+            m_UseDelay = true;
+            m_UseDelayCoroutine = StartCoroutine(UseDelayCoroutine());
+            return 1;
         }
+        else
+        {
+            return 0;
+        }
+    }
+
+    private IEnumerator UseDelayCoroutine()
+    {
+        yield return new WaitForSeconds(m_UseDelayTime);
+        m_UseDelay = false;
+    }
+
+    private int GetNearestUseableObjIdx()
+    {
+        int nearestIdx = 0;
+        float nearestDistance = 9999999f;
+        
+        for (int i = 0; i < m_UseableObjList.Count; i++)
+        {
+            float distance = Vector2.Distance(transform.position, 
+                m_UseableObjList[i].transform.position);
+
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestIdx = i;
+            }
+        }
+
+        return nearestIdx;
+    }
+
+    private void HighlightbyDistance(bool _isTrue)
+    {
+        if (m_HideSlotList.Count <= 0)
+            return;
+        
+        Vector2 playerPos = transform.position;
+
+        int minIdx = 0;
+        float minDistance = 999999999f;
+        
+        foreach (var element in m_HideSlotList)
+        {
+            float distance = (playerPos - (Vector2)element.transform.position).sqrMagnitude;
+            if(distance < minDistance)
+            {
+                minIdx = m_HideSlotList.IndexOf(element);
+                minDistance = distance;
+            }
+        }
+
+        m_CurHideSlot = m_HideSlotList[minIdx].GetComponent<HideSlot>();
+    }
+    
+    public void ForceExitFromHideSlot()
+    {
+        if (!m_IsHide)
+            return;
+        
+        m_CurHideSlot.ActivateHideSlot(false);
+        m_CurHideSlot = null;
+        m_IsHide = false;
+    }
+    
+    /// <summary>
+    /// HideSlot에 숨도록 UseRange에게 요청합니다.
+    /// </summary>
+    /// <param name="_doHide">숨기 / 벗어나기</param>
+    /// <returns>0 = 실패, 1 = 성공</returns>
+    public int DoHide(bool _doHide)
+    {
+        if (_doHide)
+        {
+            if (m_IsHide || m_HideSlotList.Count <= 0)
+                return 0;
+
+            m_IsHide = true;
+            m_HideSlotList[GetNearestHideSlotIdx()].TryGetComponent(out HideSlot slot);
+            m_CurHideSlot = slot;
+            m_CurHideSlot.ActivateHideSlot(true);
+            return 1;
+        }
+        else
+        {
+            if (!m_IsHide)
+                return 0;
+            
+            m_IsHide = false;
+            m_CurHideSlot.ActivateHideSlot(false);
+            m_CurHideSlot = null;
+            return 1;
+        }
+    }
+    
+    /// <summary>
+    /// 가장 가까운 Slot Idx을 리턴합니다.
+    /// </summary>
+    /// <returns>Nearest Slot Idx</returns>
+    private int GetNearestHideSlotIdx()
+    {
+        float nearestDistance = 9999999999f;
+        int nearestIdx = 0;
+
+        for (int i = 0; i < m_HideSlotList.Count; i++)
+        {
+            float distanceBetSlot = Vector2.Distance(m_Player.GetPlayerCenterPos(), 
+                m_HideSlotList[i].transform.position);
+
+            if (distanceBetSlot < nearestDistance)
+            {
+                nearestDistance = distanceBetSlot;
+                nearestIdx = i;
+            }
+        }
+
+        return nearestIdx;
     }
 
     private void CalObjOutline()
     {
-        for (int i = 0; i < m_UseableObjs.Count; i++)
+        /*
+        for (int i = 0; i < m_UseableObjList.Count; i++)
         {
-            if (i == m_ShortestIDX && m_UseableObjs[i].m_ObjScript.m_isOn == false)
+            if (i == m_ShortestIDX && m_UseableObjList[i].m_ObjScript.m_isOn == false)
             {
-                m_UseableObjs[i].m_ObjScript.ActivateOutline(true);
+                m_UseableObjList[i].m_ObjScript.ActivateOutline(true);
             }
             else
             {
-                m_UseableObjs[i].m_ObjScript.ActivateOutline(false);
+                m_UseableObjList[i].m_ObjScript.ActivateOutline(false);
             }
         }
+        */
     }
 }

@@ -100,8 +100,24 @@ public class MeleeGang : BasicEnemy
 
 
     // Functions
-    public override void SetRigidByDirection(bool _isRight)
+    public override void SetRigidByDirection(bool _isRight, float _addSpeed = 1f)
     {
+        if (_isRight)
+        {
+            if(!m_IsRightHeaded)
+                setisRightHeaded(true);
+
+            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
+        }
+        else
+        {
+            if(m_IsRightHeaded)
+                setisRightHeaded(false);
+            
+            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
+        }
+        
+        /*
         if (_isRight)
         {
             if(!m_IsRightHeaded)
@@ -122,6 +138,7 @@ public class MeleeGang : BasicEnemy
             else
                 m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * p_FollowSpeedMulti);
         }
+        */
     }
 
     public override void StartPlayerCognition(bool _instant = false)

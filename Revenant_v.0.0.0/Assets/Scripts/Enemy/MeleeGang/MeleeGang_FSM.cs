@@ -227,7 +227,7 @@ public class FOLLOW_MeleeGang : MeleeGang_FSM
 
         if (m_DistanceBetPlayer > m_Enemy.p_MeleeDistance)
         {
-            m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
+            m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer(), m_Enemy.p_FollowSpeedMulti);
         }
         else // MinFollowDistance 안쪽일 경우
         {

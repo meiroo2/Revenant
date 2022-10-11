@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Player_ObjInteractor : MonoBehaviour
 {
+    /*
     // Member Variables
     private List<Collider2D> m_HideSlotList;
     private Player_InputMgr m_InputMgr;
@@ -137,4 +138,5 @@ public class Player_ObjInteractor : MonoBehaviour
 
         m_CurHideSlot = m_HideSlotList[minIdx].GetComponent<HideSlot>();
     }
+    */
 }

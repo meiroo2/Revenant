@@ -8,11 +8,11 @@ using UnityEngine.UI;
 public class RageGauge_UI : MonoBehaviour
 {
 	// Visible Member Variables
-	// UI º¯¼ö ¹× ÇÔ¼ö ºĞ·ùÇÏ±â
-	[BoxGroup("°ÔÀÌÁö ºñÁÖ¾ó")] public Image p_BackImg;
-	[BoxGroup("°ÔÀÌÁö ºñÁÖ¾ó")] public Image p_GaugeImg;
-	[BoxGroup("°ÔÀÌÁö ºñÁÖ¾ó")] public Image p_BulletTimeIndicator; // °æ¿ì¿¡ µû¶ó ¿Å±â±â
-	[BoxGroup("°ÔÀÌÁö ºñÁÖ¾ó")] public Text p_BulletTimeTxt;
+	// UI ë³€ìˆ˜ ë° í•¨ìˆ˜ ë¶„ë¥˜í•˜ê¸°
+	[BoxGroup("ê²Œì´ì§€ ë¹„ì£¼ì–¼")] public Image p_BackImg;
+	[BoxGroup("ê²Œì´ì§€ ë¹„ì£¼ì–¼")] public Image p_GaugeImg;
+	[BoxGroup("ê²Œì´ì§€ ë¹„ì£¼ì–¼")] public Image p_BulletTimeIndicator; // ê²½ìš°ì— ë”°ë¼ ì˜®ê¸°ê¸°
+	[BoxGroup("ê²Œì´ì§€ ë¹„ì£¼ì–¼")] public Text p_BulletTimeTxt;
 
 	public Color NatureRefillColor;
 	public Color NatureConsumeColor;
@@ -25,9 +25,9 @@ public class RageGauge_UI : MonoBehaviour
 	private RectTransform m_RectTransform;
 	private DynamicUIMgr m_DynamicUIMgr;
 
-	public Action OnNotAbleBulletTime;	// BulletTime ÁøÀÔÀÌ ºÒ°¡´ÉÇÒ ¶§ÀÇ ÀÌº¥Æ® 
-	public Action OnBulletTimeStart;	// BulletTime ½ÃÀÛ½Ã ÀÌº¥Æ®
-	public Action OnBulletTimeEnd;		// BulletTime Á¾·á½Ã ÀÌº¥Æ®
+	public Action OnNotAbleBulletTime;	// BulletTime ì§„ì…ì´ ë¶ˆê°€ëŠ¥í•  ë•Œì˜ ì´ë²¤íŠ¸ 
+	public Action OnBulletTimeStart;	// BulletTime ì‹œì‘ì‹œ ì´ë²¤íŠ¸
+	public Action OnBulletTimeEnd;		// BulletTime ì¢…ë£Œì‹œ ì´ë²¤íŠ¸
 
 	private void Awake()
 	{
@@ -37,7 +37,7 @@ public class RageGauge_UI : MonoBehaviour
 
 		if (ReferenceEquals(p_GaugeImg, null))
 		{
-			Debug.LogError("RageGauge_UI¿¡¼­ ÀÌ¹ÌÁö ÇÒ´çµÇÁö ¾ÊÀ½.");
+			Debug.LogError("RageGauge_UIì—ì„œ ì´ë¯¸ì§€ í• ë‹¹ë˜ì§€ ì•ŠìŒ.");
 		}
 
 		//m_DynamicUIMgr.Shake(m_RectTransform, m_InitPos, 30f, 1500f, 10f, 30f);
@@ -52,7 +52,7 @@ public class RageGauge_UI : MonoBehaviour
 		m_InitPos = m_RectTransform.anchoredPosition;
 		m_DynamicUIMgr = GameMgr.GetInstance().GetComponent<DynamicUIMgr>();
 
-		// UI ÀÌº¥Æ® Ãß°¡
+		// UI ì´ë²¤íŠ¸ ì¶”ê°€
 		OnNotAbleBulletTime += ShakeTransform;
 		OnBulletTimeStart += PlayAnimationOnBulletTimeStart;
 		OnBulletTimeStart += delegate { p_BulletTimeIndicator.enabled = false;  };
@@ -71,9 +71,9 @@ public class RageGauge_UI : MonoBehaviour
 	}
 
 	/// <summary>
-	/// RageGauge¸¦ ÀÏ½ÃÀûÀ¸·Î Timer·Î »ç¿ëÇÏ±â À§ÇØ ÀÏ¹İÈ­µÈ ½Ã°£°ªÀ» ¹Ş½À´Ï´Ù. (Áï½Ã Àû¿ë)
+	/// RageGaugeë¥¼ ì¼ì‹œì ìœ¼ë¡œ Timerë¡œ ì‚¬ìš©í•˜ê¸° ìœ„í•´ ì¼ë°˜í™”ëœ ì‹œê°„ê°’ì„ ë°›ìŠµë‹ˆë‹¤. (ì¦‰ì‹œ ì ìš©)
 	/// </summary>
-	/// <param name="_normalTime">Normalized µÈ ½Ã°£°ª</param>
+	/// <param name="_normalTime">Normalized ëœ ì‹œê°„ê°’</param>
 	public void GetTimePassed(float _normalTime)
 	{
 		p_BulletTimeTxt.text = (Math.Truncate(_normalTime * 10) / 10).ToString();
@@ -81,7 +81,7 @@ public class RageGauge_UI : MonoBehaviour
 	}
 
 	/// <summary>
-	/// BulletTimeÀÌ ½ÃÀÛÇßÀ» ¶§ ½ÇÇàµÇ´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀÔ´Ï´Ù.
+	/// BulletTimeì´ ì‹œì‘í–ˆì„ ë•Œ ì‹¤í–‰ë˜ëŠ” ì• ë‹ˆë©”ì´ì…˜ì…ë‹ˆë‹¤.
 	/// </summary>
 	private void PlayAnimationOnBulletTimeStart()
 	{
@@ -98,7 +98,7 @@ public class RageGauge_UI : MonoBehaviour
 	}
 
 	/// <summary>
-	/// BulletTimeÀÌ ³¡³µÀ» ¶§ ½ÇÇàµÇ´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀÔ´Ï´Ù.
+	/// BulletTimeì´ ëë‚¬ì„ ë•Œ ì‹¤í–‰ë˜ëŠ” ì• ë‹ˆë©”ì´ì…˜ì…ë‹ˆë‹¤.
 	/// </summary>
 	private void PlayAnimationOnBulletTimeEnd()
 	{

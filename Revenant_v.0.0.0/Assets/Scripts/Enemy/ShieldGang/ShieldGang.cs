@@ -138,7 +138,7 @@ public class ShieldGang : BasicEnemy
         m_IsShieldBroken = true;
         ChangeEnemyFSM(EnemyStateName.BREAK);
     }
-    public override void SetRigidByDirection(bool _isRight)
+    public override void SetRigidByDirection(bool _isRight, float _addSpeed = 1f)
     {
         if (!m_IsShieldBroken)
         {

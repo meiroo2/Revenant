@@ -48,7 +48,7 @@ public abstract class PlayerFSM
 public class Player_IDLE : PlayerFSM
 {
     private RageGauge m_RageGauge;
-    private Player_ObjInteractor m_ObjInteracter;
+    private Player_UseRange m_UseRange;
     
     public Player_IDLE(Player _player) : base(_player)
     {
@@ -58,7 +58,7 @@ public class Player_IDLE : PlayerFSM
     public override void StartState()
     {
         InitFunc();
-        m_ObjInteracter = m_Player.m_ObjInteractor;
+        m_UseRange = m_Player.m_useRange;
         m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_CanHide = true;
         
@@ -78,6 +78,12 @@ public class Player_IDLE : PlayerFSM
             m_Player.m_ArmMgr.DoReload();
         }
         
+        if (m_InputMgr.m_IsPushInteractKey)
+        {
+            Debug.Log(m_UseRange.UseNearestObj());
+            
+        }
+        
         
         if(m_InputMgr.GetDirectionalKeyInput() != 0)
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
@@ -94,7 +100,7 @@ public class Player_IDLE : PlayerFSM
         }
         else if (m_InputMgr.m_IsPushHideKey)
         {
-            if(m_ObjInteracter.DoHide(true) == 1)
+            if(m_UseRange.DoHide(true) == 1)
                 m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
         }
     }
@@ -121,7 +127,7 @@ public class Player_WALK : PlayerFSM
 
     private VisualPart m_UpperBody;
     private VisualPart m_LowerBody;
-    private Player_ObjInteractor m_Interactor;
+    private Player_UseRange m_UseRange;
     private readonly int Walk = Animator.StringToHash("Walk");
 
 
@@ -132,7 +138,7 @@ public class Player_WALK : PlayerFSM
     
     public override void StartState()
     {
-        m_Interactor = m_Player.m_ObjInteractor;
+        m_UseRange = m_Player.m_useRange;
         m_RageGauge = m_Player.m_RageGauge;
         m_UpperBody = m_Player.m_PlayerAniMgr.p_UpperBody;
         m_LowerBody = m_Player.m_PlayerAniMgr.p_LowerBody;
@@ -154,6 +160,13 @@ public class Player_WALK : PlayerFSM
         {
             m_Player.m_ArmMgr.DoReload();
         }
+        
+        if (m_InputMgr.m_IsPushInteractKey)
+        {
+            Debug.Log(m_UseRange.UseNearestObj());
+            
+        }
+        
         
         m_CurInput = m_InputMgr.GetDirectionalKeyInput();
         
@@ -218,7 +231,7 @@ public class Player_WALK : PlayerFSM
         }
         else if (m_InputMgr.m_IsPushHideKey)
         {
-            if(m_Interactor.DoHide(true) == 1)
+            if(m_UseRange.DoHide(true) == 1)
                 m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
         }
     }
@@ -247,7 +260,7 @@ public class Player_ROLL : PlayerFSM
     private CoroutineElement m_CoroutineElement;
     private RageGauge m_RageGauge;
     private Player_InputMgr m_InputMgr;
-    private Player_ObjInteractor m_Interactor;
+    private Player_UseRange m_UseRange;
     
     private float m_DecelerationSpeed = 0f;
     private float m_Timer = 0f;
@@ -264,7 +277,7 @@ public class Player_ROLL : PlayerFSM
         m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
         m_RageGauge = m_Player.m_RageGauge;
         m_InputMgr = m_Player.m_InputMgr;
-        m_Interactor = m_Player.m_ObjInteractor;
+        m_UseRange = m_Player.m_useRange;
         
         m_Player.m_CanHide = false;
         
@@ -304,7 +317,7 @@ public class Player_ROLL : PlayerFSM
         }
         else if (m_InputMgr.m_IsPushHideKey && m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f)
         {
-            if (m_Interactor.DoHide(true) == 1)
+            if (m_UseRange.DoHide(true) == 1)
                 m_Player.ChangePlayerFSM(PlayerStateName.HIDDEN);
         }
     }
@@ -391,7 +404,7 @@ public class Player_HIDDEN : PlayerFSM
     private Rigidbody2D m_Rigid;
     private SoundPlayer m_SFXMgr;
     private RageGauge m_RageGauge;
-    private Player_ObjInteractor m_Interactor;
+    private Player_UseRange m_UseRange;
     private readonly int Hide = Animator.StringToHash("Hide"); 
 
     public Player_HIDDEN(Player _player) : base(_player)
@@ -405,7 +418,7 @@ public class Player_HIDDEN : PlayerFSM
         m_Player.m_ArmMgr.StopReload();
         m_Player.m_CanAttack = false;
         m_InputMgr = m_Player.m_InputMgr;
-        m_Interactor = m_Player.m_ObjInteractor;
+        m_UseRange = m_Player.m_useRange;
         
         m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
         m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Hide, 1);
@@ -430,12 +443,12 @@ public class Player_HIDDEN : PlayerFSM
             else if(!m_Player.m_playerRotation.GetIsMouseRight())
                 m_Player.setisRightHeaded(false);
             
-            m_Player.m_ObjInteractor.ForceExitFromHideSlot();
+            m_Player.m_useRange.ForceExitFromHideSlot();
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
         else if (!m_InputMgr.m_IsPushHideKey)
         {
-            if (m_Interactor.DoHide(false) == 1)
+            if (m_UseRange.DoHide(false) == 1)
             {
                 m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
             }
