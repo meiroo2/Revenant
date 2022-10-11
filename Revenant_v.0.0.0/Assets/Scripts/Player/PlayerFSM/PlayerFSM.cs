@@ -47,7 +47,7 @@ public abstract class PlayerFSM
 
 public class Player_IDLE : PlayerFSM
 {
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
     private Player_ObjInteractor m_ObjInteracter;
     
     public Player_IDLE(Player _player) : base(_player)
@@ -115,7 +115,7 @@ public class Player_IDLE : PlayerFSM
 
 public class Player_WALK : PlayerFSM
 {
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
     
     private int m_CurInput = 0;
 
@@ -245,7 +245,7 @@ public class Player_ROLL : PlayerFSM
     private Vector2 m_PlayerNormalVec;
     private Animator m_FullBodyAnimator;
     private CoroutineElement m_CoroutineElement;
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
     private Player_InputMgr m_InputMgr;
     private Player_ObjInteractor m_Interactor;
     
@@ -390,7 +390,7 @@ public class Player_HIDDEN : PlayerFSM
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
     private SoundPlayer m_SFXMgr;
-    private RageGauge_UI m_RageGauge;
+    private RageGauge m_RageGauge;
     private Player_ObjInteractor m_Interactor;
     private readonly int Hide = Animator.StringToHash("Hide"); 
 
@@ -661,7 +661,8 @@ public class Player_BULLET_TIME : PlayerFSM
         {
             case 0:
                 m_Timer += Time.unscaledDeltaTime;
-                m_Player.m_RageGauge.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit);
+                var m_RageGaugeUI = GameObject.FindObjectOfType<RageGauge_UI>();
+                m_RageGaugeUI.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit);
                 if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer >= m_BulletTimeLimit)
                 {
                     // AR 끔
