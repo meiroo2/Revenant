@@ -40,7 +40,7 @@ public class Player_UI : MonoBehaviour
     public float m_HitmarkRemainTime { get; set; } = 0.2f;
     private int m_MaxHp = 0;
     private float m_HpUnit = 0;
-    private Transform m_AimTransform;
+    private RectTransform m_AimTransform;
     
     public delegate void PlayerUIDelegate();
     private PlayerUIDelegate m_Callback = null;
@@ -57,15 +57,20 @@ public class Player_UI : MonoBehaviour
 
     private Player m_Player;
     private float m_ReloadSpeed = 1f;
-    
+
+
+    private Camera m_OverlayCam;
+    private Vector2 pos;
     
     // Constructors
     private void Awake()
     {
+        m_OverlayCam = GameObject.FindWithTag("OverlayCam").GetComponent<Camera>();
+        
         m_AllVisibleObjs = this.gameObject.GetComponentsInChildren<CanvasRenderer>();
 
         m_Maincam = Camera.main.GetComponent<CameraMgr>();
-        m_AimTransform = p_MainAimImg.transform;
+        m_AimTransform = p_MainAimImg.rectTransform;
         p_Hitmark.enabled = false;
         p_ReloadCircle.fillAmount = 0f;
         
@@ -87,7 +92,14 @@ public class Player_UI : MonoBehaviour
 
     private void Update()
     {
-        m_AimTransform.position = Input.mousePosition;
+
+        
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(m_AimTransform, Input.mousePosition,
+            m_OverlayCam, out pos);
+
+        Vector3 sans = m_OverlayCam.ScreenToWorldPoint(Input.mousePosition);
+        sans.z = 10f;
+        m_AimTransform.position = sans;
     }
 
 

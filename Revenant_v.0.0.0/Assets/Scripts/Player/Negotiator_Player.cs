@@ -103,12 +103,9 @@ public class Negotiator_Player : BasicWeapon_Player
         m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
     }
 
-    public override int GetCanReload()
+    public override bool GetCanReload()
     {
-        if (p_WeaponType != 0)
-            return 0;
-
-        return m_LeftRounds > p_MaxRound ? 0 : 1;
+        return m_LeftRounds <= p_MaxRound;
     }
 
     public override void InitWeapon()

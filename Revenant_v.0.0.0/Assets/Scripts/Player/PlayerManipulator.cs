@@ -20,7 +20,7 @@ public class PlayerManipulator : MonoBehaviour
     public int P_MeleeStunValue = 10;
     public float P_JustEvadeStartTime = 0f;
     public float P_JustEvadeEndTime = 1f;
-    public float P_RollDecelerationSpeedMulti = 1f;
+    public float P_RollDecelerationSpeed = 1f;
     public float P_ReloadSpeed = 1f;
 
     [Space(20f)]

@@ -81,6 +81,10 @@ public class Player_InputMgr : MonoBehaviour
             m_InputCoroutine = StartCoroutine(CoroutineUpdate());
         }
     }
+    /// <summary>
+    /// 방향키 값을 리턴합니다. -1, 0, 1 = 좌, X, 우
+    /// </summary>
+    /// <returns></returns>
     public int GetDirectionalKeyInput()
     {
         if (m_IsPushLeftKey)
