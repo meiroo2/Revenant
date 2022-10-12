@@ -99,7 +99,7 @@ public class NormalGang : BasicEnemy
         m_OriginPos = transform.position;
 
         var instance = InstanceMgr.GetInstance();
-        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerTransform = m_Player.transform;
         m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
     }

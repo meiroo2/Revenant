@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
+using Random = UnityEngine.Random;
 
 public static class StaticMethods
 {
@@ -11,6 +12,16 @@ public static class StaticMethods
     private static Vector3 m_TempVec3;
     private static PixelPerfectCamera m_PPC = Camera.main.GetComponent<PixelPerfectCamera>();
 
+    /// <summary>
+    /// int형 확률을 대입해 당첨 여부를 알려줍니다.
+    /// </summary>
+    /// <param name="_probability">몇 퍼센트?</param>
+    /// <returns>true면 당첨</returns>
+    public static bool GetProbabilityWinning(int _probability)
+    {
+        int randomValue = Random.Range(1, 101);
+        return randomValue <= _probability ? true : false;
+    }
     
     public static Vector2 GetRotatedVec(Vector2 _inputVec, float _angle)
     {

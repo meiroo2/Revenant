@@ -42,7 +42,7 @@ public class Negotiator_Player : BasicWeapon_Player
         m_AimCursorTransform = tempIns.GetComponentInChildren<AimCursor>().transform;
         m_SoundMgr = tempIns.GetComponentInChildren<SoundMgr>();
         m_SoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
-        m_Player = tempIns.GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerHitscanRay = m_Player.m_PlayerHitscanRay;
         m_Player_Arm = m_Player.m_playerRotation.gameObject.transform;
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
@@ -52,7 +52,7 @@ public class Negotiator_Player : BasicWeapon_Player
 
         m_RageGauge = tempIns.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
 
-        m_PlayerUI = m_Player.m_PlayerUIMgr;
+        m_PlayerUI = tempIns.m_MainCanvas.GetComponentInChildren<Player_UI>();
         
         m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
     }

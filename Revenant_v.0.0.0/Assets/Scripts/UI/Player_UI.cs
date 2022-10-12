@@ -85,7 +85,7 @@ public class Player_UI : MonoBehaviour
     {
         var instance = InstanceMgr.GetInstance();
         m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
-        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_ArmMgr = m_Player.m_ArmMgr;
     }
 

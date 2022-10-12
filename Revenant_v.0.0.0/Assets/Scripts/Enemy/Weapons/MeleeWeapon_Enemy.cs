@@ -10,28 +10,37 @@ public class MeleeWeapon_Enemy : BasicWeapon_Enemy
 
     
     // Member Variables
-    private Collider2D m_Collider;
-    private IHotBox m_HotBox;
+    private List<Collider2D> m_HotBoxColliderList = new List<Collider2D>();
+    
 
     private void Awake()
     {
-        m_Collider = GetComponentInChildren<Collider2D>();
-        
         m_isPlayers = false;
     }
-
-    private void OnDisable()
-    {
-        m_HotBox = null;
-    }
+    
 
     public override int Fire()
     {
-        if (ReferenceEquals(m_HotBox, null))
+        if (m_HotBoxColliderList.Count <= 0)
             return 0;
-        
-        m_HotBox.HitHotBox(new IHotBoxParam(p_BulletDamage, 0, m_HotBox.m_ParentObj.transform.position,
-            WeaponType.KNIFE));
+
+        float minDist = 999999f;
+        int minIdx = 0;
+        for (int i = 0; i < m_HotBoxColliderList.Count; i++)
+        {
+            float dist = Vector2.Distance(transform.position, m_HotBoxColliderList[i].transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                minIdx = i;
+            }
+        }
+
+        if (m_HotBoxColliderList[minIdx].TryGetComponent(out IHotBox hotBox))
+        {
+            hotBox.HitHotBox(new IHotBoxParam(10, 0, transform.position,
+                WeaponType.KNIFE));
+        }
         
         m_Callback?.Invoke();
         
@@ -58,9 +67,9 @@ public class MeleeWeapon_Enemy : BasicWeapon_Enemy
     {
         if(col.TryGetComponent(out IHotBox hotBox))
         {
-            if (hotBox.m_isEnemys == false && hotBox.m_HitBoxInfo == HitBoxPoint.BODY)
+            if (hotBox.m_isEnemys == false)
             {
-                m_HotBox = hotBox;
+                m_HotBoxColliderList.Add(col);
             }
         }
     }
@@ -69,8 +78,10 @@ public class MeleeWeapon_Enemy : BasicWeapon_Enemy
     {
         if (other.TryGetComponent(out IHotBox hotBox))
         {
-            if (m_HotBox == hotBox)
-                m_HotBox = null;
+            if (hotBox.m_isEnemys == false)
+            {
+                m_HotBoxColliderList.Remove(other);
+            }
         }
     }
 }

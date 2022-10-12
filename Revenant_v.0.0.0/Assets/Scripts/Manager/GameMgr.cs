@@ -10,6 +10,10 @@ public class GameMgr : MonoBehaviour
 {
     // Visible Member Variables
     [field: SerializeField] public CoroutineHandler p_CoroutineHandler { get; private set; }
+    [field: SerializeField] public Player_Manager p_PlayerMgr { get; private set; }
+    [field: SerializeField] public Player_InputMgr p_PlayerInputMgr { get; private set; }
+    [field: SerializeField] public PlayerManipulator p_PlayerManipulator { get; private set; }
+
     public float m_GameTimer { get; private set; } = 0f;
 
 
@@ -49,8 +53,6 @@ public class GameMgr : MonoBehaviour
         {
             Debug.Log("DataHandleManager 없음!!!! 배치 요망!!!");
         }
-
-        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void Start()
@@ -60,6 +62,11 @@ public class GameMgr : MonoBehaviour
         AssignCanvasObjs();
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -67,12 +74,16 @@ public class GameMgr : MonoBehaviour
 
     private void OnSceneLoaded(Scene _scene, LoadSceneMode _mode)
     {
-        if (!m_SceneStartWhiteOut)
-            return;
+        Debug.Log("신 개시 로딩 첫번쨰");
+
+        p_PlayerMgr.ResetPlayer();
+        
+        p_PlayerManipulator.SetPlayer();
+        p_PlayerManipulator.SetNegotiator();
         
         p_CoroutineHandler.RegisterCoroutineHandler();
         m_Objects = GameObject.FindObjectsOfType<ObjectDefine>();
-        m_SceneStartWhiteOut = false;
+        //m_SceneStartWhiteOut = false;
         AssignCanvasObjs();
         m_IngameUI.DoWhiteOut(true);
     }
@@ -122,9 +133,7 @@ public class GameMgr : MonoBehaviour
 
     public void CurSceneReload()
     {
-        //p_CoroutineHandler.UnregisterCoroutineHandler();
-        Scene curScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(curScene.name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void AssignCanvasObjs()

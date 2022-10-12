@@ -53,7 +53,7 @@ public class CameraMgr : MonoBehaviour
 
     private void Start()
     {
-        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.gameObject;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().gameObject;
 
         m_CameraPos = transform.position;
 

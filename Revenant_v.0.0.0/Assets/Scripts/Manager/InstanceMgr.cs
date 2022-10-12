@@ -14,6 +14,7 @@ public class InstanceMgr : MonoBehaviour
     [BoxGroup("In_World")] public GameObject p_MatChanger;
     
     [BoxGroup("In_Canvas")] public GameObject p_Canvas_RageGauge;
+    [field: SerializeField, BoxGroup("In_Canvas")] private GameObject p_Player_UI;
 
     [field: SerializeField, BoxGroup("In_Cam")] private GameObject p_ScreenEffect_AR;
     
@@ -22,10 +23,13 @@ public class InstanceMgr : MonoBehaviour
     
     // Member Variables
     public ScreenEffect_AR m_ScreenEffect_AR { get; private set; }
+    public Player_UI m_Player_UI { get; private set; }
+
 
     private static InstanceMgr Instance;
     public static InstanceMgr GetInstance() { return Instance; }
 
+    
     private void Awake()
     {
         m_MainCanvas = GameObject.FindGameObjectWithTag("MainCanvas");
@@ -41,6 +45,7 @@ public class InstanceMgr : MonoBehaviour
         }
 
         Instantiate(p_Canvas_RageGauge, m_MainCanvas.transform);
+        m_Player_UI = Instantiate(p_Player_UI, m_MainCanvas.transform).GetComponent<Player_UI>();
     }
 
     private void SpawnInWorld()
@@ -52,6 +57,7 @@ public class InstanceMgr : MonoBehaviour
         Instantiate(p_AimCursor, this.gameObject.transform);
         Instantiate(p_BulletTimeMgr, this.gameObject.transform);
         Instantiate(p_MatChanger, gameObject.transform);
+        
     }
 
     private void SpawnInCam()

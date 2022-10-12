@@ -17,7 +17,7 @@ public class TimeScaler : MonoBehaviour
     {
         m_BlackColor = new Color(0, 0, 0, 0);
         m_OriginPos = transform.position;
-        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
 
     private void Update()

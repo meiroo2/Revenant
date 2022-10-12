@@ -33,7 +33,7 @@ public class Hologram : MonoBehaviour
     private void Start()
     {
         m_Animator.SetInteger(Select, -1);
-        m_PlayerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
+        m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
     }
 
     // Updates

@@ -27,6 +27,7 @@ public class EnemySpawner : MonoBehaviour
     private bool m_IsPlayerCollide = false;
     private bool[] m_EnemyDeathChecker;
     
+    private Coroutine m_DeActiveCoroutine;
     
     
     // Constructors
@@ -54,11 +55,20 @@ public class EnemySpawner : MonoBehaviour
 
     protected void Start()
     {
+        m_DeActiveCoroutine = StartCoroutine(DeActive());
+    }
+
+    private IEnumerator DeActive()
+    {
+        yield return null;
+        
         for (int i = 0; i < p_WillSpawnEnemys.Length; i++)
         {
             p_WillSpawnEnemys[i].transform.parent = this.gameObject.transform;
             p_WillSpawnEnemys[i].SetActive(false);
         }
+        
+        yield break;
     }
     
     
@@ -125,7 +135,6 @@ public class EnemySpawner : MonoBehaviour
         }
         for (int i = 0; i < p_WillSpawnEnemys.Length; i++)
         {
-            m_WillSpawnEnemyScripts[i].InitEnemy();
             m_WillSpawnEnemyScripts[i].StartPlayerCognition(true);
         }
     }

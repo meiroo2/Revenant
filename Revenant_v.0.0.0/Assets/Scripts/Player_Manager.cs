@@ -3,14 +3,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// GameMgr에 붙어있는 Player_Manager입니다. Player를 찾아서 멤버변수로 소유합니다.
+/// </summary>
 public class Player_Manager : MonoBehaviour
 {
-    public Player m_Player { get; private set; }
-    [field: SerializeField] private GameObject m_PlayerPrefab;
-    private GameObject m_PlayerSpawnPos;
+    // Member Variables
+    private Player m_Player = null;
 
-    private GameObject InstantiatedPlayer;
+    
+    // Constructors
+    private void Awake()
+    {
+        ResetPlayer();
+    }
+    
+    
+    // Functions
+    
+    /// <summary>
+    /// 멤버 변수인 m_Player를 태그 기반으로 찾아서 할당합니다.
+    /// </summary>
+    public void ResetPlayer()
+    {
+        Debug.Log("ResetPlayer 실행");
+        
+        if (GameObject.FindWithTag("@Player").TryGetComponent(out Player player))
+        {
+            m_Player = player;
+        }
+        else
+        {
+            m_Player = null;
+            Debug.Log("ERR : Player_Manager에서 Player 찾지 못함");
+        }
+    }
 
+    /// <summary>
+    /// Player를 리턴합니다.
+    /// </summary>
+    /// <returns></returns>
+    public Player GetPlayer()
+    {
+        if(!m_Player)
+            Debug.Log("ERR : Player_Manager에서 Null Player를 리턴");
+        
+        return m_Player;
+    }
+
+
+    /*
     private void Awake()
     {
         // 체크포인트가 활성화 되지 않았을 때 (시작할 때)
@@ -31,4 +73,5 @@ public class Player_Manager : MonoBehaviour
         PlayerPrefab.transform.position = PlayerLocation;
         m_Player = PlayerPrefab.GetComponent<Player>();
     }
+    */
 }

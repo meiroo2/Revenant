@@ -24,7 +24,7 @@ public class Enemy_UseRange : MonoBehaviour
 
     private void Start()
     {
-        _player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        _player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
 
     // Physics

@@ -24,7 +24,7 @@ public class Enemy_Rotation : MonoBehaviour
     private void Start()
     {
         var Instance = InstanceMgr.GetInstance();
-        m_PlayerTransform = Instance.GetComponentInChildren<Player_Manager>().m_Player.transform;
+        m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
     }
     
     

@@ -39,10 +39,10 @@ public class Target_HotBox : MonoBehaviour, IHotBox
         var instance = InstanceMgr.GetInstance();
         
         m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
-        m_PlayerUI = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_PlayerUI = instance.m_Player_UI;
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
-        m_PlayerCenterTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.p_CenterTransform;
+        m_PlayerCenterTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().p_CenterTransform;
         m_SoundPlayer = instance.GetComponentInChildren<SoundPlayer>();
     }
 

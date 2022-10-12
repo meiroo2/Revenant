@@ -27,7 +27,7 @@ public class EnemySpawner_Collider : MonoBehaviour
         if (m_IsCollided)
             return;
 
-        if (col.CompareTag("Player"))
+        if (col.CompareTag("@Player"))
         {
             m_IsCollided = true;
             m_ParentEnemySpawner.AchieveCollisionTrigger();
