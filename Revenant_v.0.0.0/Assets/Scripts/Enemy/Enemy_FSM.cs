@@ -11,7 +11,7 @@ public abstract class Enemy_FSM
         MAX
     }
 
-    public EnemyState _EnemyState;
+    public EnemyState _enemyState;
     
     public abstract void StartState();
     public abstract void UpdateState();

@@ -111,11 +111,13 @@ public class Player : Human
 
     private Coroutine m_WalkSoundCoroutine;
     
-    public Vector2 PlayerUsedObjectVector;
-
+    public Vector2 PlayerUsedObjectVector { get; set; }
+    public Vector2 PlayerOutOfStairVector { get; set; }
+    
     private bool m_SafeFSMLock = false;
 
-
+    public bool bIsOnStair { get; set; } = false;
+    public bool bIsOutOfStair { get; set; } = false;
 
     // Constructor
     private void Awake()
@@ -229,7 +231,7 @@ public class Player : Human
     {
         m_SafeFSMLock = true;
         
-        Debug.Log("상태 전이" + _name);
+        //Debug.Log("상태 전이" + _name);
         m_CurPlayerFSMName = _name;
 
         m_CurPlayerFSM.ExitState();
