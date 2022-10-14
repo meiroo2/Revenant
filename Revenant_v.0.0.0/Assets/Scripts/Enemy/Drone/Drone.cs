@@ -21,8 +21,9 @@ public class Drone : BasicEnemy
     [field: SerializeField, BoxGroup("DroneGang Values")] public int p_BombHp { get; protected set; } = 20;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_BombRange { get; protected set; } = 2f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_BreakPower = 1f;
-
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_DetectSpeed = 1f;
+    [field: SerializeField, BoxGroup("DroneGang Values"), Range(0f, 1f)]
+    public float p_DecidePositionPointTime = 0f;
     
     [field: SerializeField, BoxGroup("DroneGang Values")] public bool p_LookAround = false;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_LookAroundDelay = 1f;

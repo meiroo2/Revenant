@@ -159,6 +159,8 @@ public class FOLLOW_Drone : Drone_FSM
     private Transform m_PlayerTransform;
     private readonly int Stop = Animator.StringToHash("Stop");
 
+    private bool m_FinishDecideMovePos = false;
+
     public FOLLOW_Drone(Drone _enemy)
     {
         m_Enemy = _enemy;
@@ -170,6 +172,8 @@ public class FOLLOW_Drone : Drone_FSM
         m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
         m_Phase = 0;
 
+        m_FinishDecideMovePos = false;
+        
         m_EnemyTransform = m_Enemy.transform;
         m_PlayerTransform = m_Enemy.m_Player.p_CenterTransform;
 
@@ -214,6 +218,16 @@ public class FOLLOW_Drone : Drone_FSM
                 break;
             
             case 3:     // Stop 대기
+                if (!m_FinishDecideMovePos)
+                {
+                    if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=
+                        m_Enemy.p_DecidePositionPointTime)
+                    {
+                        m_Enemy.ResetMovePoint(m_PlayerTransform.position);
+                        m_FinishDecideMovePos = true;
+                    }
+                }
+                
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Enemy.ChangeEnemyFSM(EnemyStateName.RUSH);

@@ -14,6 +14,30 @@ public static class StaticMethods
 
 
     /// <summary>
+    /// 비활성화된 오브젝트를 포함 모든 오브젝트를 리턴합니다.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
+    public static List<T> FindAllObjects<T>() where T : UnityEngine.Object
+    {
+        List<T> objects = new List<T>();
+        for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCount; i++)
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
+            if (scene.isLoaded)
+            {
+                var rootObject = scene.GetRootGameObjects();
+                for (int j = 0; j < rootObject.Length; j++)
+                {
+                    var go = rootObject[j];
+                    objects.AddRange(go.GetComponentsInChildren<T>(true));
+                }
+            }
+        }
+        return objects;
+    }
+    
+    /// <summary>
     /// 받은 List에서 가장 _centerPos에 가까운 IHotBox를 리턴합니다.
     /// </summary>
     /// <param name="_centerPos">기준 좌표</param>
