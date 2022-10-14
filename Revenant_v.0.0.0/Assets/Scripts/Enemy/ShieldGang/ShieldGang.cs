@@ -23,6 +23,9 @@ public class ShieldGang : BasicEnemy
     public float p_GapDistance = 1f;
 
     [field: SerializeField, BoxGroup("ShieldGang Values")]
+    public float p_AtkAniSpeedMulti = 1f;
+
+    [field: SerializeField, BoxGroup("ShieldGang Values")]
     public float p_BackMoveSpeedMulti = 0.8f;
     
     [field: SerializeField, BoxGroup("ShieldGang Values")]
@@ -64,7 +67,8 @@ public class ShieldGang : BasicEnemy
     
 
     private bool m_SafeSFMLock = false;
-    
+    public readonly int AtkSpeed = Animator.StringToHash("AtkSpeed");
+
 
     // Constructor
     private void Awake()
@@ -80,6 +84,8 @@ public class ShieldGang : BasicEnemy
 
         m_EnemyRigid = GetComponent<Rigidbody2D>();
         m_Foot = GetComponentInChildren<Enemy_FootMgr>();
+        
+        m_Animator.SetFloat(AtkSpeed, p_AtkAniSpeedMulti);
     }
 
     private void Start()
@@ -170,6 +176,7 @@ public class ShieldGang : BasicEnemy
         p_VisionDistance = _mgr.S_VisionDistance;
         p_AttackDistance = _mgr.S_AttackDistance;
         p_GapDistance = _mgr.S_GapDistance;
+        p_AtkAniSpeedMulti = _mgr.S_AtkAniSpeedMulti;
         p_PointAtkTime = _mgr.S_PointAtkTime;
         p_AtkHoldTime = _mgr.S_AtkHoldTime;
         p_Shield_Dmg_Multi = _mgr.S_ShieldDmgMulti;

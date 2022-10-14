@@ -74,8 +74,11 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
     // Member Variables
     private float m_DistanceBetPlayer;
 
-    private const float m_MagicGap = 0.03f;
+    private const float m_MagicGap = 0.1f;
     private static readonly int Walk = Animator.StringToHash("Walk");
+
+    private bool m_IsMoving = false;
+    private CoroutineElement m_CoroutineElement;
 
     // Constructor
     public FOLLOW_ShieldGang(ShieldGang _enemy)
@@ -90,6 +93,8 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
     public override void StartState()
     {
         m_DistanceBetPlayer = m_Enemy.GetDistanceBetPlayer();
+
+        m_IsMoving = false;
         
         if(m_Enemy.m_IsShieldBroken)
             m_EnemyAnimator.SetInteger(Walk, 1);
@@ -99,7 +104,7 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
     {
         if (!m_Enemy.IsFacePlayer())
         {
-            m_Enemy.ChangeEnemyFSM(EnemyStateName.ROTATION);
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
             return;
         }
         
@@ -119,38 +124,96 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
         }
         else
         {
-            if (Mathf.Abs(m_DistanceBetPlayer - m_Enemy.p_GapDistance) > m_MagicGap)
+            if (m_DistanceBetPlayer < m_Enemy.p_AttackDistance)
+            {
+                m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
+                return;
+            }
+
+            if (m_IsMoving)
+                return;
+            
+            
+            if (m_DistanceBetPlayer > m_Enemy.p_GapDistance + m_MagicGap ||
+                m_DistanceBetPlayer < m_Enemy.p_GapDistance - m_MagicGap)
             {
                 // 이격거리보다 더 멀 경우 - 전진
                 if (m_DistanceBetPlayer > m_Enemy.p_GapDistance)
                 {
-                    m_EnemyAnimator.SetInteger(Walk, 1);
-                    m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
+                    m_CoroutineElement = m_Enemy.m_CoroutineHandler.
+                        StartCoroutine_Handler(GapBaseMove(true));
+
+                    m_IsMoving = true;
                 }
                 // 이격거리보다 가까이 있음 - 후진
                 else
                 {
-                    m_EnemyAnimator.SetInteger(Walk, -1);
-                    m_Enemy.SetRigidByDirection(!m_Enemy.GetIsLeftThenPlayer(), m_Enemy.p_BackMoveSpeedMulti);
+                    m_CoroutineElement = m_Enemy.m_CoroutineHandler.
+                        StartCoroutine_Handler(GapBaseMove(false));
+
+                    m_IsMoving = true;
                 }
             }
-            else
-            {
-                m_EnemyAnimator.SetInteger(Walk, 0);
-                m_Enemy.ResetRigid();
-            }
+        }
+    }
 
-            if (m_DistanceBetPlayer < m_Enemy.p_AttackDistance)
+    private IEnumerator GapBaseMove(bool _toFoward)
+    {
+        if (_toFoward)  // 전진
+        {
+            m_EnemyAnimator.SetInteger(Walk, 1);
+
+            while (true)
             {
-                m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
+                m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
+
+                if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_GapDistance)
+                {
+                    Debug.Log("ResetRigid");
+                    m_Enemy.ResetRigid();
+                    break;
+                }
+                
+                yield return null;
             }
         }
+        else
+        {               // 후진
+            m_EnemyAnimator.SetInteger(Walk, -1);
+
+            while (true)
+            {
+                m_Enemy.SetRigidByDirection(!m_Enemy.GetIsLeftThenPlayer(), m_Enemy.p_BackMoveSpeedMulti);
+
+                if (m_Enemy.GetDistanceBetPlayer() >= m_Enemy.p_GapDistance)
+                {
+                    m_Enemy.ResetRigid();
+                    break;
+                }
+                
+                yield return null;
+            }
+        }
+
+        m_IsMoving = false;
+        m_EnemyAnimator.SetInteger(Walk, 0);
+        
+        m_CoroutineElement.StopCoroutine_Element();
+        m_CoroutineElement = null;
+        
+        yield break;
     }
 
     public override void ExitState()
     {
         m_EnemyAnimator.SetInteger(Walk, 0);
         m_Enemy.ResetRigid();
+
+        if (!ReferenceEquals(m_CoroutineElement, null))
+        {
+            m_CoroutineElement.StopCoroutine_Element();
+            m_CoroutineElement = null;
+        }
     }
 
     public override void NextPhase()
@@ -300,9 +363,10 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
 
         if (m_Enemy.m_IsShieldBroken)
         {
-            if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_AttackDistance)
+            if ((m_Enemy.m_IsRightHeaded && !m_Enemy.GetIsLeftThenPlayer()) ||
+                !m_Enemy.m_IsRightHeaded && m_Enemy.GetIsLeftThenPlayer())
             {
-                m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
+                m_Enemy.ChangeEnemyFSM(EnemyStateName.ROTATION);
             }
             else
             {
@@ -325,7 +389,11 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
 
     public override void ExitState()
     {
-        
+        if (!ReferenceEquals(m_CoroutineElement, null))
+        {
+            m_CoroutineElement.StopCoroutine_Element();
+            m_CoroutineElement = null;
+        }
     }
 
     public override void NextPhase()
@@ -383,6 +451,9 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
         m_IsAttackEnd = true;
         
         m_CoroutineElement.StopCoroutine_Element();
+        m_CoroutineElement = null;
+
+        yield break;
     }
 
     private IEnumerator ShieldAttackCheck()
@@ -441,6 +512,9 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
         m_IsAttackEnd = true;
         
         m_CoroutineElement.StopCoroutine_Element();
+        m_CoroutineElement = null;
+
+        yield break;
     }
 }
 
@@ -682,6 +756,7 @@ public class HIT_ShieldGang : ShieldGang_FSM
         m_CoroutineElement = null;
 
         m_EnemyAnimator.runtimeAnimatorController = m_Enemy.p_NudeAnimator;
+        m_EnemyAnimator.SetFloat(m_Enemy.AtkSpeed, m_Enemy.p_AtkAniSpeedMulti);
         m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
         
         yield break;

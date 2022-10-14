@@ -133,6 +133,9 @@ public class CW_EnemyManipulator : OdinEditorWindow
     
     [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]  
     public static float S_GapDistance;
+
+    [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
+    public static float S_AtkAniSpeedMulti;
     
     [TabGroup("ShieldGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth), Range(0.0f, 1.0f)] 
     public static float S_PointAtkTime;
@@ -345,6 +348,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
             enemyMgr.S_VisionDistance = S_VisionDistance;
             enemyMgr.S_AttackDistance = S_AttackDistance;
             enemyMgr.S_GapDistance = S_GapDistance;
+            enemyMgr.S_AtkAniSpeedMulti = S_AtkAniSpeedMulti;
             enemyMgr.S_PointAtkTime = S_PointAtkTime;
             enemyMgr.S_AtkHoldTime = S_AtkHoldTime;
             enemyMgr.S_ShieldDmgMulti = S_ShieldDmgMulti;
@@ -362,6 +366,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
             S_VisionDistance = enemyMgr.S_VisionDistance;
             S_AttackDistance = enemyMgr.S_AttackDistance;
             S_GapDistance = enemyMgr.S_GapDistance;
+            S_AtkAniSpeedMulti = enemyMgr.S_AtkAniSpeedMulti;
             S_PointAtkTime = enemyMgr.S_PointAtkTime;
             S_AtkHoldTime = enemyMgr.S_AtkHoldTime;
             S_ShieldDmgMulti = enemyMgr.S_ShieldDmgMulti;
