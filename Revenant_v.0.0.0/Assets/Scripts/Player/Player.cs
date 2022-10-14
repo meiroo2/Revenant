@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public enum PlayerStateName
 {
@@ -57,6 +60,10 @@ public class Player : Human
 
 
     // Member Variables
+    [ReadOnly] public bool bIsOnStair = false;
+    [ReadOnly] public bool bIsOutOfStair = true;
+    [ReadOnly] public Vector2 PlayerOutOfStairVector = Vector2.zero;
+
     [field : SerializeField] public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
@@ -68,7 +75,6 @@ public class Player : Human
     public Player_HotBox m_PlayerHotBox { get; private set; }
     public Player_UI m_PlayerUIMgr { get; private set; }
     public LocationSensor m_PlayerLocationSensor { get; private set; }
-    public Player_InputMgr m_InputMgr { get; private set; }
     public Player_HitscanRay m_PlayerHitscanRay { get; private set; }
     [field : SerializeField]public Player_MeleeAttack m_MeleeAttack { get; private set; }
     public Player_ArmMgr m_ArmMgr { get; private set; }
@@ -80,6 +86,7 @@ public class Player : Human
     public ParticleMgr m_ParticleMgr { get; private set; }
     public Negotiator_Player m_Negotiator { get; private set; }
     public Player_WorldUI m_WorldUI { get; private set; }
+    public Player_InputMgr m_InputMgr { get; private set; }
 
 
     private bool m_isRecoveringRollCount = false;
@@ -134,17 +141,7 @@ public class Player : Human
         m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
         m_Negotiator = GetComponentInChildren<Negotiator_Player>();
         m_WorldUI = GetComponentInChildren<Player_WorldUI>();
-
-
-        m_IDLE = new Player_IDLE(this);
-        m_WALK = new Player_WALK(this);
-        m_ROLL = new Player_ROLL(this);
-        m_HIDDEN = new Player_HIDDEN(this);
-        m_MELEE = new Player_MELEE(this);
-        m_DEAD = new Player_DEAD(this);
-        m_BULLETTIME = new Player_BULLET_TIME(this);
-
-
+        
         m_ObjectType = ObjectType.Player;
         m_ObjectState = ObjectState.Active;
         m_LeftRollCount = p_MaxRollCount;
@@ -156,7 +153,6 @@ public class Player : Human
         var instance = InstanceMgr.GetInstance();
         m_PlayerUIMgr = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
-        m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
         m_SoundMgr = instance.GetComponentInChildren<SoundMgr>();
         m_SFXMgr = instance.GetComponentInChildren<SoundPlayer>();
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
@@ -166,8 +162,16 @@ public class Player : Human
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_ScreenEffectUI = instance.m_MainCanvas.GetComponentInChildren<InGame_UI>()
             .GetComponentInChildren<ScreenEffect_UI>();
-        
 
+        m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
+        
+        m_IDLE = new Player_IDLE(this);
+        m_WALK = new Player_WALK(this);
+        m_ROLL = new Player_ROLL(this);
+        m_HIDDEN = new Player_HIDDEN(this);
+        m_MELEE = new Player_MELEE(this);
+        m_DEAD = new Player_DEAD(this);
+        m_BULLETTIME = new Player_BULLET_TIME(this);
         
         m_CurPlayerFSM = m_IDLE;
         m_CurPlayerFSM.StartState();
@@ -229,7 +233,7 @@ public class Player : Human
     {
         m_SafeFSMLock = true;
         
-        Debug.Log("상태 전이" + _name);
+//        Debug.Log("상태 전이" + _name);
         m_CurPlayerFSMName = _name;
 
         m_CurPlayerFSM.ExitState();

@@ -24,7 +24,7 @@ public class Enemy_UseRange : MonoBehaviour
 
     private void Start()
     {
-        _player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        _player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
 
     // Physics
@@ -33,10 +33,8 @@ public class Enemy_UseRange : MonoBehaviour
         if (col.CompareTag("Player"))
             return;
 
-        Debug.Log("OnTriggerEnter m_Enemy.bUsedDoor - " + m_Enemy.bMoveToUsedDoor);
-        
         _door = col.GetComponent<Door_Col_LayerRoom>();
-        if (m_Enemy.m_CurEnemyFSM._EnemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
+        if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
         {
             _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
 
@@ -60,7 +58,7 @@ public class Enemy_UseRange : MonoBehaviour
             return;
         
         _door = other.GetComponent<Door_Col_LayerRoom>();
-        if (m_Enemy.m_CurEnemyFSM._EnemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
+        if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
         {
             m_Enemy.bMoveToUsedDoor = true;
             if(m_Enemy.bMoveToUsedDoor)

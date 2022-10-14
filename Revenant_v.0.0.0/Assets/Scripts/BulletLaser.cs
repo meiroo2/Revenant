@@ -27,7 +27,7 @@ public class BulletLaser : MonoBehaviour
         var instance = InstanceMgr.GetInstance();
 
         m_LineStartTransform =
-            instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr.m_CurWeapon.transform;
+            GameMgr.GetInstance().p_PlayerMgr.GetPlayer().m_WeaponMgr.m_CurWeapon.transform;
         
         m_LineEndTransform = instance.GetComponentInChildren<AimCursor>().transform;
     }

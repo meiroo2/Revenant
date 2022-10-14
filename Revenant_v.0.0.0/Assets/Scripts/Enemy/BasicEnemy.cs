@@ -19,6 +19,8 @@ public enum EnemyStateName
     CHANGE,
     BREAK,
     ROLL,
+    HIT,
+    HIDDEN,
     DEAD
 }
 
@@ -54,9 +56,12 @@ public class BasicEnemy : Human
     protected Vector2 m_MovePoint;
     private Coroutine m_MatCoroutine;
 
+    public int m_DeadReasonForMat = 0;
+
     public bool m_PlayerCognition { get; set; } = false;
     
     public bool bMoveToUsedDoor { get; set; } = false;
+    public bool bIsOnStair { get; set; } = false;
     public bool bMoveToUsedStair { get; set; } = false;
     public bool bMoveToUseStairUp { get; set; } = false;
     public bool bMoveToUseStairDown { get; set; } = false;

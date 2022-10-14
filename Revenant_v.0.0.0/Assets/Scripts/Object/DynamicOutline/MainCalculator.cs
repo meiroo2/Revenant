@@ -16,7 +16,7 @@ public class MainCalculator : MonoBehaviour
 
     private void Start()
     {
-        m_PlayerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player
+        m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer()
             .transform;
 
         m_Arr = new DynamicOutline[m_List.Count];

@@ -30,7 +30,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
         var tempIns = InstanceMgr.GetInstance();
         
         m_SoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
-        m_Player = tempIns.GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
         m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
 

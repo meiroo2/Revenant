@@ -44,7 +44,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         var instanceMgr = InstanceMgr.GetInstance();
         
         m_UIMgr = instanceMgr.GetComponentInChildren<UIMgr>();
-        m_PlayerUIMgr = instanceMgr.m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_PlayerUIMgr = instanceMgr.m_Player_UI;
         m_ScreenEffectUI = instanceMgr.m_MainCanvas.GetComponentInChildren<InGame_UI>().m_ScreenEffectUI;
         m_SFXMgr = instanceMgr.GetComponentInChildren<SoundPlayer>();
         m_PlayerMatMgr = GetComponentInParent<Player>().GetComponent<Player_MatMgr>();

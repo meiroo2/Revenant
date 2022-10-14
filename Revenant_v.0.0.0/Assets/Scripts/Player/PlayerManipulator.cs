@@ -31,13 +31,8 @@ public class PlayerManipulator : MonoBehaviour
     public int N_MaxBullet = 150;
     public int N_MaxMag = 10;
     public float N_ReloadSpeed = 1f;
-
-
-    private void Start()
-    {
-        InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.
-           SetPlayer(this);
-    }
+    
+    
 
     public void SetPlayer()
     {

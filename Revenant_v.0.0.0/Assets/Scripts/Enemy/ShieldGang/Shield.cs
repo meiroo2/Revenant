@@ -43,40 +43,15 @@ public class Shield : MonoBehaviour, IHotBox
 
 
     // Functions
-
     public int HitHotBox(IHotBoxParam _param)
     {
-        if (p_Shield_Hp <= 0)
+        if (m_ShieldGang.UpdateShieldDmg(_param.m_Damage * m_ShieldGang.p_Shield_Dmg_Multi) == 1)
+        {
+            return 1;
+        }
+        else
+        {
             return 0;
-        
-        p_Shield_Hp -= _param.m_Damage * p_ShieldDmgMulti;
-
-        if (p_Shield_Hp <= 0)
-        {
-            m_ShieldGang.ShieldBroken();
-            StartCoroutine(PopShield());
-            m_Collider.enabled = false;
         }
-        
-        return 1;
-    }
-
-    private IEnumerator PopShield()
-    {
-        Vector2 RotateVec = Vector2.up;
-
-        foreach (var element in m_SpriteRigids)
-        {
-            RotateVec = Vector2.up;
-            RotateVec = StaticMethods.GetRotatedVec(RotateVec, Random.Range(-60f, 60f));
-            
-            element.isKinematic = false;
-            element.AddForce(RotateVec * 3f, ForceMode2D.Impulse);
-        }
-        
-        yield return new WaitForSeconds(2f);
-        gameObject.SetActive(false);
-
-        yield break;
     }
 }

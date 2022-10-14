@@ -64,6 +64,7 @@ public class EnemyMgr : MonoBehaviour
     public float S_VisionDistance;
     public float S_AttackDistance;
     public float S_GapDistance;
+    public float S_AtkAniSpeedMulti;
     [Range(0.0f, 1.0f)] public float S_PointAtkTime;
     public float S_AtkHoldTime;
     public int S_ShieldDmgMulti;

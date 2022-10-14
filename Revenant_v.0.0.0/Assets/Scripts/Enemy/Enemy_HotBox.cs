@@ -40,9 +40,10 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     {
         var instance = InstanceMgr.GetInstance();
 
-        m_PlayerUI = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
+        m_PlayerUI = instance.m_Player_UI;
+        
         m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
-        m_PlayerCenterTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.p_CenterTransform;
+        m_PlayerCenterTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().p_CenterTransform;
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();

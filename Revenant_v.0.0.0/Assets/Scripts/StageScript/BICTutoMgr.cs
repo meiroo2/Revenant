@@ -26,7 +26,7 @@ public class BICTutoMgr : MonoBehaviour
     public void Start()
     {
         var instanceMgr = InstanceMgr.GetInstance();
-        m_Player = instanceMgr.GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_InputMgr = instanceMgr.GetComponentInChildren<Player_InputMgr>();
 
         p_ScreenUIImgObj.sprite = p_HoloUISprites[0];

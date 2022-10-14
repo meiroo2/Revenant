@@ -59,7 +59,7 @@ public class Door_LayerRoom : MonoBehaviour
 
     private void Start()
     {
-        _player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        _player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
 
     // Functions

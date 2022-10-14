@@ -56,8 +56,7 @@ public class TimelineMgr : MonoBehaviour
 
     private void Start()
     {
-        var instance = InstanceMgr.GetInstance();
-        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
 
     public void DeathTimelineEnd()

@@ -45,7 +45,7 @@ public class DaggerEnemy : Human
     private void Start()
     {
         if (m_PlayerTransform is null)
-            m_PlayerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
+            m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
     }
 
     private void Update()
