@@ -41,12 +41,13 @@ public class ShieldGang : BasicEnemy
     public float p_AtkHoldTime = 0.5f;
 
 
-    [field: SerializeField] public RuntimeAnimatorController p_ShieldAnimator;
-    [field: SerializeField] public RuntimeAnimatorController p_NudeAnimator;
+    public RuntimeAnimatorController p_ShieldAnimator;
+    public RuntimeAnimatorController p_NudeAnimator;
+    public Transform p_HotBoxesTransform;
+    public Enemy_HotBox p_HeadHotBox;
+    public Enemy_HotBox p_BodyHotBox;
+    public float p_AtkAniLerpPoint = 0.4f;
     
-    [field: SerializeField] public Enemy_HotBox p_HeadHotBox;
-    [field: SerializeField] public Enemy_HotBox p_BodyHotBox;
-
 
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }

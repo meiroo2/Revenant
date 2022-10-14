@@ -13,9 +13,9 @@ using FixedUpdate = Unity.VisualScripting.FixedUpdate;
 public class Drone : BasicEnemy
 {
     // Visible Member Variables
-    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_AlertSpeedRatio = 1f;
+    //[field: SerializeField, BoxGroup("DroneGang Values")] public float p_AlertSpeedRatio = 1f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_RushSpeedRatio { get; protected set; } = 2f;
-    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_ToRushXDistance { get; protected set; } = 2f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_RushTriggerDistance { get; protected set; } = 2f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_WiggleSpeed { get; protected set; } = 1f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_WigglePower { get; protected set; } = 1f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public int p_BombHp { get; protected set; } = 20;
@@ -23,8 +23,10 @@ public class Drone : BasicEnemy
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_BreakPower = 1f;
 
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_DetectSpeed = 1f;
+    
     [field: SerializeField, BoxGroup("DroneGang Values")] public bool p_LookAround = false;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_LookAroundDelay = 1f;
+    [field: SerializeField, BoxGroup("DroneGang Values")] public Transform[] p_PatrolPoses;
 
     
     [Space(20f)] [Header("확인용 변수 모음")] 
@@ -36,11 +38,12 @@ public class Drone : BasicEnemy
     
     // FSMs
     private IDLE_Drone m_IDLE;
+    private PATROL_Drone m_PATROL;
     private FOLLOW_Drone m_FOLLOW;
     private RUSH_Drone m_RUSH;
     private DEAD_Drone m_DEAD;
-    
-    
+
+
     // Member Variables
     public delegate void CoroutineDelegate();
     private CoroutineDelegate m_CoroutineCallback = null;
@@ -89,12 +92,26 @@ public class Drone : BasicEnemy
         m_EnemyRigid = GetComponent<Rigidbody2D>();
 
         m_IDLE = new IDLE_Drone(this);
+        m_PATROL = new PATROL_Drone(this);
         m_FOLLOW = new FOLLOW_Drone(this);
         m_RUSH = new RUSH_Drone(this);
         m_DEAD = new DEAD_Drone(this);
-        
-        m_CurEnemyStateName = EnemyStateName.FOLLOW;
-        m_CurEnemyFSM = m_IDLE;
+
+        if (p_LookAround && p_PatrolPoses.Length > 0)
+        {
+            p_LookAround = false;
+        }
+
+        if (p_PatrolPoses.Length <= 0)
+        {
+            m_CurEnemyStateName = EnemyStateName.IDLE;
+            m_CurEnemyFSM = m_IDLE;
+        }
+        else if(p_PatrolPoses.Length > 1 && !p_LookAround)
+        {
+            m_CurEnemyStateName = EnemyStateName.PATROL;
+            m_CurEnemyFSM = m_PATROL;
+        }
     }
 
     public void Start()
@@ -152,7 +169,6 @@ public class Drone : BasicEnemy
         else
         {
             m_PlayerCognition = true;
-            ChangeEnemyFSM(EnemyStateName.FOLLOW);
         }
     }
     
@@ -173,7 +189,7 @@ public class Drone : BasicEnemy
         p_BreakPower = _mgr.D_BreakPower;
         p_MoveSpeed = _mgr.D_Speed;
         p_RushSpeedRatio = _mgr.D_RushSpeedMulti;
-        p_ToRushXDistance = _mgr.D_ToRushXDistance;
+        p_RushTriggerDistance = _mgr.D_ToRushXDistance;
         p_HeadHotBox.p_DamageMulti = _mgr.D_DroneDmgMulti;
         p_BodyHotBox.p_DamageMulti = _mgr.D_BombDmgMulti;
         p_DetectSpeed = _mgr.D_DetectSpeed;
@@ -284,12 +300,23 @@ public class Drone : BasicEnemy
     
     public override void ResetMovePoint(Vector2 _destinationPos)
     {
-        m_MovePoint = (_destinationPos - (Vector2)transform.position).normalized;
+        m_MovePoint = _destinationPos;
+        //m_MovePoint = (_destinationPos - (Vector2)transform.position).normalized;
     }
     
-    public override void SetRigidToPoint()
+    public override void SetRigidToPoint(float _addSpeed = 1f)
     {
-        m_EnemyRigid.velocity = m_MovePoint * (p_MoveSpeed * p_RushSpeedRatio);
+        Vector2 direction = (m_MovePoint - (Vector2)transform.position).normalized;
+        if (direction.x > 0)
+        {
+            setisRightHeaded(true);
+            m_EnemyRigid.velocity = direction * (p_MoveSpeed * _addSpeed);
+        }
+        else
+        {
+            setisRightHeaded(false);
+            m_EnemyRigid.velocity = direction * (p_MoveSpeed * _addSpeed);
+        }
     }
 
     /// <summary>

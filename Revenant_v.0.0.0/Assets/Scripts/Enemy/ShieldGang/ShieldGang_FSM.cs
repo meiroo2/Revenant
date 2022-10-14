@@ -427,19 +427,40 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
         bool atkFinished = false;
         animator.SetInteger(Attack, 2);
 
+        // 트랜스폼
+        Transform hotboxTransform = m_Enemy.p_HotBoxesTransform;
+        float normalTime = 0f;
+        Vector2 localPos = new Vector2(0.29f, 0f);
+        float deadLine = m_Enemy.p_AtkAniLerpPoint;
+
         while (true)
         {
             yield return null;
+
+            normalTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             
-            aniInfo = animator.GetCurrentAnimatorStateInfo(0);
+            /*
+            if (normalTime <= deadLine)
+            {
+                hotboxTransform.localPosition = Vector2.Lerp(Vector2.zero,
+                    localPos, (normalTime / deadLine));
+            }
+            else
+            {
+                hotboxTransform.localPosition = Vector2.Lerp(localPos,
+                    Vector2.zero, -(normalTime - deadLine) / (deadLine - 1f));
+            }
+            */
+            hotboxTransform.localPosition = StaticMethods.GetLerpPosByNormalizedTime(Vector2.zero,
+                localPos, deadLine, normalTime);
             
-            if (!atkFinished && aniInfo.normalizedTime >= m_Enemy.p_PointAtkTime)
+            if (!atkFinished && normalTime >= m_Enemy.p_PointAtkTime)
             {
                 atkFinished = true;
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                 m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
             }
-            else if (aniInfo.normalizedTime >= 1f)
+            else if (normalTime >= 1f)
             {
                 break;
             }
@@ -460,7 +481,7 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
     {
         AnimatorStateInfo aniInfo;
         Animator animator = m_Enemy.m_Animator;
-        
+
         // 쉴드 제거
         m_Enemy.m_Shield.gameObject.SetActive(false);
 
@@ -485,19 +506,28 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
         bool atkFinished = false;
         animator.SetInteger(Attack, 2);
 
+        // 트랜스폼
+        Transform hotboxTransform = m_Enemy.p_HotBoxesTransform;
+        float normalTime = 0f;
+        Vector2 localPos = new Vector2(0.29f, 0f);
+        float deadLine = m_Enemy.p_AtkAniLerpPoint;
+
         while (true)
         {
             yield return null;
+
+            normalTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             
-            aniInfo = animator.GetCurrentAnimatorStateInfo(0);
+            hotboxTransform.localPosition = StaticMethods.GetLerpPosByNormalizedTime(Vector2.zero,
+                localPos, deadLine, normalTime);
             
-            if (!atkFinished && aniInfo.normalizedTime >= m_Enemy.p_PointAtkTime)
+            if (!atkFinished && normalTime >= m_Enemy.p_PointAtkTime)
             {
                 atkFinished = true;
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                 m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);
             }
-            else if (aniInfo.normalizedTime >= 1f)
+            else if (normalTime >= 1f)
             {
                 break;
             }

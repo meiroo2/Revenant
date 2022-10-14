@@ -12,6 +12,78 @@ public static class StaticMethods
     private static Vector3 m_TempVec3;
     private static PixelPerfectCamera m_PPC = Camera.main.GetComponent<PixelPerfectCamera>();
 
+
+    /// <summary>
+    /// 받은 List에서 가장 _centerPos에 가까운 IHotBox를 리턴합니다.
+    /// </summary>
+    /// <param name="_centerPos">기준 좌표</param>
+    /// <param name="_hotBoxList">HotBox 리스트</param>
+    /// <returns>가장 가까운 IHotBox</returns>
+    public static IHotBox GetNearestHotBox(Vector2 _centerPos, List<IHotBox> _hotBoxList)
+    {
+        if (_hotBoxList.Count == 1)
+            return _hotBoxList[0];
+        
+        int nearIdx = 0;
+        float nearDistance = (_centerPos - (Vector2)_hotBoxList[0].m_ParentObj.transform.position).sqrMagnitude;
+
+        for (int i = 1; i < _hotBoxList.Count; i++)
+        {
+            float distance = (_centerPos - (Vector2)_hotBoxList[i].m_ParentObj.transform.position).sqrMagnitude;
+            if (distance < nearDistance)
+            {
+                nearIdx = i;
+                nearDistance = distance;
+            }
+        }
+
+        return _hotBoxList[nearIdx];
+    }
+    
+    
+    /// <summary>
+    /// 받은 Array에서 가장 _centerPos에 가까운 IHotBox를 리턴합니다.
+    /// </summary>
+    /// <param name="_centerPos">기준 좌표</param>
+    /// <param name="_hotBoxList">HotBox 리스트</param>
+    /// <returns>가장 가까운 IHotBox</returns>
+    public static IHotBox GetNearestHotBox(Vector2 _centerPos, IHotBox[] _hotBoxList)
+    {
+        if (_hotBoxList.Length == 1)
+            return _hotBoxList[0];
+        
+        int nearIdx = 0;
+        float nearDistance = (_centerPos - (Vector2)_hotBoxList[0].m_ParentObj.transform.position).sqrMagnitude;
+
+        for (int i = 1; i < _hotBoxList.Length; i++)
+        {
+            float distance = (_centerPos - (Vector2)_hotBoxList[i].m_ParentObj.transform.position).sqrMagnitude;
+            if (distance < nearDistance)
+            {
+                nearIdx = i;
+                nearDistance = distance;
+            }
+        }
+
+        return _hotBoxList[nearIdx];
+    }
+    
+    
+    /// <summary>
+    /// NormalTime을 받아 어떠한 벡터값을 지정한 위치로 갔다가 오도록 Lerp값을 리턴합니다.
+    /// </summary>
+    /// <param name="_originPos">원본 위치</param>
+    /// <param name="_destPos">지정 위치</param>
+    /// <param name="_deadLine">NormalTime 기준 어느 지점에서 돌아올까?</param>
+    /// <param name="_normalTime">Normalized Time</param>
+    /// <returns></returns>
+    public static Vector2 GetLerpPosByNormalizedTime(Vector2 _originPos, Vector2 _destPos, float _deadLine, float _normalTime)
+    {
+        return _normalTime <= _deadLine ? 
+            Vector2.Lerp(_originPos, _destPos, (_normalTime / _deadLine)) :
+            Vector2.Lerp(_destPos, _originPos, -(_normalTime - _deadLine) / (_deadLine - 1f));
+    }
+    
     /// <summary>
     /// int형 확률을 대입해 당첨 여부를 알려줍니다.
     /// </summary>

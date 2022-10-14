@@ -68,6 +68,7 @@ public class Player_UseRange : MonoBehaviour
             
             default:
                 Debug.Log("ERR : Player_UseRange에서 정의되지 않은 Tag 발견 " + collision.tag);
+                m_UseableObjList.Add(collision);
                 break;
         }
     }
@@ -91,6 +92,7 @@ public class Player_UseRange : MonoBehaviour
             
             default:
                 Debug.Log("ERR : Player_UseRange에서 정의되지 않은 Tag 발견");
+                m_UseableObjList.Remove(collision);
                 break;
         }
     }
