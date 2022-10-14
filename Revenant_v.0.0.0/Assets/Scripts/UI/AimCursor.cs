@@ -51,10 +51,10 @@ public class AimCursor : MonoBehaviour
 
     private void Start()
     {
-        var instance = InstanceMgr.GetInstance();
-
-        m_PlayerTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.transform;
-        m_PlayerAniMgr = instance.GetComponentInChildren<Player_Manager>().m_Player.m_PlayerAniMgr;
+        var player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
+        
+        m_PlayerTransform = player.transform;
+        m_PlayerAniMgr = player.m_PlayerAniMgr;
     }
 
     private void OnDestroy()

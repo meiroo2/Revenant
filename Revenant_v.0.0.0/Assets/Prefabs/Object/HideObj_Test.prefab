@@ -129,6 +129,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca7a514b2a4abf44989fd66a647cb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_isBooked: 0
+  m_HideObj: {fileID: 0}
+  m_isLeftSlot: 0
 --- !u!61 &2116663441824337275
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -233,6 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aca7a514b2a4abf44989fd66a647cb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_isBooked: 0
+  m_HideObj: {fileID: 0}
+  m_isLeftSlot: 0
 --- !u!61 &2116663442285372811
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -553,7 +559,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Hp: 0
   m_Renderer: {fileID: 2116663442746928350}
-  p_HideSlots:
-  - {fileID: 2116663442285372808}
-  - {fileID: 2116663441824337272}
+  <p_LSlot>k__BackingField: {fileID: 2116663442285372808}
+  <p_RSlot>k__BackingField: {fileID: 2116663441824337272}
   p_Collider: {fileID: 2116663442942922925}

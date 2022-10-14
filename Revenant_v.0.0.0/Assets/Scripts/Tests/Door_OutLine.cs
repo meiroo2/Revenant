@@ -11,7 +11,7 @@ public class Door_OutLine : MonoBehaviour
     private void Start()
     {
         m_Outline = GetComponent<SpriteOutline>();
-        m_PlayerTransform = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform;
+        m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
     }
 
     private void FixedUpdate()

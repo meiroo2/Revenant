@@ -44,7 +44,7 @@ public class DynamicOutline : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_PlayerRealTransform = instance.GetComponentInChildren<Player_Manager>().m_Player.transform;
+        m_PlayerRealTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
     }
     
     

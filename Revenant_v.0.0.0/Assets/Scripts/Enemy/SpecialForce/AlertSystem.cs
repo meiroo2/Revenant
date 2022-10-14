@@ -11,7 +11,7 @@ using UnityEngine;
 public class AlertSystem : MonoBehaviour
 {
     // Member Variables
-    private Animator m_Animator;
+    public Animator m_Animator { get; private set; }
     private readonly int AlertSpeed = Animator.StringToHash("AlertSpeed");
     private readonly int StunAlertSpeed = Animator.StringToHash("StunAlertSpeed");
     private readonly int FadeIn = Animator.StringToHash("FadeIn");
@@ -82,12 +82,8 @@ public class AlertSystem : MonoBehaviour
     /// <param name="_action">상승 후 호출할 Delegate Action</param>
     public void AlertGaugeUp(Action _action = null)
     {
-        if (m_IsGaugeUp)
-            return;
-
-        m_IsGaugeUp = true;
-        
-        m_Animator.SetInteger(GaugeUp, 1);
+        m_Animator.SetInteger(GaugeUp, 0);
+        m_Animator.SetInteger(Attack, 0);
         
         if(!ReferenceEquals(m_GaugeUpCoroutine, null))
             StopCoroutine(m_GaugeUpCoroutine);
@@ -97,6 +93,9 @@ public class AlertSystem : MonoBehaviour
 
     private IEnumerator CalGaugeUp(Action _action)
     {
+        yield return null;
+        m_Animator.SetInteger(GaugeUp, 1);
+        
         while (true)
         {
             yield return null;
@@ -118,8 +117,7 @@ public class AlertSystem : MonoBehaviour
         
         m_Animator.SetInteger(GaugeUp, 0);
         m_Animator.SetInteger(Attack, 0);
-        m_IsGaugeUp = false;
-        
+
         yield break;
     }
     

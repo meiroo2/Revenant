@@ -8,12 +8,15 @@ using UnityEngine;
 public class HideObj : MonoBehaviour
 {
     // Visible Member Variables
-    [Tooltip("0À¸·Î ¼³Á¤½Ã ÆÄ±«µÇÁö ¾Ê½À´Ï´Ù.")]
+    [Tooltip("0ìœ¼ë¡œ ì„¤ì •ì‹œ íŒŒê´´ë˜ì§€ ì•ŠìŠµë‹ˆë‹¤.")]
     public int m_Hp = 0;
 
     [Space(20f)] [Header("Plz assign")]
     public SpriteRenderer m_Renderer;
-    public HideSlot[] p_HideSlots;
+
+    [field: SerializeField] public HideSlot p_LSlot { get; private set; }
+    [field: SerializeField] public HideSlot p_RSlot { get; private set; }
+
     public HideObjCollider p_Collider;
 
 
@@ -24,23 +27,18 @@ public class HideObj : MonoBehaviour
     // Constructors
     private void Awake()
     {
-        // 0º¸´Ù Å¬ °æ¿ì ÆÄ±«µÇ´Â ¾öÆó¹°
+        // 0ë³´ë‹¤ í´ ê²½ìš° íŒŒê´´ë˜ëŠ” ì—„íë¬¼
         m_Destructable = m_Hp > 0;
         
-        // Äİ¶óÀÌ´õ¿¡ ºÎ¸ğ ´ëÀÔ
+        // ì½œë¼ì´ë”ì— ë¶€ëª¨ ëŒ€ì…
         p_Collider.m_HideObj = this;
+     
         
-        if (p_HideSlots.Length <= 0)
-        {
-            Debug.Log(gameObject.name + "¿¡ HideSlot ¹èÁ¤ÀÌ µÇ¾îÀÖÁö ¾ÊÀ½");
-            return;
-        }
-        
-        // °¢ Slot¿¡ ºÎ¸ğ ½ºÅ©¸³Æ®(this) ³Ö¾îÁÜ
-        foreach (var ele in p_HideSlots)
-        {
-            ele.m_HideObj = this;
-        }
+        // ê° Slotì— ë¶€ëª¨ ìŠ¤í¬ë¦½íŠ¸(this) ë„£ì–´ì¤Œ
+        p_LSlot.m_HideObj = this;
+        p_LSlot.m_isLeftSlot = true;
+        p_RSlot.m_HideObj = this;
+        p_RSlot.m_isLeftSlot = false;
     }
 
 
@@ -51,21 +49,32 @@ public class HideObj : MonoBehaviour
 
 
     // Functions
+    public int GetSlotsInfo()
+    {
+        return p_LSlot.m_isOn switch
+        {
+            false when !p_RSlot.m_isOn => 0,
+            true when !p_RSlot.m_isOn => 1,
+            false when p_RSlot.m_isOn => 2,
+            false when !p_RSlot.m_isOn => 3,
+            _ => -1
+        };
+    }
     public int GetHit(IHotBoxParam _param)
     {
         switch (m_Destructable)
         {
             case true when m_Hp <= 0:
-                // ÆÄ±« °¡´ÉÇÑ ¹°Ã¼°¡ ÀÌ¹Ì Hp°¡ 0 ÀÌÇÏÀÏ °æ¿ì
+                // íŒŒê´´ ê°€ëŠ¥í•œ ë¬¼ì²´ê°€ ì´ë¯¸ Hpê°€ 0 ì´í•˜ì¼ ê²½ìš°
                 return 0;
             
             case true:
-                // ÆÄ±« °¡´ÉÇÑ ¹°Ã¼
+                // íŒŒê´´ ê°€ëŠ¥í•œ ë¬¼ì²´
                 m_Hp -= _param.m_Damage;
 
                 if (m_Hp <= 0)
                 {
-                    // ÆÄ±« »ç¿îµå Àç»ıµÊ
+                    // íŒŒê´´ ì‚¬ìš´ë“œ ì¬ìƒë¨
                     
                     // Gameobject Disable 
                     gameObject.SetActive(false);
@@ -75,7 +84,7 @@ public class HideObj : MonoBehaviour
                 break;
             
             case false:
-                // ÆÄ±« ºÒ°¡´É ¹°Ã¼
+                // íŒŒê´´ ë¶ˆê°€ëŠ¥ ë¬¼ì²´
                 return 1;
                 break;
             
@@ -86,20 +95,10 @@ public class HideObj : MonoBehaviour
 
     public void UpdateHideSlotInfo()
     {
-        // ½½·Ô ÀüÃ¼ ²¨Áü »óÅÂ·Î °¡Á¤
-        var isSlotsFullOff = true;
-        
-        foreach (var element in p_HideSlots)
-        {
-            // ½½·Ô ÇÑ°³¶óµµ ÄÑÁ®ÀÖÀ¸¸é º¯¼ö ¼öÁ¤ÇÏ°í ¹İº¹¹® Å»Ãâ
-            if (element.m_isOn)
-            {
-                isSlotsFullOff = false;
-                break;
-            }
-        }
+        // ìŠ¬ë¡¯ ì „ì²´ êº¼ì§ ìƒíƒœë¡œ ê°€ì •
+        bool isSlotsFullOff = !(p_LSlot.m_isOn || p_RSlot.m_isOn);
 
-        // Äİ¶óÀÌ´õ ÄÑÁı °ÉÁ¤
+        // ì½œë¼ì´ë” ì¼œì§‘ ê±¸ì •
         p_Collider.SetHideObjCollider(!isSlotsFullOff);
         SetHideObjSpriteLayer(!isSlotsFullOff);
     }
@@ -109,5 +108,5 @@ public class HideObj : MonoBehaviour
         m_Renderer.sortingLayerName = _toFrontObj ? "FrontObject" : "Object";
     }
 
-    // ±âÅ¸ ºĞ·ùÇÏ°í ½ÍÀº °ÍÀÌ ÀÖÀ» °æ¿ì
+    // ê¸°íƒ€ ë¶„ë¥˜í•˜ê³  ì‹¶ì€ ê²ƒì´ ìˆì„ ê²½ìš°
 }

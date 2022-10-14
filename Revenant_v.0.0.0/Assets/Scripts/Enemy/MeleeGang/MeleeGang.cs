@@ -82,7 +82,7 @@ public class MeleeGang : BasicEnemy
     {
         m_OriginPos = transform.position;
 
-        Player tempPlayer = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        Player tempPlayer = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerTransform = tempPlayer.transform;
         m_PlayerLocationSensor = tempPlayer.m_PlayerLocationSensor;
         m_MatChanger = InstanceMgr.GetInstance().GetComponentInChildren<MatChanger>();

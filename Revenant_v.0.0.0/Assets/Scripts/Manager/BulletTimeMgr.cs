@@ -88,13 +88,14 @@ public class BulletTimeMgr : MonoBehaviour
             element.SetActive(false);
         }
         
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
+        m_Negotiator = m_Player.m_WeaponMgr.m_CurWeapon;
+        
         var instance = InstanceMgr.GetInstance();
-        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_SoundPlayer = instance.GetComponentInChildren<SoundPlayer>();
         m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
         m_MatChanger = instance.GetComponentInChildren<MatChanger>();
-        m_Negotiator = instance.GetComponentInChildren<Player_Manager>().m_Player.m_WeaponMgr.m_CurWeapon;
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
         m_ScreenEffect_AR = instance.m_ScreenEffect_AR;

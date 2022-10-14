@@ -31,7 +31,7 @@ public class Player_MeleeAttack : MonoBehaviour
         var instance = InstanceMgr.GetInstance();
         m_SFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_SoundSFXMgr = instance.GetComponentInChildren<SoundPlayer>();
-        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
 
 

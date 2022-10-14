@@ -49,7 +49,7 @@ public class PlayerRotation : MonoBehaviour
     }
     private void Start()
     {
-        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_AimCursor = InstanceMgr.GetInstance().GetComponentInChildren<AimCursor>().transform;
     }
 

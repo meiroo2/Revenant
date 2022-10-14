@@ -58,11 +58,12 @@ public class Player_ArmMgr : MonoBehaviour
     private void Start()
     {
         InstanceMgr _instance = InstanceMgr.GetInstance();
-        m_Player = _instance.GetComponentInChildren<Player_Manager>().m_Player;
+        m_PlayerUI = _instance.m_Player_UI;
+        
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_WeaponMgr = m_Player.m_WeaponMgr;
         m_PlayerAniMgr = m_Player.m_PlayerAniMgr;
-        m_InputMgr = m_Player.m_InputMgr;
-        m_PlayerUI = m_Player.m_PlayerUIMgr;
+        m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
     }
     
     

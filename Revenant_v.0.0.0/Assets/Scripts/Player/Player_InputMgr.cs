@@ -32,7 +32,7 @@ public class Player_InputMgr : MonoBehaviour
     private bool m_UKeyInput = false;
     private bool m_DKeyInput = false;
 
-    private Coroutine m_InputCoroutine;
+    private Coroutine m_InputCoroutine = null;
     
     
     // Constructors
@@ -42,7 +42,15 @@ public class Player_InputMgr : MonoBehaviour
     }
     private void OnDisable()
     {
-        StopCoroutine(m_InputCoroutine);
+        if (!ReferenceEquals(m_InputCoroutine, null))
+            StopCoroutine(m_InputCoroutine);
+
+        m_InputCoroutine = null;
+    }
+    private void OnEnable()
+    {
+        if (ReferenceEquals(m_InputCoroutine, null))
+            m_InputCoroutine = StartCoroutine(CoroutineUpdate());
     }
 
 

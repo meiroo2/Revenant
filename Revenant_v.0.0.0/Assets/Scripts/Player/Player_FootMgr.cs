@@ -36,8 +36,8 @@ public class Player_FootMgr : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_Player = instance.GetComponentInChildren<Player_Manager>().m_Player;
-        m_InputMgr = m_Player.m_InputMgr;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
+        m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
 
         m_LayerMask = LayerMask.GetMask("Floor");
         m_PlayerNormal = Vector2.up;

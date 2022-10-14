@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 1900004413932140605}
   - component: {fileID: 4718642478766582402}
   - component: {fileID: 587487288167801870}
+  - component: {fileID: 4840181404405830559}
+  - component: {fileID: 6942717333549071119}
   m_Layer: 0
   m_Name: GameMgr
   m_TagString: GameMgr
@@ -49,6 +51,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <p_CoroutineHandler>k__BackingField: {fileID: 8798066901285890878}
+  <p_PlayerMgr>k__BackingField: {fileID: 4840181404405830559}
+  <p_PlayerInputMgr>k__BackingField: {fileID: 6942717333549071119}
+  <p_PlayerManipulator>k__BackingField: {fileID: 4718642478766582402}
   m_CanInputAnyKey: 0
 --- !u!114 &8798066901285890878
 MonoBehaviour:
@@ -110,6 +115,8 @@ MonoBehaviour:
   D_ToRushXDistance: 0
   D_DroneDmgMulti: 0
   D_BombDmgMulti: 0
+  D_DetectSpeed: 0
+  D_VisionDistance: 0
   S_HP: 0
   S_ShieldHp: 0
   S_MeleeDamage: 0
@@ -148,6 +155,8 @@ MonoBehaviour:
   P_MeleeStunValue: 10
   P_JustEvadeStartTime: 0
   P_JustEvadeEndTime: 1
+  P_RollDecelerationSpeed: 1
+  P_ReloadSpeed: 1
   N_Damage: 10
   N_StunValue: 1
   N_MinFireDelay: 0.1
@@ -166,3 +175,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79049e9a158a460283536f69fc1ac706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4840181404405830559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796319072097737523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09d2ca09dcaa83341b95fadeb968927b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6942717333549071119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796319072097737523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73b7688b41bc4d42b597dfd3c1b5af0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_MoveInputLock: 0

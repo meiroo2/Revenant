@@ -107,7 +107,6 @@ public class Player_IDLE : PlayerFSM
 
     public override void ExitState()
     {
-        m_Player.m_ArmMgr.StopReload();
         m_Player.m_CanHide = false;
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
         ExitFinalProcess();

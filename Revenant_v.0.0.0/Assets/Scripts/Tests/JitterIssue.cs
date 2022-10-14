@@ -10,7 +10,7 @@ public class JitterIssue : MonoBehaviour
 
     private void Start()
     {
-        m_Player = InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
 
     private void Update()

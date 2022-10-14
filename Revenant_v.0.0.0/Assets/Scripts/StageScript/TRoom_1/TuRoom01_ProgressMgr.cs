@@ -79,13 +79,13 @@ public class TuRoom01_ProgressMgr : ProgressMgr
 
                 m_ScriptUIMgr.NextScript(2, true);
                 m_worldUIMgr.getWorldUI(0).ActivateIUI(new IUIParam(true));
-                m_worldUIMgr.getWorldUI(0).PosSetIUI(new IUIParam(InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform));
+                m_worldUIMgr.getWorldUI(0).PosSetIUI(new IUIParam(GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform));
                 break;
 
             case 1:
                 m_worldUIMgr.getWorldUI(0).ActivateIUI(new IUIParam(false));
                 m_worldUIMgr.getWorldUI(1).ActivateIUI(new IUIParam(true));
-                m_worldUIMgr.getWorldUI(1).PosSetIUI(new IUIParam(InstanceMgr.GetInstance().GetComponentInChildren<Player_Manager>().m_Player.transform));
+                m_worldUIMgr.getWorldUI(1).PosSetIUI(new IUIParam(GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform));
                 break;
 
             case 2:
