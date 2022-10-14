@@ -102,8 +102,7 @@ public class Player_FootMgr : MonoBehaviour
     {
         if (m_isOnStair)
             return;
-        
-        
+
         if (m_InputMgr.m_IsPushStairUpKey)
         {
             if (!collision.TryGetComponent(out StairPos DownPos)) 
@@ -120,6 +119,8 @@ public class Player_FootMgr : MonoBehaviour
             
             m_Player.GoToStairLayer(true);
             m_isOnStair = true;
+            m_Player.bIsOnStair = m_isOnStair;
+            m_Player.bIsOutOfStair = false;
 
             if(!ReferenceEquals(m_StairPosCoroutine, null))
                 StopCoroutine(m_StairPosCoroutine);
@@ -141,7 +142,9 @@ public class Player_FootMgr : MonoBehaviour
             
             m_Player.GoToStairLayer(true);
             m_isOnStair = true;
-            
+            m_Player.bIsOnStair = m_isOnStair;
+            m_Player.bIsOutOfStair = false;
+
             if(!ReferenceEquals(m_StairPosCoroutine, null))
                 StopCoroutine(m_StairPosCoroutine);
             m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(true));
@@ -160,9 +163,7 @@ public class Player_FootMgr : MonoBehaviour
                 if (transform.position.y < m_StairPos.transform.position.y - m_SensorYGap)
                 {
                     Debug.Log("윗센서 Y보다 내려옴");
-                    
                     m_Player.PlayerUsedObjectVector = m_StairPos.transform.position;
-
                     foreach (var Enemy in NormalGangList)
                     {
                         Enemy.bMoveToUsedStair = true;
@@ -186,6 +187,7 @@ public class Player_FootMgr : MonoBehaviour
                         
                         m_Player.GoToStairLayer(false);
                         m_isOnStair = false;
+                        m_Player.bIsOnStair = m_isOnStair;
                         m_StairPos = null;
                         break;
                     }
@@ -202,6 +204,7 @@ public class Player_FootMgr : MonoBehaviour
                         
                         m_Player.GoToStairLayer(false);
                         m_isOnStair = false;
+                        m_Player.bIsOnStair = m_isOnStair;
                         m_StairPos = null;
                         break;
                     }
@@ -232,7 +235,6 @@ public class Player_FootMgr : MonoBehaviour
                 {
                     Debug.Log("아래센서 Y좌표보다 올라옴");
                     m_Player.PlayerUsedObjectVector = m_StairPos.transform.position;
-                    
                     foreach (var Enemy in NormalGangList)
                     {
                         Enemy.bMoveToUsedStair = true;
@@ -307,6 +309,9 @@ public class Player_FootMgr : MonoBehaviour
             {
                 if (transform.position.x <= UpPosX) // 위 센서보다 왼쪽
                 {
+                    m_Player.bIsOutOfStair = true;
+                    m_Player.PlayerOutOfStairVector = m_StairPos.m_ParentStair.m_UpPos.transform.position;
+                    
                     m_StairPos.m_ParentStair.MoveOrder(16);
 
                     Debug.Log("돌아왔당");
@@ -314,11 +319,16 @@ public class Player_FootMgr : MonoBehaviour
                 
                     m_Player.GoToStairLayer(false);
                     m_isOnStair = false;
+                    m_Player.bIsOnStair = m_isOnStair;
                     m_StairPos = null;
+                    
                     break;
                 }
                 else if (transform.position.x >= DownPosX)  // 아래 센서보다 오른쪽
                 {
+                    m_Player.bIsOutOfStair = true;
+                    m_Player.PlayerUsedObjectVector = m_StairPos.m_ParentStair.m_DownPos.transform.position;
+                    
                     m_StairPos.m_ParentStair.MoveOrder(10);
 
                     Debug.Log("돌아왔당");
@@ -326,7 +336,9 @@ public class Player_FootMgr : MonoBehaviour
                 
                     m_Player.GoToStairLayer(false);
                     m_isOnStair = false;
+                    m_Player.bIsOnStair = m_isOnStair;
                     m_StairPos = null;
+
                     break;
                 }
 

@@ -160,7 +160,10 @@ public class Negotiator_Player : BasicWeapon_Player
                 {
                     m_SoundPlayer.playGunFireSound(0, gameObject);
                     SpawnSFX(result.m_RayDestinationPos);
-                    hotBox.HitHotBox(hotBoxParam);
+
+                    // 22.10.11 - 계단 핫박스 오류 임시 조치
+                    if (!ReferenceEquals(hotBox, null))
+                        hotBox.HitHotBox(hotBoxParam);
                 }
 
                 m_SoundMgr.MakeSound(result.m_RayDestinationPos, true, SOUNDTYPE.BULLET);
