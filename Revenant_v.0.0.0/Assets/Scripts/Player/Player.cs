@@ -2,9 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 public enum PlayerStateName
 {
@@ -57,6 +60,10 @@ public class Player : Human
 
 
     // Member Variables
+    [ReadOnly] public bool bIsOnStair = false;
+    [ReadOnly] public bool bIsOutOfStair = true;
+    [ReadOnly] public Vector2 PlayerOutOfStairVector = Vector2.zero;
+
     [field : SerializeField] public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
