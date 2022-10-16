@@ -8,29 +8,28 @@ public class EnemySpawner_Collider : MonoBehaviour
     // Visible Member Variables
     private EnemySpawner m_ParentEnemySpawner;
     
-    
-    // Member Variables
-    private bool m_IsCollided = false;
-
 
     // Constructors
     private void Awake()
     {
         m_ParentEnemySpawner = GetComponentInParent<EnemySpawner>();
-        m_IsCollided = false;
     }
 
 
     // Functions
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (m_IsCollided)
-            return;
-
         if (col.CompareTag("@Player"))
         {
-            m_IsCollided = true;
-            m_ParentEnemySpawner.AchieveCollisionTrigger();
+            m_ParentEnemySpawner.AchieveCollisionTrigger(true);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("@Player"))
+        {
+            m_ParentEnemySpawner.AchieveCollisionTrigger(false);
         }
     }
 }

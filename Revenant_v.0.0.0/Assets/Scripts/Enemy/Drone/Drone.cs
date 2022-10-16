@@ -190,11 +190,12 @@ public class Drone : BasicEnemy
         p_BreakPower = _mgr.D_BreakPower;
         p_MoveSpeed = _mgr.D_Speed;
         p_RushSpeedRatio = _mgr.D_RushSpeedMulti;
-        p_RushTriggerDistance = _mgr.D_ToRushXDistance;
+        p_RushTriggerDistance = _mgr.D_RushTriggerDistance;
         p_HeadHotBox.p_DamageMulti = _mgr.D_DroneDmgMulti;
         p_BodyHotBox.p_DamageMulti = _mgr.D_BombDmgMulti;
         p_DetectSpeed = _mgr.D_DetectSpeed;
         p_VisionDistance = _mgr.D_VisionDistance;
+        p_DecidePositionPointTime = _mgr.D_DecidePositionPointTime;
 
         #if UNITY_EDITOR
                 EditorUtility.SetDirty(this);

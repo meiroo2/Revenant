@@ -47,11 +47,12 @@ public class EnemyMgr : MonoBehaviour
     public float D_BreakPower;
     public float D_Speed;
     public float D_RushSpeedMulti;
-    public float D_ToRushXDistance;
+    public float D_RushTriggerDistance;
     public int D_DroneDmgMulti;
     public int D_BombDmgMulti;
     public float D_DetectSpeed;
     public float D_VisionDistance;
+    public float D_DecidePositionPointTime;
 
     [Space(10f)] 
     [Header("방패적 변수 목록")] 
