@@ -114,14 +114,14 @@ public class Door_LayerRoom : MonoBehaviour
             
             _obj.position = movePos;
             m_MainCam.InstantMoveToPlayer(_obj.position, movePos);
-            
-            _player.PlayerUsedObjectVector = p_CenterPos.position;
-            Debug.Log("p_CenterPos.position - " + p_CenterPos.position);
-            Debug.Log("Player Position - " + _player.transform.position);
+
             foreach (var normalGang in NormalGangList)
             {
-                normalGang.bMoveToUsedDoor = true;
-                //Debug.Log("_basicEnemy.bMoveToUsedDoor - " + normalGang.bMoveToUsedDoor);
+                if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
+                {
+                    normalGang.WayPointsVectorList.Add(p_CenterPos.position);
+                    normalGang.bMoveToUsedDoor = true;
+                }
             }
 
         }

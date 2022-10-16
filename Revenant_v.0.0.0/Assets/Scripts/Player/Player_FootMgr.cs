@@ -163,10 +163,13 @@ public class Player_FootMgr : MonoBehaviour
                 if (transform.position.y < m_StairPos.transform.position.y - m_SensorYGap)
                 {
                     Debug.Log("윗센서 Y보다 내려옴");
-                    m_Player.PlayerUsedObjectVector = m_StairPos.transform.position;
-                    foreach (var Enemy in NormalGangList)
+                    foreach (var normalGang in NormalGangList)
                     {
-                        Enemy.bMoveToUsedStair = true;
+                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
+                        {
+                            normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
+                            normalGang.bMoveToUsedStair = true;
+                        }
                     }
                     
                     if(!ReferenceEquals(m_StairCoroutine, null))
@@ -234,12 +237,15 @@ public class Player_FootMgr : MonoBehaviour
                 if (transform.position.y > m_StairPos.transform.position.y + m_SensorYGap)
                 {
                     Debug.Log("아래센서 Y좌표보다 올라옴");
-                    m_Player.PlayerUsedObjectVector = m_StairPos.transform.position;
-                    foreach (var Enemy in NormalGangList)
+                    foreach (var normalGang in NormalGangList)
                     {
-                        Enemy.bMoveToUsedStair = true;
+                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
+                        {
+                            normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
+                            normalGang.bMoveToUsedStair = true;
+                        }
                     }
-                    
+
                     if(!ReferenceEquals(m_StairCoroutine, null))
                         StopCoroutine(m_StairCoroutine);
                     m_StairCoroutine = StartCoroutine(StairCoroutine(false));
@@ -309,8 +315,18 @@ public class Player_FootMgr : MonoBehaviour
             {
                 if (transform.position.x <= UpPosX) // 위 센서보다 왼쪽
                 {
-                    m_Player.bIsOutOfStair = true;
-                    m_Player.PlayerOutOfStairVector = m_StairPos.m_ParentStair.m_UpPos.transform.position;
+                    foreach (var normalGang in NormalGangList)
+                    {
+                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
+                        {
+                            normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
+                            normalGang.bMoveToUsedStair = true;
+                        }
+                    }
+                    
+                    // OutOfStairVector 수정 요망
+                    // m_Player.bIsOutOfStair = true;
+                    //m_Player.PlayerOutOfStairVector = m_StairPos.m_ParentStair.m_UpPos.transform.position;
                     
                     m_StairPos.m_ParentStair.MoveOrder(16);
 
@@ -326,8 +342,18 @@ public class Player_FootMgr : MonoBehaviour
                 }
                 else if (transform.position.x >= DownPosX)  // 아래 센서보다 오른쪽
                 {
-                    m_Player.bIsOutOfStair = true;
-                    m_Player.PlayerUsedObjectVector = m_StairPos.m_ParentStair.m_DownPos.transform.position;
+                    foreach (var normalGang in NormalGangList)
+                    {
+                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
+                        {
+                            normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
+                            normalGang.bMoveToUsedStair = true;
+                        }
+                    }
+                    
+                    //m_Player.bIsOutOfStair = true;
+                    // OutOfStairVectgor 수정 요망
+                    //m_Player.PlayerUsedObjectVector = m_StairPos.m_ParentStair.m_DownPos.transform.position;
                     
                     m_StairPos.m_ParentStair.MoveOrder(10);
 

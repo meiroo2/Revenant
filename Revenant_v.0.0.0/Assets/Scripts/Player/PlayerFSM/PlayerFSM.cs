@@ -80,8 +80,8 @@ public class Player_IDLE : PlayerFSM
         
         if (m_InputMgr.m_IsPushInteractKey)
         {
-            Debug.Log(m_UseRange.UseNearestObj());
-            
+            //Debug.Log(m_UseRange.UseNearestObj());
+            m_UseRange.UseNearestObj();
         }
         
         
@@ -162,7 +162,7 @@ public class Player_WALK : PlayerFSM
         
         if (m_InputMgr.m_IsPushInteractKey)
         {
-            Debug.Log(m_UseRange.UseNearestObj());
+            //Debug.Log(m_UseRange.UseNearestObj());
             
         }
         

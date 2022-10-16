@@ -65,6 +65,9 @@ public class BasicEnemy : Human
     public bool bMoveToUsedStair { get; set; } = false;
     public bool bMoveToUseStairUp { get; set; } = false;
     public bool bMoveToUseStairDown { get; set; } = false;
+    
+    public List<Vector2> WayPointsVectorList;
+    public int WayPointsIndex = 0;
 
     // Functions
     /// <summary>
