@@ -30,12 +30,14 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     public void ActivateOutline(bool _isOn)
     {
         RemoveEnemyListToActivate();
-
         _checkPoint.ActivateBothOutline(_isOn);
     }
 
     public int useObj(IUseableObjParam _param)
     {
+        RemoveEnemyListToActivate();
+        _checkPoint.ActivateBothOutline(true);
+        
         // 성공하면 1, 실패하면 0을 반환
         // 플레이어가 체크포인트 범위안에 들어있고, 등록된 적 리스트가 비워져 있다면 인터랙션 가능
         if (_checkPoint.bCanInteract && GetEnemyNumFromEnemyList == 0 && GetEnemyNumFromSpawnerList == 0)
@@ -54,9 +56,11 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
                 // 플레이어가 스폰할 체크포인트의 위치를 DataHandleManager에 저장
                 DataHandleManager.Instance.PlayerPositionVector = CheckPoint.GetActiveCheckPointPosition();
             }
-            
+            Debug.Log("체크포인트 상호작용 성공");
             return 1;
         }
+
+        Debug.Log("체크포인트 상호작용 실패");
         return 0;
     }
 
