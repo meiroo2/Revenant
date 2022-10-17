@@ -223,7 +223,7 @@ public class FOLLOW_Drone : Drone_FSM
                     if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=
                         m_Enemy.p_DecidePositionPointTime)
                     {
-                        m_Enemy.ResetMovePoint(m_PlayerTransform.position);
+                        m_Enemy.ResetMovePoint(m_Enemy.m_Player.m_PlayerFootMgr.GetFootRayHit().point);
                         m_FinishDecideMovePos = true;
                     }
                 }
@@ -280,7 +280,7 @@ public class RUSH_Drone : Drone_FSM
                 break;
             
             case 1:     // 좌표 계산
-                if (Vector2.Distance(m_EnemyTransform.position,m_Enemy.GetMovePoint()) > 0.3f)
+                if (Vector2.Distance(m_EnemyTransform.position,m_Enemy.GetMovePoint()) > 0.1f)
                 {
                     m_Enemy.SetRigidToPoint(m_Enemy.p_RushSpeedRatio);
                 }

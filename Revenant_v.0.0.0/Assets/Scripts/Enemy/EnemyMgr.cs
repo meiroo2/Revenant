@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -83,6 +84,27 @@ public class EnemyMgr : MonoBehaviour
 
 
     // Functions
+    [Button]
+    public void StickToFloor()
+    {
+        RaycastHit2D cast;
+        int m_LayerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("EmptyFloor"));
+        
+        NormalGang[] tempNGangs = FindObjectsOfType<NormalGang>();
+        for (int i = 0; i < tempNGangs.Length; i++)
+        {
+            cast = Physics2D.Raycast(tempNGangs[i].transform.position, -transform.up, 1f, m_LayerMask);
+            tempNGangs[i].transform.position = new Vector2(cast.point.x, cast.point.y + 0.64f);
+        }
+        
+        MeleeGang[] tempMGangs = FindObjectsOfType<MeleeGang>();
+        for (int i = 0; i < tempMGangs.Length; i++)
+        {
+            cast = Physics2D.Raycast(tempMGangs[i].transform.position, -transform.up, 1f, m_LayerMask);
+            tempMGangs[i].transform.position = new Vector2(cast.point.x, cast.point.y + 0.64f);
+        }
+    }
+    
     public void LoadMeleeGangData()
     {
         

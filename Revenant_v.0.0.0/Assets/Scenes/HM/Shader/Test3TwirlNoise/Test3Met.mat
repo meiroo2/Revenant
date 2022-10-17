@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Holo
-  m_Shader: {fileID: -6465566751694194690, guid: 33211205e54608e429534f71354f2df5, type: 3}
+  m_Name: Test3Met
+  m_Shader: {fileID: -6465566751694194690, guid: a6e8d372e43875b41b04235a058d2b23, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -24,8 +24,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SampleTexture2D_15fba146465b462d947e820f6163d0a4_Texture_1:
-        m_Texture: {fileID: 0}
+    - _Maintex:
+        m_Texture: {fileID: 2800000, guid: 7903da20654151c4f9ab305da889584e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_6c80a72f38b649baa0b4090a75ec5db4_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 7903da20654151c4f9ab305da889584e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_9ddec1ea8b4e46beac96cecbfee7af36_Texture_1:
+        m_Texture: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -42,10 +50,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _HoloAlpha: 0.827
-    - _HoloFloat: 5.3
-    - _HoloSpeed: 1.24
-    - _holoSpeed: 0
+    - _DissolveAmount: 1.03
+    - _DissolveScale: 2.82
+    - _DissolveSpeed: 4.86
+    - _DissolveWidth: 1
+    - _Test3Scale: 30
     m_Colors:
-    - _HoloColor: {r: 0.6488762, g: 1.3589138, b: 45.854, a: 0}
+    - _Color: {r: 13.323903, g: 0, b: 55.715237, a: 0}
   m_BuildTextureStacks: []
