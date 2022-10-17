@@ -220,6 +220,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
 
     public override void StartState()
     {
+        _enemyState = EnemyState.Chase;
         m_Animator.SetBool(IsWalk, true);
         m_IsFirst = true;
 
@@ -236,7 +237,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
         switch (m_Phase)
         {
             case 0: // 체인지 애니메이션 대기 + 느낌표 출력
-                _enemyState = EnemyState.Alert;
+                //_enemyState = EnemyState.Alert;
                 m_Enemy.m_Alert.SetAlertActive(true);
                 m_Animator.SetTrigger(IsChange);
                 m_Phase = 1;
@@ -258,25 +259,28 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 //m_Enemy.GoToPlayerRoom();
                 
                 // 적 상태 CHASE
-                _enemyState = EnemyState.Chase;
-                
-                // 적이 계단 위에 있고 플레이어가 계단 위에 있으면
-                if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-                {
-                    // 계단으로 향해 이동하지 않음 - 플레이어에게 이동
-                    m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
-                }
-                // 플레이어가 계단 밖으로 나갔지만 적이 계단 위에 있으면
-                else if (m_Enemy.m_Player.bIsOutOfStair && m_Enemy.bIsOnStair)
-                {
-                    // 계단 밖 센서로 이동
-                    m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.PlayerOutOfStairVector.x));
-                }
+                //_enemyState = EnemyState.Chase;
+
+                // // 적이 계단 위에 있고 플레이어가 계단 위에 있으면
+                // if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+                // {
+                //     // 계단으로 향해 이동하지 않음 - 플레이어에게 이동
+                //     m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
+                // }
+                // // 플레이어가 계단 밖으로 나갔지만 적이 계단 위에 있으면
+                // else if (m_Enemy.m_Player.bIsOutOfStair && m_Enemy.bIsOnStair)
+                // {
+                //     // 계단 밖 센서로 이동
+                //     m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.PlayerOutOfStairVector.x));
+                // }
                 // 적이 문으로 향해 이동할 때 혹은 계단으로 향해 이동할 때 (오브젝트 사용 관련 조건문)
-                else if (m_Enemy.bMoveToUsedDoor || m_Enemy.bMoveToUsedStair)
+                if (m_Enemy.bMoveToUsedDoor || m_Enemy.bMoveToUsedStair)
                 {
                     // 플레이어가 사용한 오브젝트로 이동
-                    m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.PlayerUsedObjectVector.x));
+                    if (m_Enemy.WayPointsVectorList.Count != 0 && m_Enemy.WayPointsIndex >= 0)
+                    {
+                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x));
+                    }
                 }
                 else
                 {
@@ -287,13 +291,15 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 if (Mathf.Abs(m_Enemy.transform.position.y - m_Enemy.m_Player.transform.position.y) <= 0.5f)
                 {
                     m_Enemy.bMoveToUsedDoor = false;
+                    // m_Enemy.WayPointsIndex = 0;
+                    // m_Enemy.WayPointsVectorList.Clear();
                 }
 
                 if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AttackDistance)
                     m_Phase = 4;
                 break;
             case 4: // 사정거리 도달
-                _enemyState = EnemyState.Attack;
+                //_enemyState = EnemyState.Attack;
                 m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
                 m_Phase = 5;
                 break;
@@ -351,6 +357,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
 
     public override void StartState()
     {
+        _enemyState = EnemyState.Chase;
         m_PlayerTransform = m_Enemy.m_PlayerTransform;
         m_Enemy.m_EnemyRigid.constraints = RigidbodyConstraints2D.FreezeAll;
         m_Phase = 0;

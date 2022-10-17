@@ -73,9 +73,9 @@ public class EnemySpawner : MonoBehaviour
     
     
     // Functions
-    public void AchieveCollisionTrigger()
+    public void AchieveCollisionTrigger(bool _isOn)
     {
-        m_IsPlayerCollide = true;
+        m_IsPlayerCollide = _isOn;
         
         CheckEnemySpawn();
     }

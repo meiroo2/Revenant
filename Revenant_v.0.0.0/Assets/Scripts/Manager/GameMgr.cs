@@ -81,7 +81,7 @@ public class GameMgr : MonoBehaviour
         p_PlayerManipulator.SetPlayer();
         p_PlayerManipulator.SetNegotiator();
         
-        p_CoroutineHandler.RegisterCoroutineHandler();
+        p_CoroutineHandler.ResetCoroutineHandler();
         m_Objects = GameObject.FindObjectsOfType<ObjectDefine>();
         //m_SceneStartWhiteOut = false;
         AssignCanvasObjs();

@@ -13,14 +13,15 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
 
     [field: SerializeField, BoxGroup("HotBox Values")]
     public int p_DamageMulti { get; set; }
-
-
+    
+    
     // Member Variables
     public BasicEnemy m_Enemy { get; private set; }
     private Player_UI m_PlayerUI;
     private RageGauge m_RageGauge;
     private SoundPlayer m_SoundMgr;
     private Transform m_PlayerCenterTransform;
+    
     
     // For SFX
     private ParticleMgr m_ParticleMgr;
@@ -121,7 +122,6 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
         
         
         
-
         return 1;
     }
 }
