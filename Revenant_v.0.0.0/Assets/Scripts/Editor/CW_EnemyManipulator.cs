@@ -96,11 +96,12 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_BreakPower;
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_Speed;
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_RushSpeedMulti;
-    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_ToRushXDistance;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_RushTriggerDistance;
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int D_DroneDmgMulti;
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int D_BombDmgMulti;
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_DetectSpeed;
     [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float D_VisionDistance;
+    [TabGroup("DroneGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth), Range(0f, 1f)] public static float D_DecidePositionPointTime;
     
     #endregion
     
@@ -302,11 +303,12 @@ public class CW_EnemyManipulator : OdinEditorWindow
             enemyMgr.D_BreakPower = D_BreakPower;
             enemyMgr.D_Speed = D_Speed;
             enemyMgr.D_RushSpeedMulti = D_RushSpeedMulti;
-            enemyMgr.D_ToRushXDistance = D_ToRushXDistance;
+            enemyMgr.D_RushTriggerDistance = D_RushTriggerDistance;
             enemyMgr.D_DroneDmgMulti = D_DroneDmgMulti;
             enemyMgr.D_BombDmgMulti = D_BombDmgMulti;
             enemyMgr.D_DetectSpeed = D_DetectSpeed;
             enemyMgr.D_VisionDistance = D_VisionDistance;
+            enemyMgr.D_DecidePositionPointTime = D_DecidePositionPointTime;
         }
         else
         {
@@ -316,11 +318,12 @@ public class CW_EnemyManipulator : OdinEditorWindow
             D_BreakPower = enemyMgr.D_BreakPower;
             D_Speed = enemyMgr.D_Speed;
             D_RushSpeedMulti = enemyMgr.D_RushSpeedMulti;
-            D_ToRushXDistance = enemyMgr.D_ToRushXDistance;
+            D_RushTriggerDistance = enemyMgr.D_RushTriggerDistance;
             D_DroneDmgMulti = enemyMgr.D_DroneDmgMulti;
             D_BombDmgMulti = enemyMgr.D_BombDmgMulti;
             D_DetectSpeed = enemyMgr.D_DetectSpeed;
             D_VisionDistance = enemyMgr.D_VisionDistance;
+            D_DecidePositionPointTime = enemyMgr.D_DecidePositionPointTime;
         }
 
         #if UNITY_EDITOR

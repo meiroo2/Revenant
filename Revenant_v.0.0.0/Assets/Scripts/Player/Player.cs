@@ -117,8 +117,6 @@ public class Player : Human
     private Vector2 m_PlayerPosVec;
 
     private Coroutine m_WalkSoundCoroutine;
-    
-    public Vector2 PlayerUsedObjectVector;
 
     private bool m_SafeFSMLock = false;
 

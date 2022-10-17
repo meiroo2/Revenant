@@ -72,9 +72,9 @@ public class MatChanger : MonoBehaviour
         m_UIMatDic.TrimExcess();
         m_OtherMatDic.Clear();
         m_OtherMatDic.TrimExcess();
-        
-        var spriteRenArr = GameObject.FindObjectsOfType<SpriteRenderer>();
-        for (int i = 0; i < spriteRenArr.Length; i++)
+
+        var spriteRenArr = StaticMethods.FindAllObjects<SpriteRenderer>();
+        for (int i = 0; i < spriteRenArr.Count; i++)
         {
             if (spriteRenArr[i].gameObject.CompareTag("Player"))
             {

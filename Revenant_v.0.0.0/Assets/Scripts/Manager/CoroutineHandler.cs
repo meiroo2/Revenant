@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -42,16 +43,18 @@ public class CoroutineHandler : MonoBehaviour
         m_CoroutineElementList.Remove(_target);
     }
 
-    public void RegisterCoroutineHandler()
-    {
-        m_CoroutineElementList.Clear();
-        m_CoroutineElementList.TrimExcess();
-    }
-    public void UnregisterCoroutineHandler()
+    /// <summary>
+    /// 신 리로드시 생성된 모든 CoroutineElement를 제거시킵니다.
+    /// </summary>
+    public void ResetCoroutineHandler()
     {
         for (int i = 0; i < m_CoroutineElementList.Count; i++)
         {
             m_CoroutineElementList[i].StopCoroutine_Element();
         }
+
+
+        m_CoroutineElementList.Clear();
+        m_CoroutineElementList.TrimExcess();
     }
 }

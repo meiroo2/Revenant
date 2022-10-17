@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -55,7 +56,8 @@ public class CW_RageGauge : OdinEditorWindow
     {
         //var gauge = GameObject.FindGameObjectWithTag("InstanceMgr").
         //    GetComponent<InstanceMgr>().p_Canvas_RageGauge.GetComponent<RageGauge>();
-        var gauge = FindObjectOfType<RageGauge>();
+        //var gauge = FindObjectOfType<RageGauge>();
+        var gauge = Resources.Load("UIs/RageGauge").GetComponent<RageGauge>();
 
         gauge.p_Gauge_Max = R_Gauge_Max;
         gauge.p_Gauge_Refill_Nature = R_Gauge_Refill_Nature;
@@ -78,7 +80,7 @@ public class CW_RageGauge : OdinEditorWindow
     {
 		//var gauge = GameObject.FindGameObjectWithTag("InstanceMgr").GetComponent<InstanceMgr>().p_Canvas_RageGauge
 		//    .GetComponent<RageGauge>();
-		var gauge = FindObjectOfType<RageGauge>();
+        var gauge = Resources.Load("UIs/RageGauge").GetComponent<RageGauge>();
 
 		R_Gauge_Max = gauge.p_Gauge_Max;
         R_Gauge_Refill_Nature = gauge.p_Gauge_Refill_Nature;
