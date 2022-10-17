@@ -131,7 +131,7 @@ public class SpecialForce : BasicEnemy
 
     // Functions
 
-    public override void SetRigidToPoint()
+    public override void SetRigidToPoint(float _addSpeed = 1f)
     {
         SetRigidByDirection(m_MovePoint.x > transform.position.x);
     }

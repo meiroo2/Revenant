@@ -26,6 +26,14 @@ public class Player_UI : MonoBehaviour
     public Sprite p_ReloadAimImg;
     public Image p_ReloadCircle;
     public Image p_Hitmark;
+
+
+    public int p_FrameSpeed = 4;
+    private Coroutine m_UIAniCoroutine;
+    public Sprite[] p_NormalSpriteArr;
+    public Sprite[] p_RedSpriteArr;
+    
+    
     
     [Space(10f)] 
     public Sprite[] p_AimImgArr;
@@ -126,7 +134,10 @@ public class Player_UI : MonoBehaviour
         else
         {
             if (!ReferenceEquals(m_ReloadBackupSprite, null))
-                p_MainAimImg.sprite = m_ReloadBackupSprite;
+            {
+                //p_MainAimImg.sprite = m_ReloadBackupSprite;
+            }
+
             p_ReloadCircle.fillAmount = 0f;
         }
     }
@@ -163,7 +174,7 @@ public class Player_UI : MonoBehaviour
             return;
 
         p_LeftRoundsImg.sprite = p_LeftRoundsImgArr[_rounds];
-        p_MainAimImg.sprite = p_AimImgArr[_rounds];
+       // p_MainAimImg.sprite = p_AimImgArr[_rounds];
     }
     public void SetLeftRoundsNMag(int _rounds, int _magCount)
     {
@@ -191,6 +202,12 @@ public class Player_UI : MonoBehaviour
                 // 원본 Scale로 함
                 p_Hitmark.rectTransform.localScale = m_HitmarkOriginScale;
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Head());
+
+                if (!ReferenceEquals(m_UIAniCoroutine, null))
+                {
+                    StopCoroutine(m_UIAniCoroutine);
+                }
+                m_UIAniCoroutine = StartCoroutine(ChangeAim(true));
                 break;
             
             case 1:     // Body
@@ -200,8 +217,65 @@ public class Player_UI : MonoBehaviour
                 // scale 2배로 시작
                 p_Hitmark.rectTransform.localScale = new Vector2(2f, 2f);
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Body());
+
+                if (!ReferenceEquals(m_UIAniCoroutine, null))
+                {
+                    StopCoroutine(m_UIAniCoroutine);
+                }
+                m_UIAniCoroutine = StartCoroutine(ChangeAim(false));
                 break;
         }
+    }
+
+    private IEnumerator ChangeAim(bool _isHead)
+    {
+        int frameLimit = p_FrameSpeed;
+        int frameCount = frameLimit;
+        int idx = 0;
+
+        if (_isHead)
+        {
+            while (true)
+            {
+                if (frameCount >= frameLimit)
+                {
+                    frameCount = 0;
+                
+                    p_MainAimImg.sprite = p_RedSpriteArr[idx];
+                    idx++;
+                    if (idx >= p_RedSpriteArr.Length)
+                    {
+                        break;
+                    }
+                }
+                
+                yield return new WaitForFixedUpdate();
+                frameCount++;
+            }
+        }
+        else
+        {
+            while (true)
+            {
+                if (frameCount >= frameLimit)
+                {
+                    frameCount = 0;
+                
+                    p_MainAimImg.sprite = p_NormalSpriteArr[idx];
+                    idx++;
+                    if (idx >= p_NormalSpriteArr.Length)
+                    {
+                        break;
+                    }
+                }
+                
+                yield return new WaitForFixedUpdate();
+                frameCount++;
+            }
+        }
+        
+        
+        yield break;
     }
 
     private IEnumerator DisableHitMark_Body()

@@ -9,8 +9,8 @@ using Debug = UnityEngine.Debug;
 
 public enum EnemyStateName
 {
-    IDLE,  
-    WALK,
+    IDLE,
+    PATROL,
     FOLLOW,
     RUSH,
     ATTACK,
@@ -225,7 +225,7 @@ public class BasicEnemy : Human
     /// <summary>
     /// MovePoint 방향으로 Rigid의 Velocity를 변경합니다.
     /// </summary>
-    public virtual void SetRigidToPoint()
+    public virtual void SetRigidToPoint(float _addSpeed = 1f)
     {
         SetRigidByDirection(m_MovePoint.x > transform.position.x);
     }

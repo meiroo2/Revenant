@@ -310,7 +310,7 @@ public class Player_FootMgr : MonoBehaviour
         var DownPosX = m_StairPos.m_ParentStair.m_DownPos.transform.position.x;
 
         if (m_StairPos.m_ParentStair.m_isLeftUp)
-        {
+        { 
             while (true)
             {
                 if (transform.position.x <= UpPosX) // 위 센서보다 왼쪽

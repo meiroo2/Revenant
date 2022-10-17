@@ -130,7 +130,14 @@ public class CheckPoint : MonoBehaviour
                 if (CheckPointGameObject.bActivated)
                 {
                     // 체크포인트 위치를 결과값에 반환
-                    result = CheckPointGameObject.transform.position;
+                    Vector2 returnPos;
+                    int m_LayerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("EmptyFloor"));
+
+                    returnPos = Physics2D.Raycast(CheckPointGameObject.transform.position,
+                        -CheckPointGameObject.transform.up, 1f, m_LayerMask).point;
+                    returnPos.y += 0.64f;
+
+                    result = returnPos;
                     break;
                 }
             }
