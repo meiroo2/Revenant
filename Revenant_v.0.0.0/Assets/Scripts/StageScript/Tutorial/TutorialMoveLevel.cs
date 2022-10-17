@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialMove : TutorialLevel
+public class TutorialMoveLevel : TutorialLevel
 {
 	private bool m_isPushA = false;
 	private bool m_isPushD = false;
@@ -30,11 +30,16 @@ public class TutorialMove : TutorialLevel
 
 	private void FixedUpdate()
 	{
+
+	}
+
+	public override bool CheckCondition()
+	{
 		if (m_isPushA)
 		{
 			m_KeyAPushTimer -= Time.deltaTime;
 		}
-		else if(m_KeyAPushTimer > 0)
+		else if (m_KeyAPushTimer > 0)
 		{
 			m_KeyAPushTimer = 1f;
 		}
@@ -43,15 +48,19 @@ public class TutorialMove : TutorialLevel
 		{
 			m_KeyDPushTimer -= Time.deltaTime;
 		}
-		else if(m_KeyDPushTimer > 0)
+		else if (m_KeyDPushTimer > 0)
 		{
 			m_KeyDPushTimer = 1f;
 		}
 
 
-		if(m_KeyAPushTimer <= 0 && m_KeyDPushTimer <= 0)
+		if (m_KeyAPushTimer <= 0 && m_KeyDPushTimer <= 0)
 		{
-			SetClear();
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 }
