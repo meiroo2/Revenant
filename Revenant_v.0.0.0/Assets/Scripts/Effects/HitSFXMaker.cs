@@ -58,7 +58,7 @@ public class HitSFXMaker : MonoBehaviour
             sfxTransform.localScale.y, sfxTransform.localScale.z);
         sfxTransform.position = _spawnPos;
 
-        sfxTransform.localRotation = Quaternion.Euler(Random.Range(0, 360), 0, 0);
+        sfxTransform.localRotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
 
         m_CurIdxs[_idx]++;
 

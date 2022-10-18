@@ -90,7 +90,7 @@ public class Player_IDLE : PlayerFSM
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
-        else if (m_InputMgr.m_IsPushBulletTimeKey && !m_Player.m_ArmMgr.m_IsReloading)
+        else if (m_InputMgr.m_IsPushBulletTimeKey)
         {
             if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
                 m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
@@ -219,7 +219,7 @@ public class Player_WALK : PlayerFSM
         {
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
         }
-        else if (m_InputMgr.m_IsPushBulletTimeKey && !m_Player.m_ArmMgr.m_IsReloading)
+        else if (m_InputMgr.m_IsPushBulletTimeKey)
         {
             if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
                 m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
@@ -280,7 +280,7 @@ public class Player_ROLL : PlayerFSM
         
         m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
-        m_Player.m_ArmMgr.StopReload();
+        //m_Player.m_ArmMgr.StopReload();
         m_Player.m_PlayerHotBox.m_hotBoxType = 2;
         m_DecelerationSpeed = 0f;
         m_Timer = 0f;
@@ -412,7 +412,7 @@ public class Player_HIDDEN : PlayerFSM
     public override void StartState()
     {
         m_RageGauge = m_Player.m_RageGauge;
-        m_Player.m_ArmMgr.StopReload();
+        //m_Player.m_ArmMgr.StopReload();
         m_Player.m_CanAttack = false;
         m_InputMgr = m_Player.m_InputMgr;
         m_UseRange = m_Player.m_useRange;
@@ -641,6 +641,9 @@ public class Player_BULLET_TIME : PlayerFSM
         m_Timer = 0f;
         
         m_Player.m_PlayerRigid.velocity = Vector2.zero;
+        
+        // 재장전 캔슬
+        m_Player.m_ArmMgr.StopReload();
         
         // 플립제거
         m_Player.m_playerRotation.m_BanFlip = true;

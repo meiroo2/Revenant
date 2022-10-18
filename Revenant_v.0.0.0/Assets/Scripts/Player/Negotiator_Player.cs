@@ -153,11 +153,13 @@ public class Negotiator_Player : BasicWeapon_Player
 
                 if (m_BulletTimeMgr.m_IsBulletTimeActivating)
                 {
+                    hotBoxParam.m_MakeRageParticle = false;
                     m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam, m_AimCursorTransform.position,
                         null));
                 }
                 else
                 {
+                    hotBoxParam.m_MakeRageParticle = true;
                     m_SoundPlayer.playGunFireSound(0, gameObject);
                     SpawnSFX(result.m_RayDestinationPos);
 
@@ -179,7 +181,8 @@ public class Negotiator_Player : BasicWeapon_Player
                 if (m_BulletTimeMgr.m_IsBulletTimeActivating)
                 {
                     hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, m_AimCursorTransform.position, WeaponType.BULLET_TIME, false);
-                    
+                 
+                    hotBoxParam.m_MakeRageParticle = false;
                     m_BulletTimeMgr.BookFire(new BulletTimeParam(hotBox, hotBoxParam, 
                         m_AimCursorTransform.position, MakeShell));
                 }
@@ -187,6 +190,7 @@ public class Negotiator_Player : BasicWeapon_Player
                 {
                     hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, m_AimCursorTransform.position, WeaponType.BULLET);
                     
+                    hotBoxParam.m_MakeRageParticle = true;
                     m_SoundPlayer.playGunFireSound(0, gameObject);
                     SpawnSFX(result.m_RayDestinationPos);
                     hotBox.HitHotBox(hotBoxParam);
