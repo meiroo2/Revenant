@@ -40,8 +40,9 @@ public class CameraMgr : MonoBehaviour
     private float m_CamShakeZoomValue = 0f;
 
     private Camera m_MainCam;
-    
 
+    public bool m_IsFollowTarget { get; set; } = false;
+    public bool m_IsMoveEnd { get; set; } = true;
 
     // Constructors
     private void Awake()
@@ -50,7 +51,7 @@ public class CameraMgr : MonoBehaviour
         m_OriginCamZoomValue = m_MainCam.orthographicSize;
         Cursor.visible = true;
     }
-
+    
     private void Start()
     {
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().gameObject;
@@ -63,9 +64,62 @@ public class CameraMgr : MonoBehaviour
         transform.position = m_CameraPos;
     }
 
+    public void MoveToTarget(Transform targetTransform, float MoveStopDuration)
+    {
+        StartCoroutine(MoveToTargetCoroutine(targetTransform, MoveStopDuration));
+    }
+
+    private IEnumerator MoveToTargetCoroutine(Transform targetTransform, float MoveStopDuration)
+    {
+        // MoveStart
+        m_IsFollowTarget = true;
+        m_IsMoveEnd = false;
+
+
+		float MoveStopTimer = 0;
+        Debug.Log("start");
+        while(MoveStopTimer < MoveStopDuration)
+        {
+			m_CameraPos = Vector3.Lerp(m_CameraPos, targetTransform.position, Time.deltaTime * 4f);
+			m_CameraPos.z = -10f;
+			transform.position = p_CamBoundMgr.getNearCamPos(m_CameraPos);
+			if (Vector2.Distance(m_CameraPos, targetTransform.position) < 0.05f) // 카메라가 대상을 바라보고 있음
+            {
+				m_IsFollowTarget = false;
+				MoveStopTimer += Time.deltaTime;
+			}
+			Debug.Log("move");
+			yield return null;
+        }
+
+		// 돌아감
+		while (true)
+        {
+			m_CameraPos = Vector3.Lerp(m_CameraPos, m_Player.transform.position, Time.deltaTime * 4f);
+			m_CameraPos.z = -10f;
+			transform.position = p_CamBoundMgr.getNearCamPos(m_CameraPos);
+			if (Vector2.Distance(m_CameraPos, m_Player.transform.position) < 0.05f) // 카메라가 대상을 바라보고 있음
+			{
+                break;
+			}
+			yield return null;
+		}
+
+        // MoveEnd
+        m_IsMoveEnd = true;
+
+		yield return null;
+	}
+
+
+
     // Updates
     private void Update()
     {
+        if (m_IsMoveEnd == false)
+        {
+			return;
+        }
 
         if (m_CamStuckOnce)
         {

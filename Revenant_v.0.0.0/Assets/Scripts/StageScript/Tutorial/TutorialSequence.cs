@@ -4,34 +4,38 @@ using UnityEngine;
 
 public class TutorialSequence : MonoBehaviour
 {
-    [SerializeField] private int m_TutorialCount = 0; 
-    [field : SerializeField] public List<TutorialLevel> p_TutorialLevel { get; set; } = new List<TutorialLevel>();
+	[SerializeField] private int m_TutorialCount = 0;
+	[field: SerializeField] public List<TutorialLevel> p_TutorialLevel { get; set; } = new List<TutorialLevel>();
 
-    private void Start()
-    {
-        p_TutorialLevel[m_TutorialCount].Initialize();
+	private void Start()
+	{
 
-		foreach (var tutorialObject in p_TutorialLevel[m_TutorialCount].tutorialObjects)
+		if (p_TutorialLevel.Count > 0)
 		{
-			tutorialObject.Initialize();
+			p_TutorialLevel[m_TutorialCount].Initialize();
+
+			foreach (var tutorialObject in p_TutorialLevel[m_TutorialCount].tutorialObjects)
+			{
+				tutorialObject.Initialize();
+			}
 		}
 	}
 
-    void FixedUpdate()
-    {
-        if (m_TutorialCount > p_TutorialLevel.Count - 1)
-            return;
+	void FixedUpdate()
+	{
+		if (m_TutorialCount > p_TutorialLevel.Count - 1)
+			return;
 
-        if (p_TutorialLevel[m_TutorialCount].CheckCondition() == true)
-        {
-            foreach (var tutorialObject in p_TutorialLevel[m_TutorialCount].tutorialObjects)
-            {
-                tutorialObject.action?.Invoke();
+		if (p_TutorialLevel[m_TutorialCount].CheckCondition() == true)
+		{
+			foreach (var tutorialObject in p_TutorialLevel[m_TutorialCount].tutorialObjects)
+			{
+				tutorialObject.action?.Invoke();
 			}
 
-   			m_TutorialCount++;
+			m_TutorialCount++;
 			if (m_TutorialCount < p_TutorialLevel.Count)
-            {
+			{
 				p_TutorialLevel[m_TutorialCount].Initialize();
 				foreach (var tutorialObject in p_TutorialLevel[m_TutorialCount].tutorialObjects)
 				{
@@ -39,5 +43,5 @@ public class TutorialSequence : MonoBehaviour
 				}
 			}
 		}
-    }
+	}
 }
