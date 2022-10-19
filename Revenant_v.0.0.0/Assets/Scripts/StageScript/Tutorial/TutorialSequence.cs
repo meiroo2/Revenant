@@ -26,7 +26,7 @@ public class TutorialSequence : MonoBehaviour
 		if (m_TutorialCount > p_TutorialLevel.Count - 1)
 			return;
 
-		if (p_TutorialLevel[m_TutorialCount].CheckCondition() == true)
+		if (p_TutorialLevel[m_TutorialCount].CheckCondition() == true || Input.GetKeyDown(KeyCode.P))
 		{
 			foreach (var tutorialObject in p_TutorialLevel[m_TutorialCount].tutorialObjects)
 			{

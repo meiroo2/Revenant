@@ -5,13 +5,24 @@ using UnityEngine;
 
 public class TutorialLevel : MonoBehaviour
 {
-    public List<TutorialObject> tutorialObjects;
+	public TutorialDroneObject p_TutorialDrone;
+	public string p_TutorialVideoName;
+	public List<TutorialObject> tutorialObjects;
 
-    public virtual void Initialize() { }
+    public virtual void Initialize() 
+	{
+		PlayDroneVideo(p_TutorialVideoName);
+	}
 
     public virtual bool CheckCondition()
     {
-        // 예외처리 추가하기
-        return false;
+		// 예외처리 추가하기
+		return false;
     }
+
+	public virtual void PlayDroneVideo(string videoName)
+	{
+		if (p_TutorialDrone != null && p_TutorialVideoName != null)
+		p_TutorialDrone.PlayTutorialVideo(p_TutorialVideoName);
+	}
 }

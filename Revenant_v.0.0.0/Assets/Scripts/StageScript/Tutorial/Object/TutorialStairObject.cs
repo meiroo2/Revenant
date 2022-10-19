@@ -24,12 +24,13 @@ public class TutorialStairObject : TutorialObject
 	public override void Initialize()
 	{
 		action += NextAnimation;
-        action += delegate 
-        {
-            foreach (var collider in m_Colliders)
-            {
-                collider.enabled = true;
-			}
-        };
+	}
+
+    public void ActiveCollider()
+    {
+		foreach (var collider in m_Colliders)
+		{
+			collider.enabled = true;
+		}
 	}
 }

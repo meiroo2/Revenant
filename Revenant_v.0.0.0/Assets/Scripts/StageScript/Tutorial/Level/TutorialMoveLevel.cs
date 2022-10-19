@@ -28,9 +28,9 @@ public class TutorialMoveLevel : TutorialLevel
 			m_isPushD = false;
 	}
 
-	private void FixedUpdate()
+	public override void Initialize()
 	{
-
+		base.Initialize();
 	}
 
 	public override bool CheckCondition()

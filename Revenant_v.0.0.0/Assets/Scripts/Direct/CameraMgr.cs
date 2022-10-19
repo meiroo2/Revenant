@@ -77,7 +77,6 @@ public class CameraMgr : MonoBehaviour
 
 
 		float MoveStopTimer = 0;
-        Debug.Log("start");
         while(MoveStopTimer < MoveStopDuration)
         {
 			m_CameraPos = Vector3.Lerp(m_CameraPos, targetTransform.position, Time.deltaTime * 4f);
@@ -88,7 +87,6 @@ public class CameraMgr : MonoBehaviour
 				m_IsFollowTarget = false;
 				MoveStopTimer += Time.deltaTime;
 			}
-			Debug.Log("move");
 			yield return null;
         }
 

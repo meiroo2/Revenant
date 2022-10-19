@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class TutorialDoorObject : TutorialObject
 {
-	public string p_NextSceneName;
+	public Transform p_SpawnPosition;
 	private bool m_CanEnter = false;
 
 	public override void Initialize()
@@ -25,7 +25,7 @@ public class TutorialDoorObject : TutorialObject
 		{
 			if (Input.GetKey(KeyCode.F) && m_CanEnter)
 			{
-				SceneManager.LoadScene(p_NextSceneName);
+				collision.transform.position = p_SpawnPosition.position;
 			}
 		}
 	}

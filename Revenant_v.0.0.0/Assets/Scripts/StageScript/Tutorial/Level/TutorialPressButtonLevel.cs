@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class TutorialPressButtonLevel : TutorialLevel
 {
-	public TutorialObject p_Button;
+	public TutorialButtonObject p_Button;
 	public bool isPressed = false;
+
 	private void Start()
 	{
 		FindObjectOfType<Player>();
@@ -25,6 +26,7 @@ public class TutorialPressButtonLevel : TutorialLevel
 
 	public override void Initialize()
 	{
+		base.Initialize();
 		p_Button.action += SetIsPressed;
 	}
 }
