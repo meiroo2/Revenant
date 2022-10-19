@@ -225,9 +225,9 @@ public class MeleeGang : BasicEnemy
         ChangeEnemyFSM(EnemyStateName.STUN);
     }
 
-    public void ResetStunThreshold()
+    public void ResetStunValue()
     {
-        p_StunHp = 0;
+        m_CurStunValue = 0;
     }
 
     public void SetEnemyHotBox(bool _isOn)

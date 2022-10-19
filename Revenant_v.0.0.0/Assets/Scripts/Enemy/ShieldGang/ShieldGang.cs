@@ -113,8 +113,12 @@ public class ShieldGang : BasicEnemy
         m_WeaponMgr.m_CurWeapon.p_BulletDamage = p_AttackDamage;
     }
 
-    
-    
+    private void OnEnable()
+    {
+        m_Animator.SetFloat(AtkSpeed, p_AtkAniSpeedMulti);
+    }
+
+
     // Updates
     private void Update()
     {
@@ -126,6 +130,23 @@ public class ShieldGang : BasicEnemy
 
 
     // Functions
+    public override void RaycastVisionCheck()
+    {
+        Vector2 position = transform.position;
+        position.y -= 1f;
+        
+        if (m_IsRightHeaded)
+        {
+            m_VisionHit = Physics2D.Raycast(position, Vector2.right, p_VisionDistance, LayerMask.GetMask("Player"));
+            Debug.DrawRay(position, Vector2.right * p_VisionDistance, Color.red);
+        }
+        else
+        {
+            m_VisionHit = Physics2D.Raycast( position, -Vector2.right, p_VisionDistance, LayerMask.GetMask("Player"));
+            Debug.DrawRay(position, -Vector2.right * p_VisionDistance, Color.red);
+        }
+    }
+    
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
     {
         if (m_CurEnemyStateName == EnemyStateName.DEAD)

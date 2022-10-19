@@ -3,16 +3,16 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 
-public class HideObjCollider : MonoBehaviour, IHotBox
+public class HideObjCollider : MonoBehaviour, IHotBox, IMatType
 {
     // Visible Member Variables
     [Tooltip("해당 히트박스의 재질을 결정합니다.")]
-    public MatType p_HotBoxMatType;
+    [field: SerializeField] public MatType m_matType { get; set; }
     
     // Member Variables
     public HideObj m_HideObj { get; set; }
     private BoxCollider2D m_Collider;
-    private SoundPlayer m_SFXSoundMgr;
+    private SoundPlayer m_SoundPlayer;
     
         // IHotBox Variables
         public GameObject m_ParentObj { get; set; }
@@ -32,7 +32,7 @@ public class HideObjCollider : MonoBehaviour, IHotBox
         m_ParentObj = m_HideObj.gameObject;
         
         var instanceMgr = InstanceMgr.GetInstance();
-        m_SFXSoundMgr = instanceMgr.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
     }
 
     
@@ -52,7 +52,7 @@ public class HideObjCollider : MonoBehaviour, IHotBox
             
             case 1:
                 // 충돌처리 성공, 소리 contactPoint에서 재생
-                m_SFXSoundMgr.playAttackedSound(p_HotBoxMatType, _param.m_contactPoint);
+                m_SoundPlayer.PlayHitSoundByMatType(m_matType, _param.m_contactPoint);
                 return 1;
                 break;
             
@@ -60,4 +60,6 @@ public class HideObjCollider : MonoBehaviour, IHotBox
                 return 0;
         }
     }
+
+   
 }

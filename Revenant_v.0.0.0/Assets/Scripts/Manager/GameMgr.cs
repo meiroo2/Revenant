@@ -13,6 +13,7 @@ public class GameMgr : MonoBehaviour
     [field: SerializeField] public Player_Manager p_PlayerMgr { get; private set; }
     [field: SerializeField] public Player_InputMgr p_PlayerInputMgr { get; private set; }
     [field: SerializeField] public PlayerManipulator p_PlayerManipulator { get; private set; }
+    [field: SerializeField] public SoundPlayer p_SoundPlayer { get; private set; }
 
     public float m_GameTimer { get; private set; } = 0f;
 

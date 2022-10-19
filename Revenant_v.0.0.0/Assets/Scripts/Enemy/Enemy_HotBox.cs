@@ -9,6 +9,9 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
 {
     // Visual Member Variables
     [field: SerializeField, BoxGroup("HotBox Values")]
+    public MatType p_MatType;
+    
+    [field: SerializeField, BoxGroup("HotBox Values")]
     public HitBoxPoint p_HitBoxPoint { get; private set; }
 
     [field: SerializeField, BoxGroup("HotBox Values")]
@@ -19,7 +22,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     public BasicEnemy m_Enemy { get; private set; }
     private Player_UI m_PlayerUI;
     private RageGauge m_RageGauge;
-    private SoundPlayer m_SoundMgr;
+    private SoundPlayer m_SoundPlayer;
     private Transform m_PlayerCenterTransform;
     
     
@@ -43,7 +46,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
 
         m_PlayerUI = instance.m_Player_UI;
         
-        m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_PlayerCenterTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().p_CenterTransform;
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
@@ -72,7 +75,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                     m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
                 }
                 
-                m_SoundMgr.playAttackedSound(MatType.Normal,  new Vector3(transform.position.x,transform.position.y, 0) );
+                m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
                 m_PlayerUI.ActiveHitmark(0);
 
                 if (_param.m_MakeRageParticle)
@@ -95,7 +98,7 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                     m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
                 }
                 
-                m_SoundMgr.playAttackedSound(MatType.Normal, new Vector3(transform.position.x,transform.position.y, 0) );
+                m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
                 m_PlayerUI.ActiveHitmark(1);
 
                 if (_param.m_MakeRageParticle)

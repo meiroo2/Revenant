@@ -79,6 +79,11 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
 
     private bool m_IsMoving = false;
     private CoroutineElement m_CoroutineElement;
+    
+    private float m_WalkSoundDelay = 1f;
+    private CoroutineElement m_WalkSoundCoroutineElement = null;
+    private MatType m_MatType;
+
 
     // Constructor
     public FOLLOW_ShieldGang(ShieldGang _enemy)
@@ -143,6 +148,13 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
                     m_CoroutineElement = m_Enemy.m_CoroutineHandler.
                         StartCoroutine_Handler(GapBaseMove(true));
 
+                    if (!ReferenceEquals(m_WalkSoundCoroutineElement, null))
+                    {
+                        m_WalkSoundCoroutineElement.StopCoroutine_Element();
+                        m_WalkSoundCoroutineElement = null;
+                    }
+                    m_WalkSoundCoroutineElement = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(PlayWalkSound());
+                    
                     m_IsMoving = true;
                 }
                 // 이격거리보다 가까이 있음 - 후진
@@ -151,6 +163,13 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
                     m_CoroutineElement = m_Enemy.m_CoroutineHandler.
                         StartCoroutine_Handler(GapBaseMove(false));
 
+                    if (!ReferenceEquals(m_WalkSoundCoroutineElement, null))
+                    {
+                        m_WalkSoundCoroutineElement.StopCoroutine_Element();
+                        m_WalkSoundCoroutineElement = null;
+                    }
+                    m_WalkSoundCoroutineElement = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(PlayWalkSound());
+                    
                     m_IsMoving = true;
                 }
             }
@@ -169,7 +188,12 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
 
                 if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_GapDistance)
                 {
-                    Debug.Log("ResetRigid");
+                    if (!ReferenceEquals(m_WalkSoundCoroutineElement, null))
+                    {
+                        m_WalkSoundCoroutineElement.StopCoroutine_Element();
+                        m_WalkSoundCoroutineElement = null;
+                    }
+                    
                     m_Enemy.ResetRigid();
                     break;
                 }
@@ -187,6 +211,12 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
 
                 if (m_Enemy.GetDistanceBetPlayer() >= m_Enemy.p_GapDistance)
                 {
+                    if (!ReferenceEquals(m_WalkSoundCoroutineElement, null))
+                    {
+                        m_WalkSoundCoroutineElement.StopCoroutine_Element();
+                        m_WalkSoundCoroutineElement = null;
+                    }
+                    
                     m_Enemy.ResetRigid();
                     break;
                 }
@@ -214,11 +244,24 @@ public class FOLLOW_ShieldGang : ShieldGang_FSM
             m_CoroutineElement.StopCoroutine_Element();
             m_CoroutineElement = null;
         }
+        
+        if (!ReferenceEquals(m_WalkSoundCoroutineElement, null))
+        {
+            m_WalkSoundCoroutineElement.StopCoroutine_Element();
+            m_WalkSoundCoroutineElement = null;
+        }
     }
 
-    public override void NextPhase()
+    private IEnumerator PlayWalkSound()
     {
-        
+        SoundPlayer player = GameMgr.GetInstance().p_SoundPlayer;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(m_WalkSoundDelay);
+            
+            player.PlayCommonSoundByMatType(1, m_MatType, m_Enemy.m_Foot.transform.position);
+        }
     }
 }
 
@@ -326,7 +369,8 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
     // Member Variables
     private CoroutineElement m_CoroutineElement;
     private HitSFXMaker m_HitSFXMaker;
-    
+
+    private Vector2 m_OriginHotBoxLocalPos;
     private bool m_IsAttackEnd = false;
     private static readonly int Attack = Animator.StringToHash("Attack");
 
@@ -342,6 +386,7 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
     
     public override void StartState()
     {
+        m_OriginHotBoxLocalPos = m_Enemy.p_HotBoxesTransform.localPosition;
         m_IsAttackEnd = false;
 
         if (m_Enemy.m_IsShieldBroken)
@@ -430,7 +475,7 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
         // 트랜스폼
         Transform hotboxTransform = m_Enemy.p_HotBoxesTransform;
         float normalTime = 0f;
-        Vector2 localPos = new Vector2(0.29f, 0f);
+        Vector2 localPos = new Vector2(m_OriginHotBoxLocalPos.x + 0.29f, m_OriginHotBoxLocalPos.y);
         float deadLine = m_Enemy.p_AtkAniLerpPoint;
 
         while (true)
@@ -439,19 +484,7 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
 
             normalTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             
-            /*
-            if (normalTime <= deadLine)
-            {
-                hotboxTransform.localPosition = Vector2.Lerp(Vector2.zero,
-                    localPos, (normalTime / deadLine));
-            }
-            else
-            {
-                hotboxTransform.localPosition = Vector2.Lerp(localPos,
-                    Vector2.zero, -(normalTime - deadLine) / (deadLine - 1f));
-            }
-            */
-            hotboxTransform.localPosition = StaticMethods.GetLerpPosByNormalizedTime(Vector2.zero,
+            hotboxTransform.localPosition = StaticMethods.GetLerpPosByNormalizedTime(m_OriginHotBoxLocalPos,
                 localPos, deadLine, normalTime);
             
             if (!atkFinished && normalTime >= m_Enemy.p_PointAtkTime)
@@ -509,20 +542,26 @@ public class ATTACK_ShieldGang : ShieldGang_FSM
         // 트랜스폼
         Transform hotboxTransform = m_Enemy.p_HotBoxesTransform;
         float normalTime = 0f;
-        Vector2 localPos = new Vector2(0.29f, 0f);
+        Vector2 localPos = new Vector2(m_OriginHotBoxLocalPos.x + 0.29f, m_OriginHotBoxLocalPos.y);
         float deadLine = m_Enemy.p_AtkAniLerpPoint;
 
+        // 사운드 재생
+        GameMgr.GetInstance().p_SoundPlayer.PlayEnemySoundOnce(1, m_Enemy.gameObject);
+        
         while (true)
         {
             yield return null;
 
             normalTime = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             
-            hotboxTransform.localPosition = StaticMethods.GetLerpPosByNormalizedTime(Vector2.zero,
+            hotboxTransform.localPosition = StaticMethods.GetLerpPosByNormalizedTime(m_OriginHotBoxLocalPos,
                 localPos, deadLine, normalTime);
             
             if (!atkFinished && normalTime >= m_Enemy.p_PointAtkTime)
             {
+                // 사운드 재생
+                GameMgr.GetInstance().p_SoundPlayer.PlayHitSoundByMatType(MatType.Metal, m_Enemy.m_Foot.transform);
+                
                 atkFinished = true;
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                 m_HitSFXMaker.EnableNewObj(2, m_Enemy.m_WeaponMgr.m_CurWeapon.transform.position);

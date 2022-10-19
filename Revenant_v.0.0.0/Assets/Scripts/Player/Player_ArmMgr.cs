@@ -203,7 +203,7 @@ public class Player_ArmMgr : MonoBehaviour
 
             case 2:
                 // 총알 없음 (자동 재장전)
-                m_Player.m_SFXMgr.playPlayerSFXSound(1);
+                m_Player.m_SoundPlayer.PlayPlayerSoundOnce(2);
                 if (!m_IsReloading)
                     DoReload();
                 
@@ -279,7 +279,7 @@ public class Player_ArmMgr : MonoBehaviour
         
         // 사운드 재생
         m_IsReloading = true;
-        m_Player.m_SFXMgr.playPlayerSFXSound(2);
+        m_Player.m_SoundPlayer.PlayPlayerSoundOnce(0);
         
         m_PlayerUI.ActivateReloadMode(true);
         
