@@ -5,11 +5,13 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class Shield : MonoBehaviour, IHotBox
+public class Shield : MonoBehaviour, IHotBox, IMatType
 {
     // Visible Member Variables
     public int p_Shield_Hp = 30;
     public int p_ShieldDmgMulti = 1;
+    [field: SerializeField]public MatType m_matType { get; set; }
+    
     
     // Member Variables
     private ShieldGang m_ShieldGang;
@@ -21,6 +23,8 @@ public class Shield : MonoBehaviour, IHotBox
     private Collider2D m_Collider;
     private List<Rigidbody2D> m_SpriteRigids = new List<Rigidbody2D>();
 
+    private SoundPlayer m_SoundPlayer;
+    
     
     // Constructors
     private void Awake()
@@ -41,10 +45,17 @@ public class Shield : MonoBehaviour, IHotBox
         m_ShieldGang = GetComponentInParent<ShieldGang>();
     }
 
+    private void Start()
+    {
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
+    }
+
 
     // Functions
     public int HitHotBox(IHotBoxParam _param)
     {
+        m_SoundPlayer.PlayHitSoundByMatType(m_matType, transform.position);
+        
         if (m_ShieldGang.UpdateShieldDmg(_param.m_Damage * m_ShieldGang.p_Shield_Dmg_Multi) == 1)
         {
             return 1;
@@ -54,4 +65,6 @@ public class Shield : MonoBehaviour, IHotBox
             return 0;
         }
     }
+
+    
 }

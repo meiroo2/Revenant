@@ -13,7 +13,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     private UIMgr m_UIMgr;
     private Player_UI m_PlayerUIMgr;
     private Player m_Player;
-    private SoundPlayer m_SFXMgr;
+    private SoundPlayer m_SoundPlayer;
     private ScreenEffect_UI m_ScreenEffectUI;
     private Player_MatMgr m_PlayerMatMgr;
     
@@ -46,7 +46,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         m_UIMgr = instanceMgr.GetComponentInChildren<UIMgr>();
         m_PlayerUIMgr = instanceMgr.m_Player_UI;
         m_ScreenEffectUI = instanceMgr.m_MainCanvas.GetComponentInChildren<InGame_UI>().m_ScreenEffectUI;
-        m_SFXMgr = instanceMgr.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_PlayerMatMgr = GetComponentInParent<Player>().GetComponent<Player_MatMgr>();
     }
 
@@ -65,7 +65,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
             case 0:
                 m_ScreenEffectUI.ActivateScreenEdgeEffect();
                 m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
-                m_SFXMgr.playPlayerSFXSound(3);
+                m_SoundPlayer.PlayHitSoundByMatType(MatType.Flesh, m_Player.transform);
 
                 m_Player.setPlayerHp((m_Player.p_Hp - _param.m_Damage));
                 if (m_Player.p_Hp <= 0)
@@ -74,8 +74,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
 
                     if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
                         m_PlayerUIMgr.SetHp(m_Player.p_Hp);
-            
-                    m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
+                    
                     Debug.Log("플레이어 사망");
                     return 1;
                 }
@@ -87,8 +86,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
 
                 if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
                     m_PlayerUIMgr.SetHp(m_Player.p_Hp);
-        
-                m_SFXMgr.playAttackedSound(MatType.Normal, _param.m_contactPoint);
+                
                 return 1;
                 break;
             

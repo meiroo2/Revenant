@@ -9,8 +9,7 @@ public class Enemy_Alert : MonoBehaviour
     // Member Variables
     private bool m_AlertFilling = false;
 
-    [field : SerializeField]
-    public Animator m_Animator { get; private set; }
+    [field : SerializeField] public Animator m_Animator { get; private set; }
     private SpriteRenderer m_Renderer;
     
     public delegate void AlertDelegate(); 
@@ -32,8 +31,6 @@ public class Enemy_Alert : MonoBehaviour
     // Constructors
     private void Awake()
     {
-        if (m_Animator == null)
-            m_Animator = GetComponent<Animator>();
         m_Renderer = GetComponent<SpriteRenderer>();
     }
 

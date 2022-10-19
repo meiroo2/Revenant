@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 587487288167801870}
   - component: {fileID: 4840181404405830559}
   - component: {fileID: 6942717333549071119}
+  - component: {fileID: 9090690121671856532}
   m_Layer: 0
   m_Name: GameMgr
   m_TagString: GameMgr
@@ -54,6 +55,7 @@ MonoBehaviour:
   <p_PlayerMgr>k__BackingField: {fileID: 4840181404405830559}
   <p_PlayerInputMgr>k__BackingField: {fileID: 6942717333549071119}
   <p_PlayerManipulator>k__BackingField: {fileID: 4718642478766582402}
+  <p_SoundPlayer>k__BackingField: {fileID: 9090690121671856532}
   m_CanInputAnyKey: 0
 --- !u!114 &8798066901285890878
 MonoBehaviour:
@@ -112,11 +114,12 @@ MonoBehaviour:
   D_BreakPower: 0
   D_Speed: 0
   D_RushSpeedMulti: 0
-  D_ToRushXDistance: 0
+  D_RushTriggerDistance: 0
   D_DroneDmgMulti: 0
   D_BombDmgMulti: 0
   D_DetectSpeed: 0
   D_VisionDistance: 0
+  D_DecidePositionPointTime: 0
   S_HP: 0
   S_ShieldHp: 0
   S_MeleeDamage: 0
@@ -126,6 +129,7 @@ MonoBehaviour:
   S_VisionDistance: 0
   S_AttackDistance: 0
   S_GapDistance: 0
+  S_AtkAniSpeedMulti: 0
   S_PointAtkTime: 0
   S_AtkHoldTime: 0
   S_ShieldDmgMulti: 0
@@ -143,8 +147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1cc164786c6d354ba2d8bf7303ad3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_Player: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
-  p_RageGauge: {fileID: 1683800367418319240, guid: bab938c805fb63f4ea78c6706d061dd9, type: 3}
   P_HP: 50
   P_StunInvincibleTime: 2
   P_Speed: 1
@@ -200,3 +202,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   p_MoveInputLock: 0
+--- !u!114 &9090690121671856532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796319072097737523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe72433901b50b4283bb84879fee160, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

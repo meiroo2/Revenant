@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using FMOD.Studio;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,7 +21,6 @@ public abstract class PlayerFSM
     public abstract void StartState();
     public abstract void UpdateState();
     public abstract void ExitState();
-    public abstract void NextPhase();
 
     protected void InitFunc()
     {
@@ -110,11 +110,6 @@ public class Player_IDLE : PlayerFSM
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
         ExitFinalProcess();
     }
-
-    public override void NextPhase()
-    {
-
-    }
 }
 
 public class Player_WALK : PlayerFSM
@@ -122,11 +117,15 @@ public class Player_WALK : PlayerFSM
     private RageGauge m_RageGauge;
     
     private int m_CurInput = 0;
-
+    
     private VisualPart m_UpperBody;
     private VisualPart m_LowerBody;
     private Player_UseRange m_UseRange;
     private readonly int Walk = Animator.StringToHash("Walk");
+
+    private float m_WalkSoundDelay = 0.5f;
+    private CoroutineElement m_WalkSoundCoroutineElement;
+    private MatType m_MatType;
 
 
     public Player_WALK(Player _player) : base(_player)
@@ -136,6 +135,7 @@ public class Player_WALK : PlayerFSM
     
     public override void StartState()
     {
+        m_PlayerTransform = m_Player.transform;
         m_UseRange = m_Player.m_useRange;
         m_RageGauge = m_Player.m_RageGauge;
         m_UpperBody = m_Player.m_PlayerAniMgr.p_UpperBody;
@@ -143,9 +143,9 @@ public class Player_WALK : PlayerFSM
         
         m_Player.m_CanHide = true;
         m_InputMgr = m_Player.m_InputMgr;
-        m_Player.SetWalkSoundCoroutine(true);
         m_CurInput = 0;
 
+        m_WalkSoundCoroutineElement = GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(CheckMatType());
     }
 
     public override void UpdateState()
@@ -239,14 +239,31 @@ public class Player_WALK : PlayerFSM
         m_LowerBody.SetAnim_Int(Walk, 0);
 
         m_Player.m_CanHide = false;
-        m_Player.SetWalkSoundCoroutine(false);
         m_Player.MoveByDirection(0);
+
+        if (!ReferenceEquals(m_WalkSoundCoroutineElement, null))
+        {
+            m_WalkSoundCoroutineElement.StopCoroutine_Element();
+            m_WalkSoundCoroutineElement = null;
+        }
+        
         ExitFinalProcess();
     }
 
-    public override void NextPhase()
+    private IEnumerator CheckMatType()
     {
+        SoundPlayer player = GameMgr.GetInstance().p_SoundPlayer;
+        
+        while (true)
+        {
+            if (m_Player.m_PlayerFootMgr.GetFootRayHit().collider.TryGetComponent(out IMatType matType))
+            {
+                player.PlayCommonSoundByMatType(0, matType.m_matType, m_PlayerTransform.position);
+            }
+            yield return new WaitForSeconds(m_WalkSoundDelay);
+        }
 
+        yield break;
     }
 }
 
@@ -288,7 +305,7 @@ public class Player_ROLL : PlayerFSM
         m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
         m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Roll, 1);
         
-        m_Player.m_SFXMgr.playPlayerSFXSound(0);
+        m_Player.m_SoundPlayer.PlayPlayerSoundOnce(4);
         m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue - m_RageGauge.p_Gauge_Consume_Roll);
 
         // 코루틴 시작
@@ -336,11 +353,6 @@ public class Player_ROLL : PlayerFSM
         m_CoroutineElement.StopCoroutine_Element();
         
         ExitFinalProcess();
-    }
-
-    public override void NextPhase()
-    {
-
     }
 
     private IEnumerator CheckEvade()
@@ -399,7 +411,7 @@ public class Player_HIDDEN : PlayerFSM
     private int m_KeyInput = 0;
     private Player_FootMgr _mFootMgr;
     private Rigidbody2D m_Rigid;
-    private SoundPlayer m_SFXMgr;
+    private SoundPlayer m_SoundPlayer;
     private RageGauge m_RageGauge;
     private Player_UseRange m_UseRange;
     private readonly int Hide = Animator.StringToHash("Hide"); 
@@ -420,7 +432,7 @@ public class Player_HIDDEN : PlayerFSM
         m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
         m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Hide, 1);
         
-        m_Player.m_SFXMgr.playPlayerSFXSound(5);
+        m_Player.m_SoundPlayer.PlayPlayerSoundOnce(5);
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
     }
@@ -460,13 +472,8 @@ public class Player_HIDDEN : PlayerFSM
         
         m_Player.m_CanMove = true;
         m_Player.m_CanAttack = true;
-        m_Player.m_SFXMgr.playPlayerSFXSound(6);
+        m_Player.m_SoundPlayer.PlayPlayerSoundOnce(6);
         ExitFinalProcess();
-    }
-
-    public override void NextPhase()
-    {
-
     }
 }
 
@@ -499,7 +506,7 @@ public class Player_MELEE : PlayerFSM
         gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
         
         m_Player.m_MeleeAttack.StartMelee();
-        m_Player.m_SFXMgr.playPlayerSFXSound(0);
+        m_Player.m_SoundPlayer.PlayPlayerSoundOnce(3);
     }
 
     public override void UpdateState()
@@ -533,11 +540,6 @@ public class Player_MELEE : PlayerFSM
         
         m_Player.m_MeleeAttack.StopMelee();
         m_Player.MoveByDirection(0);
-    }
-
-    public override void NextPhase()
-    {
-        
     }
 }
 
@@ -592,11 +594,6 @@ public class Player_DEAD : PlayerFSM
         ExitFinalProcess();
     }
 
-    public override void NextPhase()
-    {
-
-    }
-    
     /** Delay Respawn at CheckPoints */
     IEnumerator DelayGetActiveCheckPointPosition(float DeltaSeconds)
     {
@@ -624,6 +621,7 @@ public class Player_BULLET_TIME : PlayerFSM
     private float m_BulletTimeLimit = 0f;
 
     private float m_Timer = 0f;
+    private EventInstance m_SoundInstance;
 
     public Player_BULLET_TIME(Player _player) : base(_player)
     {
@@ -641,7 +639,7 @@ public class Player_BULLET_TIME : PlayerFSM
         m_Timer = 0f;
         
         m_Player.m_PlayerRigid.velocity = Vector2.zero;
-        
+
         // 재장전 캔슬
         m_Player.m_ArmMgr.StopReload();
         
@@ -667,6 +665,12 @@ public class Player_BULLET_TIME : PlayerFSM
 
         m_BulletTimeMgr.ActivateBulletTime(true);
         m_BulletTimeLimit = m_BulletTimeMgr.p_BulletTimeLimit;
+        
+        // 사운드 테스트
+        //FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/P_Bullettime_Start");
+        m_SoundInstance = m_Player.m_SoundPlayer.GetPlayerSoundInstance(0);
+        FMODUnity.RuntimeManager.AttachInstanceToGameObject(m_SoundInstance, m_PlayerTransform);
+        m_SoundInstance.start();
     }
 
     public override void UpdateState()
@@ -690,15 +694,20 @@ public class Player_BULLET_TIME : PlayerFSM
                     m_Player.m_ScreenEffectUI.ActivateVignetteEffect(false);
                     m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 2);
                     m_Phase = 1;
+                    
+                    // 사운드 테스트
+                    m_SoundInstance.keyOff();
                 }
                 break;
             
             case 1:
+                //  불릿타임 시간초과 체크
                 if (m_AniMgr.p_FullBody.m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_BulletTimeMgr.ActivateBulletTime(false);
                     m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 3);
                     m_BulletTimeMgr.FireAll();
+
                     m_Phase = 2;
                 }
                 break;
@@ -717,10 +726,5 @@ public class Player_BULLET_TIME : PlayerFSM
         m_Player.m_playerRotation.m_BanFlip = false;
         m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 0);
         m_AniMgr.p_FullBody.m_Animator.updateMode = AnimatorUpdateMode.Normal;
-    }
-
-    public override void NextPhase()
-    {
-        
     }
 }

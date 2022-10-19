@@ -41,7 +41,7 @@ public class Player_UI : MonoBehaviour
     
 
     // Member Variables
-    private SoundPlayer m_SoundMgr;
+    private SoundPlayer m_SoundPlayer;
     private CameraMgr m_Maincam;
     private Player_ArmMgr m_ArmMgr;
     
@@ -92,7 +92,7 @@ public class Player_UI : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_SoundMgr = instance.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_ArmMgr = m_Player.m_ArmMgr;
     }
@@ -198,7 +198,8 @@ public class Player_UI : MonoBehaviour
             case 0:     // Head
                 p_Hitmark.sprite = p_HitmarkArr[0];
                 m_Maincam.DoCamShake(true);
-                m_SoundMgr.playUISound(0);
+                m_SoundPlayer.PlayUISoundOnce(0);
+                
                 // 원본 Scale로 함
                 p_Hitmark.rectTransform.localScale = m_HitmarkOriginScale;
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Head());
@@ -213,7 +214,8 @@ public class Player_UI : MonoBehaviour
             case 1:     // Body
                 p_Hitmark.sprite = p_HitmarkArr[1];
                 m_Maincam.DoCamShake(false);
-                m_SoundMgr.playUISound(1);
+                m_SoundPlayer.PlayUISoundOnce(1);
+                
                 // scale 2배로 시작
                 p_Hitmark.rectTransform.localScale = new Vector2(2f, 2f);
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Body());

@@ -31,7 +31,7 @@ public class Floor : ObjectDefine, IMatType, IHotBox
         var instance = InstanceMgr.GetInstance();
 
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
-        m_SoundPlayer = instance.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
     }
 
     // Updates
@@ -43,7 +43,7 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     // Functions
     public int HitHotBox(IHotBoxParam _param)
     {
-        m_SoundPlayer.playAttackedSound(m_matType, _param.m_contactPoint);
+        m_SoundPlayer.PlayHitSoundByMatType(m_matType, _param.m_contactPoint);
 
         m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
         

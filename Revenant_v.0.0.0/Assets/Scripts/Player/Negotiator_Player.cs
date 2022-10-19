@@ -41,7 +41,7 @@ public class Negotiator_Player : BasicWeapon_Player
 
         m_AimCursorTransform = tempIns.GetComponentInChildren<AimCursor>().transform;
         m_SoundMgr = tempIns.GetComponentInChildren<SoundMgr>();
-        m_SoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerHitscanRay = m_Player.m_PlayerHitscanRay;
         m_Player_Arm = m_Player.m_playerRotation.gameObject.transform;
@@ -140,7 +140,7 @@ public class Negotiator_Player : BasicWeapon_Player
                 }
                 else
                 {
-                    m_SoundPlayer.playGunFireSound(0, gameObject);
+                    m_SoundPlayer.PlayPlayerSoundOnce(1);
                     SpawnSFX(result.m_RayDestinationPos);
                 }
                 break;
@@ -160,7 +160,7 @@ public class Negotiator_Player : BasicWeapon_Player
                 else
                 {
                     hotBoxParam.m_MakeRageParticle = true;
-                    m_SoundPlayer.playGunFireSound(0, gameObject);
+                    m_SoundPlayer.PlayPlayerSoundOnce(1);
                     SpawnSFX(result.m_RayDestinationPos);
 
                     // 22.10.11 - 계단 핫박스 오류 임시 조치
@@ -191,7 +191,7 @@ public class Negotiator_Player : BasicWeapon_Player
                     hotBoxParam = new IHotBoxParam(p_BulletDamage, p_StunValue, m_AimCursorTransform.position, WeaponType.BULLET);
                     
                     hotBoxParam.m_MakeRageParticle = true;
-                    m_SoundPlayer.playGunFireSound(0, gameObject);
+                    m_SoundPlayer.PlayPlayerSoundOnce(1);
                     SpawnSFX(result.m_RayDestinationPos);
                     hotBox.HitHotBox(hotBoxParam);
                 }
