@@ -68,7 +68,7 @@ public class Drone : BasicEnemy
     private UpdateDelegate m_Callback = null;
 
     private float m_VisionAngle = 0f;
-    
+    private static readonly int DetectSpeed = Animator.StringToHash("DetectSpeed");
 
 
     // Constructors
@@ -117,14 +117,19 @@ public class Drone : BasicEnemy
 
     public void Start()
     {
-        m_Animator.SetFloat("DetectSpeed", p_DetectSpeed);
+        m_Animator.SetFloat(DetectSpeed, p_DetectSpeed);
         var instance = InstanceMgr.GetInstance();
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerTransform = m_Player.transform;
         
         m_CurEnemyFSM.StartState();
     }
-    
+
+    private void OnEnable()
+    {
+        m_Animator.SetFloat(DetectSpeed, p_DetectSpeed);
+    }
+
     // Updates
     public void Update()
     {

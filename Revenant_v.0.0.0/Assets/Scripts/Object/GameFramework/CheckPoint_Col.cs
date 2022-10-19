@@ -38,11 +38,14 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
         RemoveEnemyListToActivate();
         _checkPoint.ActivateBothOutline(true);
         
+        Debug.Log(_checkPoint.bCanInteract + ", " + GetEnemyNumFromEnemyList + ", "+
+                  GetEnemyNumFromSpawnerList);
+        
         // 성공하면 1, 실패하면 0을 반환
         // 플레이어가 체크포인트 범위안에 들어있고, 등록된 적 리스트가 비워져 있다면 인터랙션 가능
         if (_checkPoint.bCanInteract && GetEnemyNumFromEnemyList == 0 && GetEnemyNumFromSpawnerList == 0)
         {
-            Debug.Log("Player Use The CheckPoint Box");
+            //Debug.Log("Player Use The CheckPoint Box");
             // 체크포인트 활성화
             _checkPoint.ActivateCheckPoint();
             // 체크포인트 번호 저장

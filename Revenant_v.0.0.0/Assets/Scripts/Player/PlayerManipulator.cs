@@ -6,9 +6,8 @@ using UnityEngine.Serialization;
 
 public class PlayerManipulator : MonoBehaviour
 {
-    public Player p_Player;
-    public RageGauge p_RageGauge;
-    
+    private Player m_Player;
+
     [Header("플레이어 설정값")]
     public int P_HP = 50;
     public float P_StunInvincibleTime = 2f;
@@ -36,19 +35,26 @@ public class PlayerManipulator : MonoBehaviour
 
     public void SetPlayer()
     {
-        p_Player.SetPlayer(this);
+        m_Player = null;
+        m_Player = GameObject.FindGameObjectWithTag("@Player").GetComponent<Player>();
+        if (ReferenceEquals(m_Player, null))
+        {
+            Debug.Log("ERR : PlayerManipulator_Player Null");
+        }
+        
+        m_Player.SetPlayer(this);
         
         #if UNITY_EDITOR
-            EditorUtility.SetDirty(p_Player);
+            EditorUtility.SetDirty(m_Player);
         #endif
     }
 
     public void SetNegotiator()
     {
-        p_Player.SetNegotiator(this);
+        m_Player.SetNegotiator(this);
         
         #if UNITY_EDITOR
-            EditorUtility.SetDirty(p_Player);
+            EditorUtility.SetDirty(m_Player);
         #endif
     }
 }

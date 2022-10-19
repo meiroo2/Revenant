@@ -13,7 +13,7 @@ public class ObjectPuller : MonoBehaviour
     // Member Variables
     protected int m_Idx = 0;
     protected ForObjPull_Once[] m_PulledObjArr;
-    private SoundPlayer m_SFXSoundMgr;
+    protected SoundPlayer m_SoundPlayer;
 
     // Constructors
     protected void Awake()
@@ -28,11 +28,11 @@ public class ObjectPuller : MonoBehaviour
     protected void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_SFXSoundMgr = instance.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         
         for (int i = 0; i < m_ObjPullCount; i++)
         {
-            m_PulledObjArr[i].m_SoundSFXMgr = m_SFXSoundMgr;
+            m_PulledObjArr[i].m_SoundPlayer = m_SoundPlayer;
             m_PulledObjArr[i].gameObject.SetActive(false);
         }
     }

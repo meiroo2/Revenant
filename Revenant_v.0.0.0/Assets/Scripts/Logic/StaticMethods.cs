@@ -103,6 +103,8 @@ public static class StaticMethods
     /// <returns></returns>
     public static Vector2 GetLerpPosByNormalizedTime(Vector2 _originPos, Vector2 _destPos, float _deadLine, float _normalTime)
     {
+        Debug.Log(_originPos + ", " + _destPos);
+        
         return _normalTime <= _deadLine ? 
             Vector2.Lerp(_originPos, _destPos, (_normalTime / _deadLine)) :
             Vector2.Lerp(_destPos, _originPos, -(_normalTime - _deadLine) / (_deadLine - 1f));

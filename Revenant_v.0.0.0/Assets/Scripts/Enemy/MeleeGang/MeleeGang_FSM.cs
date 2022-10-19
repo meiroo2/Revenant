@@ -493,6 +493,7 @@ public class STUN_MeleeGang : MeleeGang_FSM
                 {
                     if (m_Enemy.m_CurStunValue >= m_Enemy.p_StunHp)
                     {
+                        m_Enemy.ResetStunValue();
                         m_Phase = 1;
                         break;
                     }
@@ -506,7 +507,7 @@ public class STUN_MeleeGang : MeleeGang_FSM
                 m_Timer += Time.deltaTime;
                 if (m_Timer >= m_Enemy.p_StunWaitTime)
                 {
-                    m_Enemy.ResetStunThreshold();
+                    m_Enemy.ResetStunValue();
                     m_Phase = -1;
                     m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
                 }
