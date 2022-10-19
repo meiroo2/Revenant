@@ -108,7 +108,7 @@ public class Player : Human
 
     private RageGauge m_RageUI;
     private Player_MatMgr _mPlayerMatMgr;
-    public SoundPlayer m_SFXMgr { get; private set; }
+    public SoundPlayer m_SoundPlayer { get; private set; }
     public HitSFXMaker m_HitSFXMaker { get; private set; }
     private PlayerFSM m_CurPlayerFSM;
     private SoundMgr m_SoundMgr;
@@ -119,7 +119,6 @@ public class Player : Human
     private Coroutine m_WalkSoundCoroutine;
 
     private bool m_SafeFSMLock = false;
-
 
 
     // Constructor
@@ -152,7 +151,7 @@ public class Player : Human
         m_PlayerUIMgr = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
         m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SoundMgr = instance.GetComponentInChildren<SoundMgr>();
-        m_SFXMgr = instance.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
@@ -277,59 +276,15 @@ public class Player : Human
 
 
     // Functions
+
     public Vector2 GetPlayerCenterPos()
     {
         return p_CenterTransform.position;
-    }
-    public void SetWalkSoundCoroutine(bool _isOn)
-    {
-        if (_isOn)
-        {
-            m_WalkSoundCoroutine = StartCoroutine(PlayWalkSound());
-        }
-        else
-        {
-            StopCoroutine(m_WalkSoundCoroutine);
-        }
-
-    }
-
-    private IEnumerator PlayWalkSound()
-    {
-        while (true)
-        {
-            m_SoundMgr.MakeSound(GetPlayerCenterPos(), true, SOUNDTYPE.PLAYERNOISE);
-            m_SFXMgr.playPlayerSFXSound(4);
-            yield return new WaitForSeconds(0.5f);
-        }
-    }
-
-    public bool IsPlayerOnStair()
-    {
-        /*
-        if (gameObject.layer == 10)
-        {
-            m_PlayerLocationSensor
-            return true;
-        }
-
-        return false;
-        */
-        return false;
     }
 
     public void GoToStairLayer(bool _input)
     {
         gameObject.layer = _input ? 10 : 12;
-    }
-
-    public void UseRollCount()
-    {
-        m_LeftRollCount -= 1f;
-        m_PlayerUIMgr.SetRollGauge(m_LeftRollCount);
-
-        if (!m_isRecoveringRollCount)
-            StartCoroutine(RecoverRollCount());
     }
 
     public IEnumerator RecoverRollCount()

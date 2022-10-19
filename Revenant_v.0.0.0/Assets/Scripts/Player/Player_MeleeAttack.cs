@@ -10,7 +10,7 @@ public class Player_MeleeAttack : MonoBehaviour
     public int m_StunValue = 10;
     
     // Member Variables
-    private SoundPlayer m_SoundSFXMgr;
+    private SoundPlayer m_SoundPlayer;
     private HitSFXMaker m_SFXMaker;
     private BoxCollider2D m_MeleeCol;
     private Player m_Player;
@@ -30,7 +30,7 @@ public class Player_MeleeAttack : MonoBehaviour
     {
         var instance = InstanceMgr.GetInstance();
         m_SFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
-        m_SoundSFXMgr = instance.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
 
@@ -60,7 +60,9 @@ public class Player_MeleeAttack : MonoBehaviour
                 
                 m_SFXMaker.EnableNewObj(3, col.ClosestPoint(transform.position), m_Player.m_IsRightHeaded);
                 m_SFXMaker.EnableNewObj(2, col.ClosestPoint(transform.position),m_Player.m_IsRightHeaded);
-                m_SoundSFXMgr.playGunFireSound(0, col.transform.position);
+               
+                m_SoundPlayer.PlayPlayerSoundOnce(3);
+                
                 m_MeleeCol.enabled = false;
             }
         }

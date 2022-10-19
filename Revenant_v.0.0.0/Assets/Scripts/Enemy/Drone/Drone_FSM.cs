@@ -345,6 +345,7 @@ public class DEAD_Drone : Drone_FSM
                 break;
             
             case 2: // 잘 폭발
+                m_Enemy.m_Renderer.sortingLayerName = "BackGround03";
                 m_Animator.SetInteger("Explode", 1);
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());

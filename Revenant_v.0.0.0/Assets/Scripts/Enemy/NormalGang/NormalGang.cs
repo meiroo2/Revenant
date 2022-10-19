@@ -79,7 +79,9 @@ public class NormalGang : BasicEnemy
         m_EnemyRotation = GetComponentInChildren<Enemy_Rotation>();
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
-
+        
+        m_Alert.SetAlertSpeed(p_AlertSpeed);
+        
         m_IDLE = new IDLE_NormalGang(this);
         m_FOLLOW = new FOLLOW_NormalGang(this);
         m_ATTACK = new ATTACK_NormalGang(this);
@@ -92,8 +94,6 @@ public class NormalGang : BasicEnemy
 
     private void Start()
     {
-        m_Alert.SetAlertSpeed(p_AlertSpeed);
-        
         m_CurEnemyFSM.StartState();
 
         m_OriginPos = transform.position;
@@ -104,14 +104,14 @@ public class NormalGang : BasicEnemy
         m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
     }
 
+    private void OnEnable()
+    {
+        m_Alert.SetAlertSpeed(p_AlertSpeed);
+    }
+
     public override void InitEnemy()
     {
         base.InitEnemy();
-        if (ReferenceEquals(m_Alert, null))
-        {
-            m_Alert = GetComponentInChildren<Enemy_Alert>();
-        }
-        m_Alert.SetAlertSpeed(p_AlertSpeed);
     }
 
 
@@ -161,7 +161,7 @@ public class NormalGang : BasicEnemy
         p_StunAlertSpeed = _mgr.N_StunAlertSpeedMulti;
         p_HeadBox.p_DamageMulti = _mgr.N_HeadDmgMulti;
         p_BodyBox.p_DamageMulti = _mgr.N_BodyDmgMulti;
-
+        
         tripleshot.p_BulletDamage = _mgr.N_BulletDamage;
         tripleshot.p_FireDelay = _mgr.N_FireDelay;
         tripleshot.p_BulletSpeed = _mgr.N_BulletSpeed;

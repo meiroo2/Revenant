@@ -45,7 +45,7 @@ public class BasicEnemy : Human
     protected Enemy_UseRange m_EnemyUseRange;
     protected LocationSensor m_EnemyLocationSensor;
     protected LocationSensor m_PlayerLocationSensor;
-    protected Enemy_FootMgr m_Foot;
+    public Enemy_FootMgr m_Foot { get; protected set; }
     public Animator m_Animator { get; protected set; }
     public Enemy_Alert m_Alert { get; protected set; }
     public Transform m_PlayerTransform { get; protected set; }
@@ -66,8 +66,8 @@ public class BasicEnemy : Human
     public bool bMoveToUseStairUp { get; set; } = false;
     public bool bMoveToUseStairDown { get; set; } = false;
     
-    public List<Vector2> WayPointsVectorList;
-    public int WayPointsIndex = 0;
+    [HideInInspector] public List<Vector2> WayPointsVectorList;
+    [HideInInspector] public int WayPointsIndex = 0;
 
     // Functions
     /// <summary>
