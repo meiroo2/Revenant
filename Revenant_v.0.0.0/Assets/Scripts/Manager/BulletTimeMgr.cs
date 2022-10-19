@@ -93,7 +93,7 @@ public class BulletTimeMgr : MonoBehaviour
         
         var instance = InstanceMgr.GetInstance();
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
-        m_SoundPlayer = instance.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
         m_MatChanger = instance.GetComponentInChildren<MatChanger>();
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
@@ -306,7 +306,7 @@ public class BulletTimeMgr : MonoBehaviour
             if (ReferenceEquals(m_BulletTimeParamList[i].m_HotBox, null))
             {
                 m_MarkerList[i].SetActive(false);
-                m_SoundPlayer.playGunFireSound(0, gameObject);
+                m_SoundPlayer.PlayPlayerSoundOnce(1);
                 m_BulletTimeParamList[i].m_FinalAction?.Invoke();
             }
             else
@@ -314,7 +314,7 @@ public class BulletTimeMgr : MonoBehaviour
                 m_BulletTimeParamList[i].m_HotBox.HitHotBox(m_BulletTimeParamList[i].m_HotBoxParam);
                 m_MarkerList[i].SetActive(false);
             
-                m_SoundPlayer.playGunFireSound(0, gameObject);
+                m_SoundPlayer.PlayPlayerSoundOnce(1);
                 m_BulletTimeParamList[i].m_FinalAction?.Invoke();
             }
             yield return new WaitForSecondsRealtime(p_ShotDelayTime);

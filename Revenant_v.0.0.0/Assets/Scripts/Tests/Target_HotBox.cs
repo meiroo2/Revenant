@@ -1,4 +1,5 @@
 ﻿using System;
+using FMOD.Studio;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class Target_HotBox : MonoBehaviour, IHotBox
     // Visible Member Variables
     public HitBoxPoint p_Point;
     [field: SerializeField] public int p_DamageMultiples { get; private set; } = 1;
+    public MatType p_MatType;
     
     
     // Member Variables
@@ -43,17 +45,22 @@ public class Target_HotBox : MonoBehaviour, IHotBox
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_PlayerCenterTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().p_CenterTransform;
-        m_SoundPlayer = instance.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
     }
 
     public int HitHotBox(IHotBoxParam _param)
     {
+        EventInstance eventInstance;
+        
         switch (p_Point)
         {
             case HitBoxPoint.HEAD:
                 m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
                 m_PlayerUI.ActiveHitmark(0);
-                m_SoundPlayer.playAttackedSound(MatType.Normal,  transform.position );
+
+                m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
+       
+
                 m_Target.PrintTxt(p_Point + " " + _param.m_Damage * 2 + " DMG");
                 
                 m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 
@@ -66,7 +73,9 @@ public class Target_HotBox : MonoBehaviour, IHotBox
             case HitBoxPoint.BODY:
                 m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
                 m_PlayerUI.ActiveHitmark(1);
-                m_SoundPlayer.playAttackedSound(MatType.Normal, transform.position) ;
+                
+                m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
+
                 m_Target.PrintTxt(p_Point + " " + _param.m_Damage + " DMG");
                 
                 m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 

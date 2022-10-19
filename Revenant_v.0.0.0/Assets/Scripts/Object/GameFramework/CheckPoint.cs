@@ -15,7 +15,7 @@ public class CheckPoint : MonoBehaviour
     [ReadOnly] public bool bActivated = false;
 
     /** For animation */
-    public Animator thisAnimator;
+    public Animator p_Animator;
 
     /** List with all checkpoints objects in the scene */
     public static List<CheckPoint> CheckPointsList;
@@ -33,6 +33,11 @@ public class CheckPoint : MonoBehaviour
     [Header("체크포인트 섹션 오브젝트")] public List<GameObject> AssignedObjectsList;
 
     public int SectionNumber;
+    
+
+    private Coroutine m_AnimCheckCoroutine;
+    private readonly int Activate = Animator.StringToHash("Activate");
+    private readonly int AfterIdle = Animator.StringToHash("AfterIdle");
 
     private void Awake()
     {
@@ -51,6 +56,16 @@ public class CheckPoint : MonoBehaviour
         SetUpSectionNumber();
         SetUpIsActivated();
         DestroyAssignedObjects();
+
+        if (bActivated)
+        {
+            p_Animator.SetInteger(Activate, 1);
+            p_Animator.SetInteger(AfterIdle, 1);
+        }
+        else
+        {
+            p_Animator.enabled = false;
+        }
     }
 
     /** 적 리스트 초기화 함수 */
@@ -159,24 +174,41 @@ public class CheckPoint : MonoBehaviour
         bActivated = true;
         // 체크포인트 활성화 여부 저장
         DataHandleManager.Instance.IsCheckPointActivated = bActivated;
-        thisAnimator.SetBool("Active", true);
         
-        // IDLE 애니메이션으로 돌림
-        StartCoroutine("BackToIdleAnimation");
+
+        // 애니메이션
+        p_Animator.enabled = true;
+        if (!ReferenceEquals(m_AnimCheckCoroutine, null))
+        {
+            StopCoroutine(m_AnimCheckCoroutine);
+            m_AnimCheckCoroutine = null;
+        }
+        p_Animator.SetInteger(Activate, 1);
+        m_AnimCheckCoroutine = StartCoroutine(CheckSaveAnimEnd());
+    }
+
+    /// <summary>
+    /// Check Activate Animation EndTime.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator CheckSaveAnimEnd()
+    {
+        while (true)
+        {
+            yield return null;
+            if (p_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+            {
+                p_Animator.SetInteger(AfterIdle, 1);
+                break;
+            }
+        }
+
+        yield break;
     }
 
     public void ActivateBothOutline(bool _isOn)
     {
         // Collider 안에 (체크포인트 범위 안에) 플레이어가 들어오면 bCanInteract를 Set
         bCanInteract = _isOn;
-    }
-
-    IEnumerator BackToIdleAnimation()
-    {
-        yield return new WaitForSeconds(1f);
-        foreach (CheckPoint CheckPointGameObject in CheckPointsList)
-        {
-            CheckPointGameObject.GetComponent<Animator>().SetBool("Active", false);
-        }
     }
 }

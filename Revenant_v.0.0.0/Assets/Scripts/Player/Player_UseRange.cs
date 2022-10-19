@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 /*
 public class UseableObjInfo
@@ -66,6 +67,10 @@ public class Player_UseRange : MonoBehaviour
                 HighlightbyDistance(true);
                 break;
             
+            case "CheckPoint":
+                m_UseableObjList.Add(collision);
+                break;
+            
             default:
                 Debug.Log("ERR : Player_UseRange에서 정의되지 않은 Tag 발견 " + collision.tag);
                 m_UseableObjList.Add(collision);
@@ -88,6 +93,10 @@ public class Player_UseRange : MonoBehaviour
                     HighlightbyDistance(true);
                 else
                     m_CurHideSlot = null;
+                break;
+            
+            case "CheckPoint":
+                m_UseableObjList.Remove(collision);
                 break;
             
             default:
@@ -118,6 +127,8 @@ public class Player_UseRange : MonoBehaviour
         }
         else
         {
+            m_UseDelay = true;
+            m_UseDelayCoroutine = StartCoroutine(UseDelayCoroutine());
             return 0;
         }
     }

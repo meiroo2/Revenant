@@ -5,10 +5,10 @@ using UnityEngine;
 public enum MatType
 {
     Normal,
+    Dirt,
     Wood,
     Metal,
-    Target_Head,
-    Target_Body
+    Flesh
 }
 
 public interface IMatType

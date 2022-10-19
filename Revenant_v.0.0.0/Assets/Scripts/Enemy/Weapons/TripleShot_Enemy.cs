@@ -29,7 +29,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
     {
         var tempIns = InstanceMgr.GetInstance();
         
-        m_SoundPlayer = tempIns.GetComponentInChildren<SoundPlayer>();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
         m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
@@ -49,7 +49,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
     {
         m_LeftFire--;
         
-        m_SoundPlayer.playGunFireSound(1, gameObject);
+        m_SoundPlayer.PlayEnemySoundOnce(0, gameObject);
 
         m_BulletParam.m_IsRightHeaded = m_Enemy.m_IsRightHeaded;
         m_BulletParam.m_Position = m_Enemy_Arm.position;
