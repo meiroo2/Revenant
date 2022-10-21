@@ -19,6 +19,8 @@ public class SoundPlayer : MonoBehaviour
     // Constructors
     private void Awake()
     {
+        //FMODUnity.RuntimeManager.CoreSystem.set3DSettings(1f, 50f, 1f);
+        
         FMOD.Studio.PLAYBACK_STATE state;
         m_BGMInstance.getPlaybackState(out state);
 
