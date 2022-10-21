@@ -53,8 +53,8 @@ public class Negotiator_Player : BasicWeapon_Player
         m_RageGauge = tempIns.m_MainCanvas.GetComponentInChildren<RageGauge_UI>();
 
         m_PlayerUI = tempIns.m_MainCanvas.GetComponentInChildren<Player_UI>();
-        
-        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
+
+        m_PlayerUI.SetLeftRounds(m_LeftRounds);
     }
     
     
@@ -63,7 +63,7 @@ public class Negotiator_Player : BasicWeapon_Player
     public override void SetLeftRounds(int _leftRounds)
     {
         m_LeftRounds = _leftRounds;
-        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
+        m_PlayerUI.SetLeftRounds(_leftRounds);
     }
 
     public override int Fire()
@@ -100,7 +100,7 @@ public class Negotiator_Player : BasicWeapon_Player
                 break;
         }
         
-        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
+        m_PlayerUI.SetLeftRounds(m_LeftRounds);
     }
 
     public override bool GetCanReload()
@@ -203,7 +203,7 @@ public class Negotiator_Player : BasicWeapon_Player
         }
 
         // UI 업데이트 필요
-        m_PlayerUI.SetLeftRoundsNMag(m_LeftRounds, p_MaxRound);
+        m_PlayerUI.PlayRoundsAnim(m_LeftRounds);
     }
 
     private void MakeShell()

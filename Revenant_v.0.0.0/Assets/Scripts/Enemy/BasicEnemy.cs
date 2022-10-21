@@ -289,7 +289,7 @@ public class BasicEnemy : Human
     /// Enemy의 Hotbox의 Active 상태를 조절합니다.
     /// </summary>
     /// <param name="_isOn"></param>
-    public void SetHotBoxesActive(bool _isOn)
+    public virtual void SetHotBoxesActive(bool _isOn)
     {
         for (int i = 0; i < m_EnemyHotBoxes.Length; i++)
         {
