@@ -287,21 +287,6 @@ public class Player : Human
         gameObject.layer = _input ? 10 : 12;
     }
 
-    public IEnumerator RecoverRollCount()
-    {
-        m_isRecoveringRollCount = true;
-        while (m_LeftRollCount < p_MaxRollCount)
-        {
-            m_LeftRollCount += Time.deltaTime * p_RollCountRecoverSpeed;
-            m_PlayerUIMgr.SetRollGauge(m_LeftRollCount);
-            yield return null;
-        }
-
-        m_LeftRollCount = 3f;
-        m_PlayerUIMgr.SetRollGauge(m_LeftRollCount);
-        m_isRecoveringRollCount = false;
-    }
-    
     public override void setisRightHeaded(bool _isRightHeaded)
     {
         m_IsRightHeaded = _isRightHeaded;
@@ -318,7 +303,6 @@ public class Player : Human
     public void setPlayerHp(int _value)
     {
         p_Hp = _value;
-        m_PlayerUIMgr.SetHp(p_Hp);
     }
 
     public bool GetIsPlayerWalkStraight()

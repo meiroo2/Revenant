@@ -72,9 +72,6 @@ public class Player_HotBox : MonoBehaviour, IHotBox
                 {
                     m_Player.ChangePlayerFSM(PlayerStateName.DEAD);
 
-                    if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
-                        m_PlayerUIMgr.SetHp(m_Player.p_Hp);
-                    
                     Debug.Log("플레이어 사망");
                     return 1;
                 }
@@ -84,9 +81,6 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         
                 m_BlinkCoroutine = StartCoroutine(ActivatePlayerBlink());
 
-                if (m_Player.m_CurPlayerFSMName != PlayerStateName.DEAD)
-                    m_PlayerUIMgr.SetHp(m_Player.p_Hp);
-                
                 return 1;
                 break;
             
