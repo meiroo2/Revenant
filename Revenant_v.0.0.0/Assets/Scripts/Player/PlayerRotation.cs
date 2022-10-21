@@ -29,6 +29,9 @@ public class PlayerRotation : MonoBehaviour
     
     private Player m_Player;
 
+    private Camera m_MainCam;
+    private Player_InputMgr m_InputMgr;
+
     public bool m_BanFlip = false;
     private Vector2 m_mousePos;
     private Vector2 m_MouseDistance;
@@ -50,6 +53,8 @@ public class PlayerRotation : MonoBehaviour
     private void Start()
     {
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
+        m_MainCam = Camera.main;
+        m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
         m_AimCursor = InstanceMgr.GetInstance().GetComponentInChildren<AimCursor>().transform;
     }
 
@@ -77,7 +82,7 @@ public class PlayerRotation : MonoBehaviour
     // Functions
     private void GetAngle()
     {
-        m_mousePos = m_AimCursor.position;
+        m_mousePos = m_MainCam.ScreenToWorldPoint(m_InputMgr.m_MousePos); 
         m_MouseDistance = new Vector2(m_mousePos.x - transform.position.x, m_mousePos.y - transform.position.y);
         
         // 현재 바라보는 방향에 따라 양수, 음수를 결정
