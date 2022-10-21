@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 
@@ -12,7 +13,7 @@ public class BulletPuller : MonoBehaviour
 
     // Member Variables
     protected int m_Idx = 0;
-    protected Bullet[] m_PulledBulletArr;
+    protected List<Bullet> m_PulledBulletArr = new();
     protected HitSFXMaker m_HitSFXMaker;
     private AimCursor m_AimCursor;
 
@@ -22,12 +23,17 @@ public class BulletPuller : MonoBehaviour
     {
         m_Idx = 0;
         m_isPlayers = true;
-        m_PulledBulletArr = new Bullet[p_BulletPullCount];
-        
-        for (var i = 0; i < p_BulletPullCount; i++)
+		//m_PulledBulletArr = new Bullet[p_BulletPullCount];
+		for (var i = 0; i < p_BulletPullCount; i++)
         {
-            m_PulledBulletArr[i] = Instantiate(p_PullingBullet, transform).GetComponent<Bullet>();
-            m_PulledBulletArr[i].transform.parent = transform;
+            Bullet bullet = Instantiate(p_PullingBullet, transform).GetComponent<Bullet>();
+			m_PulledBulletArr.Add(bullet);
+		}
+
+		for (var i = 0; i < p_BulletPullCount; i++)
+        {
+            Debug.Log(m_PulledBulletArr[i]);
+            m_PulledBulletArr[i].gameObject.transform.parent = transform;
             m_PulledBulletArr[i].gameObject.SetActive(false);
         }
     }

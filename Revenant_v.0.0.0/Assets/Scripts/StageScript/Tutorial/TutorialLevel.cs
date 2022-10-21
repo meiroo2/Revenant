@@ -22,7 +22,7 @@ public class TutorialLevel : MonoBehaviour
 
 	public virtual void PlayDroneVideo(string videoName)
 	{
-		if (p_TutorialDrone != null && p_TutorialVideoName != null)
+		if (p_TutorialDrone != null && p_TutorialVideoName != "")
 		p_TutorialDrone.PlayTutorialVideo(p_TutorialVideoName);
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class TutorialObject : MonoBehaviour
 {
 	public Action action;
-	private Animator m_animator;
+	protected Animator m_animator;
 
 	protected virtual void Start()
 	{

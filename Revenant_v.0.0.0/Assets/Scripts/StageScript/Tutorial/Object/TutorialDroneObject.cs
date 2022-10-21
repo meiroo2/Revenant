@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class TutorialDroneObject : TutorialObject
 {
+
     public List<AnimationClip> p_TutorialVideos = new();
     private Dictionary<string, AnimationClip> m_TutorialVideosMap = new();
-    [field: SerializeField] public Animator P_VideoAnimator;
+	[field: SerializeField] public Animator P_VideoAnimator;
 
     protected override void Start()
     {
@@ -19,7 +20,14 @@ public class TutorialDroneObject : TutorialObject
 
     void Update()
     {
-        
+        if (!m_animator.GetCurrentAnimatorStateInfo(0).IsName("Drone_contactIdle"))
+        {
+            P_VideoAnimator.GetComponent<SpriteRenderer>().enabled = false;
+		}
+        else
+        {
+			P_VideoAnimator.GetComponent<SpriteRenderer>().enabled = true;
+		}
     }
 
     public void PlayTutorialVideo(string videoName)
@@ -32,7 +40,13 @@ public class TutorialDroneObject : TutorialObject
         }
         else
         {
-            P_VideoAnimator.Play(videoName);
+			if (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Drone_Idle"))
+			{
+                m_animator.SetInteger("TutorialAnimationIndex", 2);
+				m_animator.Play("Drone_contact");
+                Debug.Log("½ÇÇà");
+			}
+			P_VideoAnimator.Play(videoName);
 		}
     }
 }

@@ -35,8 +35,8 @@ public class TutorialBot : BasicEnemy
 
     private void Start()
     {
-        m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
-        
+		setisRightHeaded(false);
+		m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
         m_CurEnemyFSM.StartState();
     }
     
@@ -44,7 +44,7 @@ public class TutorialBot : BasicEnemy
     // Updates
     private void FixedUpdate()
     {
-        m_CurEnemyFSM.UpdateState();
+		m_CurEnemyFSM.UpdateState();
     }
     
     
