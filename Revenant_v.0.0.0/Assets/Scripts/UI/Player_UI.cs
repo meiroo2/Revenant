@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -11,23 +12,23 @@ using UnityEngine.Serialization;
 public class Player_UI : MonoBehaviour
 {
     // Visible Member Variables
-    [Header("Objs")]
-    public Image p_HpGauge;
-    public Image p_RollGauge;
-    public Image p_LeftRoundsImg;
-    public Text p_LeftMagTxt;
+    [TabGroup("Bullets")] public Sprite p_FullImg;
+    [TabGroup("Bullets")] public Sprite[] p_7AnimArr;
+    [TabGroup("Bullets")] public Sprite[] p_6AnimArr;
+    [TabGroup("Bullets")] public Sprite[] p_5AnimArr;
+    [TabGroup("Bullets")] public Sprite[] p_4AnimArr;
+    [TabGroup("Bullets")] public Sprite[] p_3AnimArr;
+    [TabGroup("Bullets")] public Sprite[] p_2AnimArr;
+    [TabGroup("Bullets")] public Sprite p_NoneImg;
+    [TabGroup("Bullets")] public int p_RoundAnimSpeed = 4;
 
-    [Space(10f)] 
-    public Sprite[] p_LeftRoundsImgArr;
+    [TabGroup("AimUI")] public RectTransform p_AimTransform;
+    [TabGroup("AimUI")] public Image p_MainAimImg;
+    [TabGroup("AimUI")] public Image p_ReloadCircle;
+    [TabGroup("AimUI")] public Image p_Hitmark;
+    [TabGroup("AimUI")] public Image[] p_LeftRoundsImgArr;
 
-    
-    [Space(30f)] [Header("AimUI")] 
-    public Image p_MainAimImg;
-    public Sprite p_ReloadAimImg;
-    public Image p_ReloadCircle;
-    public Image p_Hitmark;
-
-
+    [Space(20f)]
     public int p_FrameSpeed = 4;
     private Coroutine m_UIAniCoroutine;
     public Sprite[] p_NormalSpriteArr;
@@ -41,6 +42,9 @@ public class Player_UI : MonoBehaviour
     
 
     // Member Variables
+
+    private Coroutine m_RoundsCoroutine;
+
     private SoundPlayer m_SoundPlayer;
     private CameraMgr m_Maincam;
     private Player_ArmMgr m_ArmMgr;
@@ -48,8 +52,7 @@ public class Player_UI : MonoBehaviour
     public float m_HitmarkRemainTime { get; set; } = 0.2f;
     private int m_MaxHp = 0;
     private float m_HpUnit = 0;
-    private RectTransform m_AimTransform;
-    
+
     public delegate void PlayerUIDelegate();
     private PlayerUIDelegate m_Callback = null;
 
@@ -67,24 +70,29 @@ public class Player_UI : MonoBehaviour
     private float m_ReloadSpeed = 1f;
 
 
+    private RectTransform m_CamCanvas;
     private Camera m_OverlayCam;
-    private Vector2 pos;
+    private Camera MainCam;
+    private Vector2 m_Pos = new Vector2();
+    private Vector3 m_AimPos = new Vector3();
+    
     
     // Constructors
     private void Awake()
     {
         m_OverlayCam = GameObject.FindWithTag("OverlayCam").GetComponent<Camera>();
+        MainCam = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
+        
+        m_CamCanvas = GameObject.FindWithTag("MainCanvas").GetComponent<RectTransform>();
         
         m_AllVisibleObjs = this.gameObject.GetComponentsInChildren<CanvasRenderer>();
 
         m_Maincam = Camera.main.GetComponent<CameraMgr>();
-        m_AimTransform = p_MainAimImg.rectTransform;
         p_Hitmark.enabled = false;
         p_ReloadCircle.fillAmount = 0f;
         
         m_HitmarkOriginScale = p_Hitmark.rectTransform.localScale;
         
-        p_LeftMagTxt.text = "0";
         m_MaxHp = 0;
         m_HpUnit = 0;
     }
@@ -100,14 +108,13 @@ public class Player_UI : MonoBehaviour
 
     private void Update()
     {
-
-        
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(m_AimTransform, Input.mousePosition,
-            m_OverlayCam, out pos);
-
-        Vector3 sans = m_OverlayCam.ScreenToWorldPoint(Input.mousePosition);
-        sans.z = 10f;
-        m_AimTransform.position = sans;
+        /*
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(p_AimTransform, Input.mousePosition,
+            m_OverlayCam, out m_Pos);
+        */
+        m_AimPos = m_OverlayCam.ScreenToWorldPoint(Input.mousePosition);
+        m_AimPos.z = 10f;
+        p_AimTransform.position = m_AimPos;
     }
 
 
@@ -142,44 +149,144 @@ public class Player_UI : MonoBehaviour
         }
     }
 
-    public void AddCallback(PlayerUIDelegate _input)
-    {
-        m_Callback += _input;
-    }
-    public void ResetCallback()
-    {
-        m_Callback = null;
-    }
-    
-    public void SetMaxHp(int _maxHp)
-    {
-        m_MaxHp = _maxHp;
-        m_HpUnit = (float)1 / (float)m_MaxHp;
-    }
-    public void SetHp(int _curHp)
-    {
-        p_HpGauge.fillAmount = _curHp * m_HpUnit;
-    }
-    public void SetRollGauge(float _curRoll)
-    {
-        p_RollGauge.fillAmount = _curRoll / 3.0f;
-    }
-    public void SetLeftMag(int _magCount)
-    {
-        p_LeftMagTxt.text = _magCount.ToString();
-    }
+
+  
     public void SetLeftRounds(int _rounds)
     {
-        if (_rounds is < 0 or > 8)
-            return;
-
-        p_LeftRoundsImg.sprite = p_LeftRoundsImgArr[_rounds];
-       // p_MainAimImg.sprite = p_AimImgArr[_rounds];
+        switch (_rounds)
+        {
+            case 0:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_NoneImg);
+                break;
+            
+            case 1:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_2AnimArr[p_2AnimArr.Length - 1]);
+                break;
+            
+            case 2:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_3AnimArr[p_3AnimArr.Length - 1]);
+                break;
+            
+            case 3:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_4AnimArr[p_4AnimArr.Length - 1]);
+                break;
+            
+            case 4:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_5AnimArr[p_5AnimArr.Length - 1]);
+                break;
+            
+            case 5:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_6AnimArr[p_6AnimArr.Length - 1]);
+                break;
+            
+            case 6:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_7AnimArr[p_7AnimArr.Length - 1]);
+                break;
+            
+            case 7:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_FullImg);
+                break;
+            
+            case 8:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_FullImg);
+                break;
+            
+            default:
+                Debug.Log("ERR : Player_UI에서 OOR");
+                break;
+        }
     }
-    public void SetLeftRoundsNMag(int _rounds, int _magCount)
+
+    public void PlayRoundsAnim(int _leftRounds)
     {
-        SetLeftRounds(_rounds);
-        SetLeftMag(_magCount);
+        SafetyStopRoundsCoroutine();
+        
+        switch (_leftRounds)
+        {
+            case 0:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_NoneImg);
+                break;
+            
+            case 1:
+                m_RoundsCoroutine = StartCoroutine(CheckRounds(p_LeftRoundsImgArr, p_2AnimArr)); 
+                break;
+            
+            case 2:
+                m_RoundsCoroutine = StartCoroutine(CheckRounds(p_LeftRoundsImgArr, p_3AnimArr)); 
+                break;
+            
+            case 3:
+                m_RoundsCoroutine = StartCoroutine(CheckRounds(p_LeftRoundsImgArr, p_4AnimArr)); 
+                break;
+            
+            case 4:
+                m_RoundsCoroutine = StartCoroutine(CheckRounds(p_LeftRoundsImgArr, p_5AnimArr)); 
+                break;
+            
+            case 5:
+                m_RoundsCoroutine = StartCoroutine(CheckRounds(p_LeftRoundsImgArr, p_6AnimArr)); 
+                break;
+            
+            case 6:
+                m_RoundsCoroutine = StartCoroutine(CheckRounds(p_LeftRoundsImgArr, p_7AnimArr)); 
+                break;
+            
+            case 7:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_FullImg);
+                break;
+            
+            case 8:
+                ChangeImageForArr(p_LeftRoundsImgArr, p_FullImg);
+                break;
+            
+            default:
+                Debug.Log("ERR : Player_UI에서 OOR");
+                break;
+        }
+    }
+
+    private void ChangeImageForArr(Image[] _imgArr, Sprite _sprite)
+    {
+        for (int i = 0; i < _imgArr.Length; i++)
+        {
+            _imgArr[i].sprite = _sprite;
+        }
+    }
+
+    private void SafetyStopRoundsCoroutine()
+    {
+        if (!ReferenceEquals(m_RoundsCoroutine, null))
+        {
+            StopCoroutine(m_RoundsCoroutine);
+        }
+
+        m_RoundsCoroutine = null;
+    }
+
+    private IEnumerator CheckRounds(Image[] _imageArr, Sprite[] _spriteArr)
+    {
+        int curFrame = p_RoundAnimSpeed;
+        int idx = 0;
+        while (true)
+        {
+            if (curFrame > p_RoundAnimSpeed)
+            {
+                ChangeImageForArr(_imageArr, _spriteArr[idx]);
+                idx++;
+                if (idx >= _spriteArr.Length)
+                {
+                    break;
+                }
+                curFrame = 0;
+            }
+            else
+            {
+                curFrame++;
+            }
+            yield return new WaitForFixedUpdate();
+        }
+
+        yield break;
     }
 
     public void ActiveHitmark(int _type)
