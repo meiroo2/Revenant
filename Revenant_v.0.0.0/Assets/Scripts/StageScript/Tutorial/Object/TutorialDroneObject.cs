@@ -42,7 +42,7 @@ public class TutorialDroneObject : TutorialObject
         {
 			if (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Drone_Idle"))
 			{
-                m_animator.SetInteger("TutorialAnimationIndex", 2);
+                m_animator.SetInteger("TutorialAnimationIndex", 3);
 				m_animator.Play("Drone_contact");
                 Debug.Log("½ÇÇà");
 			}

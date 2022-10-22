@@ -66,10 +66,10 @@ public class CameraMgr : MonoBehaviour
 
     public void MoveToTarget(Transform targetTransform, float MoveStopDuration)
     {
-        StartCoroutine(MoveToTargetCoroutine(targetTransform, MoveStopDuration));
+        StartCoroutine(MoveToTargetCoroutine(targetTransform.position, MoveStopDuration));
     }
 
-    private IEnumerator MoveToTargetCoroutine(Transform targetTransform, float MoveStopDuration)
+    private IEnumerator MoveToTargetCoroutine(Vector2 targetPosition, float MoveStopDuration)
     {
         // MoveStart
         m_IsFollowTarget = true;
@@ -79,10 +79,10 @@ public class CameraMgr : MonoBehaviour
 		float MoveStopTimer = 0;
         while(MoveStopTimer < MoveStopDuration)
         {
-			m_CameraPos = Vector3.Lerp(m_CameraPos, targetTransform.position, Time.deltaTime * 4f);
+			m_CameraPos = Vector3.Lerp(m_CameraPos, targetPosition, Time.deltaTime * 4f);
 			m_CameraPos.z = -10f;
 			transform.position = p_CamBoundMgr.getNearCamPos(m_CameraPos);
-			if (Vector2.Distance(m_CameraPos, targetTransform.position) < 0.1f) // 카메라가 대상을 바라보고 있음
+			if (Vector2.Distance(m_CameraPos, targetPosition) < 0.1f) // 카메라가 대상을 바라보고 있음
             {
 				m_IsFollowTarget = false;
 				MoveStopTimer += Time.deltaTime;
