@@ -32,7 +32,6 @@ public class BulletPuller : MonoBehaviour
 
 		for (var i = 0; i < p_BulletPullCount; i++)
         {
-            Debug.Log(m_PulledBulletArr[i]);
             m_PulledBulletArr[i].gameObject.transform.parent = transform;
             m_PulledBulletArr[i].gameObject.SetActive(false);
         }

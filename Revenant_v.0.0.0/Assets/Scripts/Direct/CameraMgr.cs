@@ -82,7 +82,7 @@ public class CameraMgr : MonoBehaviour
 			m_CameraPos = Vector3.Lerp(m_CameraPos, targetTransform.position, Time.deltaTime * 4f);
 			m_CameraPos.z = -10f;
 			transform.position = p_CamBoundMgr.getNearCamPos(m_CameraPos);
-			if (Vector2.Distance(m_CameraPos, targetTransform.position) < 0.05f) // 카메라가 대상을 바라보고 있음
+			if (Vector2.Distance(m_CameraPos, targetTransform.position) < 0.1f) // 카메라가 대상을 바라보고 있음
             {
 				m_IsFollowTarget = false;
 				MoveStopTimer += Time.deltaTime;
@@ -96,7 +96,7 @@ public class CameraMgr : MonoBehaviour
 			m_CameraPos = Vector3.Lerp(m_CameraPos, m_Player.transform.position, Time.deltaTime * 4f);
 			m_CameraPos.z = -10f;
 			transform.position = p_CamBoundMgr.getNearCamPos(m_CameraPos);
-			if (Vector2.Distance(m_CameraPos, m_Player.transform.position) < 0.05f) // 카메라가 대상을 바라보고 있음
+			if (Vector2.Distance(m_CameraPos, m_Player.transform.position) < 0.1f) // 카메라가 대상을 바라보고 있음
 			{
                 break;
 			}

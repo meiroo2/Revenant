@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 특정 지역에 도착했을 때 다음 단계로 넘어가는 이벤트 레벨입니다.
-public class TutorialLocationLevel : TutorialLevel
+public class TutorialRollLevel : TutorialLevel
 {
+	public TutorialBot p_tutorialBot;
 	public TutorialLocationObject p_Location;
 	public bool isArrived = false;
 
+	private void Start()
+	{
+		p_tutorialBot.gameObject.SetActive(false);
+	}
 	public void SetIsArrived()
 	{
 		isArrived = true;
@@ -19,10 +23,10 @@ public class TutorialLocationLevel : TutorialLevel
 		return isArrived;
 	}
 
-
 	public override void Initialize()
 	{
 		base.Initialize();
 		p_Location.action += SetIsArrived;
+		p_tutorialBot.gameObject.SetActive(true);
 	}
 }

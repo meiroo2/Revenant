@@ -36,6 +36,7 @@ public class TutorialSequence : MonoBehaviour
 			m_TutorialCount++;
 			if (m_TutorialCount < p_TutorialLevel.Count)
 			{
+				Debug.Log(p_TutorialLevel[m_TutorialCount].gameObject.name);
 				p_TutorialLevel[m_TutorialCount].Initialize();
 				foreach (var tutorialObject in p_TutorialLevel[m_TutorialCount].tutorialObjects)
 				{
