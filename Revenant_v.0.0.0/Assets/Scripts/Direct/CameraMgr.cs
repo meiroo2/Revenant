@@ -45,7 +45,7 @@ public class CameraMgr : MonoBehaviour
 	private float m_CamShakeZoomValue = 0f;
 
 	private Camera m_MainCam;
-	private CamBoundMgr m_CamBoundMgr;
+	public CamBoundMgr m_CamBoundMgr;
 	private float m_LastGapBetPlayer = 0f;
 
 	public bool m_IsFollowTarget { get; set; } = false;
@@ -142,6 +142,9 @@ public class CameraMgr : MonoBehaviour
 	// Functions
 	public void ChangeCamBoundMgr(CamBoundMgr _camBound)
 	{
+		if (m_CamBoundMgr == _camBound)
+			return;
+
 		Vector2 playerPos = m_Player.transform.position;
 		m_LastGapBetPlayer = transform.position.y - playerPos.y;
 
@@ -243,5 +246,13 @@ public class CameraMgr : MonoBehaviour
 		m_LerpedCamPos.y -= Relativey;
 
 		transform.position = m_LerpedCamPos;
+	}
+
+	public void MoveToPosition(Vector2 pos)
+	{
+		transform.position = pos;
+		m_LerpedCamPos = pos;
+		m_LerpedCamPos.z = -10f;
+		m_FinalCamPos = m_LerpedCamPos;
 	}
 }
