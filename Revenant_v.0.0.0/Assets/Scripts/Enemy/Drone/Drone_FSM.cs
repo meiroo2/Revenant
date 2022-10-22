@@ -371,6 +371,9 @@ public class DEAD_Drone : Drone_FSM
 
     private IEnumerator CheckAniEnd()
     {
+        m_Enemy.m_SimpleEffectPuller.SpawnSimpleEffect(8, m_Enemy.transform.position);
+        m_Enemy.m_Renderer.sortingLayerID = 0;
+        
         yield return null;
         AnimatorStateInfo state;
         while (true)

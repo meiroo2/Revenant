@@ -81,7 +81,7 @@ public class SimpleEffectPuller : MonoBehaviour
     /// <param name="_spawnPos">출력될 위치</param>
     /// <param name="_ignoreTimescale">Timescale 무시</param>
     /// <returns></returns>
-    public Transform SpawnSimpleEffect(int _effectNum, Vector2 _spawnPos, bool _ignoreTimescale = false)
+    public Transform SpawnSimpleEffect(int _effectNum, Vector2 _spawnPos, bool _isFlip = false, bool _ignoreTimescale = false)
     {
         if (_effectNum < 0 || _effectNum >= p_PullingSimpleEffectArr.Length)
         {
@@ -93,6 +93,10 @@ public class SimpleEffectPuller : MonoBehaviour
         SIEffect.gameObject.SetActive(true);
         SIEffect.m_Animator.updateMode = _ignoreTimescale ? AnimatorUpdateMode.UnscaledTime : AnimatorUpdateMode.Normal;
         SIEffect.transform.position = _spawnPos;
+
+        Vector3 localScale = SIEffect.transform.localScale;
+        localScale.x = _isFlip ? MathF.Abs(localScale.x) * -1f : MathF.Abs(localScale.x);
+        SIEffect.transform.localScale = localScale;
 
 
         m_IdxArr[_effectNum] += 1;

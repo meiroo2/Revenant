@@ -57,8 +57,10 @@ public class Player_MeleeAttack : MonoBehaviour
             {
                 hotBox.HitHotBox(new IHotBoxParam(m_Damage, m_StunValue,
                     transform.position, WeaponType.KNIFE));
-                
-                m_SFXMaker.EnableNewObj(3, col.ClosestPoint(transform.position), m_Player.m_IsRightHeaded);
+
+                m_Player.m_SimpleEffectPuller.SpawnSimpleEffect(7, col.ClosestPoint(transform.position),
+                    !m_Player.m_IsRightHeaded);
+               // m_SFXMaker.EnableNewObj(3, col.ClosestPoint(transform.position), m_Player.m_IsRightHeaded);
                 m_SFXMaker.EnableNewObj(2, col.ClosestPoint(transform.position),m_Player.m_IsRightHeaded);
                
                 m_SoundPlayer.PlayPlayerSoundOnce(3);

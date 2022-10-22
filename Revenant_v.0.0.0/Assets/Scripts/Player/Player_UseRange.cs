@@ -88,11 +88,16 @@ public class Player_UseRange : MonoBehaviour
             
             case "HideSlot":
                 m_HideSlotList.Remove(collision);
-                
+
                 if (m_HideSlotList.Count > 0)
+                {
                     HighlightbyDistance(true);
-                else
+                }
+                else if(!m_IsHide)
+                {
+                    //Debug.Log("CurHideSlot 초기화");
                     m_CurHideSlot = null;
+                }
                 break;
             
             case "CheckPoint":
@@ -206,6 +211,7 @@ public class Player_UseRange : MonoBehaviour
 
             m_IsHide = true;
             m_HideSlotList[GetNearestHideSlotIdx()].TryGetComponent(out HideSlot slot);
+            //Debug.Log("CurHideSLot 설정");
             m_CurHideSlot = slot;
             m_CurHideSlot.ActivateHideSlot(true);
             return 1;
@@ -216,6 +222,7 @@ public class Player_UseRange : MonoBehaviour
                 return 0;
             
             m_IsHide = false;
+            //Debug.Log("CurHideSLot 해제");
             m_CurHideSlot.ActivateHideSlot(false);
             m_CurHideSlot = null;
             return 1;
