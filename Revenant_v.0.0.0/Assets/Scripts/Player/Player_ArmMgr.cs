@@ -270,11 +270,9 @@ public class Player_ArmMgr : MonoBehaviour
         
         if(!ReferenceEquals(m_ReloadCoroutine, null))
             StopCoroutine(m_ReloadCoroutine);
-
-        // 매직코딩이니까 꼭 고쳐라
-        if (m_Player.m_CurPlayerFSMName != PlayerStateName.HIDDEN)
-            m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         
+        
+        m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         m_PlayerAniMgr.ChangeArmAniToAngleChange(false);
         m_PlayerAniMgr.p_UpperBody.SetAnim_Int(Reload, 1);
         

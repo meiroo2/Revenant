@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
-using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEditor;
 using UnityEngine;
 
@@ -81,7 +80,7 @@ public class CW_PlayerManipulator : OdinEditorWindow
 
     #region Aim
 
-    [TabGroup("Aim"), ShowInInspector, TableList, LabelWidth(m_LabelWidth), Range(0f, 0.5f)]
+    [TabGroup("Aim"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static float A_AimCursorRadius;
 
     #endregion
@@ -209,7 +208,8 @@ public class CW_PlayerManipulator : OdinEditorWindow
     /// <param name="_toAimCursor"></param>
     private static void TransferAimValues(bool _toAimCursor)
     {
-        var aimCursor = Resources.Load<AimCursor>("Logic/AimCursor");
+        var aimCursor = GameObject.FindGameObjectWithTag("InstanceMgr").
+            GetComponent<InstanceMgr>().p_AimCursor.GetComponent<AimCursor>();
 
         if (_toAimCursor)
         {

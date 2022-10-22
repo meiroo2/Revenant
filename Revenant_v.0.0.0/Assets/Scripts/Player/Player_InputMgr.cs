@@ -23,7 +23,6 @@ public class Player_InputMgr : MonoBehaviour
     public bool m_IsPushAttackKey { get; private set; }
     public bool m_IsPushSideAttackKey { get; private set; }
     public bool m_IsPushBulletTimeKey { get; private set; }
-    public Vector2 m_MousePos { get; private set; }
 
     // 좌우 이동
     private bool m_LKeyInput = false;
@@ -44,10 +43,9 @@ public class Player_InputMgr : MonoBehaviour
     private void OnDisable()
     {
         if (!ReferenceEquals(m_InputCoroutine, null))
-        {
             StopCoroutine(m_InputCoroutine);
-            m_InputCoroutine = null;
-        }
+
+        m_InputCoroutine = null;
     }
     private void OnEnable()
     {
@@ -69,9 +67,7 @@ public class Player_InputMgr : MonoBehaviour
             m_IsPushReloadKey = Input.GetKey(KeyCode.R);
             m_IsPushAttackKey = Input.GetMouseButtonDown(0);
             m_IsPushSideAttackKey = Input.GetMouseButtonDown(1);
-            m_IsPushBulletTimeKey = Input.GetKeyDown(KeyCode.Q);
-            m_MousePos = Input.mousePosition;
-            
+            m_IsPushBulletTimeKey = Input.GetKeyDown(KeyCode.Q); 
             yield return null;
         }
     }
@@ -85,12 +81,7 @@ public class Player_InputMgr : MonoBehaviour
     {
         if (_toLock)
         {
-            if (!ReferenceEquals(m_InputCoroutine, null))
-            {
-                StopCoroutine(m_InputCoroutine);
-                m_InputCoroutine = null;
-            }
-
+            StopCoroutine(m_InputCoroutine);
             ForceSetAllKey(false);
         }
         else
