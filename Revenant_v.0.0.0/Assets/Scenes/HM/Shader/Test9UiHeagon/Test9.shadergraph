@@ -14,6 +14,9 @@
         },
         {
             "m_Id": "7d61c74e6018450c9f6e1a16441d37f5"
+        },
+        {
+            "m_Id": "2758a1207b35474685533a1f1ec426ff"
         }
     ],
     "m_Keywords": [],
@@ -146,6 +149,9 @@
         },
         {
             "m_Id": "1214b37e4bd947c7858de065d98169b6"
+        },
+        {
+            "m_Id": "e44c631bed3040a6967ba88277fb8d25"
         }
     ],
     "m_GroupDatas": [],
@@ -569,6 +575,20 @@
                     "m_Id": "c09e3c75d48c487e92282b13924c70ad"
                 },
                 "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "e44c631bed3040a6967ba88277fb8d25"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "75b6cf35b6ed4f368f7df14d6acf5c69"
+                },
+                "m_SlotId": 2
             }
         },
         {
@@ -1645,6 +1665,33 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "2758a1207b35474685533a1f1ec426ff",
+    "m_Guid": {
+        "m_GuidSerialized": "db4c120b-2a1a-491f-9e52-a881f99e078a"
+    },
+    "m_Name": "HexaRotate",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "HexaRotate",
+    "m_DefaultReferenceName": "_HexaRotate",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 0.0,
+    "m_FloatType": 1,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 6.0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector2MaterialSlot",
     "m_ObjectId": "29301ff4090a45f495b9b6b3d8e90b53",
@@ -1967,9 +2014,9 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2871.999755859375,
-            "y": 1223.0,
-            "width": 145.0,
+            "x": -2847.000244140625,
+            "y": 1152.0,
+            "width": 145.000244140625,
             "height": 129.0
         }
     },
@@ -2246,6 +2293,21 @@
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Delta Time",
+    "m_StageCapability": 3,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "4a11b02408fc4277bae1db5fa1b24e86",
+    "m_Id": 0,
+    "m_DisplayName": "HexaRotate",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
     "m_StageCapability": 3,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
@@ -4833,6 +4895,9 @@
         },
         {
             "m_Id": "7d61c74e6018450c9f6e1a16441d37f5"
+        },
+        {
+            "m_Id": "2758a1207b35474685533a1f1ec426ff"
         }
     ]
 }
@@ -4925,6 +4990,41 @@
         "m_SerializableColors": []
     },
     "m_Unit": 0
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
+    "m_ObjectId": "e44c631bed3040a6967ba88277fb8d25",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Property",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -2830.14990234375,
+            "y": 1428.2999267578125,
+            "width": 0.0,
+            "height": 0.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "4a11b02408fc4277bae1db5fa1b24e86"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Property": {
+        "m_Id": "2758a1207b35474685533a1f1ec426ff"
+    }
 }
 
 {
