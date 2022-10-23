@@ -7,8 +7,10 @@ public class DialogSequence : MonoBehaviour
     public bool isDialogStart = false;
     public int DialogCount = 0;
     private DialogBox currentBox;
-    // Update is called once per frame
-    void Update()
+	[field: SerializeField] public GameObject Hologram;
+
+	// Update is called once per frame
+	void Update()
     {
         if (!isDialogStart)
             return;
@@ -19,6 +21,7 @@ public class DialogSequence : MonoBehaviour
             {
 				transform.GetChild(0).gameObject.SetActive(true);  
 				currentBox = transform.GetChild(0).GetComponent<DialogBox>();
+                Hologram.SetActive(true);
 			}
 
 			if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
@@ -33,6 +36,10 @@ public class DialogSequence : MonoBehaviour
                         transform.GetChild(DialogCount).gameObject.SetActive(true);
 					    currentBox = transform.GetChild(DialogCount).GetComponent<DialogBox>();
                     }
+                    else
+                    {
+						Hologram.SetActive(false);
+					}
 				}
 			}
         }

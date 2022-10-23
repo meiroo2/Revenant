@@ -468,7 +468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a22122250ed88ca479fc94f5e7f36dd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_TutorialDrone: {fileID: 662845436}
+  p_TutorialDrone: {fileID: 662845437}
   p_TutorialVideoName: MoveVideo
   tutorialObjects:
   - {fileID: 8379050677258689991}
@@ -738,35 +738,24 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213602976}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 7.59, y: -0.53, z: 0}
+  m_LocalPosition: {x: 7.59, y: 2.08, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 845042494}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
---- !u!1 &240746615 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7385840182656258569, guid: af44b7746ef0bef4d93ff35af736fbe7, type: 3}
+--- !u!114 &240746621 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 240746620, guid: af44b7746ef0bef4d93ff35af736fbe7, type: 3}
   m_PrefabInstance: {fileID: 7385840182694630014}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &240746620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 240746615}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1386812e445df64e9f635e8a7c866ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_animator: {fileID: 0}
-  p_TutorialVideos:
-  - {fileID: 7400000, guid: 9dffe09eb0bc4184ab5889f1a17fdf6d, type: 2}
-  - {fileID: 7400000, guid: d384746f524f36145ba62e268847fa22, type: 2}
-  P_VideoAnimator: {fileID: 131502814}
 --- !u!1001 &246198439
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1116,10 +1105,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03e732a395f02e847913516b2ae42f8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_TutorialDrone: {fileID: 662845436}
+  p_TutorialDrone: {fileID: 0}
   p_TutorialVideoName: 
   tutorialObjects:
-  - {fileID: 662845436}
+  - {fileID: 0}
   - {fileID: 611905239}
   p_Location: {fileID: 1118976160}
   isArrived: 0
@@ -2976,7 +2965,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a22122250ed88ca479fc94f5e7f36dd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_TutorialDrone: {fileID: 240746620}
+  p_TutorialDrone: {fileID: 240746621}
   p_TutorialVideoName: StairUpVideo
   tutorialObjects: []
   p_Button: {fileID: 440002659}
@@ -3064,7 +3053,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32da7cc06a8dbab4ba4742e32133c5fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_TutorialDrone: {fileID: 662845436}
+  p_TutorialDrone: {fileID: 0}
   p_TutorialVideoName: 
   tutorialObjects: []
 --- !u!1 &611905236
@@ -3312,28 +3301,17 @@ MonoBehaviour:
   - {fileID: 2139193852}
   p_CameraMoveTarget: {fileID: 2139193849}
   p_EndTerm: 1
---- !u!1 &662845435 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7385840182656258569, guid: af44b7746ef0bef4d93ff35af736fbe7, type: 3}
+--- !u!114 &662845437 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 240746620, guid: af44b7746ef0bef4d93ff35af736fbe7, type: 3}
   m_PrefabInstance: {fileID: 674403979}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &662845436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 662845435}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1386812e445df64e9f635e8a7c866ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_animator: {fileID: 0}
-  p_TutorialVideos:
-  - {fileID: 7400000, guid: 9dffe09eb0bc4184ab5889f1a17fdf6d, type: 2}
-  - {fileID: 7400000, guid: d384746f524f36145ba62e268847fa22, type: 2}
-  P_VideoAnimator: {fileID: 682898453}
 --- !u!1 &672767338
 GameObject:
   m_ObjectHideFlags: 0
@@ -4271,7 +4249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e993971ab05d935488702f9020329a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_TutorialDrone: {fileID: 662845436}
+  p_TutorialDrone: {fileID: 0}
   p_TutorialVideoName: 
   tutorialObjects: []
 --- !u!1 &1098782495
@@ -6784,7 +6762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e993971ab05d935488702f9020329a15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_TutorialDrone: {fileID: 240746620}
+  p_TutorialDrone: {fileID: 240746621}
   p_TutorialVideoName: 
   tutorialObjects: []
 --- !u!114 &1772739742 stripped
@@ -7172,7 +7150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbda95cb42bb2b74fb7997ca526ff358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_TutorialDrone: {fileID: 240746620}
+  p_TutorialDrone: {fileID: 240746621}
   p_TutorialVideoName: MoveVideo
   tutorialObjects:
   - {fileID: 681452298}
@@ -8192,6 +8170,10 @@ PrefabInstance:
     - target: {fileID: 450212472666039629, guid: af44b7746ef0bef4d93ff35af736fbe7, type: 3}
       propertyPath: m_Sprite
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 450212472666039629, guid: af44b7746ef0bef4d93ff35af736fbe7, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 450212472666039629, guid: af44b7746ef0bef4d93ff35af736fbe7, type: 3}
       propertyPath: m_SortingLayer

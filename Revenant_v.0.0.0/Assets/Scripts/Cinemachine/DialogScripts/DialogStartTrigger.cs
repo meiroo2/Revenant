@@ -7,6 +7,7 @@ public class DialogStartTrigger : MonoBehaviour
     [field: SerializeField] public DialogSequence p_DialogSequence;
     [field: SerializeField] public SpriteRenderer PressUI;
 
+
 	private void OnTriggerStay2D(Collider2D collision)
     {
         if(!p_DialogSequence.isDialogStart && Input.GetKeyDown(KeyCode.F))
