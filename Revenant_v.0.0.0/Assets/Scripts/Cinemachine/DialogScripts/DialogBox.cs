@@ -14,7 +14,10 @@ public class DialogBox : MonoBehaviour
     public Action SkipEvent;
     public bool isTypingEffect = false;
     public float TypingSpeed = 0.5f;
+    public bool isOnPlayerPosition = false;
     public bool isTextEnd { get; set; } = false;
+
+
 
 #if UNITY_EDITOR
     [ExecuteInEditMode]
