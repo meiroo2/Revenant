@@ -30,7 +30,7 @@ public class CamBoundMgr : MonoBehaviour
     {
         if (col.CompareTag("@Player"))
         {
-            m_CamMgr.ChangeCamBoundMgr(this);
+                m_CamMgr.ChangeCamBoundMgr(this);
         }
     }
 
