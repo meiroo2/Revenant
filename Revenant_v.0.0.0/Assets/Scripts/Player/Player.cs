@@ -55,8 +55,8 @@ public class Player : Human
     
     
     
-    [field: SerializeField] 
-    public Transform p_CenterTransform { get; private set; }
+    [field: SerializeField] public Transform p_CenterTransform { get; private set; }
+    [field: SerializeField] public LeftBullet_WUI p_LeftBullet_WUI { get; private set; }
 
 
     // Member Variables
@@ -82,6 +82,7 @@ public class Player : Human
     public BulletTimeMgr m_BulletTimeMgr { get; private set; }
 
     public ScreenEffect_UI m_ScreenEffectUI { get; private set; }
+    public SimpleEffectPuller m_SimpleEffectPuller { get; private set; }
 
     public ParticleMgr m_ParticleMgr { get; private set; }
     public Negotiator_Player m_Negotiator { get; private set; }
@@ -155,6 +156,7 @@ public class Player : Human
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
+        m_SimpleEffectPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
         
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_ScreenEffectUI = instance.m_MainCanvas.GetComponentInChildren<InGame_UI>()
@@ -297,6 +299,8 @@ public class Player : Human
 
         _mPlayerMatMgr.FlipAllNormalsToRight(m_IsRightHeaded);
 
+        
+        p_LeftBullet_WUI.MovetoLeftSide(m_IsRightHeaded);
         //m_PlayerAniMgr.PlayPlayerAnim();
     }
 

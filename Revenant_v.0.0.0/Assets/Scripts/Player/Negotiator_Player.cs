@@ -203,7 +203,7 @@ public class Negotiator_Player : BasicWeapon_Player
         }
 
         // UI 업데이트 필요
-        m_PlayerUI.PlayRoundsAnim(m_LeftRounds);
+        m_PlayerUI.SetLeftRounds(m_LeftRounds);
     }
 
     private void MakeShell()

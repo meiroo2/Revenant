@@ -20,7 +20,7 @@ public class Player_CheckPointMgr : MonoBehaviour
         }
         else
         {
-            Debug.Log("플레이어 체크포!");
+            Debug.Log("플레이어 체크포인트로 복귀!");
             SetPlayerInitPos(m_DataMgr.PlayerPositionVector);
         }
     }

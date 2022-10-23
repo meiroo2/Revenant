@@ -54,6 +54,7 @@ public class Drone : BasicEnemy
     public Enemy_WeaponMgr m_WeponMgr;
     public Drone_CrashCol m_CrashCol { get; private set; }
 
+    public SimpleEffectPuller m_SimpleEffectPuller { get; private set; }
 
     private Coroutine m_Coroutine;
 
@@ -119,6 +120,7 @@ public class Drone : BasicEnemy
     {
         m_Animator.SetFloat(DetectSpeed, p_DetectSpeed);
         var instance = InstanceMgr.GetInstance();
+        m_SimpleEffectPuller = InstanceMgr.GetInstance().GetComponentInChildren<SimpleEffectPuller>();
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerTransform = m_Player.transform;
         

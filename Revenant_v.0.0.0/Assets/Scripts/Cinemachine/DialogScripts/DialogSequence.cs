@@ -1,0 +1,56 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class DialogSequence : MonoBehaviour
+{
+    public bool isDialogStart = false;
+    public int DialogCount = 0;
+    public Vector2 PlayerDialogPosition;
+    private DialogBox currentBox;
+	[field: SerializeField] public GameObject Hologram;
+
+    private GameObject m_Player;
+    private void Start()
+    {
+        m_Player = FindObjectOfType<Player>().gameObject;
+    }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (!isDialogStart)
+            return;
+
+        if(DialogCount < transform.childCount)
+        { 
+            if(DialogCount == 0)
+            {
+				transform.GetChild(0).gameObject.SetActive(true);  
+				currentBox = transform.GetChild(0).GetComponent<DialogBox>();
+                Hologram.SetActive(true);
+			}
+
+			if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
+            {
+                currentBox.SkipEvent?.Invoke();
+                if (currentBox.isTextEnd)
+                {
+                    currentBox.gameObject.SetActive(false);
+                    DialogCount++;
+                    if(DialogCount < transform.childCount)
+                    {
+                        transform.GetChild(DialogCount).gameObject.SetActive(true);
+					    currentBox = transform.GetChild(DialogCount).GetComponent<DialogBox>();
+                        currentBox.GetComponent<RectTransform>().anchoredPosition = m_Player.transform.position + (Vector3)PlayerDialogPosition;
+                    }
+                    else
+                    {
+						Hologram.SetActive(false);
+					}
+				}
+			}
+        }
+    }
+}

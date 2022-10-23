@@ -462,6 +462,10 @@ public class Player_HIDDEN : PlayerFSM
                 m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
             }
         }
+        else if (m_InputMgr.m_IsPushReloadKey)
+        {
+            m_Player.m_ArmMgr.DoReload();
+        }
     }
 
     public override void ExitState()
@@ -507,20 +511,42 @@ public class Player_MELEE : PlayerFSM
         
         m_Player.m_MeleeAttack.StartMelee();
         m_Player.m_SoundPlayer.PlayPlayerSoundOnce(3);
+
+       m_Player.m_SimpleEffectPuller.SpawnSimpleEffect(6, m_Player.m_PlayerFootMgr.GetFootRayHit().point,
+           !m_Player.m_IsRightHeaded);
+       
+       m_Player.m_PlayerHotBox.m_hotBoxType = 2;
     }
 
     public override void UpdateState()
     {
-        m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
-        
-                
         m_CurAniTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
+        if (m_CurAniTime <= 0.2f)
+        {
+            m_Player.MoveByDirection(0);
+        }
+        else if (m_CurAniTime > 0.2f && m_CurAniTime < 0.8f)
+        {
+            m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
+        }
+        else if(m_CurAniTime < 1f)
+        {
+            m_Player.MoveByDirection(0);
+        }
+        else
+        {
+            m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
+        }
+        
+        /*
         switch (m_CurAniTime)
         {
             case >= 1f:
                 m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
                 break;
         }
+        */
         
         if (m_Player.m_InputMgr.m_IsPushRollKey && 
             m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Roll))
@@ -531,6 +557,7 @@ public class Player_MELEE : PlayerFSM
 
     public override void ExitState()
     {
+        m_Player.m_PlayerHotBox.m_hotBoxType = 0;
         m_Player.m_CanAttack = true;
         m_Player.m_CanMove = true;
         m_Player.m_playerRotation.m_doRotate = true;

@@ -9,8 +9,8 @@ public class RageGauge_UI : MonoBehaviour
 {
 	// Visible Member Variables
 	// UI 변수 및 함수 분류하기
-	[BoxGroup("게이지 비주얼")] public Image p_BackImg;
-	[BoxGroup("게이지 비주얼")] public Image p_GaugeImg;
+	[BoxGroup("게이지 비주얼")] public SlicedFilledImage p_BackImg;
+	[BoxGroup("게이지 비주얼")] public SlicedFilledImage p_GaugeImg;
 	[BoxGroup("게이지 비주얼")] public Image p_BulletTimeIndicator; // 경우에 따라 옮기기
 	[BoxGroup("게이지 비주얼")] public Text p_BulletTimeTxt;
 
@@ -89,7 +89,7 @@ public class RageGauge_UI : MonoBehaviour
 		m_DynamicUIMgr.ExpandUI(gaugeForm, m_InitGaugeImgScale,
 		new Vector2(gaugeForm.localScale.x + 0.05f, gaugeForm.localScale.y), 5f);
 
-		m_DynamicUIMgr.ChangeColor(p_GaugeImg, m_InitGaugeColor, Color.white, 3f);
+		//m_DynamicUIMgr.ChangeColor(p_GaugeImg, m_InitGaugeColor, Color.white, 3f);
 		m_DynamicUIMgr.FadeUI(p_BulletTimeTxt, true, 50f);
 	}
 
@@ -106,7 +106,7 @@ public class RageGauge_UI : MonoBehaviour
 		m_DynamicUIMgr.ExpandUI(gaugeForm, gaugeForm.localScale,
 		m_InitGaugeImgScale, 5f);
 
-		m_DynamicUIMgr.ChangeColor(p_GaugeImg, Color.white, m_InitGaugeColor, 3f);
+		//m_DynamicUIMgr.ChangeColor(p_GaugeImg, Color.white, m_InitGaugeColor, 3f);
 		m_DynamicUIMgr.FadeUI(p_BulletTimeTxt, false, 50f);
 	}
 }
