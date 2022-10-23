@@ -69,6 +69,7 @@ public class Player_UI : MonoBehaviour
     private Player m_Player;
     private float m_ReloadSpeed = 1f;
 
+    private LeftBullet_WUI m_LeftBulletWUI;
 
     private RectTransform m_CamCanvas;
     private Camera m_OverlayCam;
@@ -80,6 +81,8 @@ public class Player_UI : MonoBehaviour
     // Constructors
     private void Awake()
     {
+        m_LeftBulletWUI = GameObject.FindGameObjectWithTag("@Player").GetComponent<Player>().p_LeftBullet_WUI;
+        
         m_OverlayCam = GameObject.FindWithTag("OverlayCam").GetComponent<Camera>();
         MainCam = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         
@@ -153,48 +156,7 @@ public class Player_UI : MonoBehaviour
   
     public void SetLeftRounds(int _rounds)
     {
-        switch (_rounds)
-        {
-            case 0:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_NoneImg);
-                break;
-            
-            case 1:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_2AnimArr[p_2AnimArr.Length - 1]);
-                break;
-            
-            case 2:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_3AnimArr[p_3AnimArr.Length - 1]);
-                break;
-            
-            case 3:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_4AnimArr[p_4AnimArr.Length - 1]);
-                break;
-            
-            case 4:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_5AnimArr[p_5AnimArr.Length - 1]);
-                break;
-            
-            case 5:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_6AnimArr[p_6AnimArr.Length - 1]);
-                break;
-            
-            case 6:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_7AnimArr[p_7AnimArr.Length - 1]);
-                break;
-            
-            case 7:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_FullImg);
-                break;
-            
-            case 8:
-                ChangeImageForArr(p_LeftRoundsImgArr, p_FullImg);
-                break;
-            
-            default:
-                Debug.Log("ERR : Player_UI에서 OOR");
-                break;
-        }
+        m_LeftBulletWUI.SetLeftBulletUI(_rounds);
     }
 
     public void PlayRoundsAnim(int _leftRounds)

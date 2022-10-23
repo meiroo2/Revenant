@@ -331,6 +331,9 @@ public class DEAD_Drone : Drone_FSM
         switch (m_Enemy.m_DeadReason)
         {
             case 0: // 몸체 피격
+                m_Enemy.m_SimpleEffectPuller.SpawnSimpleEffect(8, new Vector2(m_Enemy.transform.position.x,
+                    m_Enemy.transform.position.y - 0.3f));
+                
                 m_Animator.SetTrigger("Head");
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());
@@ -338,6 +341,9 @@ public class DEAD_Drone : Drone_FSM
                 break;
             
             case 1: // 폭탄 피격
+                m_Enemy.m_SimpleEffectPuller.SpawnSimpleEffect(8, new Vector2(m_Enemy.transform.position.x,
+                    m_Enemy.transform.position.y - 0.3f));
+                
                 m_Animator.SetTrigger("Body");
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());
@@ -345,6 +351,7 @@ public class DEAD_Drone : Drone_FSM
                 break;
             
             case 2: // 잘 폭발
+                m_Enemy.m_SimpleEffectPuller.SpawnSimpleEffect(8, m_Enemy.transform.position);
                 m_Enemy.m_Renderer.sortingLayerName = "BackGround03";
                 m_Animator.SetInteger("Explode", 1);
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
@@ -371,6 +378,8 @@ public class DEAD_Drone : Drone_FSM
 
     private IEnumerator CheckAniEnd()
     {
+        m_Enemy.m_Renderer.sortingLayerID = 0;
+        
         yield return null;
         AnimatorStateInfo state;
         while (true)

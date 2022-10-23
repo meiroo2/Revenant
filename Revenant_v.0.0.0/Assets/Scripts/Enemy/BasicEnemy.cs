@@ -39,6 +39,7 @@ public class BasicEnemy : Human
     
 
     // Member Variables
+    private RaycastHit2D m_NullHit;
     public SpriteRenderer m_Renderer { get; protected set; }
     private List<EnemySpawner> m_EnemySpawnerList = new List<EnemySpawner>();
     protected Enemy_HotBox[] m_EnemyHotBoxes;
@@ -171,16 +172,23 @@ public class BasicEnemy : Human
         Vector2 position = transform.position;
         position.y -= 0.36f;
         
+        int layerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Player"));
+        
         if (m_IsRightHeaded)
         {
-            m_VisionHit = Physics2D.Raycast(position, Vector2.right, p_VisionDistance, LayerMask.GetMask("Player"));
+            m_VisionHit = Physics2D.Raycast(position, Vector2.right, p_VisionDistance, layerMask);
             Debug.DrawRay(position, Vector2.right * p_VisionDistance, Color.red);
         }
         else
         {
-            m_VisionHit = Physics2D.Raycast( position, -Vector2.right, p_VisionDistance, LayerMask.GetMask("Player"));
+            m_VisionHit = Physics2D.Raycast( position, -Vector2.right, p_VisionDistance, layerMask);
             Debug.DrawRay(position, -Vector2.right * p_VisionDistance, Color.red);
         }
+
+        //Debug.Log(m_VisionHit.collider.name);
+        
+        if (!m_VisionHit.collider.CompareTag("Player"))
+            m_VisionHit = m_NullHit;
     }
     public virtual void ChangeEnemyFSM(EnemyStateName _name)
     {

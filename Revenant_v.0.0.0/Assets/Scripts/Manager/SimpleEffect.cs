@@ -11,7 +11,6 @@ public class SimpleEffect : MonoBehaviour
     
     
     // Member Variables
-    // 0 = 둘 다 없음, 1 = 스프라이트만, 2 = 애니도 있음
     public int m_EffectType { get; private set; } = 0;
 
     private SpriteRenderer m_SpriteRenderer = null;
@@ -27,7 +26,6 @@ public class SimpleEffect : MonoBehaviour
     
     private void OnEnable()
     {
-        // 애니메이터 초기화(껐다가 키면 자동 초기화됨)
         if (m_EffectType == 2)
         {
             m_Animator.enabled = false;

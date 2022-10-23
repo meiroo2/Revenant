@@ -17,13 +17,14 @@ public class InstanceMgr : MonoBehaviour
     [field: SerializeField, BoxGroup("In_Canvas")] private GameObject p_Player_UI;
 
     [field: SerializeField, BoxGroup("In_Cam")] private GameObject p_ScreenEffect_AR;
-    
+
     public GameObject[] m_ShouldBeMadeInWorld;
     public GameObject[] m_ShouldBeMadeInCanvas;
     
     // Member Variables
     public ScreenEffect_AR m_ScreenEffect_AR { get; private set; }
     public Player_UI m_Player_UI { get; private set; }
+    public LeftBullet_WUI m_LeftBullet_WUI { get; private set; }
 
 
     private static InstanceMgr Instance;
@@ -57,7 +58,6 @@ public class InstanceMgr : MonoBehaviour
         Instantiate(p_AimCursor, this.gameObject.transform);
         Instantiate(p_BulletTimeMgr, this.gameObject.transform);
         Instantiate(p_MatChanger, gameObject.transform);
-        
     }
 
     private void SpawnInCam()
