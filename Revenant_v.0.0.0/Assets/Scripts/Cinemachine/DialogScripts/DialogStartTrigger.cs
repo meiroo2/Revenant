@@ -5,24 +5,15 @@ using UnityEngine;
 public class DialogStartTrigger : MonoBehaviour
 {
     [field: SerializeField] public DialogSequence p_DialogSequence;
+    [field: SerializeField] public SpriteRenderer PressUI;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
+	private void OnTriggerStay2D(Collider2D collision)
     {
         if(!p_DialogSequence.isDialogStart && Input.GetKeyDown(KeyCode.F))
         {
             p_DialogSequence.isDialogStart = true;
-        }
+            PressUI.enabled = false;
+            gameObject.SetActive(false);
+		}
     }
 }

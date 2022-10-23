@@ -66,14 +66,14 @@ namespace TMPro.Examples
 
                     go.transform.position = m_Transform.position + new Vector3(ratio * -orthoSize * 0.975f, orthoSize * 0.975f - lineHeight, 1);
                                        
-                    TextMesh textMesh = go.AddComponent<TextMesh>();
-                    textMesh.font = Resources.Load("Fonts/ARIAL", typeof(Font)) as Font;
-                    textMesh.renderer.sharedMaterial = textMesh.font.material;
-                    textMesh.anchor = TextAnchor.MiddleLeft;
-                    textMesh.fontSize = i * 10;
+                    TextMesh TextUI = go.AddComponent<TextMesh>();
+                    TextUI.font = Resources.Load("Fonts/ARIAL", typeof(Font)) as Font;
+                    TextUI.renderer.sharedMaterial = TextUI.font.material;
+                    TextUI.anchor = TextAnchor.MiddleLeft;
+                    TextUI.fontSize = i * 10;
 
-                    textMesh.color = new Color32(255, 255, 255, 255);
-                    textMesh.text = i + " pts - Lorem ipsum dolor sit...";
+                    TextUI.color = new Color32(255, 255, 255, 255);
+                    TextUI.text = i + " pts - Lorem ipsum dolor sit...";
 
                     lineHeight += i;
                     */

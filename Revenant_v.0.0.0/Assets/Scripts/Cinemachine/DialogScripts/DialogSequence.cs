@@ -14,22 +14,25 @@ public class DialogSequence : MonoBehaviour
             return;
 
         if(DialogCount < transform.childCount)
-        {
+        { 
             if(DialogCount == 0)
             {
 				transform.GetChild(0).gameObject.SetActive(true);  
 				currentBox = transform.GetChild(0).GetComponent<DialogBox>();
 			}
 
-			if (Input.GetMouseButtonDown(0))
+			if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
             {
                 currentBox.SkipEvent?.Invoke();
                 if (currentBox.isTextEnd)
                 {
                     currentBox.gameObject.SetActive(false);
                     DialogCount++;
-                    transform.GetChild(DialogCount).gameObject.SetActive(true);
-					currentBox = transform.GetChild(DialogCount).GetComponent<DialogBox>();
+                    if(DialogCount < transform.childCount)
+                    {
+                        transform.GetChild(DialogCount).gameObject.SetActive(true);
+					    currentBox = transform.GetChild(DialogCount).GetComponent<DialogBox>();
+                    }
 				}
 			}
         }

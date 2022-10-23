@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogBox : MonoBehaviour
 {
-    [field: SerializeField] public TextMeshProUGUI textMesh { get; set; }
+    [field: SerializeField] public Text TextUI { get; set; }
     private string textString;
     private float currentTextCount = 0;
 
@@ -19,17 +20,17 @@ public class DialogBox : MonoBehaviour
     [ExecuteInEditMode]
     private void Update()
     {
-		textMesh = GetComponentInChildren<TextMeshProUGUI>();
-		textMesh.rectTransform.sizeDelta = GetComponent<RectTransform>().sizeDelta;
+		TextUI = GetComponentInChildren<Text>();
+		//TextUI.rectTransform.sizeDelta = GetComponent<RectTransform>().sizeDelta;
 	}
 #endif
 
     void Start()
     {
-        textMesh = GetComponentInChildren<TextMeshProUGUI>();
-        textString = textMesh.text;
+        TextUI = GetComponentInChildren<Text>();
+        textString = TextUI.text;
         if(isTypingEffect)
-        textMesh.text = "";
+        TextUI.text = "";
         SkipEvent += SkipText;
 	}
 
@@ -42,7 +43,7 @@ public class DialogBox : MonoBehaviour
             {
     			currentTextCount += Time.deltaTime * TypingSpeed;
             }
-            textMesh.text = textString.Substring(0, (int)currentTextCount + 1);
+            TextUI.text = textString.Substring(0, (int)currentTextCount + 1);
         }
         else
         {
@@ -55,6 +56,7 @@ public class DialogBox : MonoBehaviour
         if(currentTextCount < textString.Length - 1)
         {
             currentTextCount = textString.Length - 1;
+            TextUI.text = textString;
 		}
         else
         {
