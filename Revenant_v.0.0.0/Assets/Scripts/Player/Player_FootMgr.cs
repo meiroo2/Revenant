@@ -153,6 +153,7 @@ public class Player_FootMgr : MonoBehaviour
 
     private IEnumerator StairPosCoroutine(bool _isUp)
     {
+        Player_UsedTraceInfo traceInfo;
         float stairPosX = m_StairPos.transform.position.x;
         bool isLeftUp = m_StairPos.m_ParentStair.m_isLeftUp;
 
@@ -171,6 +172,21 @@ public class Player_FootMgr : MonoBehaviour
                             normalGang.bMoveToUsedStair = true;
                         }
                     }
+                    
+                    // 유환진 코드 추가
+                    traceInfo = new Player_UsedTraceInfo(UseableObjList.STAIRPOS,
+                        m_Player.transform.position, m_StairPos.gameObject, true);
+                    
+                    foreach (var normalGang in NormalGangList)
+                    {
+                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase&&
+                            !ReferenceEquals(normalGang.m_TraceInfoList, null))
+                        {
+                            normalGang.m_TraceInfoList.Add(traceInfo);
+                            //normalGang.bMoveToUsedStair = true;
+                        }
+                    }
+                    // 유환진 코드 끝
                     
                     if(!ReferenceEquals(m_StairCoroutine, null))
                         StopCoroutine(m_StairCoroutine);
@@ -245,7 +261,24 @@ public class Player_FootMgr : MonoBehaviour
                             normalGang.bMoveToUsedStair = true;
                         }
                     }
+                    
+                    
+                    // 유환진 코드 추가
+                    traceInfo = new Player_UsedTraceInfo(UseableObjList.STAIRPOS,
+                        m_Player.transform.position, m_StairPos.gameObject, true);
+                    
+                    foreach (var normalGang in NormalGangList)
+                    {
+                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase&&
+                            !ReferenceEquals(normalGang.m_TraceInfoList, null))
+                        {
+                            normalGang.m_TraceInfoList.Add(traceInfo);
+                            //normalGang.bMoveToUsedStair = true;
+                        }
+                    }
+                    // 유환진 코드 끝
 
+                    
                     if(!ReferenceEquals(m_StairCoroutine, null))
                         StopCoroutine(m_StairCoroutine);
                     m_StairCoroutine = StartCoroutine(StairCoroutine(false));
@@ -306,6 +339,7 @@ public class Player_FootMgr : MonoBehaviour
 
     private IEnumerator StairCoroutine(bool _startFromUp)
     {
+        Player_UsedTraceInfo traceInfo;
         var UpPosX = m_StairPos.m_ParentStair.m_UpPos.transform.position.x;
         var DownPosX = m_StairPos.m_ParentStair.m_DownPos.transform.position.x;
 
@@ -323,6 +357,23 @@ public class Player_FootMgr : MonoBehaviour
                             normalGang.bMoveToUsedStair = true;
                         }
                     }
+                    
+                    
+                    // 유환진 코드 추가
+                    traceInfo = new Player_UsedTraceInfo(UseableObjList.STAIRPOS,
+                        m_Player.transform.position, m_StairPos.gameObject, false);
+                    
+                    foreach (var normalGang in NormalGangList)
+                    {
+                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase&&
+                            !ReferenceEquals(normalGang.m_TraceInfoList, null))
+                        {
+                            normalGang.m_TraceInfoList.Add(traceInfo);
+                            //normalGang.bMoveToUsedStair = true;
+                        }
+                    }
+                    // 유환진 코드 끝
+                    
                     
                     // OutOfStairVector 수정 요망
                     // m_Player.bIsOutOfStair = true;
@@ -350,6 +401,23 @@ public class Player_FootMgr : MonoBehaviour
                             normalGang.bMoveToUsedStair = true;
                         }
                     }
+                    
+                    
+                    // 유환진 코드 추가
+                    traceInfo = new Player_UsedTraceInfo(UseableObjList.STAIRPOS,
+                        m_Player.transform.position, m_StairPos.gameObject, false);
+                    
+                    foreach (var normalGang in NormalGangList)
+                    {
+                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase&&
+                            !ReferenceEquals(normalGang.m_TraceInfoList, null))
+                        {
+                            normalGang.m_TraceInfoList.Add(traceInfo);
+                            //normalGang.bMoveToUsedStair = true;
+                        }
+                    }
+                    // 유환진 코드 끝
+                    
                     
                     //m_Player.bIsOutOfStair = true;
                     // OutOfStairVectgor 수정 요망
@@ -405,5 +473,23 @@ public class Player_FootMgr : MonoBehaviour
         }
         
         yield break;
+    }
+}
+
+public class Player_UsedTraceInfo
+{
+    // Member Variables
+    public UseableObjList m_ObjectType { get; private set; } = UseableObjList.STAIRPOS;
+    public Vector2 m_PositionOnUsed { get; private set; } = Vector2.zero;
+    public GameObject m_UsedObj { get; private set; } = null;
+    public bool m_IsEntrance { get; private set; } = true;
+   
+    // Constructors
+    public Player_UsedTraceInfo(UseableObjList _type, Vector2 _position, GameObject _obj, bool _isEnter)
+    {
+        m_ObjectType = _type;
+        m_PositionOnUsed = _position;
+        m_UsedObj = _obj;
+        m_IsEntrance = _isEnter;
     }
 }

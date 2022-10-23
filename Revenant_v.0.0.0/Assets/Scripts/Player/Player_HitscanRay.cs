@@ -169,7 +169,7 @@ public class Player_HitscanRay : MonoBehaviour
         }
         
 
-        m_HitCount = Physics2D.CircleCastNonAlloc(m_RayStartPos, 0.05f, GetRayDirection(), m_AimRayHits,
+        m_HitCount = Physics2D.CircleCastNonAlloc(m_RayStartPos, 0.5f, GetRayDirection(), m_AimRayHits,
             p_RayLength, layermask);
     }
 

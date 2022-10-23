@@ -20,6 +20,7 @@ public enum UseableObjList
 {
     HIDEPOS,
     OBJECT,
+    STAIRPOS,
     LAYERDOOR,
     CHECKPOINT,
 }
