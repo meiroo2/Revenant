@@ -8,6 +8,7 @@ public class TutorialDroneObject : TutorialObject
     public List<AnimationClip> p_TutorialVideos = new();
     private Dictionary<string, AnimationClip> m_TutorialVideosMap = new();
 	[field: SerializeField] public Animator P_VideoAnimator;
+    SpriteRenderer m_VideoSpriteRenderer;    
 
     protected override void Start()
     {
@@ -16,6 +17,7 @@ public class TutorialDroneObject : TutorialObject
         {
             m_TutorialVideosMap.Add(video.name, video);
         }
+        m_VideoSpriteRenderer = P_VideoAnimator.gameObject.GetComponent<SpriteRenderer>();
 	}
 
     void Update()
@@ -47,7 +49,60 @@ public class TutorialDroneObject : TutorialObject
                 Debug.Log("실행");
 			}
 
-			P_VideoAnimator.Play(videoName);
+            StartCoroutine(PlayVideo(videoName));
 		}
+    }
+
+    private IEnumerator PlayVideo(string videoName)
+    {
+        float alpha = 0;
+        var Mat = m_VideoSpriteRenderer.material;
+        Debug.Log(Mat.ToString());
+		while (!m_VideoSpriteRenderer.enabled)
+		{
+			yield return null;
+		}
+		if (!P_VideoAnimator.GetCurrentAnimatorStateInfo(0).IsName("None"))
+        {
+ 
+
+			while (true)
+            {
+
+				yield return new WaitForSeconds(0.02f);
+				alpha = Mat.GetFloat("_MainTexAlpha");
+                if(alpha > 0)
+                {
+                    alpha -= 0.05f;
+                }
+                Mat.SetFloat("_MainTexAlpha", alpha);
+				Debug.Log(Mat.GetFloat("_MainTexAlpha"));
+				if (alpha <= 0)
+                    break;
+			}
+
+        }
+
+		P_VideoAnimator.Play(videoName);
+		Mat.SetFloat("_MainTexAlpha", 0);
+		yield return null;
+
+
+		while (true)
+		{
+			yield return new WaitForSeconds(0.02f);
+			alpha = Mat.GetFloat("_MainTexAlpha");
+			if (alpha < 1)
+			{
+				alpha += 0.05f;
+			}
+			Mat.SetFloat("_MainTexAlpha", alpha);
+			Debug.Log(Mat.GetFloat("_MainTexAlpha"));
+			if (alpha >= 1)
+				break;
+		}
+
+
+		yield return null;  
     }
 }
