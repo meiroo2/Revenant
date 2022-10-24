@@ -33,7 +33,8 @@ public class BasicEnemy : Human
     
     [field: SerializeField, BoxGroup("BasicEnemy Values")] public float p_VisionDistance { get; protected set; }
 
-    
+    [field: SerializeField, BoxGroup("BasicEnemy Values")] public float p_AtkDistance;
+
     [ShowInInspector, ReadOnly, BoxGroup("BasicEnemy Values"), PropertySpace(SpaceBefore = 0, SpaceAfter = 20)]
     public EnemyStateName m_CurEnemyStateName { get; protected set; }
     

@@ -11,7 +11,9 @@ using UnityEngine.UI;
 public class SceneChangeMgr : MonoBehaviour
 {
     // Visible Member Variables
-    public Image m_BlackImg; 
+    public Image m_BlackImg;
+    public float m_BlackStopTime = 1f;
+    public float m_WhitenerSpeed = 2f;
     
     
     // Member Variables
@@ -20,16 +22,22 @@ public class SceneChangeMgr : MonoBehaviour
     private Image m_InstantiatedImg = null;
 
     private Coroutine m_ColorCoroutine;
-
-    private float m_Speed = 0f;
+    
     private bool m_LastSceneSmoothRequest = false;
 
+    
     // Constructor
     private void Awake()
     {
         Debug.Log("SceneChangeMgr Awake");
+        CheckSmoothSceneChange();
     }
 
+    
+    /// <summary>
+    /// SceneChangeMgr이 OnSceneloaded시 호출되는 함수입니다.
+    /// 이전 신에서 스무스 로드 요청이 bool값으로 있었을 경우 함수를 호출합니다.
+    /// </summary>
     public void CheckSmoothSceneChange()
     {
         m_MainCanvas = null;
@@ -53,6 +61,8 @@ public class SceneChangeMgr : MonoBehaviour
             if (mainCanvasObj.TryGetComponent(out Canvas canvas))
             {
                 m_MainCanvas = canvas;
+                
+                
                 if (m_LastSceneSmoothRequest)
                 {
                     LoadSceneWithSmooth();
@@ -63,6 +73,11 @@ public class SceneChangeMgr : MonoBehaviour
         m_LastSceneSmoothRequest = false;
     }
 
+    /// <summary>
+    /// 원하는 Idx의 신으로 스무스한 신 전환을 시작합니다.
+    /// </summary>
+    /// <param name="_idx">신 Idx</param>
+    /// <param name="_speed">전환 스피드</param>
     public void InitSceneEndWithSmooth(int _idx, float _speed)
     {
         if (ReferenceEquals(m_MainCanvas, null))
@@ -84,6 +99,13 @@ public class SceneChangeMgr : MonoBehaviour
         m_ColorCoroutine = StartCoroutine(CalSceneChange(_idx, _speed));
     }
 
+    
+    /// <summary>
+    /// 화면 까매짐을 시작하는 IEnumerator입니다.
+    /// </summary>
+    /// <param name="_idx"></param>
+    /// <param name="_speed"></param>
+    /// <returns></returns>
     private IEnumerator CalSceneChange(int _idx, float _speed)
     {
         m_Color = Color.black;
@@ -99,9 +121,12 @@ public class SceneChangeMgr : MonoBehaviour
             yield return null;
         }
         
-        SceneManager.LoadScene(_idx);
         m_Color.a = 1f;
-        
+        m_InstantiatedImg.color = m_Color;
+
+        yield return new WaitForSecondsRealtime(m_BlackStopTime);
+        SceneManager.LoadScene(_idx);
+
         Canvas mainCanvas = GetMainCanvas();
         Debug.Log(m_InstantiatedImg);
         if (ReferenceEquals(mainCanvas, null))
@@ -111,7 +136,6 @@ public class SceneChangeMgr : MonoBehaviour
         }
         else
         {
-            m_Speed = _speed;
             m_LastSceneSmoothRequest = true;
         }
         
@@ -135,7 +159,7 @@ public class SceneChangeMgr : MonoBehaviour
             m_ColorCoroutine = null;
         }
 
-        m_ColorCoroutine = StartCoroutine(CalSmoothLoad(m_Speed));
+        m_ColorCoroutine = StartCoroutine(CalSmoothLoad(m_WhitenerSpeed));
     }
 
     private IEnumerator CalSmoothLoad(float _speed)
@@ -147,14 +171,6 @@ public class SceneChangeMgr : MonoBehaviour
             m_InstantiatedImg.color = m_Color;
             m_Color.a -= Time.unscaledDeltaTime;
 
-            /*
-            if (m_Color.a <= 0f)
-            { 
-                Debug.Log("Sans");
-                break;
-            }
-            */
-            
             yield return null;
         }
 

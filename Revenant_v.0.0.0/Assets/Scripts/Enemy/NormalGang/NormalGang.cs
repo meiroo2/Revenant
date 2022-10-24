@@ -65,6 +65,8 @@ public class NormalGang : BasicEnemy
     // Constructor
     private void Awake()
     {
+        p_AtkDistance = p_AttackDistance;
+        
         InitHuman();
         InitEnemy();
 
