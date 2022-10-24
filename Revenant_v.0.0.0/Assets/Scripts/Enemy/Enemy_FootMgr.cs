@@ -7,6 +7,7 @@ public class Enemy_FootMgr : MonoBehaviour
 {
     // Member Variables
     private BasicEnemy m_Enemy;
+    private Player _player;
     private Transform m_EnemyTransform;
 
     private Vector2 m_TempVecForRay;
@@ -36,6 +37,11 @@ public class Enemy_FootMgr : MonoBehaviour
         m_Enemy = GetComponentInParent<BasicEnemy>();
     }
 
+    private void Start()
+    {
+        _player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
+    }
+
     // Updates
     private void Update()
     {
@@ -61,107 +67,54 @@ public class Enemy_FootMgr : MonoBehaviour
     // Functions
     private void OnTriggerStay2D(Collider2D other)
     {
-        var LowerStair = other.TryGetComponent(out StairPos UpPos);
-        var UpperStair = other.TryGetComponent(out StairPos DownPos);
-
-        var StairSensor = other.GetComponent<StairPos>();
-        
         if (m_IsOnStair)
             return;
+
+        var StairSensor = other.TryGetComponent(out StairPos StairTrigger);
         
         if (!StairSensor)
             return;
         
-        if (m_Enemy.bMoveToUsedStair && StairSensor && StairSensor.m_IsUpPos)
+        if (StairSensor && StairTrigger.m_IsUpPos && m_Enemy.bMoveToUsedStair)
         {
-            Debug.Log("Is AI hitting UpperStair?");
+            m_Enemy.bMoveToUseStairUp = false;
             m_Enemy.bMoveToUseStairDown = true;
-            if (m_Enemy.bMoveToUseStairDown)
-            {
-                Debug.Log("UpperStair MoveToUseStairDown - " + m_Enemy.bMoveToUseStairDown);
-                m_Enemy.bMoveToUsedStair = false;
-                m_StairPos = UpPos;
-                m_IsOnStair = true;
-                m_Enemy.bIsOnStair = m_IsOnStair;
-                m_StairPos.m_ParentStair.MoveOrder(16);
-                m_Enemy.GoToStairLayer(true);
-
-                if (!ReferenceEquals(m_StairPosCoroutine, null))
-                    StopCoroutine(m_StairCoroutine);
-                m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(true));
-            }
         }
-        else if (m_Enemy.bMoveToUsedStair && StairSensor && !StairSensor.m_IsUpPos)
+        else if (StairSensor && !StairTrigger.m_IsUpPos && m_Enemy.bMoveToUsedStair)
         {
-            Debug.Log("Is AI hitting LowerStair?");
+            m_Enemy.bMoveToUseStairDown = false;
             m_Enemy.bMoveToUseStairUp = true;
-            if (m_Enemy.bMoveToUseStairUp)
+        }
+        
+        if (m_Enemy.bMoveToUseStairDown)
+        {
+            if (!other.TryGetComponent(out StairPos UpPos))
+                return;
+
+            if (!UpPos.m_IsUpPos)
             {
-                m_Enemy.bMoveToUsedStair = false;
-                m_StairPos = DownPos;
-                m_IsOnStair = true;
-                m_Enemy.bIsOnStair = m_IsOnStair;
-                m_StairPos.m_ParentStair.MoveOrder(16);
-                m_Enemy.GoToStairLayer(true);
-
-                if (!ReferenceEquals(m_StairPosCoroutine, null))
-                    StopCoroutine(m_StairCoroutine);
-                m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(false));
-
-                
+                m_Enemy.bMoveToUseStairDown = false;
+                return;
             }
+            
+            StartUsingStair(UpPos, true);
+            m_Enemy.MoveNextPoint();
+        }
+        else if (m_Enemy.bMoveToUseStairUp)
+        {
+            if(!other.TryGetComponent(out StairPos DownPos))
+                return;
+
+            if (DownPos.m_IsUpPos)
+            {
+                m_Enemy.bMoveToUseStairUp = false;
+                return;
+            }
+            StartUsingStair(DownPos, false);
+            m_Enemy.MoveNextPoint();
         }
     }
-
-
-    // if (m_Enemy.bMoveToUsedStair && LowerStair)
-    // {
-    //     m_Enemy.bMoveToUseStairUp = true;
-    //     
-    //     if (m_Enemy.bMoveToUseStairUp)
-    //     {
-    //         if (!UpperStair) 
-    //             return;
-    //     
-    //         if (DownPos.m_IsUpPos == true)
-    //             return;
-    //
-    //         m_Enemy.bMoveToUsedStair = false;
-    //         m_StairPos = DownPos;
-    //         m_StairPos.m_ParentStair.MoveOrder(16);
-    //         //Debug.Log("위로 올라가기 시작");
-    //         m_Enemy.GoToStairLayer(true);
-    //         m_IsOnStair = true;
-    //
-    //         if(!ReferenceEquals(m_StairPosCoroutine, null))
-    //             StopCoroutine(m_StairCoroutine);
-    //         m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(false));
-    //     }
-    // }
-    // if (m_Enemy.bMoveToUsedStair && UpperStair)
-    // {
-    //     m_Enemy.bMoveToUseStairDown = true;
-    //     
-    //     if (m_Enemy.bMoveToUseStairDown)
-    //     {
-    //         if (!LowerStair) 
-    //             return;
-    //     
-    //         if (UpPos.m_IsUpPos == false)
-    //             return;
-    //     
-    //         m_Enemy.bMoveToUsedStair = false;
-    //         m_StairPos = UpPos;
-    //         m_StairPos.m_ParentStair.MoveOrder(16);
-    //         m_Enemy.GoToStairLayer(true);
-    //         m_IsOnStair = true;
-    //     
-    //         if(!ReferenceEquals(m_StairPosCoroutine, null))
-    //             StopCoroutine(m_StairCoroutine);
-    //         m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(true));
-    //     }
-    // }
-
+    
     private IEnumerator StairPosCoroutine(bool _isUp)
     {
         float stairPosX = m_StairPos.transform.position.x;
@@ -186,13 +139,8 @@ public class Enemy_FootMgr : MonoBehaviour
                     // 윗센서 X좌표보다 왼쪽 == 키다운후 왼쪽으로 빠짐
                     if (transform.position.x < stairPosX - m_SensorXGap)
                     {
-                        m_StairPos.m_ParentStair.MoveOrder(16);
-
+                        ReturnToFloor(16);
                         Debug.Log("내려가려다가 왼쪽으로 빠짐");
-
-                        m_Enemy.GoToStairLayer(false);
-                        m_IsOnStair = false;
-                        m_StairPos = null;
                         break;
                     }
                 }
@@ -201,26 +149,17 @@ public class Enemy_FootMgr : MonoBehaviour
                     // 윗센서 X좌표보다 오른쪽 == 키다운후 오른쪽으로 빠짐
                     if (transform.position.x > stairPosX + m_SensorXGap)
                     {
-                        m_StairPos.m_ParentStair.MoveOrder(16);
-
+                        ReturnToFloor(16);
                         Debug.Log("내려가려다가 오른쪽으로 빠짐");
-
-                        m_Enemy.GoToStairLayer(false);
-                        m_IsOnStair = false;
-                        m_StairPos = null;
                         break;
                     }
                 }
 
                 if (!m_Enemy.bMoveToUseStairDown)
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(16);
-
+                    ReturnToFloor(16);
                     Debug.Log("내려가려다가 키 업");
-
-                    m_Enemy.GoToStairLayer(false);
-                    m_IsOnStair = false;
-                    m_StairPos = null;
+                    
                     break;
                 }
 
@@ -245,13 +184,8 @@ public class Enemy_FootMgr : MonoBehaviour
                 {
                     if (transform.position.x > stairPosX + m_SensorXGap)
                     {
-                        m_StairPos.m_ParentStair.MoveOrder(10);
-
+                        ReturnToFloor(10);
                         Debug.Log("올라가려다가 오른쪽으로 빠짐");
-
-                        m_Enemy.GoToStairLayer(false);
-                        m_IsOnStair = false;
-                        m_StairPos = null;
                         break;
                     }
                 }
@@ -259,27 +193,16 @@ public class Enemy_FootMgr : MonoBehaviour
                 {
                     if (transform.position.x < stairPosX - m_SensorXGap)
                     {
-                        m_StairPos.m_ParentStair.MoveOrder(10);
-
+                        ReturnToFloor(10);
                         Debug.Log("올라가려다가 왼쪽으로 빠짐");
-
-                        m_Enemy.GoToStairLayer(false);
-                        m_IsOnStair = false;
-                        m_StairPos = null;
                         break;
                     }
                 }
-
-
+                
                 if (!m_Enemy.bMoveToUseStairUp)
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(10);
-
+                    ReturnToFloor(10);
                     Debug.Log("올라가려다가 키 업");
-
-                    m_Enemy.GoToStairLayer(false);
-                    m_IsOnStair = false;
-                    m_StairPos = null;
                     break;
                 }
 
@@ -301,30 +224,32 @@ public class Enemy_FootMgr : MonoBehaviour
             {
                 if (transform.position.x <= UpPosX) // 위 센서보다 왼쪽
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(16);
-
+                    ReturnToFloor(16);
                     Debug.Log("돌아왓당");
-                    m_Enemy.bMoveToUseStairUp = false;
-                    m_Enemy.bMoveToUseStairDown = false;
 
-                    m_Enemy.GoToStairLayer(false);
-                    m_IsOnStair = false;
-                    m_Enemy.bIsOnStair = m_IsOnStair;
-                    m_StairPos = null;
+                    m_Enemy.MoveNextPoint();
+                    
+                    if (Mathf.Abs(m_Enemy.transform.position.y - _player.transform.position.y) <= 0.1f && !_player.bIsOnStair)
+                    {
+                        m_Enemy.bMoveToUseStairUp = false;
+                        m_Enemy.bMoveToUseStairDown = false;
+                        m_Enemy.MoveToPlayer();
+                    }
                     break;
                 }
                 else if (transform.position.x >= DownPosX) // 아래 센서보다 오른쪽
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(10);
-
+                    ReturnToFloor(10);
                     Debug.Log("돌아왓당");
-                    m_Enemy.bMoveToUseStairUp = false;
-                    m_Enemy.bMoveToUseStairDown = false;
 
-                    m_Enemy.GoToStairLayer(false);
-                    m_IsOnStair = false;
-                    m_Enemy.bIsOnStair = m_IsOnStair;
-                    m_StairPos = null;
+                    m_Enemy.MoveNextPoint();
+                    
+                    if (Mathf.Abs(m_Enemy.transform.position.y - _player.transform.position.y) <= 0.1f && !_player.bIsOnStair)
+                    {
+                        m_Enemy.bMoveToUseStairUp = false;
+                        m_Enemy.bMoveToUseStairDown = false;
+                        m_Enemy.MoveToPlayer();
+                    }
                     break;
                 }
 
@@ -337,24 +262,14 @@ public class Enemy_FootMgr : MonoBehaviour
             {
                 if (transform.position.x >= UpPosX)
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(16);
-
+                    ReturnToFloor(16);
                     Debug.Log("돌아왓당");
-
-                    m_Enemy.GoToStairLayer(false);
-                    m_IsOnStair = false;
-                    m_StairPos = null;
                     break;
                 }
                 else if (transform.position.x <= DownPosX)
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(10);
-
+                    ReturnToFloor(10);
                     Debug.Log("돌아왓당");
-
-                    m_Enemy.GoToStairLayer(false);
-                    m_IsOnStair = false;
-                    m_StairPos = null;
                     break;
                 }
 
@@ -363,5 +278,28 @@ public class Enemy_FootMgr : MonoBehaviour
         }
 
         yield break;
+    }
+    
+    void StartUsingStair(StairPos UpDownPos, bool IsUp)
+    {
+        m_StairPos = UpDownPos;
+        m_IsOnStair = true;
+        m_Enemy.bIsOnStair = m_IsOnStair;
+        m_StairPos.m_ParentStair.MoveOrder(16);
+        m_Enemy.GoToStairLayer(true);
+
+        if (!ReferenceEquals(m_StairPosCoroutine, null))
+            StopCoroutine(m_StairCoroutine);
+        m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(IsUp));
+    }
+
+    void ReturnToFloor(int MoveOrderNumber)
+    {
+        m_StairPos.m_ParentStair.MoveOrder(MoveOrderNumber);
+        m_Enemy.bMoveToUsedStair = false;
+        m_Enemy.GoToStairLayer(false);
+        m_IsOnStair = false;
+        m_Enemy.bIsOnStair = m_IsOnStair;
+        m_StairPos = null;
     }
 }
