@@ -295,7 +295,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                     // m_Enemy.WayPointsVectorList.Clear();
                 }
 
-                if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AttackDistance)
+                if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AtkDistance)
                     m_Phase = 4;
                 break;
             case 4: // 사정거리 도달
@@ -328,7 +328,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
 
     private void MoveTowardPlayer()
     {
-        if (!(m_DistanceBetPlayer.magnitude > m_Enemy.p_AttackDistance)) return;
+        if (!(m_DistanceBetPlayer.magnitude > m_Enemy.p_AtkDistance)) return;
         m_Enemy.SetRigidByDirection(!(m_DistanceBetPlayer.x > 0));
     }
 }
@@ -431,7 +431,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
             case 8: // 거리 재판별
                 m_Enemy.m_Alert.SetAlertFill(false);
                 m_Phase = 9;
-                if (m_Enemy.GetDistBetPlayer().magnitude > m_Enemy.p_AttackDistance)
+                if (m_Enemy.GetDistBetPlayer().magnitude > m_Enemy.p_AtkDistance)
                 {
                     m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
                 }

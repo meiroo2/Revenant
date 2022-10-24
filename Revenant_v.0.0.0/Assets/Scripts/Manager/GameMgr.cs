@@ -98,7 +98,7 @@ public class GameMgr : MonoBehaviour
             if (sceneIdx >= SceneManager.sceneCountInBuildSettings)
                 return;
             
-            SceneManager.LoadScene(m_CurSceneIdx + 1);
+            RequestLoadScene(m_CurSceneIdx + 1, true);
         }
         else if (Input.GetKeyDown(KeyCode.Home))
         {
@@ -106,7 +106,7 @@ public class GameMgr : MonoBehaviour
             if (sceneIdx < 0)
                 return;
             
-            SceneManager.LoadScene(m_CurSceneIdx - 1);
+            RequestLoadScene(m_CurSceneIdx - 1, true);
         }
     }
 
@@ -118,7 +118,7 @@ public class GameMgr : MonoBehaviour
 
         if (_smooth)
         {
-            p_SceneChangeMgr.InitSceneEndWithSmooth(_idx, 3f);
+            p_SceneChangeMgr.InitSceneEndWithSmooth(_idx, 20f);
         }
         else
         {

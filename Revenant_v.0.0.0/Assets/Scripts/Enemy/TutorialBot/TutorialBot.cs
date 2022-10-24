@@ -7,7 +7,7 @@ public class TutorialBot : BasicEnemy
 {
     // Visible Member Variables
     [BoxGroup("TutorialBot Values")] public float p_AtkSpeed = 1f;
-    [BoxGroup("TutorialBot Values")] public float p_AtkDistance = 1f;
+    [BoxGroup("TutorialBot Values")] public float p_AttackDistance = 1f;
     [BoxGroup("TutorialBot Values")] public float p_PointAtkTime = 0.5f;
     [BoxGroup("TutorialBot Values")] public TutorialBot_HotBox p_BodyBox;
     [field: SerializeField, BoxGroup("TutorialBot Values")] private Animator p_Animator;

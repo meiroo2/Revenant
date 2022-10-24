@@ -20,6 +20,10 @@ public class TutorialRollLevel : TutorialLevel
 
 	public override bool CheckCondition()
 	{
+		if (p_tutorialBot.m_CurEnemyStateName == EnemyStateName.DEAD)
+			isArrived = true;
+
+
 		return isArrived;
 	}
 
