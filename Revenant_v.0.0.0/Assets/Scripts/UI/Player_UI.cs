@@ -270,7 +270,7 @@ public class Player_UI : MonoBehaviour
                 m_SoundPlayer.PlayUISoundOnce(0);
                 
                 // 원본 Scale로 함
-                p_Hitmark.rectTransform.localScale = m_HitmarkOriginScale;
+                p_Hitmark.rectTransform.localScale = new Vector2(2f, 2f);
                 m_CurCoroutine = StartCoroutine(DisableHitMark_Head());
 
                 if (!ReferenceEquals(m_UIAniCoroutine, null))

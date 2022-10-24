@@ -29,12 +29,12 @@ public class MatChanger : MonoBehaviour
     // Constructor
     private void Awake()
     {
-        InitMatChanger();
+        //InitMatChanger();
     }
 
     private void Start()
     {
-        //InitMatChanger();
+        InitMatChanger();
     }
     
     // Updates

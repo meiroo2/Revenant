@@ -26,6 +26,7 @@ public class Target_HotBox : MonoBehaviour, IHotBox
     private ParticleMgr m_ParticleMgr;
     private HitSFXMaker m_HitSFXMaker;
     private Transform m_PlayerCenterTransform;
+    private SimpleEffectPuller m_SEPuller;
     
 
     private void Awake()
@@ -46,6 +47,7 @@ public class Target_HotBox : MonoBehaviour, IHotBox
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_PlayerCenterTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().p_CenterTransform;
         m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
+        m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
     }
 
     public int HitHotBox(IHotBoxParam _param)
@@ -55,7 +57,13 @@ public class Target_HotBox : MonoBehaviour, IHotBox
         switch (p_Point)
         {
             case HitBoxPoint.HEAD:
-                m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
+                if (_param.m_weaponType != WeaponType.BULLET_TIME)
+                    m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
+                else
+                {
+                    m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
+                }
+                
                 m_PlayerUI.ActiveHitmark(0);
 
                 m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
