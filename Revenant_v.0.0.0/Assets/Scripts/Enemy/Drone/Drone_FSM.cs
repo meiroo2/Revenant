@@ -187,7 +187,7 @@ public class FOLLOW_Drone : Drone_FSM
         switch (m_Phase)
         {
             case 0:     // 초기 판정
-                if (m_DistanceBetPlayer > m_Enemy.p_RushTriggerDistance)
+                if (m_DistanceBetPlayer > m_Enemy.p_AtkDistance)
                 {
                     m_Phase = 1;
                 }
@@ -199,7 +199,7 @@ public class FOLLOW_Drone : Drone_FSM
             
             case 1:
                 if (Vector2.Distance(m_EnemyTransform.position, m_PlayerTransform.position) >
-                    m_Enemy.p_RushTriggerDistance)
+                    m_Enemy.p_AtkDistance)
                 {
                     m_Enemy.ResetMovePoint(m_PlayerTransform.position);
                     m_Enemy.SetRigidToPoint();
