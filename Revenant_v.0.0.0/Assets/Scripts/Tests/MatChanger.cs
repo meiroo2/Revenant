@@ -18,7 +18,7 @@ public class MatChanger : MonoBehaviour
     private Dictionary<SpriteRenderer, Material> m_PlayerMatDic = new Dictionary<SpriteRenderer, Material>();
     private Dictionary<SpriteRenderer, Material> m_EnemyMatDic = new Dictionary<SpriteRenderer, Material>();
     private Dictionary<SpriteRenderer, Material> m_UIMatDic = new Dictionary<SpriteRenderer, Material>();
-    private Dictionary<SpriteRenderer, Material> m_OtherMatDic = new Dictionary<SpriteRenderer, Material>();
+    private Dictionary<SpriteRenderer, Material> m_BGMatDic = new Dictionary<SpriteRenderer, Material>();
     private static readonly int unscaledTime = Shader.PropertyToID("UnscaledTime");
 
     private float m_Timer = 0f;
@@ -70,8 +70,8 @@ public class MatChanger : MonoBehaviour
         m_EnemyMatDic.TrimExcess();
         m_UIMatDic.Clear();
         m_UIMatDic.TrimExcess();
-        m_OtherMatDic.Clear();
-        m_OtherMatDic.TrimExcess();
+        m_BGMatDic.Clear();
+        m_BGMatDic.TrimExcess();
 
         var spriteRenArr = StaticMethods.FindAllObjects<SpriteRenderer>();
         for (int i = 0; i < spriteRenArr.Count; i++)
@@ -88,9 +88,9 @@ public class MatChanger : MonoBehaviour
             {
                 m_UIMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
             }
-            else
+            else if(spriteRenArr[i].gameObject.CompareTag("BackGround"))
             {
-                m_OtherMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
+                m_BGMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
             }
         }
     }
@@ -125,32 +125,20 @@ public class MatChanger : MonoBehaviour
     [Button(ButtonSizes.Medium)]
     public void ChangeMat(ObjectType _type, int _idx)
     {
-        /*
         switch (_type)
         {
-            case ObjectType.Player:
-                foreach (var variable in m_PlayerMatDic)
-                    variable.Key.material = p_ChangeMatArr[_idx];
-                break;
-            
             case ObjectType.Enemy:
                 foreach (var variable in m_EnemyMatDic)
                     variable.Key.material = p_ChangeMatArr[_idx];
 
                 m_ChangeEnemy = true;
                 break;
-            
-            case ObjectType.UI:
-                foreach (var variable in m_UIMatDic)
-                    variable.Key.material = p_ChangeMatArr[_idx];
-                break;
-            
-            case ObjectType.Other:
-                foreach (var variable in m_OtherMatDic)
+
+            case ObjectType.BackGround:
+                foreach (var variable in m_BGMatDic)
                     variable.Key.material = p_ChangeMatArr[_idx];
                 break;
         }
-        */
     }
 
     /// <summary>
@@ -160,29 +148,17 @@ public class MatChanger : MonoBehaviour
     [Button(ButtonSizes.Medium)]
     public void RestoreMat(ObjectType _type)
     {
-        /*
         switch (_type)
         {
-            case ObjectType.Player:
-                foreach (var variable in m_PlayerMatDic)
-                    variable.Key.material = variable.Value;
-                break;
-            
             case ObjectType.Enemy:
                 foreach (var variable in m_EnemyMatDic)
                     variable.Key.material = variable.Value;
                 break;
-            
-            case ObjectType.UI:
-                foreach (var variable in m_UIMatDic)
-                    variable.Key.material = variable.Value;
-                break;
-            
-            case ObjectType.Other:
-                foreach (var variable in m_OtherMatDic)
+
+            case ObjectType.BackGround:
+                foreach (var variable in m_BGMatDic)
                     variable.Key.material = variable.Value;
                 break;
         }
-        */
     }
 }

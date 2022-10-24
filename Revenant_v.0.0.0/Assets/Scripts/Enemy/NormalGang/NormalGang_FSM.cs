@@ -11,7 +11,7 @@ public class NormalGang_FSM : Enemy_FSM
     protected NormalGang m_Enemy;
     protected Animator m_Animator;
     protected Rigidbody2D m_Rigid;
-    protected Transform m_Transform;
+    protected Transform m_Transform; 
 
     public override void StartState()
     {
@@ -258,43 +258,32 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 //Debug.Log("사정거리 밖");
                 //m_Enemy.GoToPlayerRoom();
                 
-                // 적 상태 CHASE
-                //_enemyState = EnemyState.Chase;
-
-                // // 적이 계단 위에 있고 플레이어가 계단 위에 있으면
-                // if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-                // {
-                //     // 계단으로 향해 이동하지 않음 - 플레이어에게 이동
-                //     m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
-                // }
-                // // 플레이어가 계단 밖으로 나갔지만 적이 계단 위에 있으면
-                // else if (m_Enemy.m_Player.bIsOutOfStair && m_Enemy.bIsOnStair)
-                // {
-                //     // 계단 밖 센서로 이동
-                //     m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.PlayerOutOfStairVector.x));
-                // }
-                // 적이 문으로 향해 이동할 때 혹은 계단으로 향해 이동할 때 (오브젝트 사용 관련 조건문)
-                if (m_Enemy.bMoveToUsedDoor || m_Enemy.bMoveToUsedStair)
+                // 플레이어가 사용한 오브젝트로 이동
+                if (m_Enemy.WayPointsVectorList.Count != 0 && m_Enemy.WayPointsIndex < m_Enemy.WayPointsVectorList.Count)
                 {
-                    // 플레이어가 사용한 오브젝트로 이동
-                    if (m_Enemy.WayPointsVectorList.Count != 0 && m_Enemy.WayPointsIndex >= 0)
-                    {
-                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x));
-                    }
+                    m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x));
                 }
                 else
                 {
                     m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
                 }
                 
+                float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
                 // 플레이어와 적이 같은 층에 있다면 문 사용 X
-                if (Mathf.Abs(m_Enemy.transform.position.y - m_Enemy.m_Player.transform.position.y) <= 0.5f)
+                if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair)
                 {
                     m_Enemy.bMoveToUsedDoor = false;
-                    // m_Enemy.WayPointsIndex = 0;
-                    // m_Enemy.WayPointsVectorList.Clear();
+                    m_Enemy.MoveToPlayer();
                 }
-
+                else if (HeightBetweenPlayerAndEnemy <= 0.1f && !m_Enemy.bIsOnStair && !m_Enemy.m_Player.bIsOnStair)
+                {
+                    m_Enemy.MoveToPlayer();
+                }
+                else if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+                {
+                    m_Enemy.MoveToPlayer();
+                }
+                
                 if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AtkDistance)
                     m_Phase = 4;
                 break;
@@ -372,6 +361,23 @@ public class ATTACK_NormalGang : NormalGang_FSM
 
     public override void UpdateState()
     {
+        float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+        // 플레이어와 적이 같은 층에 있다면 문 사용 X
+        if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair)
+        {
+            m_Enemy.bMoveToUsedDoor = false;
+            m_Enemy.MoveToPlayer();
+        }
+        else if (HeightBetweenPlayerAndEnemy <= 0.1f && !m_Enemy.bIsOnStair && !m_Enemy.m_Player.bIsOnStair)
+        {
+            m_Enemy.MoveToPlayer();
+        }
+        else if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+        {
+            m_Enemy.MoveToPlayer();
+        }
+
+
         switch (m_Phase)
         {
             case 0: // 콜백 설정 + 느낌표 채우기 시작 + 좌우반전

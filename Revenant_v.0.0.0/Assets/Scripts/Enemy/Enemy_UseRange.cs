@@ -18,25 +18,15 @@ public class Enemy_UseRange : MonoBehaviour
 
     private Player _player;
 
-    private List<NormalGang> NormalGangList;
-
     // Constructors
     private void Awake()
     {
         m_Enemy = GetComponentInParent<BasicEnemy>();
-        NormalGangList = FindObjectsOfType<NormalGang>().ToList();
     }
 
     private void Start()
     {
         _player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
-    }
-
-    private void Update()
-    {
-        //Debug.Log("Enemy_UseRange) m_Enemy.WayPointsVectorList.Count - " + m_Enemy.WayPointsVectorList.Count);
-        //Debug.Log("Enemy_UseRange) m_Enemy.WayPointsIndex -" + m_Enemy.WayPointsIndex);
-        //Debug.Log("Enemy_UseRange) _player._currentWaypointIndex -" + _player._currentWaypointIndex);
     }
 
     // Physics

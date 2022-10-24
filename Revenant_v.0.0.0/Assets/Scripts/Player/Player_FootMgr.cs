@@ -43,7 +43,6 @@ public class Player_FootMgr : MonoBehaviour
         m_PlayerNormal = Vector2.up;
     }
     
-    
     private void Update()
     {
         m_FootRayPos = new Vector2(transform.position.x, transform.position.y + 0.05f);
@@ -110,21 +109,8 @@ public class Player_FootMgr : MonoBehaviour
             
             if (DownPos.m_IsUpPos == true)
                 return;
-
-            m_StairPos = DownPos;
-            m_StairPos.m_ParentStair.MoveOrder(16);
             
-            Debug.Log("위로 올라가기 시작");
-            m_Player.m_WorldUI.PrintSprite(-1);
-            
-            m_Player.GoToStairLayer(true);
-            m_isOnStair = true;
-            m_Player.bIsOnStair = m_isOnStair;
-            m_Player.bIsOutOfStair = false;
-
-            if(!ReferenceEquals(m_StairPosCoroutine, null))
-                StopCoroutine(m_StairPosCoroutine);
-            m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(false));
+            StartUsingStair(DownPos, false);
         }
         else if (m_InputMgr.m_IsPushStairDownKey)
         {
@@ -134,59 +120,23 @@ public class Player_FootMgr : MonoBehaviour
             if (UpPos.m_IsUpPos == false)
                 return;
             
-            m_StairPos = UpPos;
-            m_StairPos.m_ParentStair.MoveOrder(16);
-            
-            Debug.Log("아래로 내려가기 시작");
-            m_Player.m_WorldUI.PrintSprite(-1);
-            
-            m_Player.GoToStairLayer(true);
-            m_isOnStair = true;
-            m_Player.bIsOnStair = m_isOnStair;
-            m_Player.bIsOutOfStair = false;
-
-            if(!ReferenceEquals(m_StairPosCoroutine, null))
-                StopCoroutine(m_StairPosCoroutine);
-            m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(true));
+            StartUsingStair(UpPos, true);
         }
     }
 
     private IEnumerator StairPosCoroutine(bool _isUp)
     {
-        Player_UsedTraceInfo traceInfo;
-        float stairPosX = m_StairPos.transform.position.x;
+        Vector2 StairPos = m_StairPos.transform.position;
         bool isLeftUp = m_StairPos.m_ParentStair.m_isLeftUp;
 
         if (_isUp)
         {
             while (true)
             {
-                if (transform.position.y < m_StairPos.transform.position.y - m_SensorYGap)
+                if (transform.position.y < StairPos.y - m_SensorYGap)
                 {
                     Debug.Log("윗센서 Y보다 내려옴");
-                    foreach (var normalGang in NormalGangList)
-                    {
-                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
-                        {
-                            normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
-                            normalGang.bMoveToUsedStair = true;
-                        }
-                    }
-                    
-                    // 유환진 코드 추가
-                    traceInfo = new Player_UsedTraceInfo(UseableObjList.STAIRPOS,
-                        m_Player.transform.position, m_StairPos.gameObject, true);
-                    
-                    foreach (var normalGang in NormalGangList)
-                    {
-                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase&&
-                            !ReferenceEquals(normalGang.m_TraceInfoList, null))
-                        {
-                            normalGang.m_TraceInfoList.Add(traceInfo);
-                            //normalGang.bMoveToUsedStair = true;
-                        }
-                    }
-                    // 유환진 코드 끝
+                    AddWayPointsVectorList(true, StairPos);
                     
                     if(!ReferenceEquals(m_StairCoroutine, null))
                         StopCoroutine(m_StairCoroutine);
@@ -197,48 +147,28 @@ public class Player_FootMgr : MonoBehaviour
                 if (isLeftUp)
                 {
                     // 윗센서 X좌표보다 왼쪽 == 키다운 후 왼쪽으로 빠짐
-                    if (transform.position.x < stairPosX - m_SensorXGap)
+                    if (transform.position.x < StairPos.x - m_SensorXGap)
                     {
-                        m_StairPos.m_ParentStair.MoveOrder(16);
-                    
+                        ReturnToFloor(16);
                         Debug.Log("내려가려다가 왼쪽으로 빠짐");
-                        m_Player.m_WorldUI.PrintSprite(-1);
-                        
-                        m_Player.GoToStairLayer(false);
-                        m_isOnStair = false;
-                        m_Player.bIsOnStair = m_isOnStair;
-                        m_StairPos = null;
                         break;
                     }
                 }
                 else
                 {
                     // 윗센서 X좌표보다 오른쪽 == 키다운후 오른쪽으로 빠짐
-                    if (transform.position.x > stairPosX + m_SensorXGap)
+                    if (transform.position.x > StairPos.x + m_SensorXGap)
                     {
-                        m_StairPos.m_ParentStair.MoveOrder(16);
-                    
+                        ReturnToFloor(16);
                         Debug.Log("내려가려다가 오른쪽으로 빠짐");
-                        m_Player.m_WorldUI.PrintSprite(-1);
-                        
-                        m_Player.GoToStairLayer(false);
-                        m_isOnStair = false;
-                        m_Player.bIsOnStair = m_isOnStair;
-                        m_StairPos = null;
                         break;
                     }
                 }
 
                 if (!m_InputMgr.m_IsPushStairDownKey)
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(16);
-                    
+                    ReturnToFloor(16);
                     Debug.Log("내려가려다가 키 업");
-                    m_Player.m_WorldUI.PrintSprite(-1);
-                    
-                    m_Player.GoToStairLayer(false);
-                    m_isOnStair = false;
-                    m_StairPos = null;
                     break;
                 }
                 
@@ -253,32 +183,8 @@ public class Player_FootMgr : MonoBehaviour
                 if (transform.position.y > m_StairPos.transform.position.y + m_SensorYGap)
                 {
                     Debug.Log("아래센서 Y좌표보다 올라옴");
-                    foreach (var normalGang in NormalGangList)
-                    {
-                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
-                        {
-                            normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
-                            normalGang.bMoveToUsedStair = true;
-                        }
-                    }
-                    
-                    
-                    // 유환진 코드 추가
-                    traceInfo = new Player_UsedTraceInfo(UseableObjList.STAIRPOS,
-                        m_Player.transform.position, m_StairPos.gameObject, true);
-                    
-                    foreach (var normalGang in NormalGangList)
-                    {
-                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase&&
-                            !ReferenceEquals(normalGang.m_TraceInfoList, null))
-                        {
-                            normalGang.m_TraceInfoList.Add(traceInfo);
-                            //normalGang.bMoveToUsedStair = true;
-                        }
-                    }
-                    // 유환진 코드 끝
+                    AddWayPointsVectorList(true, StairPos);
 
-                    
                     if(!ReferenceEquals(m_StairCoroutine, null))
                         StopCoroutine(m_StairCoroutine);
                     m_StairCoroutine = StartCoroutine(StairCoroutine(false));
@@ -287,46 +193,27 @@ public class Player_FootMgr : MonoBehaviour
 
                 if (isLeftUp)
                 {
-                    if (transform.position.x > stairPosX + m_SensorXGap)
+                    if (transform.position.x > StairPos.x + m_SensorXGap)
                     {
-                        m_StairPos.m_ParentStair.MoveOrder(10);
-                    
+                        ReturnToFloor(10);
                         Debug.Log("올라가려다가 오른쪽으로 빠짐");
-                        m_Player.m_WorldUI.PrintSprite(-1);
-                        
-                        m_Player.GoToStairLayer(false);
-                        m_isOnStair = false;
-                        m_StairPos = null;
                         break;
                     }
                 }
                 else
                 {
-                    if (transform.position.x < stairPosX - m_SensorXGap)
+                    if (transform.position.x < StairPos.x - m_SensorXGap)
                     {
-                        m_StairPos.m_ParentStair.MoveOrder(10);
-                    
+                        ReturnToFloor(10);
                         Debug.Log("올라가려다가 왼쪽으로 빠짐");
-                        m_Player.m_WorldUI.PrintSprite(-1);
-                        
-                        m_Player.GoToStairLayer(false);
-                        m_isOnStair = false;
-                        m_StairPos = null;
                         break;
                     }
                 }
-               
 
                 if (!m_InputMgr.m_IsPushStairUpKey)
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(10);
-                    
+                    ReturnToFloor(10);
                     Debug.Log("올라가려다가 키 업");
-                    m_Player.m_WorldUI.PrintSprite(-1);
-                    
-                    m_Player.GoToStairLayer(false);
-                    m_isOnStair = false;
-                    m_StairPos = null;
                     break;
                 }
                 
@@ -339,103 +226,25 @@ public class Player_FootMgr : MonoBehaviour
 
     private IEnumerator StairCoroutine(bool _startFromUp)
     {
-        Player_UsedTraceInfo traceInfo;
-        var UpPosX = m_StairPos.m_ParentStair.m_UpPos.transform.position.x;
-        var DownPosX = m_StairPos.m_ParentStair.m_DownPos.transform.position.x;
-
+        Vector2 UpPos = m_StairPos.m_ParentStair.m_UpPos.transform.position;
+        Vector2 DownPos = m_StairPos.m_ParentStair.m_DownPos.transform.position;
+        
         if (m_StairPos.m_ParentStair.m_isLeftUp)
         { 
             while (true)
             {
-                if (transform.position.x <= UpPosX) // 위 센서보다 왼쪽
+                if (transform.position.x <= UpPos.x) // 위 센서보다 왼쪽
                 {
-                    foreach (var normalGang in NormalGangList)
-                    {
-                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
-                        {
-                            normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
-                            normalGang.bMoveToUsedStair = true;
-                        }
-                    }
-                    
-                    
-                    // 유환진 코드 추가
-                    traceInfo = new Player_UsedTraceInfo(UseableObjList.STAIRPOS,
-                        m_Player.transform.position, m_StairPos.gameObject, false);
-                    
-                    foreach (var normalGang in NormalGangList)
-                    {
-                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase&&
-                            !ReferenceEquals(normalGang.m_TraceInfoList, null))
-                        {
-                            normalGang.m_TraceInfoList.Add(traceInfo);
-                            //normalGang.bMoveToUsedStair = true;
-                        }
-                    }
-                    // 유환진 코드 끝
-                    
-                    
-                    // OutOfStairVector 수정 요망
-                    // m_Player.bIsOutOfStair = true;
-                    //m_Player.PlayerOutOfStairVector = m_StairPos.m_ParentStair.m_UpPos.transform.position;
-                    
-                    m_StairPos.m_ParentStair.MoveOrder(16);
-
-                    Debug.Log("돌아왔당");
-                    m_Player.m_WorldUI.PrintSprite(-1);
-                
-                    m_Player.GoToStairLayer(false);
-                    m_isOnStair = false;
-                    m_Player.bIsOnStair = m_isOnStair;
-                    m_StairPos = null;
-                    
+                    AddWayPointsVectorList(false, UpPos);
+                    ReturnToFloor(16);
                     break;
                 }
-                else if (transform.position.x >= DownPosX)  // 아래 센서보다 오른쪽
+                else if (transform.position.x >= DownPos.x)  // 아래 센서보다 오른쪽
                 {
-                    foreach (var normalGang in NormalGangList)
-                    {
-                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
-                        {
-                            normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
-                            normalGang.bMoveToUsedStair = true;
-                        }
-                    }
-                    
-                    
-                    // 유환진 코드 추가
-                    traceInfo = new Player_UsedTraceInfo(UseableObjList.STAIRPOS,
-                        m_Player.transform.position, m_StairPos.gameObject, false);
-                    
-                    foreach (var normalGang in NormalGangList)
-                    {
-                        if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase&&
-                            !ReferenceEquals(normalGang.m_TraceInfoList, null))
-                        {
-                            normalGang.m_TraceInfoList.Add(traceInfo);
-                            //normalGang.bMoveToUsedStair = true;
-                        }
-                    }
-                    // 유환진 코드 끝
-                    
-                    
-                    //m_Player.bIsOutOfStair = true;
-                    // OutOfStairVectgor 수정 요망
-                    //m_Player.PlayerUsedObjectVector = m_StairPos.m_ParentStair.m_DownPos.transform.position;
-                    
-                    m_StairPos.m_ParentStair.MoveOrder(10);
-
-                    Debug.Log("돌아왔당");
-                    m_Player.m_WorldUI.PrintSprite(-1);
-                
-                    m_Player.GoToStairLayer(false);
-                    m_isOnStair = false;
-                    m_Player.bIsOnStair = m_isOnStair;
-                    m_StairPos = null;
-
+                    AddWayPointsVectorList(false, DownPos);
+                    ReturnToFloor(10);
                     break;
                 }
-
                 yield return null;
             }
         }
@@ -443,53 +252,78 @@ public class Player_FootMgr : MonoBehaviour
         {
             while (true)
             {
-                if (transform.position.x >= UpPosX)
+                if (transform.position.x >= UpPos.x)
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(16);
-
-                    Debug.Log("돌아왔당");
-                    m_Player.m_WorldUI.PrintSprite(-1);
-                
-                    m_Player.GoToStairLayer(false);
-                    m_isOnStair = false;
-                    m_StairPos = null;
+                    AddWayPointsVectorList(false, UpPos);
+                    ReturnToFloor(16);
                     break;
                 }
-                else if (transform.position.x <= DownPosX)
+                else if (transform.position.x <= DownPos.x)
                 {
-                    m_StairPos.m_ParentStair.MoveOrder(10);
-
-                    Debug.Log("돌아왔당");
-                    m_Player.m_WorldUI.PrintSprite(-1);
-                
-                    m_Player.GoToStairLayer(false);
-                    m_isOnStair = false;
-                    m_StairPos = null;
+                    AddWayPointsVectorList(false, DownPos);
+                    ReturnToFloor(10);
                     break;
                 }
-
                 yield return null;
             }
         }
-        
         yield break;
+    }
+
+    void AddWayPointsVectorList(bool IsEnter, Vector2 StairPos)
+    {
+        if (IsEnter)
+        {
+            foreach (var normalGang in NormalGangList)
+            {
+                if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
+                {
+                    normalGang.WayPointsVectorList.Add(m_StairPos.transform.position);
+                    normalGang.bMoveToUsedStair = true;
+                }
+            }
+        }
+        else
+        {
+            foreach (var normalGang in NormalGangList)
+            {
+                if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
+                {
+                    if (Mathf.Abs(normalGang.transform.position.y - m_Player.transform.position.y) <= 0.05f && !normalGang.bIsOnStair) { }
+                    else { normalGang.WayPointsVectorList.Add(StairPos); }
+                }
+            }
+        }
+    }
+    
+    void StartUsingStair(StairPos UpDownPos, bool IsUp)
+    {
+        m_StairPos = UpDownPos;
+        m_StairPos.m_ParentStair.MoveOrder(16);
+        
+        m_Player.m_WorldUI.PrintSprite(-1);
+            
+        m_Player.GoToStairLayer(true);
+        m_isOnStair = true;
+        m_Player.bIsOnStair = m_isOnStair;
+        m_Player.bIsOutOfStair = false;
+
+        if(!ReferenceEquals(m_StairPosCoroutine, null))
+            StopCoroutine(m_StairPosCoroutine);
+        m_StairPosCoroutine = StartCoroutine(StairPosCoroutine(IsUp));
+    }
+
+    void ReturnToFloor(int MoveOrderNumber)
+    {
+        m_StairPos.m_ParentStair.MoveOrder(MoveOrderNumber);
+        
+        m_Player.m_WorldUI.PrintSprite(-1);
+                
+        m_Player.GoToStairLayer(false);
+        m_isOnStair = false;
+        m_Player.bIsOnStair = m_isOnStair;
+        m_StairPos = null;
+        
     }
 }
 
-public class Player_UsedTraceInfo
-{
-    // Member Variables
-    public UseableObjList m_ObjectType { get; private set; } = UseableObjList.STAIRPOS;
-    public Vector2 m_PositionOnUsed { get; private set; } = Vector2.zero;
-    public GameObject m_UsedObj { get; private set; } = null;
-    public bool m_IsEntrance { get; private set; } = true;
-   
-    // Constructors
-    public Player_UsedTraceInfo(UseableObjList _type, Vector2 _position, GameObject _obj, bool _isEnter)
-    {
-        m_ObjectType = _type;
-        m_PositionOnUsed = _position;
-        m_UsedObj = _obj;
-        m_IsEntrance = _isEnter;
-    }
-}

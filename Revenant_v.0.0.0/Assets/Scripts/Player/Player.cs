@@ -95,6 +95,7 @@ public class Player : Human
     public bool m_canRoll { get; private set; } = true;
     public bool m_canChangeWeapon { get; private set; } = false;
     public bool m_CanHide { get; set; } = true;
+    public int m_MoveDirection { get; private set; } = 0;
 
 
     private Player_IDLE m_IDLE;
@@ -333,6 +334,7 @@ public class Player : Human
     /// <param name="_multi"> 이동속도 추가 배율 </param>>
     public void MoveByDirection(int _direction, float _multi = 1f)
     {
+        m_MoveDirection = _direction;
         switch (_direction)
         {
             case 0:

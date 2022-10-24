@@ -313,9 +313,26 @@ public class Player_ArmMgr : MonoBehaviour
         yield return null;
         
         float normTime = 0f;
-
+        int curMoveDirection = m_Player.m_MoveDirection;
+        
         while (true)
         {
+            if (curMoveDirection != m_Player.m_MoveDirection)
+            {
+                if (m_Player.m_MoveDirection == 0)
+                {
+                    curMoveDirection = m_Player.m_MoveDirection;
+                    m_PlayerAniMgr.p_UpperBody.m_Animator.Play("Reload_StopAni", -1,
+                        m_PlayerAniMgr.p_UpperBody.GetAniNormalTime());
+                }
+                else
+                {
+                    curMoveDirection = m_Player.m_MoveDirection;
+                    m_PlayerAniMgr.p_UpperBody.m_Animator.Play("Reload_Walkani", -1,
+                        m_PlayerAniMgr.p_UpperBody.GetAniNormalTime());
+                }
+            }
+
             normTime = m_PlayerAniMgr.p_UpperBody.GetAniNormalTime();
             m_PlayerUI.p_ReloadCircle.fillAmount = normTime;
 

@@ -211,7 +211,7 @@ public class BulletTimeMgr : MonoBehaviour
             m_IsBulletTimeActivating = true;
             
             m_MatChanger.ChangeMat(ObjectType.Enemy, 1);
-            m_MatChanger.ChangeMat(ObjectType.Other, 0);
+            m_MatChanger.ChangeMat(ObjectType.BackGround, 0);
             
             Time.timeScale = 0f;
         }
@@ -225,7 +225,7 @@ public class BulletTimeMgr : MonoBehaviour
             m_IsBulletTimeActivating = false;
             
             m_MatChanger.RestoreMat(ObjectType.Enemy);
-            m_MatChanger.RestoreMat(ObjectType.Other);
+            m_MatChanger.RestoreMat(ObjectType.BackGround);
             
             Time.timeScale = 1f;
 

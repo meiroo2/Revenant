@@ -210,10 +210,10 @@ public class Negotiator_Player : BasicWeapon_Player
     {
         if(m_Player.m_IsRightHeaded)
             m_ShellMgr.MakeShell(m_ShellPos.transform.position,
-                new Vector2(Random.Range(-2f, 2f), Random.Range(0.8f, 1.5f)));
+                new Vector2(Random.Range(-2f, 0f), Random.Range(0.8f, 1.5f)));
         else
             m_ShellMgr.MakeShell(m_ShellPos.transform.position,
-                new Vector2(Random.Range(-2f, 2f), Random.Range(0.8f, 1.5f)));
+                new Vector2(Random.Range(0f, 2f), Random.Range(0.8f, 1.5f)));
     }
     
     private void SpawnSFX(Vector2 _rayDestPos)

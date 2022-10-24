@@ -67,8 +67,7 @@ public class BasicEnemy : Human
     public bool bMoveToUsedStair { get; set; } = false;
     public bool bMoveToUseStairUp { get; set; } = false;
     public bool bMoveToUseStairDown { get; set; } = false;
-
-    [HideInInspector] public List<Player_UsedTraceInfo> m_TraceInfoList;
+    
     [HideInInspector] public List<Vector2> WayPointsVectorList;
     [HideInInspector] public int WayPointsIndex = 0;
 
@@ -315,5 +314,18 @@ public class BasicEnemy : Human
     public virtual void MouseTouched(bool _isTouch)
     {
         
+    }
+    
+    public void MoveNextPoint()
+    {
+        if (WayPointsIndex == WayPointsVectorList.Count - 1) { }
+        else { WayPointsIndex++; }
+    }
+    
+    /** 리스트를 비우고 인덱스를 초기화 함으로써 플레이어 방향으로 이동한다 */
+    public void MoveToPlayer()
+    {
+        WayPointsIndex = 0;
+        WayPointsVectorList.Clear();
     }
 }
