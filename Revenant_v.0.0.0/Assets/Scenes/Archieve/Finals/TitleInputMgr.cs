@@ -11,7 +11,7 @@ public class TitleInputMgr : MonoBehaviour
   {
     if (Input.anyKeyDown)
     {
-      GameMgr.GetInstance().RequestLoadScene(1, false);
+      GameMgr.GetInstance().RequestLoadScene(1, true);
     }
   }
 }

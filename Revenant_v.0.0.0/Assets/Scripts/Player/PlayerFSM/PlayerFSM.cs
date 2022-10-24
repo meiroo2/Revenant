@@ -350,8 +350,12 @@ public class Player_ROLL : PlayerFSM
         m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         
         // 코루틴 끝
-        m_CoroutineElement.StopCoroutine_Element();
-        
+        if (!ReferenceEquals(m_CoroutineElement, null))
+        {
+            m_CoroutineElement.StopCoroutine_Element();
+            m_CoroutineElement = null;
+        }
+
         ExitFinalProcess();
     }
 
@@ -378,6 +382,13 @@ public class Player_ROLL : PlayerFSM
                         m_Player.p_CenterTransform,  JustEvadeGaugeUp);
                     
                     Debug.Log("저스트 회피!!");
+
+                    if (!ReferenceEquals(m_CoroutineElement, null))
+                    {
+                        m_CoroutineElement.StopCoroutine_Element();
+                        m_CoroutineElement = null;
+                    }
+                    
                     yield break;
                 }
                 else
@@ -386,6 +397,13 @@ public class Player_ROLL : PlayerFSM
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
                         m_Player.p_CenterTransform,  EvadeGaugeUp);
                     Debug.Log("그냥 회피");
+                    
+                    if (!ReferenceEquals(m_CoroutineElement, null))
+                    {
+                        m_CoroutineElement.StopCoroutine_Element();
+                        m_CoroutineElement = null;
+                    }
+                    
                     yield break;
                 }
             }
