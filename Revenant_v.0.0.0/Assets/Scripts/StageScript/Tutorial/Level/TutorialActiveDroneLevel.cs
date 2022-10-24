@@ -7,7 +7,7 @@ public class TutorialActiveDroneLevel : TutorialLevel
 
     public override bool CheckCondition()
     {
-        if (p_TutorialDrone.m_animator.GetCurrentAnimatorStateInfo(0).IsName("Drone_Idle"))
+        if (p_TutorialDrone.m_animator.GetCurrentAnimatorStateInfo(0).IsName("Drone_Idle") || p_TutorialDrone.m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1)
             return true;
         else
         {
@@ -17,7 +17,8 @@ public class TutorialActiveDroneLevel : TutorialLevel
 
     public override void Initialize()
     {
-		p_TutorialDrone.m_animator.Play("Drone_Idle");
-		p_TutorialDrone.NextAnimation();
+        p_TutorialDrone.m_animator.SetInteger("TutorialAnimationIndex", 1);
+		p_TutorialDrone.m_animator.Play("Drone_On");
+        p_TutorialDrone.PlayTutorialVideo("NoneVideo");
 	}
 }

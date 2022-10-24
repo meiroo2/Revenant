@@ -77,47 +77,50 @@ public class CameraMgr : MonoBehaviour
         StartCoroutine(MoveToTargetCoroutine(targetTransform.position, MoveStopDuration));
     }
 
-    private IEnumerator MoveToTargetCoroutine(Vector2 targetPosition, float MoveStopDuration)
-    {
-        // MoveStart
-        m_IsFollowTarget = true;
-        m_IsMoveEnd = false;
+	private IEnumerator MoveToTargetCoroutine(Vector2 targetPosition, float MoveStopDuration)
+	{
+		// MoveStart
+		m_IsFollowTarget = true;
+		m_IsMoveEnd = false;
 		targetPosition.y += p_YValue;
+		targetPosition = m_CamBoundMgr.getNearCamPos(targetPosition);
+		Vector3 originPosition = transform.position;
 
 		float MoveStopTimer = 0;
-        while(MoveStopTimer < MoveStopDuration)
-        {
-			m_FinalCamPos = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 4f);
+		while (MoveStopTimer < MoveStopDuration)
+		{
+			m_FinalCamPos = Vector2.Lerp(transform.position, targetPosition, Time.deltaTime * 4f);
 			m_FinalCamPos.z = -10f;
 			transform.position = m_FinalCamPos;
-			if (Vector2.Distance(transform.position, targetPosition) < 0.01f) // 카메라가 대상을 바라보고 있음
-            {
+			yield return null;
+			if (Vector2.Distance(transform.position, targetPosition) < 0.001f) // 카메라가 대상을 바라보고 있음
+			{
 				m_IsFollowTarget = false;
 				MoveStopTimer += Time.deltaTime;
 			}
-			yield return null;
-        }
 
-		// 돌아감
-		while (true)
-        {
-			Vector3 tempPos = new Vector3(m_Player.transform.position.x, m_Player.transform.position.y + p_YValue, m_Player.transform.position.z);
-			m_FinalCamPos = Vector3.Lerp(transform.position, tempPos, Time.deltaTime * 4f);
-			m_FinalCamPos.z = -10f;
-			transform.position = m_FinalCamPos;
-
-			if (Vector2.Distance(transform.position, tempPos) < 0.01f) // 카메라가 대상을 바라보고 있음
-			{
-				break;
-			}
-			yield return null;
 		}
 
 		yield return null;
-		// MoveEnd
-		m_LerpedCamPos = m_Player.transform.position;
-		m_IsMoveEnd = true;
-		Debug.Log("끝");
+
+
+		// 돌아감
+		while (!m_IsMoveEnd)
+		{
+			m_FinalCamPos = Vector2.Lerp(transform.position, originPosition, Time.deltaTime * 4f);
+			m_FinalCamPos.z = -10f;
+			transform.position = m_FinalCamPos;
+			yield return null;
+			if (Vector2.Distance(transform.position, originPosition) < 0.001f) // 카메라가 대상을 바라보고 있음
+			{
+				m_IsMoveEnd = true;
+			}
+
+		}
+
+		transform.position = originPosition;
+		yield return null;
+
 
 	}
 
@@ -252,11 +255,13 @@ public class CameraMgr : MonoBehaviour
 		transform.position = m_LerpedCamPos;
 	}
 
-	public void MoveToPosition(Vector2 pos)
+	public void MoveToPosition(Vector2 pos, CamBoundMgr boundMgr)
 	{
-		transform.position = pos;
+		m_CamBoundMgr = boundMgr;
 		m_LerpedCamPos = pos;
 		m_LerpedCamPos.z = -10f;
-		m_FinalCamPos = m_LerpedCamPos;
+		m_LerpedCamPos = m_CamBoundMgr.getNearCamPos(m_LerpedCamPos);
+		transform.position = pos;
+
 	}
 }
