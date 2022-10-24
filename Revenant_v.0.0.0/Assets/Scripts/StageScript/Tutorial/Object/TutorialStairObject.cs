@@ -16,11 +16,6 @@ public class TutorialStairObject : TutorialObject
 		}
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 	public override void Initialize()
 	{
 		action += NextAnimation;
@@ -32,5 +27,8 @@ public class TutorialStairObject : TutorialObject
 		{
 			collider.enabled = true;
 		}
+
+		m_animator.StopPlayback();
+		m_animator.enabled = false;
 	}
 }

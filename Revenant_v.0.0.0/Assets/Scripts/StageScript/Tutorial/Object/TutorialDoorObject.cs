@@ -28,6 +28,9 @@ public class TutorialDoorObject : TutorialObject
 			{
 				m_camMgr.m_CamBoundMgr = null;
 				collision.transform.position = p_SpawnPosition.position;
+				m_camMgr.StopAllCoroutines();
+				m_camMgr.m_IsFollowTarget = false;
+				m_camMgr.m_IsMoveEnd = true;
 				m_camMgr.MoveToPosition(p_SpawnPosition.position);
 			}
 		}
