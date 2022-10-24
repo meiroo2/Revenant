@@ -15,6 +15,7 @@ public enum ObjectType
     Portal,
     Objective,
     Item,
+    BackGround,
     Other
 }
 

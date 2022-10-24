@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 0
   <p_DamageMulti>k__BackingField: 0
 --- !u!61 &2275787039257512237
@@ -165,6 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 1
   <p_DamageMulti>k__BackingField: 0
 --- !u!61 &2275787039324577360
@@ -309,6 +311,7 @@ GameObject:
   - component: {fileID: 2275787040404207834}
   - component: {fileID: 2275787040404207810}
   - component: {fileID: 2275787040404207833}
+  - component: {fileID: 7222190477121472326}
   m_Layer: 11
   m_Name: DroneGang
   m_TagString: Enemy
@@ -356,17 +359,21 @@ MonoBehaviour:
   p_OverrideEnemyMgr: 0
   <p_AngleLimit>k__BackingField: 20
   <p_VisionDistance>k__BackingField: 0
-  p_AlertSpeedRatio: 2
+  p_AtkDistance: 0
+  m_DeadReasonForMat: 0
+  WayPointsVectorList: []
+  WayPointsIndex: 0
   <p_RushSpeedRatio>k__BackingField: 10
-  <p_ToRushXDistance>k__BackingField: 1.5
   <p_WiggleSpeed>k__BackingField: 4
   <p_WigglePower>k__BackingField: 0.5
   <p_BombHp>k__BackingField: 20
   <p_BombRange>k__BackingField: 2
   p_BreakPower: 2
   p_DetectSpeed: 1
+  p_DecidePositionPointTime: 0
   p_LookAround: 0
   p_LookAroundDelay: 1
+  p_PatrolPoses: []
   m_DeadReason: -1
   m_BombWeapon: {fileID: 5155922780340698784}
   p_HeadHotBox: {fileID: 2275787039257512236}
@@ -393,6 +400,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!58 &7222190477121472326
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2275787040404207837}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.2
 --- !u!1 &5155922780340698786
 GameObject:
   m_ObjectHideFlags: 0

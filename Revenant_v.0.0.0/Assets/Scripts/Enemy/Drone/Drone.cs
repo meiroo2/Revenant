@@ -15,7 +15,6 @@ public class Drone : BasicEnemy
     // Visible Member Variables
     //[field: SerializeField, BoxGroup("DroneGang Values")] public float p_AlertSpeedRatio = 1f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_RushSpeedRatio { get; protected set; } = 2f;
-    [field: SerializeField, BoxGroup("DroneGang Values")] public float p_RushTriggerDistance { get; protected set; } = 2f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_WiggleSpeed { get; protected set; } = 1f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public float p_WigglePower { get; protected set; } = 1f;
     [field: SerializeField, BoxGroup("DroneGang Values")] public int p_BombHp { get; protected set; } = 20;
@@ -197,7 +196,7 @@ public class Drone : BasicEnemy
         p_BreakPower = _mgr.D_BreakPower;
         p_MoveSpeed = _mgr.D_Speed;
         p_RushSpeedRatio = _mgr.D_RushSpeedMulti;
-        p_RushTriggerDistance = _mgr.D_RushTriggerDistance;
+        p_AtkDistance = _mgr.D_RushTriggerDistance;
         p_HeadHotBox.p_DamageMulti = _mgr.D_DroneDmgMulti;
         p_BodyHotBox.p_DamageMulti = _mgr.D_BombDmgMulti;
         p_DetectSpeed = _mgr.D_DetectSpeed;

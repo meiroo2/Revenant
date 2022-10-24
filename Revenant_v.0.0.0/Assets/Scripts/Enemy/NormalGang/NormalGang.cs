@@ -20,9 +20,6 @@ public class NormalGang : BasicEnemy
     public float p_MeleeDistance = 0.1f;
 
     [field: SerializeField, BoxGroup("NormalGang Values")]
-    public float p_AttackDistance { get; protected set; } = 0.2f;
-
-    [field: SerializeField, BoxGroup("NormalGang Values")]
     public bool p_IsLookAround = false;
 
     [field: SerializeField, BoxGroup("NormalGang Values")]
@@ -65,8 +62,6 @@ public class NormalGang : BasicEnemy
     // Constructor
     private void Awake()
     {
-        p_AtkDistance = p_AttackDistance;
-        
         InitHuman();
         InitEnemy();
 
@@ -157,7 +152,7 @@ public class NormalGang : BasicEnemy
         p_MoveSpeed = _mgr.N_Speed;
         p_StunHp = _mgr.N_StunThreshold;
         p_VisionDistance = _mgr.N_Vision_Distance;
-        p_AttackDistance = _mgr.N_GunFire_Distance;
+        p_AtkDistance = _mgr.N_GunFire_Distance;
         p_MeleeDistance = _mgr.N_MeleeAttack_Distance;
         p_AlertSpeed = _mgr.N_AlertSpeedMulti;
         p_StunAlertSpeed = _mgr.N_StunAlertSpeedMulti;
