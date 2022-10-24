@@ -51,6 +51,7 @@ public class AutoNormalLight : MonoBehaviour
                 
                 Light2D CopiedObj = GameObject.Instantiate(copyTarget, VARIABLE.transform).GetComponent<Light2D>();
                 CopiedObj.transform.localPosition = Vector3.zero;
+                CopiedObj.transform.localRotation = Quaternion.identity;
 
                 FieldInfo m_GettingField = typeof(Light2D).GetField("m_ApplyToSortingLayers", BindingFlags.NonPublic | BindingFlags.Instance);
 
