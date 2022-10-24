@@ -383,13 +383,7 @@ public class Player_ROLL : PlayerFSM
                     
                     Debug.Log("저스트 회피!!");
 
-                    if (!ReferenceEquals(m_CoroutineElement, null))
-                    {
-                        m_CoroutineElement.StopCoroutine_Element();
-                        m_CoroutineElement = null;
-                    }
-                    
-                    yield break;
+                    break;
                 }
                 else
                 {
@@ -397,18 +391,20 @@ public class Player_ROLL : PlayerFSM
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
                         m_Player.p_CenterTransform,  EvadeGaugeUp);
                     Debug.Log("그냥 회피");
-                    
-                    if (!ReferenceEquals(m_CoroutineElement, null))
-                    {
-                        m_CoroutineElement.StopCoroutine_Element();
-                        m_CoroutineElement = null;
-                    }
-                    
-                    yield break;
+
+                    break;
                 }
             }
             yield return null;
         }
+        
+        if (!ReferenceEquals(m_CoroutineElement, null))
+        {
+            m_CoroutineElement.StopCoroutine_Element();
+            m_CoroutineElement = null;
+        }
+
+        yield break;
     }
 
     private void JustEvadeGaugeUp()
