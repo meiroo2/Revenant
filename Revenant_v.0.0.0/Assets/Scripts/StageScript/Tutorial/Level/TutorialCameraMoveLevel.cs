@@ -38,7 +38,12 @@ public class TutorialCameraMoveLevel : TutorialLevel
 		if (!m_camMgr.m_IsFollowTarget)
 		{
             if(tutorialObjects.Count > 0)
-			tutorialObjects[0].action?.Invoke();
+			{
+				foreach (var obj in tutorialObjects)
+				{
+					obj.action?.Invoke();
+				}
+			}
 		}
 
         if(m_camMgr.m_IsMoveEnd)

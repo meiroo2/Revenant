@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class TutorialHatchObject : TutorialObject
 {
 	private Collider2D[] m_Colliders;
+	public List<GameObject> ActiveOffPrefabs = new();
 	// Start is called before the first frame update
 	protected override void Start()
 	{
@@ -21,6 +22,9 @@ public class TutorialHatchObject : TutorialObject
 	public override void Initialize()
 	{
 		action += NextAnimation;
+
+		var bulletUI = FindObjectOfType<LeftBullet_WUI>().gameObject;
+		ActiveOffPrefabs.Add(bulletUI);
 	}
 
 	public void ActiveCollider()
@@ -43,6 +47,11 @@ public class TutorialHatchObject : TutorialObject
 			transform.GetChild(0).gameObject.SetActive(false);
 			NextAnimation();
 			collision.gameObject.SetActive(false);
+
+			foreach(var obj in ActiveOffPrefabs)
+			{
+				obj.SetActive(false);
+			}
 		}
 	}
 

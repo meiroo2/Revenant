@@ -22,7 +22,10 @@ public class TutorialObject : MonoBehaviour
 	/// <summary>
 	/// 오브젝트가 속한 튜토리얼 레벨이 시작했을 때 실행
 	/// </summary>
-	public virtual void Initialize() { }
+	public virtual void Initialize() 
+	{
+		NextAnimation();
+	}
 
 	public void NextAnimation()
 	{
