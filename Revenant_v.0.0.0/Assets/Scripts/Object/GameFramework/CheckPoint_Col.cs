@@ -35,9 +35,14 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
 
     public int useObj(IUseableObjParam _param)
     {
-        RemoveEnemyListToActivate();
-        _checkPoint.ActivateBothOutline(true);
         
+        for (int i = 0; i < 10; i++)
+        {
+            RemoveEnemyListToActivate();
+            _checkPoint.ActivateBothOutline(true);
+        }
+            
+
         Debug.Log(_checkPoint.bCanInteract + ", " + GetEnemyNumFromEnemyList + ", "+
                   GetEnemyNumFromSpawnerList);
         
