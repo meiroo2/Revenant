@@ -11,11 +11,11 @@ public class Player_CheckPointMgr : MonoBehaviour
     // Constructors
     private void Start()
     {
-        m_DataMgr = DataHandleManager.Instance;
+        m_DataMgr = GameMgr.GetInstance().p_DataHandleMgr;
 
         if (!m_DataMgr.IsCheckPointActivated)
         {
-            Debug.Log("플레이어 체크포인트 없어요");
+            Debug.Log("플레이어 체크포인트 없어요" + m_DataMgr.m_OriginPlayerPos);
             SetPlayerInitPos(m_DataMgr.m_OriginPlayerPos);
         }
         else

@@ -91,11 +91,12 @@ public class CheckPoint : MonoBehaviour
     void SetUpIsActivated()
     {
         // 저장된 데이터 중 체크포인트가 활성화 되어있다면 체크포인트의 섹션을 판별
-        if (DataHandleManager.Instance.IsCheckPointActivated &&
-            DataHandleManager.Instance.CheckPointSectionNumber == SectionNumber)
+        DataHandleManager dataMgr = GameMgr.GetInstance().p_DataHandleMgr;
+        if (dataMgr.IsCheckPointActivated &&
+            dataMgr.CheckPointSectionNumber == SectionNumber)
         {
             // 해당 체크포인트를 활성화
-            CheckPointsList[SectionNumber - 1].bActivated = DataHandleManager.Instance.IsCheckPointActivated;
+            CheckPointsList[SectionNumber - 1].bActivated = dataMgr.IsCheckPointActivated;
         }
     }
 
@@ -173,7 +174,8 @@ public class CheckPoint : MonoBehaviour
         // 현재 체크포인트 활성화
         bActivated = true;
         // 체크포인트 활성화 여부 저장
-        DataHandleManager.Instance.IsCheckPointActivated = bActivated;
+        DataHandleManager dataMgr = GameMgr.GetInstance().p_DataHandleMgr;
+        dataMgr.IsCheckPointActivated = bActivated;
         
 
         // 애니메이션

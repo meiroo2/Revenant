@@ -1,15 +1,24 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using System.Text;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneLoader_Signal : MonoBehaviour
 {
     // Visible Member Variables
-    public string m_LoadSceneName;
-    
+    public int m_LoadSceneIdx;
+
+    // Member Variables
+    private bool m_IsTriggered = false;
+
+    // Constructor
+
     
     // Functions
-    public void LoadSceneUsingName()
+    public void LoadScene()
     {
-        SceneManager.LoadScene(m_LoadSceneName);
+        GameMgr.GetInstance().p_SceneChangeMgr.InitSceneEndWithSmooth(m_LoadSceneIdx, 3f);
     }
 }

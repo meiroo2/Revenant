@@ -35,15 +35,21 @@ public class PlayerManipulator : MonoBehaviour
 
     public void SetPlayer()
     {
-        m_Player = null;
-        m_Player = GameObject.FindGameObjectWithTag("@Player").GetComponent<Player>();
-        if (ReferenceEquals(m_Player, null))
+        GameObject findPlayer = null;
+        findPlayer = GameObject.FindGameObjectWithTag("@Player");
+
+        if (ReferenceEquals(findPlayer, null))
         {
             Debug.Log("ERR : PlayerManipulator_Player Null");
+            return;
         }
-        
-        m_Player.SetPlayer(this);
-        
+
+        if (findPlayer.TryGetComponent(out Player player))
+        {
+            m_Player = player;
+            m_Player.SetPlayer(this);
+        }
+
         #if UNITY_EDITOR
             EditorUtility.SetDirty(m_Player);
         #endif
@@ -51,7 +57,20 @@ public class PlayerManipulator : MonoBehaviour
 
     public void SetNegotiator()
     {
-        m_Player.SetNegotiator(this);
+        GameObject findPlayer = null;
+        findPlayer = GameObject.FindGameObjectWithTag("@Player");
+
+        if (ReferenceEquals(findPlayer, null))
+        {
+            Debug.Log("ERR : PlayerManipulator_Player Null");
+            return;
+        }
+
+        if (findPlayer.TryGetComponent(out Player player))
+        {
+            m_Player = player;
+            m_Player.SetNegotiator(this);
+        }
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(m_Player);

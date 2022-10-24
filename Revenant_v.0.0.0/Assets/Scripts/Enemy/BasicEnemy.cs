@@ -187,7 +187,7 @@ public class BasicEnemy : Human
 
         //Debug.Log(m_VisionHit.collider.name);
         
-        if (!m_VisionHit.collider.CompareTag("Player"))
+        if (!ReferenceEquals(m_VisionHit.collider, null) && !m_VisionHit.collider.CompareTag("Player"))
             m_VisionHit = m_NullHit;
     }
     public virtual void ChangeEnemyFSM(EnemyStateName _name)

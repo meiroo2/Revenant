@@ -4,16 +4,21 @@ using UnityEngine;
 
 public class DialogSequence : MonoBehaviour
 {
+    //public scene
+    public SceneLoader_Signal p_SceneLoader;
+    
     public bool isDialogStart = false;
     public int DialogCount = 0;
     public Vector2 PlayerDialogPosition;
     private DialogBox currentBox;
-	[field: SerializeField] public GameObject Hologram;
+    [field: SerializeField] public GameObject Hologram;
 
     private GameObject m_Player;
     private void Start()
     {
         m_Player = FindObjectOfType<Player>().gameObject;
+
+        GameMgr.GetInstance().p_PlayerInputMgr.p_FireLock = true;
     }
 
 
@@ -27,12 +32,13 @@ public class DialogSequence : MonoBehaviour
         { 
             if(DialogCount == 0)
             {
-				transform.GetChild(0).gameObject.SetActive(true);  
-				currentBox = transform.GetChild(0).GetComponent<DialogBox>();
-                Hologram.SetActive(true);
-			}
+                transform.GetChild(0).gameObject.SetActive(true);
+                currentBox = transform.GetChild(0).GetComponent<DialogBox>();
+                if(Hologram != null)
+                    Hologram.SetActive(true);
+            }
 
-			if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
+            if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
             {
                 currentBox.SkipEvent?.Invoke();
                 if (currentBox.isTextEnd)
@@ -42,15 +48,24 @@ public class DialogSequence : MonoBehaviour
                     if(DialogCount < transform.childCount)
                     {
                         transform.GetChild(DialogCount).gameObject.SetActive(true);
-					    currentBox = transform.GetChild(DialogCount).GetComponent<DialogBox>();
-                        currentBox.GetComponent<RectTransform>().anchoredPosition = m_Player.transform.position + (Vector3)PlayerDialogPosition;
+                        currentBox = transform.GetChild(DialogCount).GetComponent<DialogBox>();
+                        if(currentBox.isOnPlayerPosition)
+                        {
+                            currentBox.GetComponent<RectTransform>().anchoredPosition = m_Player.transform.position + (Vector3)PlayerDialogPosition;
+                        }
                     }
-                    else
+                    else // 대화 끝
                     {
-						Hologram.SetActive(false);
-					}
-				}
-			}
+                        if (Hologram != null)
+                            Hologram.SetActive(false);
+
+                        if (!ReferenceEquals(p_SceneLoader, null))
+                        {
+                            p_SceneLoader.LoadScene();
+                        }
+                    }
+                }
+            }
         }
     }
 }

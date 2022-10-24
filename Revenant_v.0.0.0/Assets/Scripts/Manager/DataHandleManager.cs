@@ -6,29 +6,32 @@ using UnityEngine.SceneManagement;
 
 public class DataHandleManager : MonoBehaviour
 {
-    public static DataHandleManager Instance;
-
     public bool IsCheckPointActivated { get; set; }
     public int CheckPointSectionNumber { get; set; }
     public Vector2 PlayerPositionVector { get; set; }
-
     public Vector2 m_OriginPlayerPos { get; private set; }
 
     private void Awake()
     {
+        Debug.Log("DataHandleMgr Awake");
+        SetDataHandleMgr();
+    }
+
+    public void SetDataHandleMgr()
+    {
+        Debug.Log("DataHandleMgr OnSceneLoaded");
         if (!IsCheckPointActivated)
         {
-            m_OriginPlayerPos = GameObject.FindWithTag("@Player").transform.position;
-        }
-        
-        DontDestroyOnLoad(transform.root.gameObject);
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != null)
-        {
-            Destroy(gameObject);
+            GameObject findPlayer = GameObject.FindWithTag("@Player");
+
+            if (!ReferenceEquals(findPlayer, null))
+            {
+                m_OriginPlayerPos = findPlayer.transform.position;
+            }
+            else
+            {
+                m_OriginPlayerPos = Vector2.zero;
+            }
         }
     }
 }

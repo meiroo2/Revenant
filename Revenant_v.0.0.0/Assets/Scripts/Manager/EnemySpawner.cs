@@ -80,7 +80,7 @@ public class EnemySpawner : MonoBehaviour
         CheckEnemySpawn();
     }
 
-    public void AchieveEnemyDeath(GameObject _enemy)
+    public virtual void AchieveEnemyDeath(GameObject _enemy)
     {
         Debug.Log(_enemy.name);
         int idx = -1;

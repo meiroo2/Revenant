@@ -19,14 +19,7 @@ public class DialogBox : MonoBehaviour
 
 
 
-#if UNITY_EDITOR
-    [ExecuteInEditMode]
-    private void Update()
-    {
-		TextUI = GetComponentInChildren<Text>();
-		//TextUI.rectTransform.sizeDelta = GetComponent<RectTransform>().sizeDelta;
-	}
-#endif
+
 
     void Start()
     {

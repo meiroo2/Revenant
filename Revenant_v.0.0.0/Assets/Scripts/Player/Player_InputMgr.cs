@@ -9,6 +9,7 @@ public class Player_InputMgr : MonoBehaviour
 {
     // Visible Member Variables
     public bool p_MoveInputLock = false;
+    public bool p_FireLock = false;
     
     
     // Member Variables
@@ -67,7 +68,10 @@ public class Player_InputMgr : MonoBehaviour
             m_IsPushRollKey = Input.GetKey(KeyCode.Space);
             m_IsPushHideKey = Input.GetKey(KeyCode.S);
             m_IsPushReloadKey = Input.GetKey(KeyCode.R);
-            m_IsPushAttackKey = Input.GetMouseButtonDown(0);
+
+            if (!p_FireLock)
+                m_IsPushAttackKey = Input.GetMouseButtonDown(0);
+            
             m_IsPushSideAttackKey = Input.GetMouseButtonDown(1);
             m_IsPushBulletTimeKey = Input.GetKeyDown(KeyCode.Q);
             m_MousePos = Input.mousePosition;

@@ -48,11 +48,11 @@ public class CoroutineHandler : MonoBehaviour
     /// </summary>
     public void ResetCoroutineHandler()
     {
-        for (int i = 0; i < m_CoroutineElementList.Count; i++)
+        var arr = GameObject.FindObjectsOfType<CoroutineElement>();
+        for (int i = 0; i < arr.Length; i++)
         {
-            m_CoroutineElementList[i].StopCoroutine_Element();
+            Destroy(arr[i].gameObject);
         }
-
 
         m_CoroutineElementList.Clear();
         m_CoroutineElementList.TrimExcess();

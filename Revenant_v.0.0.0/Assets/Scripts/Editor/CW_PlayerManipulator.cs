@@ -129,7 +129,7 @@ public class CW_PlayerManipulator : OdinEditorWindow
     /// <param name="_toPlayerManipulator">True시 내보내기</param>
     private static void TransferPlayerValues(bool _toPlayerManipulator)
     {
-        var p_ValMani = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<PlayerManipulator>();
+        var p_ValMani = Resources.Load<GameMgr>("GameMgr").p_PlayerManipulator;
         
         if (_toPlayerManipulator)
         {
@@ -173,7 +173,7 @@ public class CW_PlayerManipulator : OdinEditorWindow
     /// <param name="_toPlayerManipulator"></param>
     private static void TransferNegotiatorValues(bool _toPlayerManipulator)
     {
-        var p_ValMani = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<PlayerManipulator>();
+        var p_ValMani = Resources.Load<GameMgr>("GameMgr").p_PlayerManipulator;
 
         if (_toPlayerManipulator)
         {

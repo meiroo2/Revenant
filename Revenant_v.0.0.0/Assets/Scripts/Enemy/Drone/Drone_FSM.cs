@@ -323,8 +323,10 @@ public class DEAD_Drone : Drone_FSM
     
     public override void StartState()
     {
+        m_CoroutineElement = null;
         m_Handler = GameMgr.GetInstance().p_CoroutineHandler;
 
+        m_Animator = m_Enemy.m_Animator;
         m_Enemy.SendDeathAlarmToSpawner();
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
         
@@ -369,6 +371,12 @@ public class DEAD_Drone : Drone_FSM
     public override void ExitState()
     {
         m_Animator.SetInteger("Explode", 0);
+        
+        if (!ReferenceEquals(m_CoroutineElement, null))
+        {
+            m_CoroutineElement.StopCoroutine_Element();
+            m_CoroutineElement = null;
+        }
     }
 
     public override void NextPhase()
@@ -391,7 +399,13 @@ public class DEAD_Drone : Drone_FSM
             }
             yield return null;
         }
-        m_CoroutineElement.StopCoroutine_Element();
+
+        if (!ReferenceEquals(m_CoroutineElement, null))
+        {
+            m_CoroutineElement.StopCoroutine_Element();
+            m_CoroutineElement = null;
+        }
+        
         m_Enemy.gameObject.SetActive(false);
         yield break;
     }

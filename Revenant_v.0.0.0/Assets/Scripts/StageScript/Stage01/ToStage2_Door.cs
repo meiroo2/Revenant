@@ -34,7 +34,7 @@ public class ToStage2_Door : MonoBehaviour, IUseableObj
             return 0;
 
         SceneManager.LoadScene(p_LoadSceneName);
-        Destroy(DataHandleManager.Instance);
+        //Destroy(DataHandleManager.Instance);
         return 1;
     }
 

@@ -15,6 +15,7 @@ public class Player_Manager : MonoBehaviour
     // Constructors
     private void Awake()
     {
+        Debug.Log("PlayerMgr Awake");
         ResetPlayer();
     }
     
@@ -26,16 +27,26 @@ public class Player_Manager : MonoBehaviour
     /// </summary>
     public void ResetPlayer()
     {
-        Debug.Log("ResetPlayer 실행");
-        
-        if (GameObject.FindWithTag("@Player").TryGetComponent(out Player player))
+        Debug.Log("PlayerManager OnSceneLoaded");
+        GameObject findPlayer = GameObject.FindWithTag("@Player");
+
+        if (ReferenceEquals(findPlayer, null))
         {
-            m_Player = player;
+            m_Player = null;
+            Debug.Log("ERR : Player_Manager에서 Player 찾지 못함. 컷신으로 취급");
+            return;
         }
         else
         {
-            m_Player = null;
-            Debug.Log("ERR : Player_Manager에서 Player 찾지 못함");
+            if (findPlayer.TryGetComponent(out Player player))
+            {
+                Debug.Log("Player_Manager에서 Player 발견");
+                m_Player = player;
+            }
+            else
+            {
+                Debug.LogError("ERR : Player_Manager에서 Player TryGetComponent 실패");
+            }
         }
     }
 

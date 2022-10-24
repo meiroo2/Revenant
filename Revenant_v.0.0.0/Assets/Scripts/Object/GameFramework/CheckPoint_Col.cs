@@ -49,15 +49,16 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
             // 체크포인트 활성화
             _checkPoint.ActivateCheckPoint();
             // 체크포인트 번호 저장
-            DataHandleManager.Instance.CheckPointSectionNumber = _checkPoint.SectionNumber;
+            DataHandleManager dataMgr = GameMgr.GetInstance().p_DataHandleMgr;
+            dataMgr.CheckPointSectionNumber = _checkPoint.SectionNumber;
 
             // 저장된 체크포인트가 활성화되어 있으면
             if (CheckPoint.CheckPointsList[_checkPoint.SectionNumber - 1].bActivated)
             {
                 // 저장된 체크포인트의 활성화 여부를 DataHandleManager에 저장
-                DataHandleManager.Instance.IsCheckPointActivated = CheckPoint.CheckPointsList[_checkPoint.SectionNumber - 1].bActivated;
+                dataMgr.IsCheckPointActivated = CheckPoint.CheckPointsList[_checkPoint.SectionNumber - 1].bActivated;
                 // 플레이어가 스폰할 체크포인트의 위치를 DataHandleManager에 저장
-                DataHandleManager.Instance.PlayerPositionVector = CheckPoint.GetActiveCheckPointPosition();
+                dataMgr.PlayerPositionVector = CheckPoint.GetActiveCheckPointPosition();
             }
             Debug.Log("체크포인트 상호작용 성공");
             return 1;
