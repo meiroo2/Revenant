@@ -17,6 +17,7 @@ public class TutorialActiveDroneLevel : TutorialLevel
 
     public override void Initialize()
     {
-        p_TutorialDrone.NextAnimation();
-    }
+		p_TutorialDrone.m_animator.Play("Drone_Idle");
+		p_TutorialDrone.NextAnimation();
+	}
 }

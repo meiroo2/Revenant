@@ -36,7 +36,7 @@ public class TutorialDroneObject : TutorialObject
 
         if (clip == null)
         {
-            Debug.Log("ÇØ´ç ÀÌ¸§À» °¡Áø Å¬¸³ÀÌ ¾ø½À´Ï´Ù");
+            Debug.Log("í•´ë‹¹ ì´ë¦„ì„ ê°€ì§„ í´ë¦½ì´ ì—†ìŠµë‹ˆë‹¤");
         }
         else
         {
@@ -44,8 +44,9 @@ public class TutorialDroneObject : TutorialObject
 			{
                 m_animator.SetInteger("TutorialAnimationIndex", 3);
 				m_animator.Play("Drone_contact");
-                Debug.Log("½ÇÇà");
+                Debug.Log("ì‹¤í–‰");
 			}
+
 			P_VideoAnimator.Play(videoName);
 		}
     }

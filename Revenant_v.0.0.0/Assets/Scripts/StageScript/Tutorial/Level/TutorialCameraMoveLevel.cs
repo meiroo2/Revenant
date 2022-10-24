@@ -17,7 +17,8 @@ public class TutorialCameraMoveLevel : TutorialLevel
     public override void Initialize()
     {
         m_camMgr.m_IsFollowTarget = true;
-        m_camMgr.MoveToTarget(p_CameraMoveTarget, 1f);
+		m_camMgr.StopAllCoroutines();
+		m_camMgr.MoveToTarget(p_CameraMoveTarget, 1f);
 	}
 
     // Update is called once per frame
@@ -28,6 +29,6 @@ public class TutorialCameraMoveLevel : TutorialLevel
 
 	public override bool CheckCondition()
 	{
-        return !m_camMgr.m_IsFollowTarget;
+        return !m_camMgr.m_IsMoveEnd;
 	}
 }
