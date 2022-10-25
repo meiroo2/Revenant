@@ -35,7 +35,9 @@ public class CoroutineElement : MonoBehaviour
             StopCoroutine(m_Coroutine);
 
         m_Handler.DeleteCoroutineElement(this);
-        Destroy(gameObject);
+
+        if (gameObject)
+            Destroy(gameObject);
     }
 
     /// <summary>

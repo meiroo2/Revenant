@@ -34,4 +34,9 @@ public class DataHandleManager : MonoBehaviour
             }
         }
     }
+
+    public void ResetCheckPoint()
+    {
+        IsCheckPointActivated = false;
+    }
 }

@@ -159,7 +159,7 @@ public class CameraMgr : MonoBehaviour
 		m_CamBoundMgr = _camBound;
 
 		m_LerpedCamPos = new Vector3(playerPos.x,
-			playerPos.y + m_LastGapBetPlayer, -10f);
+			playerPos.y, -10f);
 
 		transform.position = m_LerpedCamPos;
 	}

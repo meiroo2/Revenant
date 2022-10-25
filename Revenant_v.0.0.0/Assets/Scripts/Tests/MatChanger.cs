@@ -125,6 +125,7 @@ public class MatChanger : MonoBehaviour
     [Button(ButtonSizes.Medium)]
     public void ChangeMat(ObjectType _type, int _idx)
     {
+        /*
         switch (_type)
         {
             case ObjectType.Enemy:
@@ -139,6 +140,7 @@ public class MatChanger : MonoBehaviour
                     variable.Key.material = p_ChangeMatArr[_idx];
                 break;
         }
+        */
     }
 
     /// <summary>
@@ -148,6 +150,7 @@ public class MatChanger : MonoBehaviour
     [Button(ButtonSizes.Medium)]
     public void RestoreMat(ObjectType _type)
     {
+        /*
         switch (_type)
         {
             case ObjectType.Enemy:
@@ -160,5 +163,6 @@ public class MatChanger : MonoBehaviour
                     variable.Key.material = variable.Value;
                 break;
         }
+        */
     }
 }

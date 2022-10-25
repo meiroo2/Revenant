@@ -57,6 +57,6 @@ public class TutorialHatchObject : TutorialObject
 
 	public void LoadNextScene(string sceneName)
 	{
-		SceneManager.LoadScene(sceneName);
+		GameMgr.GetInstance().RequestLoadScene(2, true);
 	}
 }

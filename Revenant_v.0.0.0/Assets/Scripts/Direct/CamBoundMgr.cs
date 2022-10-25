@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CamBoundMgr : MonoBehaviour
 {
-    // 0, 1, 2, 3 -> ╩С го аб ©Л
+    // 0, 1, 2, 3 -> ?? ?? ?? ??
     public CamBound[] m_Bounds;
 
     private Transform[] m_BoundTransforms;
@@ -30,7 +30,7 @@ public class CamBoundMgr : MonoBehaviour
     {
         if (col.CompareTag("@Player"))
         {
-                m_CamMgr.ChangeCamBoundMgr(this);
+            m_CamMgr.ChangeCamBoundMgr(this);
         }
     }
 

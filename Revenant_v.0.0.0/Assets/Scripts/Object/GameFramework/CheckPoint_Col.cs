@@ -92,6 +92,10 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     /** 적을 리스트에서 지우는 함수 */
     void RemoveEnemyListToActivate()
     {
+        if (_checkPoint == null && _checkPoint.EnemyListToActivate == null &&
+            _checkPoint.EnemyListToActivate[0].gameObject == null)
+            return;
+        
         // 체크포인트 활성화 조건 버튼이 켜져있고 리스트에 "맵에 배치된" 적이 있을 때
         // 적 리스트 제거
         if (_checkPoint.bEnemyListToActivate == true && _checkPoint.EnemyListToActivate.Count != 0)

@@ -92,7 +92,7 @@ public class TutorialDroneObject : TutorialObject
 		{
 			yield return new WaitForSeconds(0.02f);
 			alpha = Mat.GetFloat("_MainTexAlpha");
-			if (alpha < 1)
+			if (alpha < 0.46f)
 			{
 				alpha += 0.05f;
 			}

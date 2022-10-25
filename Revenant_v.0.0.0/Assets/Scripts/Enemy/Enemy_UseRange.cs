@@ -61,20 +61,24 @@ public class Enemy_UseRange : MonoBehaviour
         if (other.CompareTag("Player"))
             return;
 
-        _door = other.GetComponent<Door_Col_LayerRoom>();
-        //
-        if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
+        if (other.TryGetComponent(out Door_Col_LayerRoom doorCol))
         {
-            if (Mathf.Abs(m_Enemy.transform.position.x - m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x) <= 0.1f)
+            _door = doorCol;
+        
+            if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
             {
-                m_Enemy.bMoveToUsedDoor = true;
-                if (m_Enemy.bMoveToUsedDoor)
+                if (Mathf.Abs(m_Enemy.transform.position.x - m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x) <= 0.1f)
                 {
-                    _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
-                    m_Enemy.WayPointsIndex++;
+                    m_Enemy.bMoveToUsedDoor = true;
+                    if (m_Enemy.bMoveToUsedDoor)
+                    {
+                        _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
+                        m_Enemy.WayPointsIndex++;
+                    }
                 }
             }
         }
+        
     }
 
     private void OnTriggerExit2D(Collider2D other)
