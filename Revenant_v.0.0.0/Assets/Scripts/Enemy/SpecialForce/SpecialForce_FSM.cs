@@ -183,11 +183,15 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
 
     public override void ExitState()
     {
-        if (m_RollDelayElement != null)
+        if (!ReferenceEquals(m_RollDelayElement, null))
+        {
             m_RollDelayElement.StopCoroutine_Element();
+        }
 
-        if (m_MouseOnElement != null)
+        if (!ReferenceEquals(m_MouseOnElement, null))
+        {
             m_MouseOnElement.StopCoroutine_Element();
+        }
 
         m_Enemy.ResetRigid();
     }

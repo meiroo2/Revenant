@@ -52,6 +52,7 @@ public class Player_AniMgr : MonoBehaviour
         m_IsFightMode = _toAngle;
         
         // UpperBody 애니메이터 끄고, 팔은 보임
+        //p_UpperBody.SetVisible(!_toAngle);
         p_UpperBody.SetAniVisible(!_toAngle);
         p_Arm.SetVisible(_toAngle);
     }

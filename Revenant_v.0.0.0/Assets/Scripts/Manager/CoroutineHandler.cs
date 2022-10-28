@@ -40,7 +40,12 @@ public class CoroutineHandler : MonoBehaviour
     /// <param name="_target"> 삭제할 대상 </param>
     public void DeleteCoroutineElement(CoroutineElement _target)
     {
+        if (!m_CoroutineElementList.Contains(_target)) 
+            return;
+        
         m_CoroutineElementList.Remove(_target);
+        Destroy(_target.gameObject);
+        _target = null;
     }
 
     /// <summary>

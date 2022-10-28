@@ -318,6 +318,7 @@ public class Player_ROLL : PlayerFSM
         // 코루틴 시작
         m_JustEvadeCoroutineElement = 
             GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(CheckEvade());
+        
         m_CoroutineExitCheck = true;
     }
 
@@ -425,11 +426,14 @@ public class Player_ROLL : PlayerFSM
         if (!m_CoroutineExitCheck)
             return;
         
-        Debug.Log("SafetyOut");
-        m_JustEvadeCoroutineElement.StopCoroutine_Element();
-        m_JustEvadeCoroutineElement = null;
-
         m_CoroutineExitCheck = false;
+        Debug.Log("SafetyOut");
+
+        if (!ReferenceEquals(m_JustEvadeCoroutineElement, null))
+        {
+            m_JustEvadeCoroutineElement.StopCoroutine_Element();
+            m_JustEvadeCoroutineElement = null;
+        }
     }
 }
 
