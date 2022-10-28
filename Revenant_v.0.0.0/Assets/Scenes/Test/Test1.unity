@@ -429,13 +429,17 @@ PrefabInstance:
       propertyPath: m_UseHide
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4597090504026434921, guid: bf66c0471bd319443889db9e8658f57d, type: 3}
+      propertyPath: <p_Roll_Chance>k__BackingField
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 4597090504026434927, guid: bf66c0471bd319443889db9e8658f57d, type: 3}
       propertyPath: m_Name
       value: SpecialForce (1)
       objectReference: {fileID: 0}
     - target: {fileID: 4597090504026434927, guid: bf66c0471bd319443889db9e8658f57d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf66c0471bd319443889db9e8658f57d, type: 3}
@@ -1670,6 +1674,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShieldGang (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3025478185464052581, guid: 34d6b16d6de471845a2170b907ee9d41, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34d6b16d6de471845a2170b907ee9d41, type: 3}
 --- !u!1001 &724665009
@@ -1793,77 +1801,6 @@ Transform:
   - {fileID: 483300462}
   m_Father: {fileID: 0}
   m_RootOrder: 25
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &811632161
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 811632164}
-  - component: {fileID: 811632163}
-  - component: {fileID: 811632162}
-  m_Layer: 6
-  m_Name: SmokeShell
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &811632162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 811632161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34b36dd52a244d71b032dcb8c96b4578, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!61 &811632163
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 811632161}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 2.35, y: 1}
-  m_EdgeRadius: 0
---- !u!4 &811632164
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 811632161}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.198, y: -1.046, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 33
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &956033302
 PrefabInstance:
@@ -6733,9 +6670,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2855590271983462353, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: m_Damage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2855590271983462353, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: m_StunValue
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
       propertyPath: p_ReloadSpeed
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
       propertyPath: <p_Hp>k__BackingField
@@ -6750,8 +6695,16 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_StunAlertSpeed>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
       propertyPath: <p_MeleeSpeedMulti>k__BackingField
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_JustEvadeNormalizeTime>k__BackingField.y
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 6699025932106853847, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
       propertyPath: m_RootOrder

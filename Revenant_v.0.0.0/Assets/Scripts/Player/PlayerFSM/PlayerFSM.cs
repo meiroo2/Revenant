@@ -12,6 +12,10 @@ public abstract class PlayerFSM
     protected Player m_Player;
     protected Player_InputMgr m_InputMgr;
     protected Transform m_PlayerTransform;
+    
+    // For Action
+    public Action m_InitAction = null;
+    public Action m_ExitAction = null;
 
     protected PlayerFSM(Player _player)
     {
@@ -271,13 +275,15 @@ public class Player_ROLL : PlayerFSM
 {
     private Vector2 m_PlayerNormalVec;
     private Animator m_FullBodyAnimator;
-    private CoroutineElement m_CoroutineElement;
     private RageGauge m_RageGauge;
     private Player_InputMgr m_InputMgr;
     private Player_UseRange m_UseRange;
     
     private float m_DecelerationSpeed = 0f;
     private float m_Timer = 0f;
+    
+    private CoroutineElement m_JustEvadeCoroutineElement;
+    private bool m_CoroutineExitCheck = false;
     
     private readonly int Roll = Animator.StringToHash("Roll");
 
@@ -288,16 +294,17 @@ public class Player_ROLL : PlayerFSM
     
     public override void StartState()
     {
+        m_JustEvadeCoroutineElement = null;
+        m_CoroutineExitCheck = false;
+
         m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
         m_RageGauge = m_Player.m_RageGauge;
         m_InputMgr = m_Player.m_InputMgr;
         m_UseRange = m_Player.m_useRange;
         
-        m_Player.m_CanHide = false;
-        
-        m_Player.m_CanAttack = false;
+        m_InitAction?.Invoke();
         m_Player.m_playerRotation.m_doRotate = false;
-        //m_Player.m_ArmMgr.StopReload();
+
         m_Player.m_PlayerHotBox.m_hotBoxType = 2;
         m_DecelerationSpeed = 0f;
         m_Timer = 0f;
@@ -309,7 +316,9 @@ public class Player_ROLL : PlayerFSM
         m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue - m_RageGauge.p_Gauge_Consume_Roll);
 
         // 코루틴 시작
-        m_CoroutineElement = GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(CheckEvade());
+        m_JustEvadeCoroutineElement = 
+            GameMgr.GetInstance().p_CoroutineHandler.StartCoroutine_Handler(CheckEvade());
+        m_CoroutineExitCheck = true;
     }
 
     public override void UpdateState()
@@ -338,6 +347,7 @@ public class Player_ROLL : PlayerFSM
 
     public override void ExitState()
     {
+        m_ExitAction?.Invoke();
         m_Player.m_CanHide = false;
         m_Player.m_CanAttack = true;
 
@@ -350,11 +360,7 @@ public class Player_ROLL : PlayerFSM
         m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         
         // 코루틴 끝
-        if (!ReferenceEquals(m_CoroutineElement, null))
-        {
-            m_CoroutineElement.StopCoroutine_Element();
-            m_CoroutineElement = null;
-        }
+        SafetyOut();
 
         ExitFinalProcess();
     }
@@ -364,7 +370,6 @@ public class Player_ROLL : PlayerFSM
         float normalTime;
 
         // 좋은 생각이 이거말고 떠오르지 않음
-        Player_HotBox hotBox = m_Player.m_PlayerHotBox;
         while (true)
         {
             normalTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
@@ -382,7 +387,6 @@ public class Player_ROLL : PlayerFSM
                         m_Player.p_CenterTransform,  JustEvadeGaugeUp);
                     
                     Debug.Log("저스트 회피!!");
-
                     break;
                 }
                 else
@@ -390,20 +394,17 @@ public class Player_ROLL : PlayerFSM
                     // 그냥 회피
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
                         m_Player.p_CenterTransform,  EvadeGaugeUp);
+                    
                     Debug.Log("그냥 회피");
-
                     break;
                 }
             }
+            
             yield return null;
         }
         
-        if (!ReferenceEquals(m_CoroutineElement, null))
-        {
-            m_CoroutineElement.StopCoroutine_Element();
-            m_CoroutineElement = null;
-        }
-
+        SafetyOut();
+        Debug.Log("Break 완료");
         yield break;
     }
 
@@ -417,6 +418,18 @@ public class Player_ROLL : PlayerFSM
     {
         var rageGauge = m_Player.m_RageGauge;
         rageGauge.ChangeGaugeValue(rageGauge.m_CurGaugeValue + rageGauge.p_Gauge_Refill_Evade);
+    }
+
+    private void SafetyOut()
+    {
+        if (!m_CoroutineExitCheck)
+            return;
+        
+        Debug.Log("SafetyOut");
+        m_JustEvadeCoroutineElement.StopCoroutine_Element();
+        m_JustEvadeCoroutineElement = null;
+
+        m_CoroutineExitCheck = false;
     }
 }
 
