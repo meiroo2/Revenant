@@ -1,9 +1,10 @@
-﻿using UnityEditor;
+﻿using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
 
-public class MeleeGang : BasicEnemy
+public class MeleeGang : BasicEnemy, ISpriteMatChange
 {
     // Visible Member Variables
     [field: SerializeField, BoxGroup("MeleeGang Values")] public float p_MeleeDistance { get; protected set; } = 0.2f;
@@ -25,7 +26,6 @@ public class MeleeGang : BasicEnemy
 
     // Member Variables
     public WeaponMgr m_WeaponMgr { get; private set; }
-    public MatChanger m_MatChanger { get; private set; }
     private IHotBox[] m_HotBoxes;
 
     private IDLE_MeleeGang m_IDLE;
@@ -76,6 +76,9 @@ public class MeleeGang : BasicEnemy
             m_IsPatrol = true;
 
         m_Animator.runtimeAnimatorController = p_NormalAniCont;
+        
+        // ISpriteMatChange
+        InitISpriteMatChange();
     }
 
     private void Start()
@@ -85,7 +88,6 @@ public class MeleeGang : BasicEnemy
         Player tempPlayer = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerTransform = tempPlayer.transform;
         m_PlayerLocationSensor = tempPlayer.m_PlayerLocationSensor;
-        m_MatChanger = InstanceMgr.GetInstance().GetComponentInChildren<MatChanger>();
     }
 
 
@@ -275,5 +277,74 @@ public class MeleeGang : BasicEnemy
         }
         
         m_CurEnemyFSM.StartState();
+    }
+
+    // For MatChanger
+    public bool m_IgnoreMatChanger { get; set; }
+    public SpriteType m_SpriteType { get; set; }
+    public SpriteMatType m_CurSpriteMatType { get; set; }
+    public Material p_OriginalMat { get; set; }
+    [field: SerializeField, BoxGroup("ISpriteMatChange")] public Material p_BnWMat { get; set; }
+    [field: SerializeField, BoxGroup("ISpriteMatChange")] public Material p_RedHoloMat { get; set; }
+    [field: SerializeField, BoxGroup("ISpriteMatChange")] public Material p_DisappearMat { get; set; }
+    private Coroutine m_MatTimeCoroutine = null;
+    private readonly int ManualTimer = Shader.PropertyToID("_ManualTimer");
+    
+    public void ChangeMat(SpriteMatType _matType)
+    {
+        if (!ReferenceEquals(m_MatTimeCoroutine, null))
+        {
+            StopCoroutine(m_MatTimeCoroutine);
+            m_MatTimeCoroutine = null;
+        }
+        
+        if (m_IgnoreMatChanger)
+            return;
+
+        m_CurSpriteMatType = _matType;
+        switch (_matType)
+        {
+            case SpriteMatType.ORIGIN:
+                m_Renderer.material = p_OriginalMat;
+                break;
+            
+            case SpriteMatType.BnW:
+                m_Renderer.material = p_BnWMat;
+                break;
+            
+            case SpriteMatType.REDHOLO:
+                m_MatTimeCoroutine = StartCoroutine(MatTimeInput());
+                m_Renderer.material = p_RedHoloMat;
+                break;
+            
+            case SpriteMatType.DISAPPEAR:
+                m_Renderer.material = p_DisappearMat;
+                break;
+        }
+    }
+
+    public void InitISpriteMatChange()
+    {
+        m_SpriteType = SpriteType.ENEMY;
+        m_CurSpriteMatType = SpriteMatType.ORIGIN;
+        p_OriginalMat = m_Renderer.material;
+        
+        if(!p_BnWMat)
+            Debug.Log("Info : ISpriteMat BnWMat Null");
+        if(!p_RedHoloMat)
+            Debug.Log("Info : ISpriteMat RedHoloMat Null");
+        if(!p_DisappearMat)
+            Debug.Log("Info : ISpriteMat DisappearMat Null");
+    }
+
+    private IEnumerator MatTimeInput()
+    {
+        float timer = 0f;
+        while (true)
+        {
+            timer += Time.unscaledDeltaTime;
+            m_Renderer.material.SetFloat(ManualTimer, timer);
+            yield return null;
+        }
     }
 }

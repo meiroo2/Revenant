@@ -10,159 +10,76 @@ using UnityEngine;
 
 public class MatChanger : MonoBehaviour
 {
-    // Visible Member Variables
-    public Material[] p_ChangeMatArr;
-    
     // Member Variables
-    // 원본 보관용
-    private Dictionary<SpriteRenderer, Material> m_PlayerMatDic = new Dictionary<SpriteRenderer, Material>();
-    private Dictionary<SpriteRenderer, Material> m_EnemyMatDic = new Dictionary<SpriteRenderer, Material>();
-    private Dictionary<SpriteRenderer, Material> m_UIMatDic = new Dictionary<SpriteRenderer, Material>();
-    private Dictionary<SpriteRenderer, Material> m_BGMatDic = new Dictionary<SpriteRenderer, Material>();
-    private static readonly int unscaledTime = Shader.PropertyToID("UnscaledTime");
-
-    private float m_Timer = 0f;
-
-    private bool m_ChangeEnemy = false;
-    private static readonly int manualTimer = Shader.PropertyToID("_ManualTimer");
+    private List<ISpriteMatChange> m_EnemyMatList = new List<ISpriteMatChange>();
+    private List<ISpriteMatChange> m_BGMatList = new List<ISpriteMatChange>();
+    
 
     // Constructor
     private void Awake()
     {
-        //InitMatChanger();
-    }
-
-    private void Start()
-    {
+        Debug.Log("MatChanger Awake");
         InitMatChanger();
     }
-    
+
     // Updates
-    public void Update()
-    {
-        
-        if (!m_ChangeEnemy)
-            return;
-        
-        m_Timer += Time.unscaledDeltaTime;
-        
-        foreach (var VARIABLE in m_EnemyMatDic)
-        {
-            VARIABLE.Key.material.SetFloat(manualTimer, m_Timer);
-        }
-        
-        /*
-        var enumerator = m_EnemyMatDic.GetEnumerator();
-        enumerator.MoveNext();
-        enumerator.Current.Key.sharedMaterial.SetFloat(unscaledTime, Time.unscaledDeltaTime);
-        */
-    }
+  
 
     // Functions
 
     public void InitMatChanger()
     {
-        m_Timer = 0f;
-        
-        m_PlayerMatDic.Clear();
-        m_PlayerMatDic.TrimExcess();
-        m_EnemyMatDic.Clear();
-        m_EnemyMatDic.TrimExcess();
-        m_UIMatDic.Clear();
-        m_UIMatDic.TrimExcess();
-        m_BGMatDic.Clear();
-        m_BGMatDic.TrimExcess();
+        Debug.Log("MatChanger OnSceneLoaded");
 
-        var spriteRenArr = StaticMethods.FindAllObjects<SpriteRenderer>();
-        for (int i = 0; i < spriteRenArr.Count; i++)
+        m_EnemyMatList.Clear();
+        m_EnemyMatList.TrimExcess();
+        m_BGMatList.Clear();
+        m_BGMatList.TrimExcess();
+        
+        // For Enemy
+        var basicEnemyList = StaticMethods.FindAllObjects<BasicEnemy>();
+        foreach (var VARIABLE in basicEnemyList)
         {
-            if (spriteRenArr[i].gameObject.CompareTag("Player"))
+            if (VARIABLE.TryGetComponent(out ISpriteMatChange SMC))
             {
-                m_PlayerMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
+                m_EnemyMatList.Add(SMC);
             }
-            else if (spriteRenArr[i].gameObject.CompareTag("Enemy"))
+        }
+
+        var bgList = GameObject.FindGameObjectsWithTag("BackGround");
+        foreach (var VARIABLE in bgList)
+        {
+            if (VARIABLE.TryGetComponent(out ISpriteMatChange SMC))
             {
-                m_EnemyMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
-            }
-            else if (spriteRenArr[i].gameObject.CompareTag("UI"))
-            {
-                m_UIMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
-            }
-            else if(spriteRenArr[i].gameObject.CompareTag("BackGround"))
-            {
-                m_BGMatDic.Add(spriteRenArr[i], spriteRenArr[i].material);
+                m_BGMatList.Add(SMC);
             }
         }
     }
-    
+
     /// <summary>
-    /// 특정한 SpriteRenderer의 머터리얼을 변경합니다.
+    /// 멤버변수로 가지고 있는 ISpriteMatChange 스크립트를 기반으로 ChangeMat 함수를 호출합니다.
+    /// SpriteType에 일치하는 모든 Material에 영향을 줍니다.
     /// </summary>
-    /// <param name="_type"></param>
-    /// <param name="_renderer"></param>
-    /// <param name="_idx"></param>
-    public void ChangeMat(ObjectType _type, SpriteRenderer _renderer, int _idx)
+    /// <param name="_spType"></param>
+    /// <param name="_spMatType"></param>
+    [Button(ButtonSizes.Medium)]
+    public void ChangeMat(SpriteType _spType, SpriteMatType _spMatType)
     {
-        /*
-        switch (_type)
+        switch (_spType)
         {
-            case ObjectType.Enemy:
-                if (m_EnemyMatDic.ContainsKey(_renderer))
+            case SpriteType.ENEMY:
+                foreach (var VARIABLE in m_EnemyMatList)
                 {
-                    Debug.Log("Sans");
-                    _renderer.material = p_ChangeMatArr[_idx];
+                    VARIABLE.ChangeMat(_spMatType);
+                }
+                break;
+            
+            case SpriteType.BACKGROUND:
+                foreach (var VARIABLE in m_BGMatList)
+                {
+                    VARIABLE.ChangeMat(_spMatType);
                 }
                 break;
         }
-        */
-    }
-    
-    /// <summary>
-    /// 머터리얼을 원하는 것으로 변경합니다.
-    /// </summary>
-    /// <param name="_type">Player, Enemy, UI, Other만 사용바람</param>
-    /// <param name="_idx">0 = 흑백, 1 = 홀로그램, 2 = 사라지는거</param>
-    [Button(ButtonSizes.Medium)]
-    public void ChangeMat(ObjectType _type, int _idx)
-    {
-        /*
-        switch (_type)
-        {
-            case ObjectType.Enemy:
-                foreach (var variable in m_EnemyMatDic)
-                    variable.Key.material = p_ChangeMatArr[_idx];
-
-                m_ChangeEnemy = true;
-                break;
-
-            case ObjectType.BackGround:
-                foreach (var variable in m_BGMatDic)
-                    variable.Key.material = p_ChangeMatArr[_idx];
-                break;
-        }
-        */
-    }
-
-    /// <summary>
-    /// 머터리얼을 되돌립니다.
-    /// </summary>
-    /// <param name="_type">원하는 타입</param>
-    [Button(ButtonSizes.Medium)]
-    public void RestoreMat(ObjectType _type)
-    {
-        /*
-        switch (_type)
-        {
-            case ObjectType.Enemy:
-                foreach (var variable in m_EnemyMatDic)
-                    variable.Key.material = variable.Value;
-                break;
-
-            case ObjectType.BackGround:
-                foreach (var variable in m_BGMatDic)
-                    variable.Key.material = variable.Value;
-                break;
-        }
-        */
     }
 }
