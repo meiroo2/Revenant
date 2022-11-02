@@ -26,31 +26,21 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     {
         SetUpGetEnemyNum();
     }
-
-    public void ActivateOutline(bool _isOn)
-    {
-        RemoveEnemyListToActivate();
-        _checkPoint.ActivateBothOutline(_isOn);
-    }
-
+    
     public int useObj(IUseableObjParam _param)
     {
+        _checkPoint.ActivateBothOutline(true);
         
-        for (int i = 0; i < 10; i++)
+        int ListNum = GetEnemyNumFromEnemyList + GetEnemyNumFromSpawnerList;
+        for (int i = 1; i <= ListNum; i++)
         {
             RemoveEnemyListToActivate();
-            _checkPoint.ActivateBothOutline(true);
         }
-            
 
-        Debug.Log(_checkPoint.bCanInteract + ", " + GetEnemyNumFromEnemyList + ", "+
-                  GetEnemyNumFromSpawnerList);
-        
         // 성공하면 1, 실패하면 0을 반환
         // 플레이어가 체크포인트 범위안에 들어있고, 등록된 적 리스트가 비워져 있다면 인터랙션 가능
         if (_checkPoint.bCanInteract && GetEnemyNumFromEnemyList == 0 && GetEnemyNumFromSpawnerList == 0)
         {
-            //Debug.Log("Player Use The CheckPoint Box");
             // 체크포인트 활성화
             _checkPoint.ActivateCheckPoint();
             // 체크포인트 번호 저장
@@ -92,8 +82,7 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     /** 적을 리스트에서 지우는 함수 */
     void RemoveEnemyListToActivate()
     {
-        if (_checkPoint == null && _checkPoint.EnemyListToActivate == null &&
-            _checkPoint.EnemyListToActivate[0].gameObject == null)
+        if (_checkPoint == null && _checkPoint.EnemyListToActivate == null && _checkPoint.EnemyListToActivate[0].gameObject == null)
             return;
         
         // 체크포인트 활성화 조건 버튼이 켜져있고 리스트에 "맵에 배치된" 적이 있을 때
