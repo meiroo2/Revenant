@@ -32,7 +32,7 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
         _checkPoint.ActivateBothOutline(true);
         
         int ListNum = GetEnemyNumFromEnemyList + GetEnemyNumFromSpawnerList;
-        for (int i = 1; i <= ListNum; i++)
+        for (int i = 0; i < ListNum; i++)
         {
             RemoveEnemyListToActivate();
         }
@@ -96,10 +96,10 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
                 {
                     // 리스트에서 죽은 적을 제거
                     _checkPoint.EnemyListToActivate.RemoveAt(i);
-                    // 리스트에 있는 적 숫자 갱신
-                    GetEnemyNumFromEnemyList = _checkPoint.EnemyListToActivate.Count;
                 }
             }
+            // 리스트에 있는 적 숫자 갱신
+            GetEnemyNumFromEnemyList = _checkPoint.EnemyListToActivate.Count;
         }
         // 체크포인트 활성화 조건 버튼이 꺼져있고 "맵에 배치된 적 리스트"가 없다면
         else if (_checkPoint.bEnemyListToActivate == false && _checkPoint.EnemyListToActivate.Count == 0)
@@ -119,10 +119,10 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
                 {
                     // 리스트에서 죽은 적을 제거
                     _checkPoint.EnemyListFromSpawner.RemoveAt(i);
-                    // 리스트에 있는 적 숫자 갱신
-                    GetEnemyNumFromSpawnerList = _checkPoint.EnemyListFromSpawner.Count;
                 }
             }
+            // 리스트에 있는 적 숫자 갱신
+            GetEnemyNumFromSpawnerList = _checkPoint.EnemyListFromSpawner.Count;
         }
         // 체크포인트 활성화 조건 버튼이 꺼져있고 "스포너 리스트"가 없다면
         else if (_checkPoint.bEnemyListToActivateFromSpawner == false && _checkPoint.EnemyListToActivateFromSpawner.Count == 0)
