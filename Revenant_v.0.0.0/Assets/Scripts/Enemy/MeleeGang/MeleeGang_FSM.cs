@@ -379,8 +379,6 @@ public class DEAD_MeleeGang : MeleeGang_FSM
                 m_EnemyAnimator.SetInteger("Body", 1);
                 break;
         }
-        
-        m_Enemy.m_MatChanger.ChangeMat(ObjectType.Enemy, m_Enemy.m_Renderer, 2);
     }
 
     public override void UpdateState()

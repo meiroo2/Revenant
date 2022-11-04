@@ -28,13 +28,12 @@ public class CheckPoint : MonoBehaviour
 
     [Header("체크포인트 활성화 조건 버튼 - 스포너")] public bool bEnemyListToActivateFromSpawner;
     public List<EnemySpawner> EnemyListToActivateFromSpawner;
-    public List<GameObject> EnemyListFromSpawner;
+    [ReadOnly] public List<GameObject> EnemyListFromSpawner;
 
     [Header("체크포인트 섹션 오브젝트")] public List<GameObject> AssignedObjectsList;
 
     public int SectionNumber;
     
-
     private Coroutine m_AnimCheckCoroutine;
     private readonly int Activate = Animator.StringToHash("Activate");
     private readonly int AfterIdle = Animator.StringToHash("AfterIdle");
