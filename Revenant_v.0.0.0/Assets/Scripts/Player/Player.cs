@@ -280,6 +280,139 @@ public class Player : Human
 
     // Functions
 
+    public void AttachActionOnFSM(PlayerStateName _name, Action _action, bool _isInit)
+    {
+        switch (_name)
+        {
+            case PlayerStateName.IDLE:
+                if (_isInit)
+                {
+                    m_IDLE.m_InitAction = _action;
+                }
+                else
+                {
+                    m_IDLE.m_ExitAction = _action;
+                }
+                break;
+
+            case PlayerStateName.WALK:
+                if (_isInit)
+                {
+                    m_WALK.m_InitAction = _action;
+                }
+                else
+                {
+                    m_WALK.m_ExitAction = _action;
+                }
+                break;
+
+            case PlayerStateName.ROLL:
+                if (_isInit)
+                {
+                    Debug.Log("Roll에 Action 붙임");
+                    m_ROLL.m_InitAction = _action;
+                }
+                else
+                {
+                    m_ROLL.m_ExitAction = _action;
+                }
+                break;
+
+            case PlayerStateName.HIDDEN:
+                if (_isInit)
+                {
+                    m_HIDDEN.m_InitAction = _action;
+                }
+                else
+                {
+                    m_HIDDEN.m_ExitAction = _action;
+                }
+                break;
+
+            case PlayerStateName.MELEE:
+                if (_isInit)
+                {
+                    m_MELEE.m_InitAction = _action;
+                }
+                else
+                {
+                    m_MELEE.m_ExitAction = _action;
+                }
+                break;
+
+            case PlayerStateName.DEAD:
+                if (_isInit)
+                {
+                    m_DEAD.m_InitAction = _action;
+                }
+                else
+                {
+                    m_DEAD.m_ExitAction = _action;
+                }
+                break;
+            
+            case PlayerStateName.BULLET_TIME:
+                if (_isInit)
+                {
+                    m_BULLETTIME.m_InitAction = _action;
+                }
+                else
+                {
+                    m_BULLETTIME.m_ExitAction = _action;
+                }
+                break;
+
+            default:
+                Debug.Log("ERR : AttachActionOnFSM OOR");
+                break;
+        }
+    }
+
+    public void RemoveActionOnFSM(PlayerStateName _name)
+    {
+        switch (_name)
+        {
+            case PlayerStateName.IDLE:
+                m_IDLE.m_InitAction = null;
+                m_IDLE.m_ExitAction = null;
+                break;
+
+            case PlayerStateName.WALK:
+                m_WALK.m_InitAction = null;
+                m_WALK.m_ExitAction = null;
+                break;
+
+            case PlayerStateName.ROLL:
+                m_ROLL.m_InitAction = null;
+                m_ROLL.m_ExitAction = null;
+                break;
+
+            case PlayerStateName.HIDDEN:
+                m_HIDDEN.m_InitAction = null;
+                m_HIDDEN.m_ExitAction = null;
+                break;
+
+            case PlayerStateName.MELEE:
+                m_MELEE.m_InitAction = null;
+                m_MELEE.m_ExitAction = null;
+                break;
+
+            case PlayerStateName.DEAD:
+                m_DEAD.m_InitAction = null;
+                m_DEAD.m_ExitAction = null;
+                break;
+            
+            case PlayerStateName.BULLET_TIME:
+                m_BULLETTIME.m_InitAction = null;
+                m_BULLETTIME.m_ExitAction = null;
+                break;
+
+            default:
+                Debug.Log("ERR : AttachActionOnFSM OOR");
+                break;
+        }
+    }
+    
     public Vector2 GetPlayerCenterPos()
     {
         return p_CenterTransform.position;

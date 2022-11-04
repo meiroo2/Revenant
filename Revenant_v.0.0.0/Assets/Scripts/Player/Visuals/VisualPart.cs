@@ -137,6 +137,7 @@ public class VisualPart : MonoBehaviour
     /// <returns>float NormalizedTime</returns>
     public float GetAniNormalTime()
     {
+
         return m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 }

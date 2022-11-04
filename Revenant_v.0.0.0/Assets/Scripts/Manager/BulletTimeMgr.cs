@@ -95,14 +95,13 @@ public class BulletTimeMgr : MonoBehaviour
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
-        m_MatChanger = instance.GetComponentInChildren<MatChanger>();
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
         m_ScreenEffect_AR = instance.m_ScreenEffect_AR;
 
         m_RageGaugeUI = FindObjectOfType<RageGauge_UI>();
-
-	}
+        m_MatChanger = GameMgr.GetInstance().p_MatChanger;
+    }
 
 
     // Updates
@@ -210,8 +209,8 @@ public class BulletTimeMgr : MonoBehaviour
             m_SEThunderCoroutine = StartCoroutine(SpawnThunderCoroutine());
             m_IsBulletTimeActivating = true;
             
-            m_MatChanger.ChangeMat(ObjectType.Enemy, 1);
-            m_MatChanger.ChangeMat(ObjectType.BackGround, 0);
+            m_MatChanger.ChangeMat(SpriteType.ENEMY, SpriteMatType.REDHOLO);
+            m_MatChanger.ChangeMat(SpriteType.BACKGROUND, SpriteMatType.BnW);
             
             Time.timeScale = 0f;
         }
@@ -224,8 +223,8 @@ public class BulletTimeMgr : MonoBehaviour
             
             m_IsBulletTimeActivating = false;
             
-            m_MatChanger.RestoreMat(ObjectType.Enemy);
-            m_MatChanger.RestoreMat(ObjectType.BackGround);
+            m_MatChanger.ChangeMat(SpriteType.ENEMY, SpriteMatType.ORIGIN);
+            m_MatChanger.ChangeMat(SpriteType.BACKGROUND, SpriteMatType.ORIGIN);
             
             Time.timeScale = 1f;
 

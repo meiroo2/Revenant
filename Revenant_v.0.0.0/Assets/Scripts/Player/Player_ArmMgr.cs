@@ -39,8 +39,9 @@ public class Player_ArmMgr : MonoBehaviour
     private Coroutine m_ReloadCoroutine;
 
     private readonly int Reload = Animator.StringToHash("Reload");
-
-
+    private readonly int SReload = Animator.StringToHash("SReload");
+    private readonly int WReload = Animator.StringToHash("WReload");
+    
 
     // Constructors
     private void Awake()
@@ -276,9 +277,8 @@ public class Player_ArmMgr : MonoBehaviour
             m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         
         m_PlayerAniMgr.ChangeArmAniToAngleChange(false);
-        m_PlayerAniMgr.p_UpperBody.SetAnim_Int(Reload, 1);
-        
-        
+
+
         // 사운드 재생
         m_IsReloading = true;
         m_Player.m_SoundPlayer.PlayPlayerSoundOnce(0);
@@ -310,40 +310,55 @@ public class Player_ArmMgr : MonoBehaviour
     
     private IEnumerator ReloadCoroutine()
     {
-        yield return null;
-        
         float normTime = 0f;
-        int curMoveDirection = m_Player.m_MoveDirection;
+        Animator upAnimator = m_Player.m_PlayerAniMgr.p_UpperBody.m_Animator;
+        VisualPart upVisPart = m_Player.m_PlayerAniMgr.p_UpperBody;
         
+        upAnimator.SetInteger(Reload, 1);
+        upAnimator.Play(m_Player.m_CurPlayerFSMName == PlayerStateName.WALK ? WReload : SReload,
+            -1, 0f);
+        
+        int paramNum = m_Player.m_CurPlayerFSMName == PlayerStateName.WALK ? 2 : 1;
+
         while (true)
         {
-            if (curMoveDirection != m_Player.m_MoveDirection)
-            {
-                if (m_Player.m_MoveDirection == 0)
-                {
-                    curMoveDirection = m_Player.m_MoveDirection;
-                    m_PlayerAniMgr.p_UpperBody.m_Animator.Play("Reload_StopAni", -1,
-                        m_PlayerAniMgr.p_UpperBody.GetAniNormalTime());
-                }
-                else
-                {
-                    curMoveDirection = m_Player.m_MoveDirection;
-                    m_PlayerAniMgr.p_UpperBody.m_Animator.Play("Reload_Walkani", -1,
-                        m_PlayerAniMgr.p_UpperBody.GetAniNormalTime());
-                }
-            }
-
-            normTime = m_PlayerAniMgr.p_UpperBody.GetAniNormalTime();
+            yield return null;
+            normTime = upAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             m_PlayerUI.p_ReloadCircle.fillAmount = normTime;
 
-            if (normTime >= 1f)
+            switch (m_Player.m_CurPlayerFSMName)
             {
-                break;
+                case PlayerStateName.IDLE:
+                    if (paramNum == 1)
+                        break;
+                    
+                    paramNum = 1;
+                    upAnimator.Play(SReload, -1, normTime);
+                    break;
+                
+                case PlayerStateName.WALK:
+                    if (paramNum == 2)
+                        break;
+                    
+                    paramNum = 2;
+                    upAnimator.Play(WReload, -1, normTime);
+                    break;
+                
+                default:
+                    if (paramNum == 1)
+                        break;
+                    
+                    paramNum = 1;
+                    upAnimator.Play(SReload, -1, normTime);
+                    break;
             }
-            yield return null;
+
+            if (normTime >= 1f)
+                break;
         }
 
-        m_PlayerAniMgr.p_UpperBody.SetAnim_Int(Reload, 0);
+        upAnimator.SetInteger(Reload, 0);
+        
         m_WeaponMgr.m_CurWeapon.Reload();
         m_PlayerUI.ActivateReloadMode(false);
         m_IsReloading = false;

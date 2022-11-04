@@ -16,6 +16,7 @@ public class GameMgr : MonoBehaviour
     [field: SerializeField] public SoundPlayer p_SoundPlayer { get; private set; }
     [field: SerializeField] public DataHandleManager p_DataHandleMgr { get; private set; }
     [field: SerializeField] public SceneChangeMgr p_SceneChangeMgr { get; private set; }
+    [field: SerializeField] public MatChanger p_MatChanger { get; private set; }
 
     public float m_GameTimer { get; private set; } = 0f;
 
@@ -78,9 +79,9 @@ public class GameMgr : MonoBehaviour
         p_SceneChangeMgr.CheckSmoothSceneChange();
         p_CoroutineHandler.ResetCoroutineHandler();
         p_DataHandleMgr.SetDataHandleMgr();
+        p_MatChanger.InitMatChanger();
         
         p_PlayerMgr.ResetPlayer();
-
         p_PlayerManipulator.SetPlayer();
         p_PlayerManipulator.SetNegotiator();
     }

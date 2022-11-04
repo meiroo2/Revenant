@@ -10,8 +10,16 @@ public class Player_InputMgr : MonoBehaviour
     // Visible Member Variables
     public bool p_MoveInputLock = false;
     public bool p_FireLock = false;
+    public bool p_SideAttackLock = false;
+    public bool p_ReloadLock = false;
+    public bool p_RollLock = false;
+    public bool p_BulletTimeLock = false;
+    public bool p_StairLock = false;
+    public bool p_InteractLock = false;
+    public bool p_HideLock = false;
+    public bool p_MousePosLock = false;
     
-    
+
     // Member Variables
     public bool m_IsPushLeftKey { get; private set; }
     public bool m_IsPushRightKey { get; private set; }
@@ -26,6 +34,16 @@ public class Player_InputMgr : MonoBehaviour
     public bool m_IsPushBulletTimeKey { get; private set; }
     public Vector2 m_MousePos { get; private set; }
 
+    
+    
+    // Actions
+    
+    // Attack
+    private bool m_ActionOnAttack = false;
+    private Action m_AttackAction = null;
+    
+    
+    
     // 좌우 이동
     private bool m_LKeyInput = false;
     private bool m_RKeyInput = false;
@@ -62,19 +80,40 @@ public class Player_InputMgr : MonoBehaviour
     {
         while (true)
         {
-            CalculateDirectinalKey();
-            CalculateStairKey();
-            m_IsPushInteractKey = Input.GetKey(KeyCode.F);
-            m_IsPushRollKey = Input.GetKey(KeyCode.Space);
-            m_IsPushHideKey = Input.GetKey(KeyCode.S);
-            m_IsPushReloadKey = Input.GetKey(KeyCode.R);
+            if (!p_MoveInputLock)
+                CalculateDirectinalKey();
+
+            if (!p_StairLock)
+                CalculateStairKey();
+
+            if (!p_InteractLock)
+                m_IsPushInteractKey = Input.GetKey(KeyCode.F);
+
+            if (!p_RollLock)
+                m_IsPushRollKey = Input.GetKey(KeyCode.Space);
+
+            if (!p_HideLock)
+                m_IsPushHideKey = Input.GetKey(KeyCode.S);
+
+            if (!p_ReloadLock)
+                m_IsPushReloadKey = Input.GetKey(KeyCode.R);
 
             if (!p_FireLock)
+            {
                 m_IsPushAttackKey = Input.GetMouseButtonDown(0);
-            
-            m_IsPushSideAttackKey = Input.GetMouseButtonDown(1);
-            m_IsPushBulletTimeKey = Input.GetKeyDown(KeyCode.Q);
-            m_MousePos = Input.mousePosition;
+                
+                if (m_ActionOnAttack && m_IsPushAttackKey)
+                    m_AttackAction?.Invoke();
+            }
+
+            if (!p_SideAttackLock)
+                m_IsPushSideAttackKey = Input.GetMouseButtonDown(1);
+
+            if (!p_BulletTimeLock)
+                m_IsPushBulletTimeKey = Input.GetKeyDown(KeyCode.Q);
+
+            if (!p_MousePosLock)
+                m_MousePos = Input.mousePosition;
             
             yield return null;
         }
@@ -85,6 +124,37 @@ public class Player_InputMgr : MonoBehaviour
 
 
     // Functions
+    
+    /// <summary>
+    /// Attack(발사) 후에 실행할 함수를 Action으로 받습니다.
+    /// </summary>
+    /// <param name="_action"></param>
+    public void SetAttackAction(Action _action)
+    {
+        m_AttackAction = null;
+        m_AttackAction = _action;
+        m_ActionOnAttack = true;
+    }
+
+    public void ResetAttackAction()
+    {
+        m_AttackAction = null;
+        m_ActionOnAttack = false;
+    }
+    
+    public void SetAllLockByBool(bool _toLock)
+    {
+        p_FireLock = _toLock;
+        p_HideLock = _toLock;
+        p_InteractLock = _toLock;
+        p_ReloadLock = _toLock;
+        p_RollLock = _toLock;
+        p_StairLock = _toLock;
+        p_BulletTimeLock = _toLock;
+        p_MousePosLock = _toLock;
+        p_MoveInputLock = _toLock;
+        p_SideAttackLock = _toLock;
+    }
     public void SetAllInputLock(bool _toLock)
     {
         if (_toLock)

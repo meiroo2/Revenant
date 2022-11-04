@@ -11,8 +11,7 @@ public class InstanceMgr : MonoBehaviour
     
     [BoxGroup("In_World")] public GameObject p_AimCursor;
     [BoxGroup("In_World")] public GameObject p_BulletTimeMgr;
-    [BoxGroup("In_World")] public GameObject p_MatChanger;
-    
+
     [BoxGroup("In_Canvas")] public GameObject p_Canvas_RageGauge;
     [field: SerializeField, BoxGroup("In_Canvas")] private GameObject p_Player_UI;
 
@@ -57,7 +56,6 @@ public class InstanceMgr : MonoBehaviour
         }
         Instantiate(p_AimCursor, this.gameObject.transform);
         Instantiate(p_BulletTimeMgr, this.gameObject.transform);
-        Instantiate(p_MatChanger, gameObject.transform);
     }
 
     private void SpawnInCam()
