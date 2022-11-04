@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8796172221674825977
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8796172221674825978}
+  - component: {fileID: 8796172221674825972}
+  - component: {fileID: 8796172221674825979}
+  m_Layer: 0
+  m_Name: ObjectiveMgr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8796172221674825978
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8796172221674825977}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8796172221674825972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8796172221674825977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4596ddca3d541f4becb5e976fe73295, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_ObjectiveSuccessWaitTime: 2
+  m_ObjectiveUI: {fileID: 8796172221674825979}
+  p_ObjectiveList:
+  - {fileID: 928761021022289022, guid: 82015b253d3bbe34599434fe3539bda3, type: 3}
+  - {fileID: 4379449219156557899, guid: c42cfe0e7fd798744b9c271895e32cd2, type: 3}
+  - {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+  - {fileID: 3065048032763482818, guid: 21f3e627f75bbf8418b39a3acc2d4003, type: 3}
+  - {fileID: 1260230729151504671, guid: 956756c7f4de80243bc85968b2c74da7, type: 3}
+--- !u!114 &8796172221674825979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8796172221674825977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea8acfef0f44c9975ed8e6ea88a95e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_LerpSpeed: 2
+  m_UIRect: {fileID: 0}
+  m_TitleTxt: {fileID: 0}
+  m_ObjectiveTextArr:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  m_ProgressImgArr:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

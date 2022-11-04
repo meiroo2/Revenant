@@ -211,8 +211,8 @@ public class BulletTimeMgr : MonoBehaviour
             
             m_MatChanger.ChangeMat(SpriteType.ENEMY, SpriteMatType.REDHOLO);
             m_MatChanger.ChangeMat(SpriteType.BACKGROUND, SpriteMatType.BnW);
-            
-            Time.timeScale = 0f;
+
+            ChangeTimeScale(0f);
         }
         else
         {
@@ -225,8 +225,8 @@ public class BulletTimeMgr : MonoBehaviour
             
             m_MatChanger.ChangeMat(SpriteType.ENEMY, SpriteMatType.ORIGIN);
             m_MatChanger.ChangeMat(SpriteType.BACKGROUND, SpriteMatType.ORIGIN);
-            
-            Time.timeScale = 1f;
+
+            ChangeTimeScale(1f);
 
             foreach (var element in m_MarkerList)
             {
@@ -238,13 +238,21 @@ public class BulletTimeMgr : MonoBehaviour
     
     
     /// <summary>
-    /// 오직 시간만을 잠시 수정합니다. Timescale이 0이 됩니다.
+    /// 시간을 부드럽게 멈췄다가 다시 흐르게 합니다.
     /// </summary>
     /// <param name="_time">지정 시간</param>
-    public void ModifyTimeScale(float _time)
+    public void LerpingTimeScale(float _time)
     {
-        //Time.timeScale = 0.3f;
         StartCoroutine(CheckTimePassed(_time));
+    }
+
+    /// <summary>
+    /// TimeScale을 수정합니다.
+    /// </summary>
+    /// <param name="_scale"></param>
+    public void ChangeTimeScale(float _scale)
+    {
+        Time.timeScale = _scale;
     }
     
     /// <summary>

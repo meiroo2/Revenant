@@ -58,7 +58,7 @@ public class BasicEnemy : Human
     protected Vector2 m_MovePoint;
     private Coroutine m_MatCoroutine;
 
-    public int m_DeadReasonForMat = 0;
+    [HideInInspector] public int m_DeadReasonForMat = 0;
 
     public bool m_PlayerCognition { get; set; } = false;
     
@@ -136,7 +136,7 @@ public class BasicEnemy : Human
     }
 
     /// <summary>현재 위치에서 플레이어의 위치까지 Vector2.Distance를 반환합니다.</summary>
-    public float GetDistanceBetPlayer()
+    public virtual float GetDistanceBetPlayer()
     {
         return Vector2.Distance(m_PlayerTransform.position, transform.position);
     }

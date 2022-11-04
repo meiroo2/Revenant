@@ -12,7 +12,7 @@ public class WeaponMgr : MonoBehaviour
 
     // Member Variables
     public bool m_isPlayers { get; protected set; } = false;
-    public BasicWeapon m_CurWeapon { get; private set; }
+    public BasicWeapon m_CurWeapon { get; protected set; }
 
     // Constructors
     protected void Awake()
@@ -25,7 +25,7 @@ public class WeaponMgr : MonoBehaviour
             Debug.Log("WeaponMgr에 할당된 BasicWeapon이 존재하지 않습니다.");
     }
 
-    private void Start()
+    protected void Start()
     {
         SoundPlayer soundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         for (int i = 0; i < p_Weapons.Count; i++)
@@ -55,5 +55,11 @@ public class WeaponMgr : MonoBehaviour
         m_CurWeapon = p_Weapons[_idx];
         m_CurWeapon.gameObject.SetActive(true);
         m_CurWeapon.InitWeapon();
+    }
+
+    public virtual void ReleaseWeapon()
+    {
+        m_CurWeapon.gameObject.SetActive(false);
+        m_CurWeapon = null;
     }
 }

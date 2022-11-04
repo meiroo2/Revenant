@@ -257,12 +257,23 @@ public class Player_WALK : PlayerFSM
     private IEnumerator CheckMatType()
     {
         SoundPlayer player = GameMgr.GetInstance().p_SoundPlayer;
+        Collider2D collider;
         
         while (true)
         {
-            if (m_Player.m_PlayerFootMgr.GetFootRayHit().collider.TryGetComponent(out IMatType matType))
+            collider = m_Player.m_PlayerFootMgr.GetFootRayHit().collider;
+            if (ReferenceEquals(collider, null))
+            {
+                Debug.LogError("ERR : There is no Collider On CheckMatType()");
+            }
+
+            if (collider.TryGetComponent(out IMatType matType))
             {
                 player.PlayCommonSoundByMatType(0, matType.m_matType, m_PlayerTransform.position);
+            }
+            else
+            {
+                Debug.LogError("ERR : There is no IMatType On CheckMatType()");
             }
             yield return new WaitForSeconds(m_WalkSoundDelay);
         }
@@ -324,7 +335,7 @@ public class Player_ROLL : PlayerFSM
 
     public override void UpdateState()
     {
-        m_Timer += Time.deltaTime;
+        m_Timer = Time.deltaTime;
         
         m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, (m_Player.p_RollSpeedMulti - m_DecelerationSpeed));
         if (m_Player.p_RollSpeedMulti - m_DecelerationSpeed > 0f)
@@ -381,7 +392,7 @@ public class Player_ROLL : PlayerFSM
                 {
                     // 저스트 회피
                     m_Player.m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
-                    m_Player.m_BulletTimeMgr.ModifyTimeScale(0.1f);
+                    m_Player.m_BulletTimeMgr.LerpingTimeScale(0.1f);
                     m_Player.m_ScreenEffectUI.ActivateLensDistortEffect(0.2f);
                     
                     m_Player.m_ParticleMgr.MakeParticle(m_Player.GetPlayerCenterPos(),
@@ -427,7 +438,7 @@ public class Player_ROLL : PlayerFSM
             return;
         
         m_CoroutineExitCheck = false;
-        Debug.Log("SafetyOut");
+        //Debug.Log("SafetyOut");
 
         if (!ReferenceEquals(m_JustEvadeCoroutineElement, null))
         {

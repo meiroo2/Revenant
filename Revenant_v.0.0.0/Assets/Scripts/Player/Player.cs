@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
@@ -40,21 +41,21 @@ public class Player : Human
 
     [field: SerializeField, BoxGroup("Player Values")]
     public float p_MeleeSpeedMulti { get; private set; } = 2f;
-    
+
     [field: SerializeField, BoxGroup("Player Values")]
     public float p_RollDecelerationSpeed { get; private set; } = 1f;
-    
+
     [BoxGroup("Player Values")] public float p_ReloadSpeed = 1f;
-    
+
 
     [field: SerializeField, MinMaxSlider(0f, 1f), Title("Evade Values"), BoxGroup("Player Values")]
     public Vector2 p_JustEvadeNormalizeTime { get; private set; } = Vector2.zero;
-    
+
     [BoxGroup("Player Values")] public float p_JustEvadeStopTime = 0.1f;
-    
-    
-    
-    
+
+
+
+
     [field: SerializeField] public Transform p_CenterTransform { get; private set; }
     [field: SerializeField] public LeftBullet_WUI p_LeftBullet_WUI { get; private set; }
 
@@ -64,7 +65,7 @@ public class Player : Human
     [ReadOnly] public bool bIsOutOfStair = true;
     [ReadOnly] public Vector2 PlayerOutOfStairVector = Vector2.zero;
 
-    [field : SerializeField] public PlayerRotation m_playerRotation { get; private set; }
+    [field: SerializeField] public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
     public Player_UseRange m_useRange { get; private set; }
     public Player_AniMgr m_PlayerAniMgr { get; private set; }
@@ -76,7 +77,7 @@ public class Player : Human
     public Player_UI m_PlayerUIMgr { get; private set; }
     public LocationSensor m_PlayerLocationSensor { get; private set; }
     public Player_HitscanRay m_PlayerHitscanRay { get; private set; }
-    [field : SerializeField]public Player_MeleeAttack m_MeleeAttack { get; private set; }
+    [field: SerializeField] public Player_MeleeAttack m_MeleeAttack { get; private set; }
     public Player_ArmMgr m_ArmMgr { get; private set; }
     public RageGauge m_RageGauge { get; private set; }
     public BulletTimeMgr m_BulletTimeMgr { get; private set; }
@@ -140,7 +141,7 @@ public class Player : Human
         m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
         m_Negotiator = GetComponentInChildren<Negotiator_Player>();
         m_WorldUI = GetComponentInChildren<Player_WorldUI>();
-        
+
         m_ObjectType = ObjectType.Player;
         m_ObjectState = ObjectState.Active;
         m_LeftRollCount = p_MaxRollCount;
@@ -158,13 +159,13 @@ public class Player : Human
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
         m_SimpleEffectPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
-        
+
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_ScreenEffectUI = instance.m_MainCanvas.GetComponentInChildren<InGame_UI>()
             .GetComponentInChildren<ScreenEffect_UI>();
 
         m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
-        
+
         m_IDLE = new Player_IDLE(this);
         m_WALK = new Player_WALK(this);
         m_ROLL = new Player_ROLL(this);
@@ -172,7 +173,7 @@ public class Player : Human
         m_MELEE = new Player_MELEE(this);
         m_DEAD = new Player_DEAD(this);
         m_BULLETTIME = new Player_BULLET_TIME(this);
-        
+
         m_CurPlayerFSM = m_IDLE;
         m_CurPlayerFSM.StartState();
     }
@@ -190,17 +191,17 @@ public class Player : Human
         p_JustEvadeNormalizeTime = new Vector2(_input.P_JustEvadeStartTime, _input.P_JustEvadeEndTime);
         p_RollDecelerationSpeed = _input.P_RollDecelerationSpeed;
         p_ReloadSpeed = _input.P_ReloadSpeed;
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-            EditorUtility.SetDirty(m_MeleeAttack);
-        #endif
+
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(this);
+        EditorUtility.SetDirty(m_MeleeAttack);
+#endif
     }
 
     public void SetNegotiator(PlayerManipulator _input)
     {
         var nego = GetComponentInChildren<Negotiator_Player>();
-        
+
         nego.p_BulletDamage = _input.N_Damage;
         nego.p_StunValue = _input.N_StunValue;
         nego.p_MinFireDelay = _input.N_MinFireDelay;
@@ -209,10 +210,10 @@ public class Player : Human
         nego.p_MaxMag = _input.N_MaxMag;
         */
         nego.p_ReloadTime = _input.N_ReloadSpeed;
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(nego);
-        #endif
+
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(nego);
+#endif
     }
 
 
@@ -220,9 +221,9 @@ public class Player : Human
     // Update
     private void Update()
     {
-        if (m_SafeFSMLock ||m_ObjectState == ObjectState.Pause) // Pause면 중지
+        if (m_SafeFSMLock || m_ObjectState == ObjectState.Pause) // Pause면 중지
             return;
-        
+
         m_CurPlayerFSM.UpdateState();
     }
 
@@ -232,7 +233,7 @@ public class Player : Human
     public void ChangePlayerFSM(PlayerStateName _name)
     {
         m_SafeFSMLock = true;
-        
+
 //        Debug.Log("상태 전이" + _name);
         m_CurPlayerFSMName = _name;
 
@@ -262,7 +263,7 @@ public class Player : Human
             case PlayerStateName.DEAD:
                 m_CurPlayerFSM = m_DEAD;
                 break;
-            
+
             case PlayerStateName.BULLET_TIME:
                 m_CurPlayerFSM = m_BULLETTIME;
                 break;
@@ -280,6 +281,46 @@ public class Player : Human
 
     // Functions
 
+    /// <summary>
+    /// 플레이어 좌우에 Ray를 싸 빈 공간 여부를 확인합니다.
+    /// 0이면 없음, 1이면 왼쪽, 2면 오른쪽, 3이면 전부 빔
+    /// </summary>
+    /// <returns>빈 공간 여부</returns>
+    public int GetIsEmptyNearPlayer()
+    {
+        //Debug.Log("Sans");
+        
+        RaycastHit2D leftHitPoint;
+        RaycastHit2D rightHitPoint;
+        Vector2 rayStartPos = p_CenterTransform.position;
+        float rayLength = 0.6f;
+        int layerMask = LayerMask.GetMask("Floor");
+
+        leftHitPoint = Physics2D.Raycast(rayStartPos, Vector2.left, rayLength, layerMask);
+        rightHitPoint = Physics2D.Raycast(rayStartPos, -Vector2.left, rayLength, layerMask);
+        
+        Debug.DrawRay(rayStartPos, Vector2.left * rayLength, Color.magenta, 1f);
+        Debug.DrawRay(rayStartPos, -Vector2.left * rayLength, Color.magenta, 1f);
+
+        bool isLeftEmpty = ReferenceEquals(leftHitPoint.collider, null);
+        bool isRightEmpty = ReferenceEquals(rightHitPoint.collider, null);
+        
+        if (isLeftEmpty && !isRightEmpty)
+            return 1;
+        else if (!isLeftEmpty && isRightEmpty)
+            return 2;
+        else if(isLeftEmpty && isRightEmpty)
+            return 3;
+
+        return 0;
+    }
+
+    /// <summary>
+    /// 플레이어의 FSM 상태 진입 / 탈출 시 특정 Action을 재생하도록 붙입니다.
+    /// </summary>
+    /// <param name="_name"></param>
+    /// <param name="_action"></param>
+    /// <param name="_isInit"></param>
     public void AttachActionOnFSM(PlayerStateName _name, Action _action, bool _isInit)
     {
         switch (_name)
@@ -368,6 +409,10 @@ public class Player : Human
         }
     }
 
+    /// <summary>
+    /// FSM에 붙인 Acion을 null로 초기화합니다.
+    /// </summary>
+    /// <param name="_name"></param>
     public void RemoveActionOnFSM(PlayerStateName _name)
     {
         switch (_name)
