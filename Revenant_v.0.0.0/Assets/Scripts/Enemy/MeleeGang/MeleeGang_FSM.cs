@@ -218,6 +218,7 @@ public class FOLLOW_MeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
+        _enemyState = EnemyState.Chase;
         m_Phase = 0;
     }
 
@@ -228,6 +229,31 @@ public class FOLLOW_MeleeGang : MeleeGang_FSM
         if (m_DistanceBetPlayer > m_Enemy.p_MeleeDistance)
         {
             m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer(), m_Enemy.p_FollowSpeedMulti);
+            
+            if (m_Enemy.WayPointsVectorList.Count != 0 && m_Enemy.WayPointsIndex < m_Enemy.WayPointsVectorList.Count)
+            {
+                m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x), m_Enemy.p_FollowSpeedMulti);
+            }
+            else
+            {
+                m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x), m_Enemy.p_FollowSpeedMulti);
+            }
+
+            float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+            // 플레이어와 적이 같은 층에 있다면 문 사용 X
+            if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair)
+            {
+                m_Enemy.bMoveToUsedDoor = false;
+                m_Enemy.MoveToPlayer();
+            }
+            else if (HeightBetweenPlayerAndEnemy <= 0.1f && !m_Enemy.bIsOnStair && !m_Enemy.m_Player.bIsOnStair)
+            {
+                m_Enemy.MoveToPlayer();
+            }
+            else if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair && m_Enemy.EnemyStairNum == m_Enemy.m_Player.PlayerStairNum)
+            {
+                m_Enemy.MoveToPlayer();
+            }
         }
         else // MinFollowDistance 안쪽일 경우
         {
@@ -266,6 +292,7 @@ public class ATTACK_MeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
+        _enemyState = EnemyState.Chase;
         m_Phase = 0;
         m_Timer = 0f;
         m_Enemy.m_EnemyRigid.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -282,6 +309,22 @@ public class ATTACK_MeleeGang : MeleeGang_FSM
 
     public override void UpdateState()
     {
+        float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+        // 플레이어와 적이 같은 층에 있다면 문 사용 X
+        if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair)
+        {
+            m_Enemy.bMoveToUsedDoor = false;
+            m_Enemy.MoveToPlayer();
+        }
+        else if (HeightBetweenPlayerAndEnemy <= 0.1f && !m_Enemy.bIsOnStair && !m_Enemy.m_Player.bIsOnStair)
+        {
+            m_Enemy.MoveToPlayer();
+        }
+        else if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair && m_Enemy.EnemyStairNum == m_Enemy.m_Player.PlayerStairNum)
+        {
+            m_Enemy.MoveToPlayer();
+        }
+        
         switch (m_Phase)
         {
             case 0:
@@ -435,6 +478,7 @@ public class CHANGE_MeleeGang : MeleeGang_FSM
 
     public override void StartState()
     {
+        _enemyState = EnemyState.Chase;
         m_Enemy.ResetRigid();
         m_EnemyAnimator.SetInteger(Change, 1);
     }

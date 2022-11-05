@@ -67,9 +67,16 @@ public class BasicEnemy : Human
     public bool bMoveToUsedStair { get; set; } = false;
     public bool bMoveToUseStairUp { get; set; } = false;
     public bool bMoveToUseStairDown { get; set; } = false;
+    public bool bIsPlayerUpperThanEnemy { get; set; } = false;
+    public int EnemyStairNum { get; set; } = 0;
     
     [HideInInspector] public List<Vector2> WayPointsVectorList;
     [HideInInspector] public int WayPointsIndex = 0;
+
+    private void Update()
+    {
+        IsPlayerUpper();
+    }
 
     // Functions
     /// <summary>
@@ -327,5 +334,19 @@ public class BasicEnemy : Human
     {
         WayPointsIndex = 0;
         WayPointsVectorList.Clear();
+    }
+
+    /** 플레이어가 AI보다 위에 있는지 판단하는 함수 */
+    public bool IsPlayerUpper()
+    {
+        if (transform.position.y < m_PlayerTransform.position.y)
+        {
+            bIsPlayerUpperThanEnemy = true;
+        }
+        else
+        {
+            bIsPlayerUpperThanEnemy = false;
+        }
+        return bIsPlayerUpperThanEnemy;
     }
 }

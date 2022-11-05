@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -15,16 +16,20 @@ public class Stair : MonoBehaviour
 
     // Member Variables
     [ShowInInspector, ReadOnly] public bool m_isLeftUp { get; private set; } = true;
-    
+
+    public List<Stair> StairList;
+    public int StairNum { get; set; } = 0;
     
     // Constructors
     private void Awake()
     {
+        StairList = FindObjectsOfType<Stair>().ToList();
+        
         m_isLeftUp = transform.localScale.x > 0 ? true : false;
 
         var StairPosArr = GetComponentsInChildren<StairPos>();
         if (StairPosArr.Length != 2)
-            Debug.Log("ERR : Stair¿¡¼­ StairPos°¡ 2°³°¡ ¾Æ´Ô");
+            Debug.Log("ERR : Stairï¿½ï¿½ï¿½ï¿½ StairPosï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½");
 
         if (StairPosArr[0].transform.position.y > StairPosArr[1].transform.position.y)
         {
@@ -54,6 +59,11 @@ public class Stair : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        for (int i = 0; i < StairList.Count; i++)
+            StairList[i].StairNum = i + 1;
+    }
 
     public void MoveOrder(int _order)
     {
