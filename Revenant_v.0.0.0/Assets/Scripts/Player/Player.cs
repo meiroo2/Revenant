@@ -287,14 +287,15 @@ public class Player : Human
     /// 0이면 없음, 1이면 왼쪽, 2면 오른쪽, 3이면 전부 빔
     /// </summary>
     /// <returns>빈 공간 여부</returns>
-    public int GetIsEmptyNearPlayer()
+    public int GetIsEmptyNearPlayer(float _wantMovePoint)
     {
         //Debug.Log("Sans");
         
         RaycastHit2D leftHitPoint;
         RaycastHit2D rightHitPoint;
         Vector2 rayStartPos = p_CenterTransform.position;
-        float rayLength = 0.6f;
+
+        float rayLength = _wantMovePoint * 1.875f;
         int layerMask = LayerMask.GetMask("Floor");
 
         leftHitPoint = Physics2D.Raycast(rayStartPos, Vector2.left, rayLength, layerMask);

@@ -24,46 +24,55 @@ public enum BossStateName
 public class BossGang : BasicEnemy, ISpriteMatChange
 {
     // Visible Member Variables
-    
-    // Common
-    [BoxGroup("BossGang Values")] public Transform p_MapCenterTransform;
-    
+
     // Walk
-    [BoxGroup("BossGang Values")] public float p_Walk_Time = 3f;
-    [BoxGroup("BossGang Values")] public float p_Walk_MinDistance = 1f;
+    [TabGroup("Walk")] public float p_Walk_Time = 3f;
+    [TabGroup("Walk")] public float p_Walk_MinDistance = 1f;
     
     // JumpAtk
-    [BoxGroup("BossGang Values")] public float p_JumpAtk_Height = 1f;
-    [BoxGroup("BossGang Values")] public float p_JumpAtk_DelayTime = 1f;
-    [BoxGroup("BossGang Values")] public float p_JumpAtk_Speed = 1f;
-    [BoxGroup("BossGang Values")] public float p_JumpAtk_AccelSpeed = 1f;
+    [TabGroup("JumpAtk")] public float p_JumpAtk_Height = 1f;
+    [TabGroup("JumpAtk")] public float p_JumpAtk_DelayTime = 1f;
+    [TabGroup("JumpAtk")] public float p_JumpAtk_Speed = 1f;
+    [TabGroup("JumpAtk")] public float p_JumpAtk_AccelSpeed = 1f;
+    [TabGroup("JumpAtk")] public float p_JumpAtk_Distance_Max = 1f;
     
+    // LeapAtk
+    [TabGroup("LeapAtk")] public float p_LeapAtk_Height = 1f;
+    [TabGroup("LeapAtk")] public float p_LeapAtk_Speed = 0.2f;
+    [TabGroup("LeapAtk")] public float p_LeapAtk_Distance_Min = 1f;
+
     // Stealth
-    [BoxGroup("BossGang Values")] public float p_Stealth_Speed = 1f;
+    [TabGroup("Stealth")] public float p_Stealth_Speed = 1f;
 
     // Holo
-    [BoxGroup("BossGang Values")] public int p_Holo_MaxCount = 4;
+    [TabGroup("Holo")] public float p_Holo_FadeSpeed = 1f;
+    [TabGroup("Holo")] public float p_Holo_BeforeDelay = 0.5f;
+    [TabGroup("Holo")] public float p_HoloReal_AfterDelay = 0.5f;
+    [TabGroup("Holo")] public float p_Holo_Distance = 0.4f;
+    [TabGroup("Holo")] public int p_Holo_MaxCount = 4;
+    [TabGroup("Holo")] public int p_Holo_FakeChance = 70;
     
     // Counter
-    [BoxGroup("BossGang Values")] public float p_Counter_Time = 3f;
+    [TabGroup("Counter")] public float p_Counter_FadeSpeed = 1f;
+    [TabGroup("Counter")] public float p_Counter_Time = 3f;
     
     // Stun
-    [BoxGroup("BossGang Values"), Title("Stun"), PropertySpace(SpaceBefore = 1, SpaceAfter = 0)]
-    public float p_StunTime = 1f;
-    [BoxGroup("BossGang Values")] public float p_StunBackPwr = 1f;
+    [TabGroup("Stun")] public float p_StunTime = 1f;
+    [TabGroup("Stun")] public float p_StunBackPwr = 1f;
 
     // Ultimate
-    [BoxGroup("BossGang Values"), Title("Ultimate"), PropertySpace(SpaceBefore = 1, SpaceAfter = 0)] 
-    public List<int> p_Ultimate_HpBookList = new List<int>();
-    [BoxGroup("BossGang Values")] public Vector2 p_Ultimate_AngleLimit;
-    [BoxGroup("BossGang Values")] public float p_Ultimate_SetPosTime = 1f;
-    [BoxGroup("BossGang Values")] public float p_Ultimate_DelayTimeAfterSetPos = 1f;
-    [BoxGroup("BossGang Values")] public int p_Ultimate_RepeatCount = 3;
-    [BoxGroup("BossGang Values")] public float p_Ultimate_RemainTime = 5f;
-    [BoxGroup("BossGang Values")] public float p_Ultimate_TimeSliceMoveSpeed = 1f;
-    [BoxGroup("BossGang Values")] public float p_Ultimate_TImeSliceColorSpeed = 1f;
+    [TabGroup("Ultimate")] public List<int> p_Ultimate_HpBookList = new List<int>();
+    [TabGroup("Ultimate")] public float p_Ultimate_FadeSpeed = 1f;
+    [TabGroup("Ultimate")] public Vector2 p_Ultimate_AngleLimit;
+    [TabGroup("Ultimate")] public float p_Ultimate_SetPosTime = 1f;
+    [TabGroup("Ultimate")] public float p_Ultimate_DelayTimeAfterSetPos = 1f;
+    [TabGroup("Ultimate")] public int p_Ultimate_RepeatCount = 3;
+    [TabGroup("Ultimate")] public float p_Ultimate_RemainTime = 5f;
+    [TabGroup("Ultimate")] public float p_Ultimate_TimeSliceMoveSpeed = 1f;
+    [TabGroup("Ultimate")] public float p_Ultimate_TImeSliceColorSpeed = 1f;
 
-
+    [PropertySpace(10f, 0f)]
+    public Transform p_MapCenterTransform;
     public TextMeshProUGUI p_HpText;
     public TextMeshProUGUI p_FSMText;
     [field: SerializeField] public TimeSliceMgr p_TimeSliceMgr { get; private set; }
@@ -80,6 +89,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     public WeaponMgr m_WeaponMgr { get; private set; }
     private IHotBox[] m_HotBoxes;
     public Player m_Player { get; private set; }
+    [HideInInspector] public Action m_ActionOnHit_Holo = null;
     [HideInInspector] public Action m_ActionOnHit_Counter = null; 
     [HideInInspector] public Action m_ActionOnHit_Ultimate = null; 
 
@@ -136,6 +146,10 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         m_CurBossStateName = BossStateName.IDLE;
         m_CurEnemyFSM.StartState();
 
+        p_BezierMove.m_Speed = p_LeapAtk_Speed;
+        p_BezierMove.posA = 0f;
+        p_BezierMove.posB = p_LeapAtk_Height;
+        
         p_FSMText.text = "IDLE";
         p_HpText.text = p_Hp.ToString();
         
@@ -216,40 +230,35 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         if (p_Hp <= 0)
             return;
 
-        if (m_CurBossStateName != BossStateName.STUN && m_CurBossStateName != BossStateName.ULTIMATE)
+        switch (m_CurBossStateName)
         {
-            m_CurStunValue += _stunValue;
-            if (m_CurStunValue >= p_StunHp)
-            {
-                m_CurStunValue = 0;
-                ChangeBossFSM(BossStateName.STUN);
-            }
-        }
-        
-        if (m_CurBossStateName == BossStateName.COUNTER)
-        {
-            m_ActionOnHit_Counter?.Invoke();
-            Debug.Log("공격 반사!!");
-        }
-        else if (m_CurBossStateName == BossStateName.ULTIMATE)
-        {
-            m_ActionOnHit_Ultimate?.Invoke();
-            Debug.Log("공격 반사!!");
-        }
-        else
-        {
-            p_Hp -= _damage;
+            case BossStateName.HOLO:
+                break;
             
-            if (p_Ultimate_HpBookList.Count > 0)
-            {
-                if (p_Hp <= p_Ultimate_HpBookList[0])
+            case BossStateName.COUNTER:
+                m_ActionOnHit_Counter?.Invoke();
+                Debug.Log("공격 반사!!");
+                break;
+            
+            case BossStateName.ULTIMATE:
+                m_ActionOnHit_Ultimate?.Invoke();
+                Debug.Log("공격 반사!!");
+                break;
+            
+            default:
+                p_Hp -= _damage;
+            
+                if (p_Ultimate_HpBookList.Count > 0)
                 {
-                    m_IsUltimateBooked = 1;
-                    p_Ultimate_HpBookList.RemoveAt(0);
+                    if (p_Hp <= p_Ultimate_HpBookList[0])
+                    {
+                        m_IsUltimateBooked = 1;
+                        p_Ultimate_HpBookList.RemoveAt(0);
+                    }
                 }
-            }
+                break;
         }
-        
+
         p_HpText.text = p_Hp.ToString();
     }
 
