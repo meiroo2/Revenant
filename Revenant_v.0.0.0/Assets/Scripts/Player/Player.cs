@@ -55,15 +55,14 @@ public class Player : Human
 
 
 
-
+    public Player_DeadProcess p_DeadProcess;
     [field: SerializeField] public Transform p_CenterTransform { get; private set; }
     [field: SerializeField] public LeftBullet_WUI p_LeftBullet_WUI { get; private set; }
 
 
     // Member Variables
     [ReadOnly] public bool bIsOnStair = false;
-    [ReadOnly] public bool bIsOutOfStair = true;
-    [ReadOnly] public Vector2 PlayerOutOfStairVector = Vector2.zero;
+    public int PlayerStairNum { get; set; } = 0;
 
     [field: SerializeField] public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
@@ -178,7 +177,7 @@ public class Player : Human
         m_CurPlayerFSM.StartState();
     }
 
-    public void SetPlayer(PlayerManipulator _input)
+    public void SetPlayer(PlayerManipulator _input, bool _isEditor)
     {
         p_Hp = _input.P_HP;
         p_StunAlertSpeed = _input.P_StunInvincibleTime;
@@ -192,28 +191,30 @@ public class Player : Human
         p_RollDecelerationSpeed = _input.P_RollDecelerationSpeed;
         p_ReloadSpeed = _input.P_ReloadSpeed;
 
-#if UNITY_EDITOR
-        EditorUtility.SetDirty(this);
-        EditorUtility.SetDirty(m_MeleeAttack);
-#endif
+
+        if (!_isEditor)
+            return;
+        
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(m_MeleeAttack);
+        #endif
     }
 
-    public void SetNegotiator(PlayerManipulator _input)
+    public void SetNegotiator(PlayerManipulator _input, bool _isEditor)
     {
         var nego = GetComponentInChildren<Negotiator_Player>();
 
         nego.p_BulletDamage = _input.N_Damage;
         nego.p_StunValue = _input.N_StunValue;
         nego.p_MinFireDelay = _input.N_MinFireDelay;
-        /*
-        nego.p_MaxRound = _input.N_MaxBullet;
-        nego.p_MaxMag = _input.N_MaxMag;
-        */
-        nego.p_ReloadTime = _input.N_ReloadSpeed;
 
-#if UNITY_EDITOR
-        EditorUtility.SetDirty(nego);
-#endif
+        if (!_isEditor)
+            return;
+        
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(nego);
+        #endif
     }
 
 

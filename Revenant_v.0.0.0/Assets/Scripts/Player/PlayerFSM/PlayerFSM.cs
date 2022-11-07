@@ -638,19 +638,21 @@ public class Player_DEAD : PlayerFSM
         m_Player.m_playerRotation.m_doRotate = false;
 
         m_Player.m_PlayerAniMgr.SetVisualParts(false, false, false, false);
-        
-        // int scene = SceneManager.GetActiveScene().buildIndex;
-        // SceneManager.LoadScene(scene, LoadSceneMode.Single);
 
+        SceneChangeMgr SCMgr = GameMgr.GetInstance().p_SceneChangeMgr;
+        int curSceneIdx = GameMgr.GetInstance().m_CurSceneIdx;
+
+        m_Player.p_DeadProcess.StartDeadAni(() => SCMgr.InitSceneEndWithSmooth(curSceneIdx, 20f));
+        /*
         // Respawn in 5 seconds
-        m_CoroutineElement = m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
-
-        //GameMgr.GetInstance().PlayerDead();
+        m_CoroutineElement =
+            m_CoroutineHandler.StartCoroutine_Handler(DelayGetActiveCheckPointPosition(5.0f));
+            */
     }
 
     public override void UpdateState()
     {
-        CheckNull();
+
     }
 
     public override void ExitState()

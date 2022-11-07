@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 0
   <p_DamageMulti>k__BackingField: 0
 --- !u!58 &8733105462093417380
@@ -280,6 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 1
   <p_DamageMulti>k__BackingField: 0
 --- !u!61 &4597090502939692002
@@ -626,24 +628,27 @@ MonoBehaviour:
   p_OverrideEnemyMgr: 0
   <p_AngleLimit>k__BackingField: 20
   <p_VisionDistance>k__BackingField: 3
+  p_AtkDistance: 0
   m_DeadReasonForMat: 0
-  <p_Attack_Distance>k__BackingField: 2
+  WayPointsVectorList: []
+  WayPointsIndex: 0
+  <p_AttackDistance>k__BackingField: 1
   <p_Bullet_Speed>k__BackingField: 1
   <p_Bullet_Spread>k__BackingField: 2
   <p_Fire_Delay>k__BackingField: 1
   <p_Stun_Time>k__BackingField: 3
-  <p_Melee_Distance>k__BackingField: 0.4
-  <p_Alert_Speed>k__BackingField: 1.5
-  <p_Alert_FadeIn_Speed>k__BackingField: 5
-  <p_Head_Dmg_Multi>k__BackingField: 2
-  <p_Body_Dmg_Multi>k__BackingField: 1
+  <p_MeleeDistance>k__BackingField: 0.4
+  <p_AlertSpeed>k__BackingField: 1
+  <p_AlertFadeinSpeed>k__BackingField: 1
+  <p_HeadDmgMulti>k__BackingField: 2
+  <p_BodyDmgMulti>k__BackingField: 1
   <p_Roll_Tick>k__BackingField: {x: 0, y: 0.5}
   <p_Roll_Refresh>k__BackingField: 0.1
   <p_Roll_Chance>k__BackingField: 45
   <p_Roll_Cooldown>k__BackingField: 0
   <p_Roll_Speed_Multi>k__BackingField: 3
-  p_Alert_Move_Speed_Multi: 0.6
-  p_Gap_Distance: 1.5
+  p_OnAlert_MoveSpeedMulti: 1
+  p_GapDistance: 1
   p_Hide_Chance: 10
   p_Hide_Find_Distance: 1
   p_Hide_Time_Min: 1
@@ -653,6 +658,10 @@ MonoBehaviour:
   - {fileID: 4597090502872538270}
   - {fileID: 4597090502939692003}
   - {fileID: 7054679192688962928}
+  p_TripleShotWeapon: {fileID: 4597090503865035772}
+  p_MeleeWeapon: {fileID: 5085997707788861338}
+  p_HeadHotBox: {fileID: 4597090502872538270}
+  p_BodyHotBox: {fileID: 4597090502939692003}
   m_UseHide: 1
   m_IsMouseTouched: 0
   m_CurHideSlot: {fileID: 0}
@@ -829,7 +838,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7054679192401278401
 Transform:
   m_ObjectHideFlags: 0
@@ -928,6 +937,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 3
   <p_DamageMulti>k__BackingField: 0
 --- !u!61 &7054679192688962931

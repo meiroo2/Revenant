@@ -306,9 +306,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2116663442746928351}
   - component: {fileID: 2116663442746928350}
+  - component: {fileID: 3611245853626194161}
   m_Layer: 0
   m_Name: Sprite
-  m_TagString: Untagged
+  m_TagString: BackGround
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -380,6 +381,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3611245853626194161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2116663442746928321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d189d51251574e97adf2e517b992f5b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_Renderer: {fileID: 2116663442746928350}
+  <m_IgnoreMatChanger>k__BackingField: 0
+  <p_BnWMat>k__BackingField: {fileID: 2100000, guid: c061ffe05b1f66c4b87fddd1178db6ba, type: 2}
+  <p_RedHoloMat>k__BackingField: {fileID: 0}
+  <p_DisappearMat>k__BackingField: {fileID: 0}
 --- !u!1 &2116663442942922927
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +469,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3595c02c31124930b0dc5db92a55aee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_HotBoxMatType: 0
+  <m_matType>k__BackingField: 0
 --- !u!1 &2116663443314296600
 GameObject:
   m_ObjectHideFlags: 0

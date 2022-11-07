@@ -17,6 +17,7 @@ public class GameMgr : MonoBehaviour
     [field: SerializeField] public DataHandleManager p_DataHandleMgr { get; private set; }
     [field: SerializeField] public SceneChangeMgr p_SceneChangeMgr { get; private set; }
     [field: SerializeField] public MatChanger p_MatChanger { get; private set; }
+    [field: SerializeField] public EnemyMgr p_EnemyMgr { get; private set; }
 
     public float m_GameTimer { get; private set; } = 0f;
 
@@ -34,8 +35,8 @@ public class GameMgr : MonoBehaviour
     private bool m_IsGamePaused = false;
     [HideInInspector] public bool m_CanInputAnyKey = false;
 
-    private int m_CurSceneIdx = 0;
-    
+    public int m_CurSceneIdx { get; private set; } = 0;
+
 
 
     // Constructor
@@ -73,6 +74,8 @@ public class GameMgr : MonoBehaviour
     private void OnSceneLoaded(Scene _scene, LoadSceneMode _mode)
     {
         Debug.Log("신 개시 로딩 첫번째");
+        Time.timeScale = 1f;
+        
         m_CurSceneIdx = SceneManager.GetActiveScene().buildIndex;
 
         p_PlayerInputMgr.p_FireLock = false;
@@ -82,8 +85,8 @@ public class GameMgr : MonoBehaviour
         p_MatChanger.InitMatChanger();
         
         p_PlayerMgr.ResetPlayer();
-        p_PlayerManipulator.SetPlayer();
-        p_PlayerManipulator.SetNegotiator();
+        p_PlayerManipulator.SetPlayer(false);
+        p_PlayerManipulator.SetNegotiator(false);
     }
 
     // Updates
@@ -91,7 +94,8 @@ public class GameMgr : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
-            CurSceneReload();
+            //CurSceneReload();
+            p_SceneChangeMgr.InitSceneEndWithSmooth(m_CurSceneIdx, 20f);
         }
         else if (Input.GetKeyDown(KeyCode.PageUp))
         {

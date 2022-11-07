@@ -29,13 +29,13 @@ public class Door_LayerRoom : MonoBehaviour
     private static readonly int CanUse = Animator.StringToHash("CanUse");
 
     private Player _player { get; set; }
-    private List<NormalGang> NormalGangList;
+    private List<BasicEnemy> EnemyList;
 
     // Constructors
     private void Awake()
     {
         m_MainCam = Camera.main.GetComponent<CameraMgr>();
-        NormalGangList = FindObjectsOfType<NormalGang>().ToList();
+        EnemyList = FindObjectsOfType<BasicEnemy>().ToList();
 
         if(p_CenterPos == null)
             Debug.Log(gameObject.name + "?????? ????? CenterPos?? ????? ???? ????.");
@@ -115,12 +115,12 @@ public class Door_LayerRoom : MonoBehaviour
             _obj.position = movePos;
             m_MainCam.InstantMoveToPlayer(_obj.position, movePos);
 
-            foreach (var normalGang in NormalGangList)
+            foreach (var Enemy in EnemyList)
             {
-                if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
+                if (Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
                 {
-                    normalGang.WayPointsVectorList.Add(p_CenterPos.position);
-                    normalGang.bMoveToUsedDoor = true;
+                    Enemy.WayPointsVectorList.Add(p_CenterPos.position);
+                    Enemy.bMoveToUsedDoor = true;
                 }
             }
 

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8798066901285890878}
   - component: {fileID: 1900004413932140605}
   - component: {fileID: 4718642478766582402}
-  - component: {fileID: 587487288167801870}
   - component: {fileID: 4840181404405830559}
   - component: {fileID: 6942717333549071119}
   - component: {fileID: 9090690121671856532}
@@ -62,6 +61,7 @@ MonoBehaviour:
   <p_DataHandleMgr>k__BackingField: {fileID: 3488895593461691035}
   <p_SceneChangeMgr>k__BackingField: {fileID: 1403804111787752519}
   <p_MatChanger>k__BackingField: {fileID: 5859269580206057153}
+  <p_EnemyMgr>k__BackingField: {fileID: 1900004413932140605}
   m_CanInputAnyKey: 0
 --- !u!114 &8798066901285890878
 MonoBehaviour:
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6e53343d7ae4972a5f3bcd27aae76d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  N_HP: 0
+  N_HP: 30
   N_BulletDamage: 0
   N_BulletSpeed: 0
   N_BulletRandomRotation: 0
@@ -141,6 +141,28 @@ MonoBehaviour:
   S_ShieldDmgMulti: 0
   S_HeadDmgMulti: 0
   S_BodyDmgMulti: 0
+  SF_Hp: 30
+  SF_BulletDamage: 10
+  SF_BulletSpeed: 10
+  SF_BulletRandomRotation: 2
+  SF_FireDelay: 1
+  SF_MoveSpeed: 0.8
+  SF_OnAlert_MoveSpeedMulti: 1
+  SF_StunTime: 0
+  SF_StunThreshold: 50
+  SF_VisionDistance: 2
+  SF_AttackDistance: 1.5
+  SF_MeleeDistance: 0.4
+  SF_GapDistance: 1
+  SF_AlertSpeed: 1
+  SF_AlertFadeInSpeed: 1
+  SF_HeadDmgMulti: 2
+  SF_BodyDmgMulti: 1
+  SF_Roll_Refresh: 0.1
+  SF_Roll_Tick: {x: 0, y: 0.5}
+  SF_Roll_Chance: 45
+  SF_Roll_Cooldown: 0
+  SF_Roll_Speed_Multi: 3
 --- !u!114 &4718642478766582402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1cc164786c6d354ba2d8bf7303ad3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  P_HP: 30
+  P_HP: 50
   P_StunInvincibleTime: 1
   P_Speed: 1.2
   P_BackSpeedMulti: 0.55
@@ -164,25 +186,10 @@ MonoBehaviour:
   P_JustEvadeStartTime: 0
   P_JustEvadeEndTime: 0.4
   P_RollDecelerationSpeed: 3.5
-  P_ReloadSpeed: 2
+  P_ReloadSpeed: 3
   N_Damage: 10
   N_StunValue: 1
   N_MinFireDelay: 0.1
-  N_MaxBullet: 150
-  N_MaxMag: 10
-  N_ReloadSpeed: 1
---- !u!114 &587487288167801870
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3796319072097737523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79049e9a158a460283536f69fc1ac706, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4840181404405830559
 MonoBehaviour:
   m_ObjectHideFlags: 0

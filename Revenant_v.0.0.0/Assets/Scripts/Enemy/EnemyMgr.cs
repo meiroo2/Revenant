@@ -72,14 +72,36 @@ public class EnemyMgr : MonoBehaviour
     public int S_ShieldDmgMulti;
     public int S_HeadDmgMulti;
     public int S_BodyDmgMulti;
+
+    [Space(10f)] [Header("특수부대 변수 목록")]
+    public int SF_Hp;
+    public int SF_BulletDamage;
+    public float SF_BulletSpeed;
+    public float SF_BulletRandomRotation;
+    public float SF_FireDelay;
+    public float SF_MoveSpeed;
+    public float SF_OnAlert_MoveSpeedMulti;
+    public float SF_StunTime;
+    public int SF_StunThreshold;
+    public float SF_VisionDistance;
+    public float SF_AttackDistance;
+    public float SF_MeleeDistance;
+    public float SF_GapDistance;
+    public float SF_AlertSpeed;
+    public float SF_AlertFadeInSpeed;
+    public int SF_HeadDmgMulti;
+    public int SF_BodyDmgMulti;
+    public float SF_Roll_Refresh;
+    public Vector2 SF_Roll_Tick;
+    public int SF_Roll_Chance;
+    public float SF_Roll_Cooldown;
+    public float SF_Roll_Speed_Multi;
+    
     
 
     // Member Variables
-    private List<NormalGang> m_NormalGangs = new List<NormalGang>();
-    private List<MeleeGang> m_MeleeGangs = new List<MeleeGang>();
-    private List<Drone> m_Drones = new List<Drone>();
-    
-    
+
+
     // Constructors
 
 
@@ -104,23 +126,7 @@ public class EnemyMgr : MonoBehaviour
             tempMGangs[i].transform.position = new Vector2(cast.point.x, cast.point.y + 0.64f);
         }
     }
-    
-    public void LoadMeleeGangData()
-    {
-        
-    }
 
-    public void SetAllEnemys()
-    {
-        SetNormalGangs();
-        SetMeleeGangs();
-        SetDrones();
-        
-        #if UNITY_EDITOR
-        EditorUtility.SetDirty(this);
-        #endif
-    }
-    
     public void SetNormalGangs()
     {
         NormalGang[] temp = FindObjectsOfType<NormalGang>();
@@ -128,10 +134,6 @@ public class EnemyMgr : MonoBehaviour
         {
             ele.SetEnemyValues(this);
         }
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-        #endif
     }
 
     public void SetMeleeGangs()
@@ -141,10 +143,6 @@ public class EnemyMgr : MonoBehaviour
         {
             ele.SetEnemyValues(this);
         }
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-        #endif
     }
 
     public void SetDrones()
@@ -154,10 +152,6 @@ public class EnemyMgr : MonoBehaviour
         {
             ele.SetEnemyValues(this);
         }
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-        #endif
     }
 
     public void SetShieldGangs()
@@ -167,9 +161,14 @@ public class EnemyMgr : MonoBehaviour
         {
             VARIABLE.SetEnemyValues(this);
         }
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-        #endif
+    }
+
+    public void SetSpecialForce()
+    {
+        SpecialForce[] temp = FindObjectsOfType<SpecialForce>();
+        foreach (var VARIABLE in temp)
+        {
+            VARIABLE.SetEnemyValues(this);
+        }
     }
 }

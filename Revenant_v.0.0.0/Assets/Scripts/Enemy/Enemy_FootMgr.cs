@@ -74,15 +74,13 @@ public class Enemy_FootMgr : MonoBehaviour
         
         if (!StairSensor)
             return;
-        
-        if (StairSensor && StairTrigger.m_IsUpPos && m_Enemy.bMoveToUsedStair)
+
+        if (StairSensor && StairTrigger.m_IsUpPos && m_Enemy.bMoveToUsedStair && !m_Enemy.IsPlayerUpper())
         {
-            m_Enemy.bMoveToUseStairUp = false;
             m_Enemy.bMoveToUseStairDown = true;
         }
-        else if (StairSensor && !StairTrigger.m_IsUpPos && m_Enemy.bMoveToUsedStair)
+        else if (StairSensor && !StairTrigger.m_IsUpPos && m_Enemy.bMoveToUsedStair && m_Enemy.IsPlayerUpper())
         {
-            m_Enemy.bMoveToUseStairDown = false;
             m_Enemy.bMoveToUseStairUp = true;
         }
         
@@ -92,11 +90,8 @@ public class Enemy_FootMgr : MonoBehaviour
                 return;
 
             if (!UpPos.m_IsUpPos)
-            {
-                m_Enemy.bMoveToUseStairDown = false;
                 return;
-            }
-            
+
             StartUsingStair(UpPos, true);
             m_Enemy.MoveNextPoint();
         }
@@ -106,10 +101,7 @@ public class Enemy_FootMgr : MonoBehaviour
                 return;
 
             if (DownPos.m_IsUpPos)
-            {
-                m_Enemy.bMoveToUseStairUp = false;
                 return;
-            }
             StartUsingStair(DownPos, false);
             m_Enemy.MoveNextPoint();
         }
@@ -283,6 +275,7 @@ public class Enemy_FootMgr : MonoBehaviour
     void StartUsingStair(StairPos UpDownPos, bool IsUp)
     {
         m_StairPos = UpDownPos;
+        m_Enemy.EnemyStairNum = m_StairPos.m_ParentStair.StairNum;
         m_IsOnStair = true;
         m_Enemy.bIsOnStair = m_IsOnStair;
         m_StairPos.m_ParentStair.MoveOrder(16);
@@ -301,5 +294,6 @@ public class Enemy_FootMgr : MonoBehaviour
         m_IsOnStair = false;
         m_Enemy.bIsOnStair = m_IsOnStair;
         m_StairPos = null;
+        m_Enemy.EnemyStairNum = 0;
     }
 }

@@ -358,6 +358,9 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     
     public void ChangeMat(SpriteMatType _matType)
     {
+        if (!isActiveAndEnabled)
+            return;
+        
         if (!ReferenceEquals(m_MatTimeCoroutine, null))
         {
             StopCoroutine(m_MatTimeCoroutine);

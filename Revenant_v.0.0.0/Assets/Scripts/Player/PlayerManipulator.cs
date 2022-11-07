@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -27,13 +28,18 @@ public class PlayerManipulator : MonoBehaviour
     public int N_Damage = 10;
     public int N_StunValue = 1;
     public float N_MinFireDelay = 0.1f;
-    public int N_MaxBullet = 150;
-    public int N_MaxMag = 10;
-    public float N_ReloadSpeed = 1f;
-    
+
+
+    // Constructor
+    private void Awake()
+    {
+        Debug.Log("PlayerManipulator Awake");
+        SetPlayer(false);
+        SetNegotiator(false);
+    }
     
 
-    public void SetPlayer()
+    public void SetPlayer(bool _isEditor)
     {
         GameObject findPlayer = null;
         findPlayer = GameObject.FindGameObjectWithTag("@Player");
@@ -47,15 +53,11 @@ public class PlayerManipulator : MonoBehaviour
         if (findPlayer.TryGetComponent(out Player player))
         {
             m_Player = player;
-            m_Player.SetPlayer(this);
+            m_Player.SetPlayer(this, _isEditor);
         }
-
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(m_Player);
-        #endif
     }
 
-    public void SetNegotiator()
+    public void SetNegotiator(bool _isEditor)
     {
         GameObject findPlayer = null;
         findPlayer = GameObject.FindGameObjectWithTag("@Player");
@@ -69,11 +71,7 @@ public class PlayerManipulator : MonoBehaviour
         if (findPlayer.TryGetComponent(out Player player))
         {
             m_Player = player;
-            m_Player.SetNegotiator(this);
+            m_Player.SetNegotiator(this, _isEditor);
         }
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(m_Player);
-        #endif
     }
 }

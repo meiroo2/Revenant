@@ -143,7 +143,7 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
         switch (m_Phase)
         {
             case 1:
-                if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_Attack_Distance)
+                if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_AttackDistance)
                 {
                     if (m_Enemy.m_UseHide)
                     {
@@ -365,7 +365,7 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             float distance = m_Enemy.GetDistanceBetPlayer();
             if (!CheckIsInMagicGap(distance))
             {
-                if (distance < m_Enemy.p_Gap_Distance)
+                if (distance < m_Enemy.p_GapDistance)
                 {
                     WalkToPlayer(false);
                         
@@ -383,7 +383,7 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             
                 case 1:
                     m_Enemy.ResetRigid();
-                    if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_Melee_Distance)
+                    if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_MeleeDistance)
                     {
                         // Melee Attack
                         m_Enemy.m_MeleeWeapon.Fire();
@@ -397,7 +397,7 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
                     break;
             
                 case 2:
-                    if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_Attack_Distance)
+                    if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_AttackDistance)
                     {
                         m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
                         m_Phase = -1;
@@ -427,18 +427,18 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
         Vector2 difference = m_Enemy.GetPositionDifferenceBetPlayer();
         if (difference.x > 0)
         {
-            m_Enemy.SetRigidByDirection(!_toPlayer, m_Enemy.p_Alert_Move_Speed_Multi);
+            m_Enemy.SetRigidByDirection(!_toPlayer, m_Enemy.p_OnAlert_MoveSpeedMulti);
         }
         else
         {
-            m_Enemy.SetRigidByDirection(_toPlayer, m_Enemy.p_Alert_Move_Speed_Multi);
+            m_Enemy.SetRigidByDirection(_toPlayer, m_Enemy.p_OnAlert_MoveSpeedMulti);
         }
     }
 
     private bool CheckIsInMagicGap(float _curDistance)
     {
-        if (_curDistance < m_Enemy.p_Gap_Distance + m_MagicGap &&
-            _curDistance > m_Enemy.p_Gap_Distance - m_MagicGap)
+        if (_curDistance < m_Enemy.p_GapDistance + m_MagicGap &&
+            _curDistance > m_Enemy.p_GapDistance - m_MagicGap)
         {
             m_Enemy.ResetRigid();
             return true;
@@ -591,7 +591,7 @@ public class SpecialForce_HIDDEN : SpecialForce_FSM
         
         float distance = m_Enemy.GetDistanceBetPlayer();
 
-        if (distance > m_Enemy.p_Attack_Distance)
+        if (distance > m_Enemy.p_AttackDistance)
         {
             float timer = 0f;
             while (true)

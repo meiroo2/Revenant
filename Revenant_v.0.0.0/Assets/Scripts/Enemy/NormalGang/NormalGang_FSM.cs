@@ -279,7 +279,7 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 {
                     m_Enemy.MoveToPlayer();
                 }
-                else if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+                else if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair && m_Enemy.EnemyStairNum == m_Enemy.m_Player.PlayerStairNum)
                 {
                     m_Enemy.MoveToPlayer();
                 }
@@ -372,7 +372,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
         {
             m_Enemy.MoveToPlayer();
         }
-        else if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+        else if (m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair && m_Enemy.EnemyStairNum == m_Enemy.m_Player.PlayerStairNum)
         {
             m_Enemy.MoveToPlayer();
         }
