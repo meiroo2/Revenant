@@ -84,7 +84,6 @@ public class Drone : BasicEnemy
         m_DeadReason = -1;
         
         m_HotBoxes = GetComponentsInChildren<Enemy_HotBox>();
-        m_WeponMgr = GetComponentInChildren<Enemy_WeaponMgr>();
         m_CrashCol = GetComponentInChildren<Drone_CrashCol>();
         
 
