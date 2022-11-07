@@ -9,40 +9,11 @@ using UnityEngine;
 
 public class CW_EnemyManipulator : OdinEditorWindow
 {
+    // Const Variables
     private const float m_LabelWidth = 150f;
     
-    [MenuItem(("에디터/적 변수 수정기"))]
-    private static void OpenWindow()
-    {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-        
-        TransferNormalGangValues(false);
-        TransferMeleeGangValues(false);
-        TransferDroneGangValues(false);
-        TransferShieldGangValues(false);
-        
-        GetWindow<CW_EnemyManipulator>().Show();
-    }
-
-    private void OnBecameVisible()
-    {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-        TransferNormalGangValues(false);
-        TransferMeleeGangValues(false);
-        TransferDroneGangValues(false);
-        TransferShieldGangValues(false);
-    }
-
-    private void OnProjectChange()
-    {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-        TransferNormalGangValues(false);
-        TransferMeleeGangValues(false);
-        TransferDroneGangValues(false);
-        TransferShieldGangValues(false);
-    }
     
-
+    // Member Variables
     #region NormalGang
 
     [TabGroup("NormalGang"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int N_HP;
@@ -156,88 +127,162 @@ public class CW_EnemyManipulator : OdinEditorWindow
     #endregion
    
     
+    #region SpecialForce
+
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_Hp;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_BulletDamage;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_BulletSpeed;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_BulletRandomRotation;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_FireDelay;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_MoveSpeed;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_OnAlert_MoveSpeedMulti;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_StunTime;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_StunThreshold;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_VisionDistance;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_AttackDistance;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_MeleeDistance;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_GapDistance;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_AlertSpeed;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_AlertFadeInSpeed;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_HeadDmgMulti;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_BodyDmgMulti;
+
+    // Roll Values
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth), Title("Roll Values")]
+    public static float SF_Roll_Refresh;
+
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_Roll_Tick_Min;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_Roll_Tick_Max;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_Roll_Chance;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_Roll_Cooldown;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_Roll_Speed_Multi;
     
+    
+    #endregion
+    
+    
+    
+    // Constructors
+    [MenuItem(("에디터/적 변수 수정기"))]
+    private static void OpenWindow()
+    {
+        var enemyMgr = Resources.Load<GameMgr>("GameMgr").p_EnemyMgr;
+        
+        TransferNormalGangValues(enemyMgr, false);
+        TransferMeleeGangValues(enemyMgr,false);
+        TransferDroneGangValues(enemyMgr,false);
+        TransferShieldGangValues(enemyMgr,false);
+        TransferSpecialForceValues(enemyMgr, false);
+        
+        GetWindow<CW_EnemyManipulator>().Show();
+    }
+    
+    
+    // Functions
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("NormalGang")]
     private void NormalGang_적용하기()
     {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-        TransferNormalGangValues(true);
+        var enemyMgr = Resources.Load<GameMgr>("GameMgr").p_EnemyMgr;
         
+        TransferNormalGangValues(enemyMgr,true);
         enemyMgr.SetNormalGangs();
+        
+        PrefabUtility.RevertPrefabInstance(GameObject.FindObjectOfType<GameMgr>().gameObject,
+            InteractionMode.UserAction);
     }
 
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("MeleeGang")]
     private void MeleeGang_적용하기()
     {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-        TransferMeleeGangValues(true);
+        var enemyMgr = Resources.Load<GameMgr>("GameMgr").p_EnemyMgr;
         
+        TransferMeleeGangValues(enemyMgr, true);
         enemyMgr.SetMeleeGangs();
+        
+        PrefabUtility.RevertPrefabInstance(GameObject.FindObjectOfType<GameMgr>().gameObject,
+            InteractionMode.UserAction);
     }
 
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("DroneGang")]
     private void DroneGang_적용하기()
     {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-        TransferDroneGangValues(true);
+        var enemyMgr = Resources.Load<GameMgr>("GameMgr").p_EnemyMgr;
         
+        TransferDroneGangValues(enemyMgr, true);
         enemyMgr.SetDrones();
+        
+        PrefabUtility.RevertPrefabInstance(GameObject.FindObjectOfType<GameMgr>().gameObject,
+            InteractionMode.UserAction);
     }
 
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("ShieldGang")]
     private void ShieldGang_적용하기()
     {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-        TransferShieldGangValues(true);
+        var enemyMgr = Resources.Load<GameMgr>("GameMgr").p_EnemyMgr;
         
+        TransferShieldGangValues(enemyMgr, true);
         enemyMgr.SetShieldGangs();
+        
+        PrefabUtility.RevertPrefabInstance(GameObject.FindObjectOfType<GameMgr>().gameObject,
+            InteractionMode.UserAction);
+    }
+
+    [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("SpecialForce")]
+    private void SpecialForce_적용하기()
+    {
+        var enemyMgr = Resources.Load<GameMgr>("GameMgr").p_EnemyMgr;
+        
+        TransferSpecialForceValues(enemyMgr, true);
+        enemyMgr.SetSpecialForce();
+
+        PrefabUtility.RevertPrefabInstance(GameObject.FindObjectOfType<GameMgr>().gameObject,
+            InteractionMode.UserAction);
     }
 
     /// <summary>
     /// 각종 NormalGang 데이터를 EnemyMgr로 넘기거나 가져옵니다.
     /// </summary>
-    /// <param name="_toEnemyMgr">True시 EnemyMgr로 전송</param>
-    private static void TransferNormalGangValues(bool _toEnemyMgr)
+    /// <param name="_enemyMgr"></param>
+    /// <param name="_toEnemyMgr"></param>
+    private static void TransferNormalGangValues(EnemyMgr _enemyMgr, bool _toEnemyMgr)
     {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-
         if (_toEnemyMgr)
         {
-            enemyMgr.N_HP = N_HP;
-            enemyMgr.N_BulletDamage = N_BulletDamage;
-            enemyMgr.N_BulletSpeed = N_BulletSpeed;
-            enemyMgr.N_BulletRandomRotation = N_BulletRandomRotation;
-            enemyMgr.N_FireDelay = N_FireDelay;
-            enemyMgr.N_Speed = N_Speed;
-            enemyMgr.N_StunThreshold = N_StunThreshold;
-            enemyMgr.N_Vision_Distance = N_Vision_Distance;
-            enemyMgr.N_GunFire_Distance = N_GunFire_Distance;
-            enemyMgr.N_MeleeAttack_Distance = N_MeleeAttack_Distance;
-            enemyMgr.N_AlertSpeedMulti = N_AlertSpeedMulti;
-            enemyMgr.N_StunAlertSpeedMulti = N_StunAlertSpeedMulti;
-            enemyMgr.N_HeadDmgMulti = N_HeadDmgMulti;
-            enemyMgr.N_BodyDmgMulti = N_BodyDmgMulti;
+            _enemyMgr.N_HP = N_HP;
+            _enemyMgr.N_BulletDamage = N_BulletDamage;
+            _enemyMgr.N_BulletSpeed = N_BulletSpeed;
+            _enemyMgr.N_BulletRandomRotation = N_BulletRandomRotation;
+            _enemyMgr.N_FireDelay = N_FireDelay;
+            _enemyMgr.N_Speed = N_Speed;
+            _enemyMgr.N_StunThreshold = N_StunThreshold;
+            _enemyMgr.N_Vision_Distance = N_Vision_Distance;
+            _enemyMgr.N_GunFire_Distance = N_GunFire_Distance;
+            _enemyMgr.N_MeleeAttack_Distance = N_MeleeAttack_Distance;
+            _enemyMgr.N_AlertSpeedMulti = N_AlertSpeedMulti;
+            _enemyMgr.N_StunAlertSpeedMulti = N_StunAlertSpeedMulti;
+            _enemyMgr.N_HeadDmgMulti = N_HeadDmgMulti;
+            _enemyMgr.N_BodyDmgMulti = N_BodyDmgMulti;
         }
         else
         {
-            N_HP = enemyMgr.N_HP;
-            N_BulletDamage = enemyMgr.N_BulletDamage;
-            N_BulletSpeed = enemyMgr.N_BulletSpeed;
-            N_BulletRandomRotation = enemyMgr.N_BulletRandomRotation;
-            N_FireDelay = enemyMgr.N_FireDelay;
-            N_Speed = enemyMgr.N_Speed;
-            N_StunThreshold = enemyMgr.N_StunThreshold;
-            N_Vision_Distance = enemyMgr.N_Vision_Distance;
-            N_GunFire_Distance = enemyMgr.N_GunFire_Distance;
-            N_MeleeAttack_Distance = enemyMgr.N_MeleeAttack_Distance;
-            N_AlertSpeedMulti = enemyMgr.N_AlertSpeedMulti;
-            N_StunAlertSpeedMulti = enemyMgr.N_StunAlertSpeedMulti;
-            N_HeadDmgMulti = enemyMgr.N_HeadDmgMulti;
-            N_BodyDmgMulti = enemyMgr.N_BodyDmgMulti;
+            N_HP = _enemyMgr.N_HP;
+            N_BulletDamage = _enemyMgr.N_BulletDamage;
+            N_BulletSpeed = _enemyMgr.N_BulletSpeed;
+            N_BulletRandomRotation = _enemyMgr.N_BulletRandomRotation;
+            N_FireDelay = _enemyMgr.N_FireDelay;
+            N_Speed = _enemyMgr.N_Speed;
+            N_StunThreshold = _enemyMgr.N_StunThreshold;
+            N_Vision_Distance = _enemyMgr.N_Vision_Distance;
+            N_GunFire_Distance = _enemyMgr.N_GunFire_Distance;
+            N_MeleeAttack_Distance = _enemyMgr.N_MeleeAttack_Distance;
+            N_AlertSpeedMulti = _enemyMgr.N_AlertSpeedMulti;
+            N_StunAlertSpeedMulti = _enemyMgr.N_StunAlertSpeedMulti;
+            N_HeadDmgMulti = _enemyMgr.N_HeadDmgMulti;
+            N_BodyDmgMulti = _enemyMgr.N_BodyDmgMulti;
         }
 
         #if UNITY_EDITOR
-            EditorUtility.SetDirty(enemyMgr);
+            EditorUtility.SetDirty(_enemyMgr);
         #endif
     }
     
@@ -246,43 +291,41 @@ public class CW_EnemyManipulator : OdinEditorWindow
     /// 각종 MeleeGang 데이터를 EnemyMgr로 넘기거나 가져옵니다.
     /// </summary>
     /// <param name="_toEnemyMgr">True시 EnemyMgr로 전송</param>
-    private static void TransferMeleeGangValues(bool _toEnemyMgr)
+    private static void TransferMeleeGangValues(EnemyMgr _enemyMgr, bool _toEnemyMgr)
     {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-
         if (_toEnemyMgr)
         {
-            enemyMgr.M_HP = M_HP;
-            enemyMgr.M_StunThreshold = M_StunThreshold;
-            enemyMgr.M_MeleeDamage = M_MeleeDamage;
-            enemyMgr.M_Speed = M_Speed;
-            enemyMgr.M_Vision_Distance = M_Vision_Distance;
-            enemyMgr.M_MeleeAttack_Distance = M_MeleeAttack_Distance;
-            enemyMgr.M_PointAttackTime = M_PointAttackTime;
-            enemyMgr.M_HeadDmgMulti = M_HeadDmgMulti;
-            enemyMgr.M_BodyDmgMulti = M_BodyDmgMulti;
-            enemyMgr.M_FollowSpeedMulti = M_FollowSpeedMulti;
-            enemyMgr.M_DelayAfterAttack = M_DelayAfterAttack;
-            enemyMgr.M_StunWaitTime = M_StunWaitTime;
+            _enemyMgr.M_HP = M_HP;
+            _enemyMgr.M_StunThreshold = M_StunThreshold;
+            _enemyMgr.M_MeleeDamage = M_MeleeDamage;
+            _enemyMgr.M_Speed = M_Speed;
+            _enemyMgr.M_Vision_Distance = M_Vision_Distance;
+            _enemyMgr.M_MeleeAttack_Distance = M_MeleeAttack_Distance;
+            _enemyMgr.M_PointAttackTime = M_PointAttackTime;
+            _enemyMgr.M_HeadDmgMulti = M_HeadDmgMulti;
+            _enemyMgr.M_BodyDmgMulti = M_BodyDmgMulti;
+            _enemyMgr.M_FollowSpeedMulti = M_FollowSpeedMulti;
+            _enemyMgr.M_DelayAfterAttack = M_DelayAfterAttack;
+            _enemyMgr.M_StunWaitTime = M_StunWaitTime;
         }
         else
         {
-            M_HP = enemyMgr.M_HP;
-            M_StunThreshold = enemyMgr.M_StunThreshold;
-            M_MeleeDamage = enemyMgr.M_MeleeDamage;
-            M_Speed = enemyMgr.M_Speed;
-            M_Vision_Distance = enemyMgr.M_Vision_Distance;
-            M_MeleeAttack_Distance = enemyMgr.M_MeleeAttack_Distance;
-            M_PointAttackTime = enemyMgr.M_PointAttackTime;
-            M_HeadDmgMulti = enemyMgr.M_HeadDmgMulti;
-            M_BodyDmgMulti = enemyMgr.M_BodyDmgMulti;
-            M_FollowSpeedMulti = enemyMgr.M_FollowSpeedMulti;
-            M_DelayAfterAttack = enemyMgr.M_DelayAfterAttack;
-            M_StunWaitTime = enemyMgr.M_StunWaitTime;
+            M_HP = _enemyMgr.M_HP;
+            M_StunThreshold = _enemyMgr.M_StunThreshold;
+            M_MeleeDamage = _enemyMgr.M_MeleeDamage;
+            M_Speed = _enemyMgr.M_Speed;
+            M_Vision_Distance = _enemyMgr.M_Vision_Distance;
+            M_MeleeAttack_Distance = _enemyMgr.M_MeleeAttack_Distance;
+            M_PointAttackTime = _enemyMgr.M_PointAttackTime;
+            M_HeadDmgMulti = _enemyMgr.M_HeadDmgMulti;
+            M_BodyDmgMulti = _enemyMgr.M_BodyDmgMulti;
+            M_FollowSpeedMulti = _enemyMgr.M_FollowSpeedMulti;
+            M_DelayAfterAttack = _enemyMgr.M_DelayAfterAttack;
+            M_StunWaitTime = _enemyMgr.M_StunWaitTime;
         }
 
-    #if UNITY_EDITOR
-            EditorUtility.SetDirty(enemyMgr);
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(_enemyMgr);
         #endif
     }
     
@@ -291,43 +334,41 @@ public class CW_EnemyManipulator : OdinEditorWindow
     /// 각종 Drone 데이터를 EnemyMgr로 넘기거나 가져옵니다.
     /// </summary>
     /// <param name="_toEnemyMgr">True시 EnemyMgr로 전송</param>
-    private static void TransferDroneGangValues(bool _toEnemyMgr)
+    private static void TransferDroneGangValues(EnemyMgr _enemyMgr, bool _toEnemyMgr)
     {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-
         if (_toEnemyMgr)
         {
-            enemyMgr.D_HP = D_HP;
-            enemyMgr.D_BombDamage = D_BombDamage;
-            enemyMgr.D_BombRadius = D_BombRadius;
-            enemyMgr.D_BreakPower = D_BreakPower;
-            enemyMgr.D_Speed = D_Speed;
-            enemyMgr.D_RushSpeedMulti = D_RushSpeedMulti;
-            enemyMgr.D_RushTriggerDistance = D_RushTriggerDistance;
-            enemyMgr.D_DroneDmgMulti = D_DroneDmgMulti;
-            enemyMgr.D_BombDmgMulti = D_BombDmgMulti;
-            enemyMgr.D_DetectSpeed = D_DetectSpeed;
-            enemyMgr.D_VisionDistance = D_VisionDistance;
-            enemyMgr.D_DecidePositionPointTime = D_DecidePositionPointTime;
+            _enemyMgr.D_HP = D_HP;
+            _enemyMgr.D_BombDamage = D_BombDamage;
+            _enemyMgr.D_BombRadius = D_BombRadius;
+            _enemyMgr.D_BreakPower = D_BreakPower;
+            _enemyMgr.D_Speed = D_Speed;
+            _enemyMgr.D_RushSpeedMulti = D_RushSpeedMulti;
+            _enemyMgr.D_RushTriggerDistance = D_RushTriggerDistance;
+            _enemyMgr.D_DroneDmgMulti = D_DroneDmgMulti;
+            _enemyMgr.D_BombDmgMulti = D_BombDmgMulti;
+            _enemyMgr.D_DetectSpeed = D_DetectSpeed;
+            _enemyMgr.D_VisionDistance = D_VisionDistance;
+            _enemyMgr.D_DecidePositionPointTime = D_DecidePositionPointTime;
         }
         else
         {
-            D_HP = enemyMgr.D_HP;
-            D_BombDamage = enemyMgr.D_BombDamage;
-            D_BombRadius = enemyMgr.D_BombRadius;
-            D_BreakPower = enemyMgr.D_BreakPower;
-            D_Speed = enemyMgr.D_Speed;
-            D_RushSpeedMulti = enemyMgr.D_RushSpeedMulti;
-            D_RushTriggerDistance = enemyMgr.D_RushTriggerDistance;
-            D_DroneDmgMulti = enemyMgr.D_DroneDmgMulti;
-            D_BombDmgMulti = enemyMgr.D_BombDmgMulti;
-            D_DetectSpeed = enemyMgr.D_DetectSpeed;
-            D_VisionDistance = enemyMgr.D_VisionDistance;
-            D_DecidePositionPointTime = enemyMgr.D_DecidePositionPointTime;
+            D_HP = _enemyMgr.D_HP;
+            D_BombDamage = _enemyMgr.D_BombDamage;
+            D_BombRadius = _enemyMgr.D_BombRadius;
+            D_BreakPower = _enemyMgr.D_BreakPower;
+            D_Speed = _enemyMgr.D_Speed;
+            D_RushSpeedMulti = _enemyMgr.D_RushSpeedMulti;
+            D_RushTriggerDistance = _enemyMgr.D_RushTriggerDistance;
+            D_DroneDmgMulti = _enemyMgr.D_DroneDmgMulti;
+            D_BombDmgMulti = _enemyMgr.D_BombDmgMulti;
+            D_DetectSpeed = _enemyMgr.D_DetectSpeed;
+            D_VisionDistance = _enemyMgr.D_VisionDistance;
+            D_DecidePositionPointTime = _enemyMgr.D_DecidePositionPointTime;
         }
 
         #if UNITY_EDITOR
-            EditorUtility.SetDirty(enemyMgr);
+            EditorUtility.SetDirty(_enemyMgr);
         #endif
     }
     
@@ -336,63 +377,113 @@ public class CW_EnemyManipulator : OdinEditorWindow
     /// 각종 ShieldGang 데이터를 EnemyMgr로 넘기거나 가져옵니다.
     /// </summary>
     /// <param name="_toEnemyMgr">True시 EnemyMgr로 전송</param>
-    private static void TransferShieldGangValues(bool _toEnemyMgr)
+    private static void TransferShieldGangValues(EnemyMgr _enemyMgr, bool _toEnemyMgr)
     {
-        var enemyMgr = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<EnemyMgr>();
-
         if (_toEnemyMgr)
         {
-            enemyMgr.S_HP = S_HP;
-            enemyMgr.S_ShieldHp = S_ShieldHp;
-            enemyMgr.S_MeleeDamage = S_MeleeDamage;
-            enemyMgr.S_Speed = S_Speed;
-            enemyMgr.S_BackSpeedMulti = S_BackSpeedMulti;
-            enemyMgr.S_BrokenSpeedMulti = S_BrokenSpeedMulti;
-            enemyMgr.S_VisionDistance = S_VisionDistance;
-            enemyMgr.S_AttackDistance = S_AttackDistance;
-            enemyMgr.S_GapDistance = S_GapDistance;
-            enemyMgr.S_AtkAniSpeedMulti = S_AtkAniSpeedMulti;
-            enemyMgr.S_PointAtkTime = S_PointAtkTime;
-            enemyMgr.S_AtkHoldTime = S_AtkHoldTime;
-            enemyMgr.S_ShieldDmgMulti = S_ShieldDmgMulti;
-            enemyMgr.S_HeadDmgMulti = S_HeadDmgMulti;
-            enemyMgr.S_BodyDmgMulti = S_BodyDmgMulti;
+            _enemyMgr.S_HP = S_HP;
+            _enemyMgr.S_ShieldHp = S_ShieldHp;
+            _enemyMgr.S_MeleeDamage = S_MeleeDamage;
+            _enemyMgr.S_Speed = S_Speed;
+            _enemyMgr.S_BackSpeedMulti = S_BackSpeedMulti;
+            _enemyMgr.S_BrokenSpeedMulti = S_BrokenSpeedMulti;
+            _enemyMgr.S_VisionDistance = S_VisionDistance;
+            _enemyMgr.S_AttackDistance = S_AttackDistance;
+            _enemyMgr.S_GapDistance = S_GapDistance;
+            _enemyMgr.S_AtkAniSpeedMulti = S_AtkAniSpeedMulti;
+            _enemyMgr.S_PointAtkTime = S_PointAtkTime;
+            _enemyMgr.S_AtkHoldTime = S_AtkHoldTime;
+            _enemyMgr.S_ShieldDmgMulti = S_ShieldDmgMulti;
+            _enemyMgr.S_HeadDmgMulti = S_HeadDmgMulti;
+            _enemyMgr.S_BodyDmgMulti = S_BodyDmgMulti;
         }
         else
         {
-            S_HP = enemyMgr.S_HP;
-            S_ShieldHp = enemyMgr.S_ShieldHp;
-            S_MeleeDamage = enemyMgr.S_MeleeDamage;
-            S_Speed = enemyMgr.S_Speed;
-            S_BackSpeedMulti = enemyMgr.S_BackSpeedMulti;
-            S_BrokenSpeedMulti = enemyMgr.S_BrokenSpeedMulti;
-            S_VisionDistance = enemyMgr.S_VisionDistance;
-            S_AttackDistance = enemyMgr.S_AttackDistance;
-            S_GapDistance = enemyMgr.S_GapDistance;
-            S_AtkAniSpeedMulti = enemyMgr.S_AtkAniSpeedMulti;
-            S_PointAtkTime = enemyMgr.S_PointAtkTime;
-            S_AtkHoldTime = enemyMgr.S_AtkHoldTime;
-            S_ShieldDmgMulti = enemyMgr.S_ShieldDmgMulti;
-            S_HeadDmgMulti = enemyMgr.S_HeadDmgMulti;
-            S_BodyDmgMulti = enemyMgr.S_BodyDmgMulti;
+            S_HP = _enemyMgr.S_HP;
+            S_ShieldHp = _enemyMgr.S_ShieldHp;
+            S_MeleeDamage = _enemyMgr.S_MeleeDamage;
+            S_Speed = _enemyMgr.S_Speed;
+            S_BackSpeedMulti = _enemyMgr.S_BackSpeedMulti;
+            S_BrokenSpeedMulti = _enemyMgr.S_BrokenSpeedMulti;
+            S_VisionDistance = _enemyMgr.S_VisionDistance;
+            S_AttackDistance = _enemyMgr.S_AttackDistance;
+            S_GapDistance = _enemyMgr.S_GapDistance;
+            S_AtkAniSpeedMulti = _enemyMgr.S_AtkAniSpeedMulti;
+            S_PointAtkTime = _enemyMgr.S_PointAtkTime;
+            S_AtkHoldTime = _enemyMgr.S_AtkHoldTime;
+            S_ShieldDmgMulti = _enemyMgr.S_ShieldDmgMulti;
+            S_HeadDmgMulti = _enemyMgr.S_HeadDmgMulti;
+            S_BodyDmgMulti = _enemyMgr.S_BodyDmgMulti;
         }
 
         #if UNITY_EDITOR
-            EditorUtility.SetDirty(enemyMgr);
+            EditorUtility.SetDirty(_enemyMgr);
         #endif
     }
 
-
-    private void DataSaveNLoad()
+    /// <summary>
+    /// 각종 SpecialForce 데이터를 EnemyMgr로 넘기거나 가져옵니다.
+    /// </summary>
+    /// <param name="_enemyMgr"></param>
+    /// <param name="_toEnemyMgr"></param>
+    private static void TransferSpecialForceValues(EnemyMgr _enemyMgr, bool _toEnemyMgr)
     {
-        TransferNormalGangValues(true);
-        TransferMeleeGangValues(true);
-        TransferDroneGangValues(true);
-        TransferShieldGangValues(true);
-        
-        TransferNormalGangValues(false);
-        TransferMeleeGangValues(false);
-        TransferDroneGangValues(false);
-        TransferShieldGangValues(false);
+        if (_toEnemyMgr)
+        {
+            _enemyMgr.SF_Hp = SF_Hp;
+            _enemyMgr.SF_BulletDamage = SF_BulletDamage;
+            _enemyMgr.SF_BulletSpeed = SF_BulletSpeed;
+            _enemyMgr.SF_BulletRandomRotation = SF_BulletRandomRotation;
+            _enemyMgr.SF_FireDelay = SF_FireDelay;
+            _enemyMgr.SF_MoveSpeed = SF_MoveSpeed;
+            _enemyMgr.SF_OnAlert_MoveSpeedMulti = SF_OnAlert_MoveSpeedMulti;
+            _enemyMgr.SF_StunThreshold = SF_StunThreshold;
+            _enemyMgr.SF_VisionDistance = SF_VisionDistance;
+            _enemyMgr.SF_AttackDistance = SF_AttackDistance;
+            _enemyMgr.SF_MeleeDistance = SF_MeleeDistance;
+            _enemyMgr.SF_GapDistance = SF_GapDistance;
+            _enemyMgr.SF_AlertSpeed = SF_AlertSpeed;
+            _enemyMgr.SF_AlertFadeInSpeed = SF_AlertFadeInSpeed;
+            _enemyMgr.SF_HeadDmgMulti = SF_HeadDmgMulti;
+            _enemyMgr.SF_BodyDmgMulti = SF_BodyDmgMulti;
+            
+            _enemyMgr.SF_Roll_Refresh = SF_Roll_Refresh;
+            _enemyMgr.SF_Roll_Tick.x = SF_Roll_Tick_Min;
+            _enemyMgr.SF_Roll_Tick.y = SF_Roll_Tick_Max;
+            _enemyMgr.SF_Roll_Chance = SF_Roll_Chance;
+            _enemyMgr.SF_Roll_Cooldown = SF_Roll_Cooldown;
+            _enemyMgr.SF_Roll_Speed_Multi = SF_Roll_Speed_Multi;
+        }
+        else
+        {
+            SF_Hp = _enemyMgr.SF_Hp;
+            SF_BulletDamage = _enemyMgr.SF_BulletDamage;
+            SF_BulletSpeed = _enemyMgr.SF_BulletSpeed;
+            SF_BulletRandomRotation = _enemyMgr.SF_BulletRandomRotation;
+            SF_FireDelay = _enemyMgr.SF_FireDelay;
+            SF_MoveSpeed = _enemyMgr.SF_MoveSpeed;
+            SF_OnAlert_MoveSpeedMulti = _enemyMgr.SF_OnAlert_MoveSpeedMulti;
+            SF_StunTime = _enemyMgr.SF_StunTime;
+            SF_StunThreshold = _enemyMgr.SF_StunThreshold;
+            SF_VisionDistance = _enemyMgr.SF_VisionDistance;
+            SF_AttackDistance = _enemyMgr.SF_AttackDistance;
+            SF_MeleeDistance = _enemyMgr.SF_MeleeDistance;
+            SF_GapDistance = _enemyMgr.SF_GapDistance;
+            SF_AlertSpeed = _enemyMgr.SF_AlertSpeed;
+            SF_AlertFadeInSpeed = _enemyMgr.SF_AlertFadeInSpeed;
+            SF_HeadDmgMulti = _enemyMgr.SF_HeadDmgMulti;
+            SF_BodyDmgMulti = _enemyMgr.SF_BodyDmgMulti;
+            
+            SF_Roll_Refresh = _enemyMgr.SF_Roll_Refresh;
+            SF_Roll_Tick_Min = _enemyMgr.SF_Roll_Tick.x;
+            SF_Roll_Tick_Max = _enemyMgr.SF_Roll_Tick.y;
+            SF_Roll_Chance = _enemyMgr.SF_Roll_Chance;
+            SF_Roll_Cooldown = _enemyMgr.SF_Roll_Cooldown;
+            SF_Roll_Speed_Multi = _enemyMgr.SF_Roll_Speed_Multi;
+        }
+
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(_enemyMgr);
+        #endif
     }
 }

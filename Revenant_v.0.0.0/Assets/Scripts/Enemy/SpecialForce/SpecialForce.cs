@@ -15,16 +15,16 @@ public class SpecialForce : BasicEnemy
     // Visible Member Variables
     
     // Basic
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Attack_Distance { get; private set; } = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_AttackDistance { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Bullet_Speed { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Bullet_Spread { get; private set; } = 5f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Fire_Delay { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Stun_Time { get; private set; } = 1f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Melee_Distance { get; private set; } = 0.4f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Alert_Speed { get; private set; } = 1f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Alert_FadeIn_Speed { get; private set; } = 1f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Head_Dmg_Multi { get; private set; } = 2f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Body_Dmg_Multi { get; private set; } = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_MeleeDistance { get; private set; } = 0.4f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_AlertSpeed { get; private set; } = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_AlertFadeinSpeed { get; private set; } = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public int p_HeadDmgMulti { get; private set; } = 2;
+    [field: SerializeField, BoxGroup("SpecialForce")] public int p_BodyDmgMulti { get; private set; } = 1;
     
     // Advanced
     [field: SerializeField, BoxGroup("SpecialForce"), PropertySpace(10f, 0f)] 
@@ -34,10 +34,11 @@ public class SpecialForce : BasicEnemy
     [field: SerializeField, BoxGroup("SpecialForce")] public int p_Roll_Chance { get; private set; } = 50;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Roll_Cooldown { get; private set; } = 5f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Roll_Speed_Multi { get; private set; } = 3f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Alert_Move_Speed_Multi = 1f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Gap_Distance = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_OnAlert_MoveSpeedMulti = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_GapDistance = 1f;
 
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Hide_Chance = 10f;
+    // Roll
+    [field: SerializeField, BoxGroup("SpecialForce"), Title("For Hide")] public float p_Hide_Chance = 10f;
 
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Hide_Find_Distance = 1f;
 
@@ -48,12 +49,15 @@ public class SpecialForce : BasicEnemy
     // Assign
     [field: SerializeField, Title("Assign")] public Animator p_Animator { get; private set; }
     [field: SerializeField] public Enemy_HotBox[] p_HitHotboxes { get; private set; }
-
-
+    public TripleShot_Enemy p_TripleShotWeapon;
+    public MeleeWeapon_Enemy p_MeleeWeapon;
+    public Enemy_HotBox p_HeadHotBox;
+    public Enemy_HotBox p_BodyHotBox;
+    
+    
 
     // Member Variables
-    [field: SerializeField, BoxGroup("SpecialForce")] public bool m_UseHide = false;
-    
+    [HideInInspector] public bool m_UseHide = false;
     [HideInInspector] public bool m_IsMouseTouched = false;
     public bool m_GlobalRollCooldown { get; private set; } = false;
     private Coroutine m_RollCooldownCoroutine;
@@ -85,7 +89,6 @@ public class SpecialForce : BasicEnemy
         m_EnemyRigid = GetComponent<Rigidbody2D>();
         m_Foot = GetComponentInChildren<Enemy_FootMgr>();
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
-        m_WeaponMgr.GetComponentInChildren<TripleShot_Enemy>().p_BulletRandomRotation = p_Bullet_Spread;
         m_MeleeWeapon = GetComponentInChildren<MeleeWeapon_Enemy>();
         m_UseRange = GetComponentInChildren<SpecialForce_UseRange>();
         m_EnemyHotBoxes = p_HitHotboxes;
@@ -111,11 +114,18 @@ public class SpecialForce : BasicEnemy
         var instance = InstanceMgr.GetInstance();
         m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
         
-        m_AlertSystem.SetAlertSpeed(p_Alert_Speed);
-        m_AlertSystem.SetStunAlertSpeed(p_StunAlertSpeed);
-        m_AlertSystem.SetFadeInSpeed(p_Alert_FadeIn_Speed);
+        m_AlertSystem.SetAlertSpeed(p_AlertSpeed);
+        m_AlertSystem.SetStunAlertSpeed(1f);
+        m_AlertSystem.SetFadeInSpeed(p_AlertFadeinSpeed);
         
         m_CurEnemyFSM.StartState();
+    }
+
+    private void OnEnable()
+    {
+        m_AlertSystem.SetAlertSpeed(p_AlertSpeed);
+        m_AlertSystem.SetStunAlertSpeed(1f);
+        m_AlertSystem.SetFadeInSpeed(p_AlertFadeinSpeed);
     }
 
 
@@ -130,6 +140,51 @@ public class SpecialForce : BasicEnemy
 
 
     // Functions
+
+    public override void SetEnemyValues(EnemyMgr _mgr)
+    {
+        if (p_OverrideEnemyMgr)
+            return;
+
+        p_Hp = _mgr.SF_Hp;
+        p_TripleShotWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
+        p_MeleeWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
+        p_TripleShotWeapon.p_BulletRandomRotation = p_Bullet_Spread;
+        p_Bullet_Speed = _mgr.SF_BulletSpeed;
+        p_TripleShotWeapon.p_BulletSpeed = p_Bullet_Speed;
+        p_Fire_Delay = _mgr.SF_FireDelay;
+        p_MoveSpeed = _mgr.SF_MoveSpeed;
+        p_OnAlert_MoveSpeedMulti = _mgr.SF_OnAlert_MoveSpeedMulti;
+        p_Stun_Time = _mgr.SF_StunTime;
+        p_StunHp = _mgr.SF_StunThreshold;
+        p_VisionDistance = _mgr.SF_VisionDistance;
+        p_AttackDistance = _mgr.SF_AttackDistance;
+        p_MeleeDistance = _mgr.SF_MeleeDistance;
+        p_GapDistance = _mgr.SF_GapDistance;
+        p_AlertSpeed = _mgr.SF_AlertSpeed;
+        p_AlertFadeinSpeed = _mgr.SF_AlertFadeInSpeed;
+        
+        p_HeadDmgMulti = _mgr.SF_HeadDmgMulti;
+        p_HeadHotBox.p_DamageMulti = p_HeadDmgMulti;
+        
+        p_BodyDmgMulti = _mgr.SF_BodyDmgMulti;
+        p_BodyHotBox.p_DamageMulti = p_BodyDmgMulti;
+        
+        
+        p_Roll_Refresh = _mgr.SF_Roll_Refresh;
+        p_Roll_Tick = _mgr.SF_Roll_Tick;
+        p_Roll_Chance = _mgr.SF_Roll_Chance;
+        p_Roll_Cooldown = _mgr.SF_Roll_Cooldown;
+        p_Roll_Speed_Multi = _mgr.SF_Roll_Speed_Multi;
+
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(p_HeadHotBox);
+            EditorUtility.SetDirty(p_BodyHotBox);
+            EditorUtility.SetDirty(p_TripleShotWeapon);
+            EditorUtility.SetDirty(p_MeleeWeapon);
+        #endif
+    }
 
     public override void SetRigidToPoint(float _addSpeed = 1f)
     {
@@ -187,8 +242,6 @@ public class SpecialForce : BasicEnemy
     
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
     {
-        Debug.Log(_point);
-        
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
 

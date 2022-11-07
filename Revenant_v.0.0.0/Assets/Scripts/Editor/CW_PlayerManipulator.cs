@@ -54,7 +54,6 @@ public class CW_PlayerManipulator : OdinEditorWindow
 
     #endregion
 
-    
     #region Negotiator
 
     [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
@@ -65,17 +64,6 @@ public class CW_PlayerManipulator : OdinEditorWindow
 
     [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
     public static float N_MinFireDelay;
-
-    /*
-    [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
-    public static int N_BulletCount;
-
-    [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
-    public static int N_MagCount;
-    */
-    
-    [TabGroup("Negotiator"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)]
-    public static float N_ReloadSpeed;
 
     #endregion
 
@@ -91,9 +79,10 @@ public class CW_PlayerManipulator : OdinEditorWindow
     private static void OpenWindow()
     {
         GetWindow<CW_PlayerManipulator>().Show();
-        
-        TransferPlayerValues(false);
-        TransferNegotiatorValues(false);
+
+        PlayerManipulator manipulator = Resources.Load<GameMgr>("GameMgr").p_PlayerManipulator;
+        TransferPlayerValues(manipulator, false);
+        TransferNegotiatorValues(manipulator, false);
         TransferAimValues(false);
     }
     
@@ -102,19 +91,25 @@ public class CW_PlayerManipulator : OdinEditorWindow
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("Player")]
     private void Player_적용하기()
     {
-        var p_ValMani = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<PlayerManipulator>();
-        TransferPlayerValues(true);
+        var ResourceManipulator = Resources.Load<GameMgr>("GameMgr").p_PlayerManipulator;
+        var SceneManipulator = GameObject.FindObjectOfType<GameMgr>().p_PlayerManipulator;
         
-        p_ValMani.SetPlayer();
+        TransferPlayerValues(ResourceManipulator, true);
+        ResourceManipulator.SetPlayer(true);
+
+        PrefabUtility.RevertPrefabInstance(SceneManipulator.gameObject, InteractionMode.UserAction);
     }
 
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("Negotiator")]
     private void Negotiator_적용하기()
     {
-        var p_ValMani = GameObject.FindGameObjectWithTag("GameMgr").GetComponent<PlayerManipulator>();
-        TransferNegotiatorValues(true);
+        var ResourceManipulator = Resources.Load<GameMgr>("GameMgr").p_PlayerManipulator;
+        var SceneManipulator = GameObject.FindObjectOfType<GameMgr>().p_PlayerManipulator;
+
+        TransferNegotiatorValues(ResourceManipulator, true);
+        ResourceManipulator.SetNegotiator(true);
         
-        p_ValMani.SetNegotiator();
+        PrefabUtility.RevertPrefabInstance(SceneManipulator.gameObject, InteractionMode.UserAction);
     }
     
     [PropertySpace(20f), Button(ButtonSizes.Large), TabGroup("Aim")]
@@ -126,80 +121,68 @@ public class CW_PlayerManipulator : OdinEditorWindow
     /// <summary>
     /// 각종 Player 데이터를 Player_ValueManipulator로 넘기거나 가져옵니다.
     /// </summary>
-    /// <param name="_toPlayerManipulator">True시 내보내기</param>
-    private static void TransferPlayerValues(bool _toPlayerManipulator)
+    /// <param name="_manipulator"></param>
+    /// <param name="_toPlayerManipulator"></param>
+    private static void TransferPlayerValues(PlayerManipulator _manipulator, bool _toPlayerManipulator)
     {
-        var p_ValMani = Resources.Load<GameMgr>("GameMgr").p_PlayerManipulator;
-        
         if (_toPlayerManipulator)
         {
-            p_ValMani.P_HP = P_HP;
-            p_ValMani.P_StunInvincibleTime = P_StunInvincibleTime;
-            p_ValMani.P_Speed = P_Speed;
-            p_ValMani.P_BackSpeedMulti = P_BackSpeedMulti;
-            p_ValMani.P_RollSpeedMulti = P_RollSpeedMulti;
-            p_ValMani.P_MeleeSpeedMulti = P_MeleeSpeedMulti;
-            p_ValMani.P_MeleeDamage = P_MeleeDamage;
-            p_ValMani.P_MeleeStunValue = P_MeleeStunValue;
-            p_ValMani.P_JustEvadeStartTime = P_JustEvadeStartTime;
-            p_ValMani.P_JustEvadeEndTime = P_JustEvadeEndTime;
-            p_ValMani.P_RollDecelerationSpeed = P_RollDecelerationSpeed;
-            p_ValMani.P_ReloadSpeed = P_ReloadSpeed;
+            _manipulator.P_HP = P_HP;
+            _manipulator.P_StunInvincibleTime = P_StunInvincibleTime;
+            _manipulator.P_Speed = P_Speed;
+            _manipulator.P_BackSpeedMulti = P_BackSpeedMulti;
+            _manipulator.P_RollSpeedMulti = P_RollSpeedMulti;
+            _manipulator.P_MeleeSpeedMulti = P_MeleeSpeedMulti;
+            _manipulator.P_MeleeDamage = P_MeleeDamage;
+            _manipulator.P_MeleeStunValue = P_MeleeStunValue;
+            _manipulator.P_JustEvadeStartTime = P_JustEvadeStartTime;
+            _manipulator.P_JustEvadeEndTime = P_JustEvadeEndTime;
+            _manipulator.P_RollDecelerationSpeed = P_RollDecelerationSpeed;
+            _manipulator.P_ReloadSpeed = P_ReloadSpeed;
         }
         else
         {
-            P_HP = p_ValMani.P_HP;
-            P_StunInvincibleTime = p_ValMani.P_StunInvincibleTime;
-            P_Speed = p_ValMani.P_Speed;
-            P_BackSpeedMulti = p_ValMani.P_BackSpeedMulti;
-            P_RollSpeedMulti = p_ValMani.P_RollSpeedMulti;
-            P_MeleeSpeedMulti = p_ValMani.P_MeleeSpeedMulti;
-            P_MeleeDamage = p_ValMani.P_MeleeDamage;
-            P_MeleeStunValue = p_ValMani.P_MeleeStunValue;
-            P_JustEvadeStartTime = p_ValMani.P_JustEvadeStartTime;
-            P_JustEvadeEndTime = p_ValMani.P_JustEvadeEndTime;
-            P_RollDecelerationSpeed = p_ValMani.P_RollDecelerationSpeed;
-            P_ReloadSpeed = p_ValMani.P_ReloadSpeed;
+            P_HP = _manipulator.P_HP;
+            P_StunInvincibleTime = _manipulator.P_StunInvincibleTime;
+            P_Speed = _manipulator.P_Speed;
+            P_BackSpeedMulti = _manipulator.P_BackSpeedMulti;
+            P_RollSpeedMulti = _manipulator.P_RollSpeedMulti;
+            P_MeleeSpeedMulti = _manipulator.P_MeleeSpeedMulti;
+            P_MeleeDamage = _manipulator.P_MeleeDamage;
+            P_MeleeStunValue = _manipulator.P_MeleeStunValue;
+            P_JustEvadeStartTime = _manipulator.P_JustEvadeStartTime;
+            P_JustEvadeEndTime = _manipulator.P_JustEvadeEndTime;
+            P_RollDecelerationSpeed = _manipulator.P_RollDecelerationSpeed;
+            P_ReloadSpeed = _manipulator.P_ReloadSpeed;
         }
 
         #if UNITY_EDITOR
-            EditorUtility.SetDirty(p_ValMani);
+            EditorUtility.SetDirty(_manipulator);
         #endif
     }
 
     /// <summary>
     /// 각종 Negotiator 데이터를 Player_ValueManipulator로 넘기거나 가져옵니다.
     /// </summary>
+    /// <param name="_manipulator"></param>
     /// <param name="_toPlayerManipulator"></param>
-    private static void TransferNegotiatorValues(bool _toPlayerManipulator)
+    private static void TransferNegotiatorValues(PlayerManipulator _manipulator, bool _toPlayerManipulator)
     {
-        var p_ValMani = Resources.Load<GameMgr>("GameMgr").p_PlayerManipulator;
-
         if (_toPlayerManipulator)
         {
-            p_ValMani.N_Damage = N_Damage;
-            p_ValMani.N_StunValue = N_StunValue;
-            p_ValMani.N_MinFireDelay = N_MinFireDelay;
-            /*
-            p_ValMani.N_MaxBullet = N_BulletCount;
-            p_ValMani.N_MaxMag = N_MagCount;
-            */
-            p_ValMani.N_ReloadSpeed = N_ReloadSpeed;
+            _manipulator.N_Damage = N_Damage;
+            _manipulator.N_StunValue = N_StunValue;
+            _manipulator.N_MinFireDelay = N_MinFireDelay;
         }
         else
         {
-            N_Damage = p_ValMani.N_Damage;
-            N_StunValue = p_ValMani.N_StunValue;
-            N_MinFireDelay = p_ValMani.N_MinFireDelay;
-            /*
-            N_BulletCount = p_ValMani.N_MaxBullet;
-            N_MagCount = p_ValMani.N_MaxMag;
-            */
-            N_ReloadSpeed = p_ValMani.N_ReloadSpeed;
+            N_Damage = _manipulator.N_Damage;
+            N_StunValue = _manipulator.N_StunValue;
+            N_MinFireDelay = _manipulator.N_MinFireDelay;
         }
 
         #if UNITY_EDITOR
-            EditorUtility.SetDirty(p_ValMani);
+            EditorUtility.SetDirty(_manipulator);
         #endif
     }
     
