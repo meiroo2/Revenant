@@ -38,6 +38,8 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
     [HideInInspector] public bool m_IsTurning = false;
     public bool m_IsPatrol { get; private set; } = false;
     private Vector2 m_DistBetPlayer;
+    
+    public Player m_Player { get; private set; }
 
     /// <summary>
     /// 0 == 에러, 1 == 머리, 2 == 몸통
@@ -85,9 +87,9 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
     {
         m_OriginPos = transform.position;
 
-        Player tempPlayer = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
-        m_PlayerTransform = tempPlayer.transform;
-        m_PlayerLocationSensor = tempPlayer.m_PlayerLocationSensor;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
+        m_PlayerTransform = m_Player.transform;
+        m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
     }
 
 
@@ -240,7 +242,7 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
     
     public override void ChangeEnemyFSM(EnemyStateName _name)
     {
-        Debug.Log("상태 전이" + _name);
+        //Debug.Log("상태 전이" + _name);
         m_CurEnemyStateName = _name;
         
         m_CurEnemyFSM.ExitState();

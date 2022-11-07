@@ -19,18 +19,17 @@ public class Player_FootMgr : MonoBehaviour
 
     public Vector2 m_PlayerNormal { get; private set; }
 
-    
     private Coroutine m_StairPosCoroutine;
     private Coroutine m_StairCoroutine;
 
     private const float m_SensorXGap = 0.05f;
     private const float m_SensorYGap = 0.01f;
 
-    private List<NormalGang> NormalGangList;
+    private List<BasicEnemy> EnemyList;
 
     private void Awake()
     {
-        NormalGangList = FindObjectsOfType<NormalGang>().ToList();
+        EnemyList = FindObjectsOfType<BasicEnemy>().ToList();
     }
 
     private void Start()
@@ -274,7 +273,7 @@ public class Player_FootMgr : MonoBehaviour
     {
         if (IsEnter)
         {
-            foreach (var normalGang in NormalGangList)
+            foreach (var normalGang in EnemyList)
             {
                 if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
                 {
@@ -285,7 +284,7 @@ public class Player_FootMgr : MonoBehaviour
         }
         else
         {
-            foreach (var normalGang in NormalGangList)
+            foreach (var normalGang in EnemyList)
             {
                 if (normalGang.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase)
                 {
@@ -299,14 +298,16 @@ public class Player_FootMgr : MonoBehaviour
     void StartUsingStair(StairPos UpDownPos, bool IsUp)
     {
         m_StairPos = UpDownPos;
-        m_StairPos.m_ParentStair.MoveOrder(16);
+        m_Player.PlayerStairNum = m_StairPos.m_ParentStair.StairNum;
+        Debug.Log("PlayerStairNum - " + m_Player.PlayerStairNum);
         
+        m_StairPos.m_ParentStair.MoveOrder(16);
+
         m_Player.m_WorldUI.PrintSprite(-1);
             
         m_Player.GoToStairLayer(true);
         m_isOnStair = true;
         m_Player.bIsOnStair = m_isOnStair;
-        m_Player.bIsOutOfStair = false;
 
         if(!ReferenceEquals(m_StairPosCoroutine, null))
             StopCoroutine(m_StairPosCoroutine);
@@ -323,7 +324,7 @@ public class Player_FootMgr : MonoBehaviour
         m_isOnStair = false;
         m_Player.bIsOnStair = m_isOnStair;
         m_StairPos = null;
-        
+        m_Player.PlayerStairNum = 0;
     }
 }
 
