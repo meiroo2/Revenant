@@ -164,7 +164,7 @@ public class ScreenEffect_UI : MonoBehaviour
         while (true)
         {
             m_Image.color = m_Color;
-            m_Color.a -= Time.deltaTime * p_EdgeEffectFadeoutspeed;
+            m_Color.a -= Time.unscaledDeltaTime * p_EdgeEffectFadeoutspeed;
             
             if (m_Color.a <= 0f)
                 break;
