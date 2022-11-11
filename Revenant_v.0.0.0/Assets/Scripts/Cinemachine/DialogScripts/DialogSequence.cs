@@ -16,12 +16,13 @@ public class DialogSequence : MonoBehaviour
     private GameObject m_Player;
     private void Start()
     {
+        if(FindObjectOfType<Player>())
         m_Player = FindObjectOfType<Player>().gameObject;
 
         GameMgr.GetInstance().p_PlayerInputMgr.p_FireLock = true;
     }
 
-
+    public void StartDialog() => isDialogStart = true;
     // Update is called once per frame
     void Update()
     {

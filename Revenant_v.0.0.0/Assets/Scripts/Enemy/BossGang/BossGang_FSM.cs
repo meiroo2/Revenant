@@ -113,22 +113,69 @@ public class Walk_BossGang : BossGang_FSM
             
             case 2:
                 m_Phase = -1;
-                int randomNum = UnityEngine.Random.Range(0, 3);
+
+                float distance = m_Enemy.GetDistanceBetPlayer();
+                float jumpMax = m_Enemy.p_JumpAtk_Distance_Max;
+                float leapMin = m_Enemy.p_LeapAtk_Distance_Min;
                 
-                switch (randomNum)
+                if (distance <= jumpMax && distance < leapMin)
                 {
-                    case 0:
-                        m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
-                        break;
+                    // Jump만 가능
+                    int randomNum = UnityEngine.Random.Range(0, 2);
+                
+                    switch (randomNum)
+                    {
+                        case 0:
+                            m_Enemy.ChangeBossFSM(BossStateName.JUMPATK);
+                            break;
                     
-                    case 1:
-                        m_Enemy.ChangeBossFSM(BossStateName.JUMPATK);
-                        break;
-                    
-                    case 2:
-                        m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
-                        break;
+                        case 1:
+                            m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                            break;
+                    }
                 }
+                else if (distance <= jumpMax && distance >= leapMin)
+                {
+                    // Jump & Leap 가능
+                    int randomNum = UnityEngine.Random.Range(0, 3);
+                
+                    switch (randomNum)
+                    {
+                        case 0:
+                            m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
+                            break;
+                    
+                        case 1:
+                            m_Enemy.ChangeBossFSM(BossStateName.JUMPATK);
+                            break;
+                    
+                        case 2:
+                            m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                            break;
+                    }
+                }
+                else if (distance > jumpMax && distance >= leapMin)
+                {
+                    // Leap만 됨
+                    int randomNum = UnityEngine.Random.Range(0, 2);
+                
+                    switch (randomNum)
+                    {
+                        case 0:
+                            m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
+                            break;
+
+                        case 1:
+                            m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                            break;
+                    }
+                }
+                else
+                {
+                    // 예외상황 (Stealth만 발동)
+                    m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                }
+                
                 break;
         }
     }
@@ -245,7 +292,8 @@ public class LeapAtk_BossGang : BossGang_FSM
 {
     // Member Variables
     private int m_Phase = 0;
-    
+    private float m_Timer = 0f;
+    private float m_BeizerDistance = 0f;
     
     // Constructor
     public LeapAtk_BossGang(BossGang _enemy)
@@ -259,12 +307,18 @@ public class LeapAtk_BossGang : BossGang_FSM
     {
         m_Animator = m_Enemy.m_Animator;
         m_Phase = 0;
+        m_Timer = 0f;
+
+        m_BeizerDistance = Vector2.Distance(m_Enemy.transform.position,
+            m_Enemy.m_Player.m_PlayerFootMgr.GetFootRayHit().point);
         
         m_Enemy.m_WeaponMgr.ChangeWeapon(1);
         
-        m_Enemy.p_BezierMove.SetAction(PhaseToOne);
-
+        if(!m_Enemy.IsFacePlayer())
+            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+        
         m_Enemy.p_RigidCol.isTrigger = true;
+        m_Enemy.p_BezierMove.SetAction(PhaseToOne);
         m_Enemy.p_BezierMove.MoveToPoint();
     }
 
@@ -273,8 +327,30 @@ public class LeapAtk_BossGang : BossGang_FSM
         switch (m_Phase)
         {
             case 1:
-                m_Phase = -1;
+                m_Phase = 2;
+                m_Enemy.p_RigidCol.isTrigger = false;
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+
+                Vector2 SlipPwr = Vector2.right * (m_Enemy.p_LeapAtk_SlipPwr *
+                                                   (m_BeizerDistance * m_Enemy.p_LeapAtk_AdaptiveSlipValue));
+                if (!m_Enemy.m_IsRightHeaded)
+                    SlipPwr *= -1f;
+                
+                m_Enemy.m_EnemyRigid.AddForce(SlipPwr, ForceMode2D.Impulse);
+                break;
+            
+            case 2:
+                m_Phase = 3;
+                break;
+            
+            case 3:
+                m_Timer += Time.deltaTime;
+                if (m_Timer >= 1f)
+                    m_Phase = 4;
+                break;
+            
+            case 4:
+                m_Phase = -1;
                 m_Enemy.ChangeBossFSM(BossStateName.WALK);
                 break;
         }
@@ -383,9 +459,10 @@ public class Holo_BossGang : BossGang_FSM
     private float m_Timer = 0f;
     private Color m_Color = Color.white;
 
-    private bool m_CurHolo = false;
+    private bool m_IsHoloFake = false;
     private int m_HoloSpawnCount = 0;
     
+    private bool m_DoUpdate = true;
     
     // Constructor
     public Holo_BossGang(BossGang _enemy)
@@ -398,24 +475,30 @@ public class Holo_BossGang : BossGang_FSM
     public override void StartState()
     {
         m_Animator = m_Enemy.m_Animator;
+        m_Enemy.m_ActionOnHit_Holo = null;
+        m_Enemy.m_ActionOnHit_Holo = GotoStun;
+        m_DoUpdate = true;
 
-        m_CurHolo = false;
+        m_IsHoloFake = false;
         m_HoloSpawnCount = 0;
         m_Color = Color.white;
         m_Color.a = 0f;
         m_Timer = 0f;
         
         m_Enemy.SetHotBoxesActive(false);
-        m_Phase = m_Enemy.m_Player.GetIsEmptyNearPlayer();
+        m_Phase = m_Enemy.m_Player.GetIsEmptyNearPlayer(m_Enemy.p_Holo_Distance);
         m_Enemy.m_WeaponMgr.ChangeWeapon(2);
     }
 
     public override void UpdateState()
     {
+        if (!m_DoUpdate)
+            return;
+        
         switch (m_Phase)
         {
             case 0:
-                m_Enemy.p_FSMText.text = "HOLO_NOSPACE";
+                m_Enemy.p_FSMText.text = "HOLO_NoSPACE";
                 
                 // 빈 공간 없음
                 Debug.Log("망함 ㅅㄱ");
@@ -428,7 +511,7 @@ public class Holo_BossGang : BossGang_FSM
                 // 왼쪽만 빔
                 Debug.Log("왼쪽 빔 확인");
                 m_PlayerPos = m_Enemy.m_Player.transform.position;
-                m_PlayerPos.x -= 0.32f;
+                m_PlayerPos.x -= m_Enemy.p_Holo_Distance;
                 m_PlayerPos.y -= 0.64f;
                 m_Enemy.transform.position = m_PlayerPos;
                 m_Enemy.setisRightHeaded(true);
@@ -441,7 +524,7 @@ public class Holo_BossGang : BossGang_FSM
                 // 오른쪽만 빔
                 Debug.Log("오른쪽 빔 확인");
                 m_PlayerPos = m_Enemy.m_Player.transform.position;
-                m_PlayerPos.x += 0.32f;
+                m_PlayerPos.x += m_Enemy.p_Holo_Distance;
                 m_PlayerPos.y -= 0.64f;
                 m_Enemy.transform.position = m_PlayerPos;
                 m_Enemy.setisRightHeaded(false);
@@ -458,20 +541,20 @@ public class Holo_BossGang : BossGang_FSM
                 if (m_HoloSpawnCount >= m_Enemy.p_Holo_MaxCount)
                 {
                     m_Enemy.SetHotBoxesActive(true);
-                    m_CurHolo = false;
+                    m_IsHoloFake = false;
                     m_Color = Color.white;
                     m_Color.a = 0f;
                     m_Phase = 7;
                     break;
                 }
 
-                int randomNum = StaticMethods.GetProbabilityWinning(70) ? 0 : 1; 
+                int randomNum = StaticMethods.GetProbabilityWinning(m_Enemy.p_Holo_FakeChance) ? 0 : 1; 
                 switch (randomNum)
                 {
                     case 0:
                         // 홀로그램
                         m_HoloSpawnCount++;
-                        m_CurHolo = true;
+                        m_IsHoloFake = true;
                         m_Color = Color.blue;
                         m_Color.a = 0f;
                         m_Phase = 5;
@@ -480,7 +563,7 @@ public class Holo_BossGang : BossGang_FSM
                     case 1:
                         // 진짜
                         m_Enemy.SetHotBoxesActive(true);
-                        m_CurHolo = false;
+                        m_IsHoloFake = false;
                         m_Color = Color.white;
                         m_Color.a = 0f;
                         m_Phase = 7;
@@ -492,13 +575,25 @@ public class Holo_BossGang : BossGang_FSM
                 m_Enemy.p_FSMText.text = "HOLO_FAKE";
                 
                 // 홀로그램으로 등장
-                m_Color.a += Time.deltaTime * m_Enemy.p_Stealth_Speed;
-                m_Enemy.m_Renderer.color = m_Color;
-                
-                if (m_Color.a >= 1f)
+                if (m_Color.a < 1f)
                 {
-                    m_Color.a = 1f;
-                    m_Phase = 6;
+                    m_Color.a += Time.deltaTime * m_Enemy.p_Holo_FadeSpeed;
+                    m_Enemy.m_Renderer.color = m_Color;
+
+                    if (m_Color.a >= 1f)
+                    {
+                        m_Color.a = 1f;
+                        m_Enemy.m_Renderer.color = m_Color;
+                        m_Timer = 0f;
+                    }
+                }
+                else
+                {
+                    m_Timer += Time.deltaTime;
+                    if (m_Timer > m_Enemy.p_Holo_BeforeDelay)
+                    {
+                        m_Phase = 6;
+                    }
                 }
                 break;
                 
@@ -511,32 +606,56 @@ public class Holo_BossGang : BossGang_FSM
                 m_Enemy.p_FSMText.text = "HOLO_REAL";
                 
                 // 진짜 본체 등장
-                m_Color.a += Time.deltaTime * m_Enemy.p_Stealth_Speed;
-                m_Enemy.m_Renderer.color = m_Color;
-                
-                if (m_Color.a >= 1f)
+                if (m_Color.a < 1f)
                 {
-                    m_Color.a = 1f;
-                    m_Phase = 8;
+                    m_Color.a += Time.deltaTime * m_Enemy.p_Holo_FadeSpeed;
+                    m_Enemy.m_Renderer.color = m_Color;
+
+                    if (m_Color.a >= 1f)
+                    {
+                        m_Color.a = 1f;
+                        m_Enemy.m_Renderer.color = m_Color;
+                        m_Timer = 0f;
+                    }
+                }
+                else
+                {
+                    m_Timer += Time.deltaTime;
+                    if (m_Timer > m_Enemy.p_Holo_BeforeDelay)
+                    {
+                        m_Timer = 0f;
+                        m_Phase = 8;
+                    }
                 }
                 break;
             
             case 8:
                 // 진짜 본체 공격
-                m_Phase = -1;
-                m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
-                m_Enemy.ChangeBossFSM(BossStateName.WALK);
+                if (m_Timer == 0f)
+                {
+                    m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+                }
+                else
+                {
+                    if (m_Timer > m_Enemy.p_HoloReal_AfterDelay)
+                    {
+                        m_Phase = -1;
+                        m_Enemy.ChangeBossFSM(BossStateName.WALK);
+                    }
+                }
+                m_Timer += Time.deltaTime;
+                
                 break;
 
             case 9:
                 // 다시 숨기
-                m_Color.a -= Time.deltaTime * m_Enemy.p_Stealth_Speed;
+                m_Color.a -= Time.deltaTime * m_Enemy.p_Holo_FadeSpeed;
                 m_Enemy.m_Renderer.color = m_Color;
                 
                 if (m_Color.a <= 0f)
                 {
                     m_Color.a = 0f;
-                    m_Phase = m_Enemy.m_Player.GetIsEmptyNearPlayer();
+                    m_Phase = m_Enemy.m_Player.GetIsEmptyNearPlayer(m_Enemy.p_Holo_Distance);
                 }
                 break;
         }
@@ -544,13 +663,15 @@ public class Holo_BossGang : BossGang_FSM
 
     public override void ExitState()
     {
+        m_Enemy.m_ActionOnHit_Holo = null;
         m_Enemy.SetHotBoxesActive(true);
         m_Enemy.m_WeaponMgr.ReleaseWeapon();
     }
 
-    private void PhaseToOne()
+    private void GotoStun()
     {
-        m_Phase = 1;
+        m_DoUpdate = false;
+        m_Enemy.ChangeBossFSM(BossStateName.STUN);
     }
 }
 
@@ -564,6 +685,9 @@ public class Ultimate_BossGang : BossGang_FSM
     private float m_Angle = 0f;
     private TimeSliceObj m_TimeSliceObj;
     private int m_UltimateCount = 0;
+
+    private bool m_SkipTimeSliceObjActivate = false;
+    private bool m_IsTimeCircleMoveCompleted = false;
     
     // Constructor
     public Ultimate_BossGang(BossGang _enemy)
@@ -576,6 +700,10 @@ public class Ultimate_BossGang : BossGang_FSM
     public override void StartState()
     {
         m_Animator = m_Enemy.m_Animator;
+        
+        m_SkipTimeSliceObjActivate = false;
+        m_IsTimeCircleMoveCompleted = false;
+        
         m_Phase = 0;
         m_Timer = 0f;
         m_Color = Color.white;
@@ -593,7 +721,7 @@ public class Ultimate_BossGang : BossGang_FSM
         switch (m_Phase)
         {
             case 0:
-                m_Color.a += Time.deltaTime;
+                m_Color.a += Time.deltaTime * m_Enemy.p_Ultimate_FadeSpeed;
                 m_Enemy.m_Renderer.color = m_Color;
                 if (m_Color.a >= 1f)
                 {
@@ -608,30 +736,66 @@ public class Ultimate_BossGang : BossGang_FSM
                 m_TimeSliceObj =
                     m_Enemy.p_TimeSliceMgr.SpawnTimeSlice(m_Enemy.p_Ultimate_TimeSliceMoveSpeed,
                         m_Enemy.p_Ultimate_TImeSliceColorSpeed, m_Angle, m_Enemy.p_Ultimate_RemainTime);
+                
+                // TimeSlice Circle Setting
+                m_SkipTimeSliceObjActivate = false;
+                m_IsTimeCircleMoveCompleted = false;
+                m_TimeSliceObj.p_CircleCol.gameObject.SetActive(true);
+                m_TimeSliceObj.p_CircleCol.InitTimeSliceCircleCol(m_Enemy.p_Ultimate_CircleStartPos,
+                    m_Enemy.p_Ultimate_CircleEndPos, m_Enemy.p_Ultimate_CircleSpeed, SuccessTimeCircleMoveCompleted);
+                
+                
                 m_TimeSliceObj.StartFollow();
+                m_TimeSliceObj.m_OnHitAction = SkipCurTimeSliceObjActivate;
+                
                 m_Phase = 2;
                 break;
             
             case 2:
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= m_Enemy.p_Ultimate_SetPosTime)
+                if (m_SkipTimeSliceObjActivate)
                 {
+                    m_Phase = 3;
+                }
+                else if (m_IsTimeCircleMoveCompleted)
+                {
+                    m_TimeSliceObj.p_CircleCol.gameObject.SetActive(false);
                     m_TimeSliceObj.Stop();
                     m_Timer = 0f;
-                    m_Phase = 3;
+                    m_Phase = 4;
                 }
                 break;
             
             case 3:
+                // 그냥 사라짐
+                m_SkipTimeSliceObjActivate = false;
+                m_UltimateCount++;
+                
+                if (m_UltimateCount < m_Enemy.p_Ultimate_RepeatCount)
+                {
+                    m_Timer = 0f;
+                    m_Color = Color.white;
+                    m_Color.a = 0f;
+                    m_Phase = 1;
+                }
+                else
+                {
+                    m_Phase = -1;
+                    m_Enemy.ChangeBossFSM(BossStateName.WALK);
+                }
+                break;
+            
+            case 4:
+                // 정상 Activate
                 m_Timer += Time.deltaTime;
                 if (m_Timer >= m_Enemy.p_Ultimate_DelayTimeAfterSetPos)
                 {
                     m_UltimateCount++;
                     m_TimeSliceObj.Activate();
                     m_Enemy.m_ScreenCaptureMgr.Capture(m_TimeSliceObj.transform.position.x,
-                       m_Angle);
+                        m_TimeSliceObj.transform.position.y,
+                        m_Angle);
 
-                    if (m_UltimateCount <= m_Enemy.p_Ultimate_RepeatCount)
+                    if (m_UltimateCount < m_Enemy.p_Ultimate_RepeatCount)
                     {
                         m_Timer = 0f;
                         m_Color = Color.white;
@@ -652,13 +816,22 @@ public class Ultimate_BossGang : BossGang_FSM
     {
         
     }
+
+    private void SuccessTimeCircleMoveCompleted()
+    {
+        m_IsTimeCircleMoveCompleted = true;
+    }
+    private void SkipCurTimeSliceObjActivate()
+    {
+        m_SkipTimeSliceObjActivate = true;
+    }
 }
 
 public class Counter_BossGang : BossGang_FSM
 {
     // Member Variables
     private int m_Phase = 0;
-    private Vector2 m_MapCenterPos;
+    private Vector2 m_SpawnPos;
     private float m_TimerForFade = 0f;
     private float m_TimerForCounter = 0f;
     private Color m_Color = Color.white;
@@ -681,11 +854,47 @@ public class Counter_BossGang : BossGang_FSM
         m_TimerForFade = 0f;
         m_TimerForCounter = 0f;
         m_Phase = 0;
-        m_MapCenterPos = m_Enemy.p_MapCenterTransform.position;
+
+
+        Vector2 playerPos = m_Enemy.m_Player.transform.position;
+        playerPos.y -= 0.64f;
+        
+        switch (m_Enemy.m_Player.GetIsEmptyNearPlayer(m_Enemy.p_Holo_Distance))
+        {
+            case 0:
+                m_SpawnPos = m_Enemy.p_MapCenterTransform.position;
+                break;
+            
+            case 1:
+                playerPos.x -= m_Enemy.p_Holo_Distance;
+                m_SpawnPos = playerPos;
+                break;
+            
+            case 2:
+                playerPos.x += m_Enemy.p_Holo_Distance;
+                m_SpawnPos = playerPos;
+                break;
+            
+            case 3:
+                int randomNum = UnityEngine.Random.Range(1, 3);
+                if (randomNum == 1)
+                {
+                    playerPos.x -= m_Enemy.p_Holo_Distance;
+                    m_SpawnPos = playerPos;
+                }
+                else
+                {
+                    playerPos.x += m_Enemy.p_Holo_Distance;
+                    m_SpawnPos = playerPos;
+                }
+                break;
+        }
+        
+        
         m_Enemy.SetHotBoxesActive(false);
 
         m_Enemy.m_ActionOnHit_Counter = ToAttack;
-        m_Enemy.m_WeaponMgr.ChangeWeapon(2);
+        m_Enemy.m_WeaponMgr.ChangeWeapon(3);
     }
 
     public override void UpdateState()
@@ -701,7 +910,7 @@ public class Counter_BossGang : BossGang_FSM
                 }
                 
                 m_Enemy.SetHotBoxesActive(true);
-                m_Enemy.transform.position = m_MapCenterPos;
+                m_Enemy.transform.position = m_SpawnPos;
                 if(!m_Enemy.IsFacePlayer())
                     m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
                 m_Phase = 1;
@@ -714,8 +923,8 @@ public class Counter_BossGang : BossGang_FSM
                     m_Enemy.ChangeBossFSM(BossStateName.WALK);
                     break;
                 }
-                
-                m_Color.a += Time.deltaTime * m_Enemy.p_Stealth_Speed;
+
+                m_Color.a += Time.deltaTime * m_Enemy.p_Counter_FadeSpeed;
                 m_Enemy.m_Renderer.color = m_Color;
 
                 if (m_Color.a >= 1f)

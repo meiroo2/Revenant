@@ -194,7 +194,8 @@ public class Player_FootMgr : MonoBehaviour
                 {
                     if (transform.position.x > StairPos.x + m_SensorXGap)
                     {
-                        ReturnToFloor(10);
+                        // 계단 앞으로 고정
+                        ReturnToFloor(16);
                         Debug.Log("올라가려다가 오른쪽으로 빠짐");
                         break;
                     }
@@ -203,7 +204,8 @@ public class Player_FootMgr : MonoBehaviour
                 {
                     if (transform.position.x < StairPos.x - m_SensorXGap)
                     {
-                        ReturnToFloor(10);
+                        // 계단 앞으로 고정
+                        ReturnToFloor(16);
                         Debug.Log("올라가려다가 왼쪽으로 빠짐");
                         break;
                     }
@@ -211,7 +213,8 @@ public class Player_FootMgr : MonoBehaviour
 
                 if (!m_InputMgr.m_IsPushStairUpKey)
                 {
-                    ReturnToFloor(10);
+                    // 계단 앞으로 고정
+                    ReturnToFloor(16);
                     Debug.Log("올라가려다가 키 업");
                     break;
                 }
@@ -241,7 +244,8 @@ public class Player_FootMgr : MonoBehaviour
                 else if (transform.position.x >= DownPos.x)  // 아래 센서보다 오른쪽
                 {
                     AddWayPointsVectorList(false, DownPos);
-                    ReturnToFloor(10);
+                    // 계단 앞으로 고정
+                    ReturnToFloor(16);
                     break;
                 }
                 yield return null;
@@ -260,7 +264,8 @@ public class Player_FootMgr : MonoBehaviour
                 else if (transform.position.x <= DownPos.x)
                 {
                     AddWayPointsVectorList(false, DownPos);
-                    ReturnToFloor(10);
+                    // 계단 앞으로 고정
+                    ReturnToFloor(16);
                     break;
                 }
                 yield return null;
