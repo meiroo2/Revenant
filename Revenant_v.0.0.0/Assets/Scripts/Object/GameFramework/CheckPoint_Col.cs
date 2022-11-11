@@ -31,7 +31,7 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     {
         _checkPoint.ActivateBothOutline(true);
         RemoveEnemyListToActivate();
-
+        
         // 성공하면 1, 실패하면 0을 반환
         // 플레이어가 체크포인트 범위안에 들어있고, 등록된 적 리스트가 비워져 있다면 인터랙션 가능
         if (_checkPoint.bCanInteract && GetEnemyNumFromEnemyList == 0 && GetEnemyNumFromSpawnerList == 0)
@@ -53,7 +53,7 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
             Debug.Log("체크포인트 상호작용 성공");
             return 1;
         }
-
+        
         Debug.Log("체크포인트 상호작용 실패");
         return 0;
     }
@@ -87,7 +87,7 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
             for (int i = 0; i < GetEnemyNumFromEnemyList; i++)
             {
                 // 적이 죽으면
-                if (_checkPoint.EnemyListToActivate[i].gameObject.activeSelf == false)
+                if (_checkPoint.EnemyListToActivate.Count != 0 && _checkPoint.EnemyListToActivate[i].gameObject.activeSelf == false)
                 {
                     // 리스트에서 죽은 적을 제거
                     //Debug.Log(_checkPoint.EnemyListToActivate[i].gameObject.name);
@@ -111,7 +111,7 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
             for (int i = 0; i < GetEnemyNumFromSpawnerList; i++)
             {
                 // 적이 죽으면
-                if (_checkPoint.EnemyListFromSpawner[i].gameObject.activeSelf == false)
+                if (_checkPoint.EnemyListFromSpawner.Count != 0 && _checkPoint.EnemyListFromSpawner[i].gameObject.activeSelf == false)
                 {
                     // 리스트에서 죽은 적을 제거
                     _checkPoint.EnemyListFromSpawner.RemoveAt(i);

@@ -176,7 +176,8 @@ public class Enemy_FootMgr : MonoBehaviour
                 {
                     if (transform.position.x > stairPosX + m_SensorXGap)
                     {
-                        ReturnToFloor(10);
+                        // 계단 앞으로 고정
+                        ReturnToFloor(16);
                         Debug.Log("올라가려다가 오른쪽으로 빠짐");
                         break;
                     }
@@ -185,7 +186,8 @@ public class Enemy_FootMgr : MonoBehaviour
                 {
                     if (transform.position.x < stairPosX - m_SensorXGap)
                     {
-                        ReturnToFloor(10);
+                        // 계단 앞으로 고정
+                        ReturnToFloor(16);
                         Debug.Log("올라가려다가 왼쪽으로 빠짐");
                         break;
                     }
@@ -193,7 +195,8 @@ public class Enemy_FootMgr : MonoBehaviour
                 
                 if (!m_Enemy.bMoveToUseStairUp)
                 {
-                    ReturnToFloor(10);
+                    // 계단 앞으로 고정
+                    ReturnToFloor(16);
                     Debug.Log("올라가려다가 키 업");
                     break;
                 }
@@ -231,7 +234,8 @@ public class Enemy_FootMgr : MonoBehaviour
                 }
                 else if (transform.position.x >= DownPosX) // 아래 센서보다 오른쪽
                 {
-                    ReturnToFloor(10);
+                    // 계단 앞으로 고정
+                    ReturnToFloor(16);
                     Debug.Log("돌아왓당");
 
                     m_Enemy.MoveNextPoint();
@@ -260,7 +264,8 @@ public class Enemy_FootMgr : MonoBehaviour
                 }
                 else if (transform.position.x <= DownPosX)
                 {
-                    ReturnToFloor(10);
+                    // 계단 앞으로 고정
+                    ReturnToFloor(16);
                     Debug.Log("돌아왓당");
                     break;
                 }
