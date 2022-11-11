@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 using Random = UnityEngine.Random;
 
 
 public class ScreenCaptureMgr : MonoBehaviour
 {
+    public float m_LerpedPos = 3.56f;
+    public float m_Speed;
+    public AnimationCurve m_Curve;
     public Material m_LeftMat;
     public Material m_RightMat;
     
@@ -32,6 +37,8 @@ public class ScreenCaptureMgr : MonoBehaviour
     private static readonly int Rotate = Shader.PropertyToID("_Rotate");
     private static readonly int PivotX = Shader.PropertyToID("_PivotX");
     private static readonly int PivotY = Shader.PropertyToID("_PivotY");
+
+    private float m_TimeSliceAngle;
 
     private void Awake()
     {
@@ -57,6 +64,7 @@ public class ScreenCaptureMgr : MonoBehaviour
 
     public void Capture(float _xPos, float _yPos, float _timeSliceAngle)
     {
+        m_TimeSliceAngle = _timeSliceAngle;
         m_CamRenderTex = new RenderTexture(width, height, 24);
         
         m_Cam.targetTexture = m_CamRenderTex;
@@ -111,6 +119,7 @@ public class ScreenCaptureMgr : MonoBehaviour
 
     private IEnumerator MoveImg()
     {
+        /*
         m_BulletTimeMgr.ChangeTimeScale(0f);
         
         float IncreaseSpeed = 1f;
@@ -158,7 +167,48 @@ public class ScreenCaptureMgr : MonoBehaviour
             
             yield return null;
         }
+        */
+        //m_BulletTimeMgr.ChangeTimeScale(0f);
+        float deltaTime = 0f;
+        float forLValue = 0f;
+        float forRValue = 0f;
 
+        float Timer = 0f;
+        float evaluated = 0f;
+
+        float LerpVal = 0f;
+        Vector2 LOriginPos = m_LImg.rectTransform.anchoredPosition;
+        Vector2 LLerpPos = LOriginPos;
+        LLerpPos.x -= m_LerpedPos;
+
+        Vector2 ROriginPos = m_RImg.rectTransform.anchoredPosition;
+        Vector2 RLerpPos = ROriginPos;
+        RLerpPos.x += m_LerpedPos;
+
+        while (true)
+        {
+            deltaTime = Time.unscaledDeltaTime;
+            Timer += deltaTime;
+            
+            evaluated = m_Curve.Evaluate(Timer);
+            Debug.Log(evaluated);
+            LerpVal = evaluated;
+            
+            m_LImg.rectTransform.anchoredPosition = Vector2.Lerp(LOriginPos, LLerpPos, LerpVal);
+            m_RImg.rectTransform.anchoredPosition = Vector2.Lerp(ROriginPos, RLerpPos, LerpVal);
+            
+            
+            
+
+           
+            
+            if (LerpVal > 1f)
+            {
+                break;
+            }
+            yield return null;
+        }
+        
         yield break;
     }
 }
