@@ -25,7 +25,7 @@ public class IHotBoxParam
 {
     public int m_Damage { get; private set; }
     public int m_stunValue { get; private set; }
-    public Vector2 m_contactPoint { get; private set; }
+    public Vector2 m_contactPoint { get; set; }
     public WeaponType m_weaponType { get; private set; }
     public bool m_MakeRageParticle;
 

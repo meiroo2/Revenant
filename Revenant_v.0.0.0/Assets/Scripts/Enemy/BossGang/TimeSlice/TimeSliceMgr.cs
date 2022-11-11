@@ -8,7 +8,7 @@ public class TimeSliceMgr : MonoBehaviour
 {
     // Visible Member Variables
     public GameObject p_TimeSlicePrefab;
-    
+
     // Member Variables
     private List<TimeSliceObj> m_TimeSliceObjList = new List<TimeSliceObj>();
     private int m_PoolLength = 5;

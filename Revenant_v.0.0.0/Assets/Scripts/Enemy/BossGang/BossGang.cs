@@ -40,6 +40,8 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("LeapAtk")] public float p_LeapAtk_Height = 1f;
     [TabGroup("LeapAtk")] public float p_LeapAtk_Speed = 0.2f;
     [TabGroup("LeapAtk")] public float p_LeapAtk_Distance_Min = 1f;
+    [TabGroup("LeapAtk")] public float p_LeapAtk_SlipPwr = 4f;
+    [TabGroup("LeapAtk")] public float p_LeapAtk_AdaptiveSlipValue = 1f;
 
     // Stealth
     [TabGroup("Stealth")] public float p_Stealth_Speed = 1f;
@@ -70,6 +72,10 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("Ultimate")] public float p_Ultimate_RemainTime = 5f;
     [TabGroup("Ultimate")] public float p_Ultimate_TimeSliceMoveSpeed = 1f;
     [TabGroup("Ultimate")] public float p_Ultimate_TImeSliceColorSpeed = 1f;
+    [TabGroup("Ultimate"), PropertySpace] public float p_Ultimate_CircleStartPos = -3f;
+    [TabGroup("Ultimate")] public float p_Ultimate_CircleEndPos = 3f;
+    [TabGroup("Ultimate")] public float p_Ultimate_CircleSpeed = 1f;
+    
 
     [PropertySpace(10f, 0f)]
     public Transform p_MapCenterTransform;
@@ -233,6 +239,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         switch (m_CurBossStateName)
         {
             case BossStateName.HOLO:
+                m_ActionOnHit_Holo?.Invoke();
                 break;
             
             case BossStateName.COUNTER:

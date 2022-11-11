@@ -35,7 +35,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     private void Awake()
     {
         m_Player = GetComponentInParent<Player>();
-        m_ParentObj = m_Player.gameObject;
+        m_ParentObj = gameObject;
         m_PlayerHotBoxCol = GetComponent<BoxCollider2D>();
     }
 

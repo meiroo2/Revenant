@@ -87,8 +87,6 @@ public class EnemyMgr : MonoBehaviour
     public float SF_AttackDistance;
     public float SF_MeleeDistance;
     public float SF_GapDistance;
-    public float SF_AlertSpeed;
-    public float SF_AlertFadeInSpeed;
     public int SF_HeadDmgMulti;
     public int SF_BodyDmgMulti;
     public float SF_Roll_Refresh;

@@ -15,14 +15,13 @@ public class SpecialForce : BasicEnemy
     // Visible Member Variables
     
     // Basic
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_AttackDistance { get; private set; } = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public int p_Bullet_Count { get; private set; } = 3;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Bullet_Speed { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Bullet_Spread { get; private set; } = 5f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Fire_Speed { get; private set; } = 3f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Fire_Delay { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Stun_Time { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_MeleeDistance { get; private set; } = 0.4f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_AlertSpeed { get; private set; } = 1f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_AlertFadeinSpeed { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public int p_HeadDmgMulti { get; private set; } = 2;
     [field: SerializeField, BoxGroup("SpecialForce")] public int p_BodyDmgMulti { get; private set; } = 1;
     
@@ -34,9 +33,13 @@ public class SpecialForce : BasicEnemy
     [field: SerializeField, BoxGroup("SpecialForce")] public int p_Roll_Chance { get; private set; } = 50;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Roll_Cooldown { get; private set; } = 5f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Roll_Speed_Multi { get; private set; } = 3f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_OnAlert_MoveSpeedMulti = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_RunSpeedMulti = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_GapDistance = 1f;
-
+    [field: SerializeField, BoxGroup("SpecialForce")] public bool p_IsLookAround = false;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_LookAroundDelay = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public Transform[] p_PatrolPos { get; protected set; } = null;
+    
+    
     // Roll
     [field: SerializeField, BoxGroup("SpecialForce"), Title("For Hide")] public float p_Hide_Chance = 10f;
 
@@ -47,9 +50,26 @@ public class SpecialForce : BasicEnemy
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Hide_Time_Cancel = 1f;
     
     // Assign
-    [field: SerializeField, Title("Assign")] public Animator p_Animator { get; private set; }
+    [field: SerializeField, Title("Assign")]
+    public AlertSystem p_AlertSystem;
+    
+    public SpriteRenderer p_FullRenderer;
+    public Animator p_FullAnimator;
+    
+    public SpriteRenderer p_BodyRenderer;
+    public Animator p_BodyAnimator;
+
+    public SpriteRenderer p_ArmRenderer;
+    public Animator p_ArmAnimator;
+
+    public SpriteRenderer p_LegRenderer;
+    public Animator p_LegAnimator;
+
+    public RuntimeAnimatorController p_NormalFullCont;
+    public RuntimeAnimatorController p_FightFullCont;
+    
     [field: SerializeField] public Enemy_HotBox[] p_HitHotboxes { get; private set; }
-    public TripleShot_Enemy p_TripleShotWeapon;
+    public SingleRifle p_SingleRifleWeapon;
     public MeleeWeapon_Enemy p_MeleeWeapon;
     public Enemy_HotBox p_HeadHotBox;
     public Enemy_HotBox p_BodyHotBox;
@@ -64,6 +84,7 @@ public class SpecialForce : BasicEnemy
     
     private bool m_FSMLock = false;
     private SpecialForce_IDLE m_IDLE;
+    private SpecialForce_PATROL m_PATROL;
     private SpecialForce_FOLLOW m_FOLLOW;
     private SpecialForce_STUN m_STUN;
     private SpecialForce_DEAD m_DEAD;
@@ -71,11 +92,12 @@ public class SpecialForce : BasicEnemy
     private SpecialForce_ATTACK m_ATTACK;
     private SpecialForce_HIDDEN m_HIDDEN;
 
+    private int m_SpriteMode = 0;
+    
     public WeaponMgr m_WeaponMgr { get; private set; }
 
     public CoroutineHandler m_CoroutineHandler { get; private set; }
-
-    public AlertSystem m_AlertSystem { get; private set; }
+    
     public MeleeWeapon_Enemy m_MeleeWeapon { get; private set; }
     public SpecialForce_UseRange m_UseRange { get; private set; }
     public HideSlot m_CurHideSlot = null;
@@ -85,7 +107,6 @@ public class SpecialForce : BasicEnemy
     // Constructors
     private void Awake()
     {
-        m_AlertSystem = GetComponentInChildren<AlertSystem>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
         m_Foot = GetComponentInChildren<Enemy_FootMgr>();
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
@@ -93,15 +114,22 @@ public class SpecialForce : BasicEnemy
         m_UseRange = GetComponentInChildren<SpecialForce_UseRange>();
         m_EnemyHotBoxes = p_HitHotboxes;
         InitHuman();
-        m_Animator = p_Animator;
-
+        m_Animator = p_FullAnimator;
+        
         m_IDLE = new SpecialForce_IDLE(this);
+        m_PATROL = new SpecialForce_PATROL(this);
         m_FOLLOW = new SpecialForce_FOLLOW(this);
         m_STUN = new SpecialForce_STUN(this);
         m_DEAD = new SpecialForce_DEAD(this);
         m_ROLL = new SpecialForce_ROLL(this);
         m_ATTACK = new SpecialForce_ATTACK(this);
         m_HIDDEN = new SpecialForce_HIDDEN(this);
+        
+        p_HeadHotBox.p_DamageMulti = p_HeadDmgMulti;
+        p_BodyHotBox.p_DamageMulti = p_BodyDmgMulti;
+        
+        m_PlayerCognition = false;
+        m_SpriteMode = 0;
         
         m_CurEnemyStateName = EnemyStateName.IDLE;
         m_CurEnemyFSM = m_IDLE;
@@ -113,19 +141,10 @@ public class SpecialForce : BasicEnemy
 
         var instance = InstanceMgr.GetInstance();
         m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
-        
-        m_AlertSystem.SetAlertSpeed(p_AlertSpeed);
-        m_AlertSystem.SetStunAlertSpeed(1f);
-        m_AlertSystem.SetFadeInSpeed(p_AlertFadeinSpeed);
+
+        SetSpriteMode(0);
         
         m_CurEnemyFSM.StartState();
-    }
-
-    private void OnEnable()
-    {
-        m_AlertSystem.SetAlertSpeed(p_AlertSpeed);
-        m_AlertSystem.SetStunAlertSpeed(1f);
-        m_AlertSystem.SetFadeInSpeed(p_AlertFadeinSpeed);
     }
 
 
@@ -140,30 +159,65 @@ public class SpecialForce : BasicEnemy
 
 
     // Functions
-
+    
+    /// <summary>
+    /// SpecialForce의 Sprite Mode를 변경합니다.
+    /// 0 = 전신노말, 1 = 전신전투, 2 = 상하분리
+    /// </summary>
+    /// <param name="_num"></param>
+    public void SetSpriteMode(int _num)
+    {
+        switch (_num)
+        {
+            case 0:
+                m_SpriteMode = _num;
+                p_FullRenderer.enabled = true;
+                p_FullAnimator.runtimeAnimatorController = p_NormalFullCont;
+                p_BodyRenderer.enabled = false;
+                p_ArmRenderer.enabled = false;
+                p_LegRenderer.enabled = false;
+                break;
+            
+            case 1:
+                m_SpriteMode = _num;
+                p_FullRenderer.enabled = true;
+                p_FullAnimator.runtimeAnimatorController = p_FightFullCont;
+                p_BodyRenderer.enabled = false;
+                p_ArmRenderer.enabled = false;
+                p_LegRenderer.enabled = false;
+                break;
+            
+            case 2:
+                m_SpriteMode = _num;
+                p_FullRenderer.enabled = false;
+                p_BodyRenderer.enabled = true;
+                p_ArmRenderer.enabled = true;
+                p_LegRenderer.enabled = true;
+                break;
+        }
+    }
+    
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
         if (p_OverrideEnemyMgr)
             return;
 
         p_Hp = _mgr.SF_Hp;
-        p_TripleShotWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
+        p_SingleRifleWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
         p_MeleeWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
-        p_TripleShotWeapon.p_BulletRandomRotation = p_Bullet_Spread;
+        p_SingleRifleWeapon.p_BulletRandomRotation = p_Bullet_Spread;
         p_Bullet_Speed = _mgr.SF_BulletSpeed;
-        p_TripleShotWeapon.p_BulletSpeed = p_Bullet_Speed;
+        p_SingleRifleWeapon.p_BulletSpeed = p_Bullet_Speed;
         p_Fire_Delay = _mgr.SF_FireDelay;
         p_MoveSpeed = _mgr.SF_MoveSpeed;
-        p_OnAlert_MoveSpeedMulti = _mgr.SF_OnAlert_MoveSpeedMulti;
+        p_RunSpeedMulti = _mgr.SF_OnAlert_MoveSpeedMulti;
         p_Stun_Time = _mgr.SF_StunTime;
         p_StunHp = _mgr.SF_StunThreshold;
         p_VisionDistance = _mgr.SF_VisionDistance;
-        p_AttackDistance = _mgr.SF_AttackDistance;
+        p_AtkDistance = _mgr.SF_AttackDistance;
         p_MeleeDistance = _mgr.SF_MeleeDistance;
         p_GapDistance = _mgr.SF_GapDistance;
-        p_AlertSpeed = _mgr.SF_AlertSpeed;
-        p_AlertFadeinSpeed = _mgr.SF_AlertFadeInSpeed;
-        
+
         p_HeadDmgMulti = _mgr.SF_HeadDmgMulti;
         p_HeadHotBox.p_DamageMulti = p_HeadDmgMulti;
         
@@ -181,14 +235,14 @@ public class SpecialForce : BasicEnemy
             EditorUtility.SetDirty(this);
             EditorUtility.SetDirty(p_HeadHotBox);
             EditorUtility.SetDirty(p_BodyHotBox);
-            EditorUtility.SetDirty(p_TripleShotWeapon);
+            EditorUtility.SetDirty(p_SingleRifleWeapon);
             EditorUtility.SetDirty(p_MeleeWeapon);
         #endif
     }
 
     public override void SetRigidToPoint(float _addSpeed = 1f)
     {
-        SetRigidByDirection(m_MovePoint.x > transform.position.x);
+        SetRigidByDirection(m_MovePoint.x > transform.position.x, _addSpeed);
     }
     
     public override void SetRigidByDirection(bool _isRight, float _addSpeed = 1f)
@@ -254,12 +308,14 @@ public class SpecialForce : BasicEnemy
             return;
         }
 
-        
-        if (m_CurStunValue >= p_StunHp)
+        if (m_CurEnemyStateName != EnemyStateName.STUN)
         {
-            m_CurStunValue = 0;
-            ChangeEnemyFSM(EnemyStateName.STUN);
-            return;
+            if (m_CurStunValue >= p_StunHp)
+            {
+                m_CurStunValue = 0;
+                ChangeEnemyFSM(EnemyStateName.STUN);
+                return;
+            }
         }
 
 
@@ -281,6 +337,11 @@ public class SpecialForce : BasicEnemy
             case EnemyStateName.IDLE:
                 m_CurEnemyFSM.ExitState();
                 m_CurEnemyFSM = m_IDLE;
+                break;
+            
+            case EnemyStateName.PATROL:
+                m_CurEnemyFSM.ExitState();
+                m_CurEnemyFSM = m_PATROL;
                 break;
             
             case EnemyStateName.FOLLOW:

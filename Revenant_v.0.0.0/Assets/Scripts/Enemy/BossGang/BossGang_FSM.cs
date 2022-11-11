@@ -113,7 +113,7 @@ public class Walk_BossGang : BossGang_FSM
             
             case 2:
                 m_Phase = -1;
-                
+
                 float distance = m_Enemy.GetDistanceBetPlayer();
                 float jumpMax = m_Enemy.p_JumpAtk_Distance_Max;
                 float leapMin = m_Enemy.p_LeapAtk_Distance_Min;
@@ -292,7 +292,8 @@ public class LeapAtk_BossGang : BossGang_FSM
 {
     // Member Variables
     private int m_Phase = 0;
-    
+    private float m_Timer = 0f;
+    private float m_BeizerDistance = 0f;
     
     // Constructor
     public LeapAtk_BossGang(BossGang _enemy)
@@ -306,12 +307,18 @@ public class LeapAtk_BossGang : BossGang_FSM
     {
         m_Animator = m_Enemy.m_Animator;
         m_Phase = 0;
+        m_Timer = 0f;
+
+        m_BeizerDistance = Vector2.Distance(m_Enemy.transform.position,
+            m_Enemy.m_Player.m_PlayerFootMgr.GetFootRayHit().point);
         
         m_Enemy.m_WeaponMgr.ChangeWeapon(1);
         
-        m_Enemy.p_BezierMove.SetAction(PhaseToOne);
-
+        if(!m_Enemy.IsFacePlayer())
+            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+        
         m_Enemy.p_RigidCol.isTrigger = true;
+        m_Enemy.p_BezierMove.SetAction(PhaseToOne);
         m_Enemy.p_BezierMove.MoveToPoint();
     }
 
@@ -320,8 +327,30 @@ public class LeapAtk_BossGang : BossGang_FSM
         switch (m_Phase)
         {
             case 1:
-                m_Phase = -1;
+                m_Phase = 2;
+                m_Enemy.p_RigidCol.isTrigger = false;
                 m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+
+                Vector2 SlipPwr = Vector2.right * (m_Enemy.p_LeapAtk_SlipPwr *
+                                                   (m_BeizerDistance * m_Enemy.p_LeapAtk_AdaptiveSlipValue));
+                if (!m_Enemy.m_IsRightHeaded)
+                    SlipPwr *= -1f;
+                
+                m_Enemy.m_EnemyRigid.AddForce(SlipPwr, ForceMode2D.Impulse);
+                break;
+            
+            case 2:
+                m_Phase = 3;
+                break;
+            
+            case 3:
+                m_Timer += Time.deltaTime;
+                if (m_Timer >= 1f)
+                    m_Phase = 4;
+                break;
+            
+            case 4:
+                m_Phase = -1;
                 m_Enemy.ChangeBossFSM(BossStateName.WALK);
                 break;
         }
@@ -642,7 +671,7 @@ public class Holo_BossGang : BossGang_FSM
     private void GotoStun()
     {
         m_DoUpdate = false;
-        m_Enemy.ChangeBossFSM(BossStateName.HOLO);
+        m_Enemy.ChangeBossFSM(BossStateName.STUN);
     }
 }
 
@@ -656,6 +685,9 @@ public class Ultimate_BossGang : BossGang_FSM
     private float m_Angle = 0f;
     private TimeSliceObj m_TimeSliceObj;
     private int m_UltimateCount = 0;
+
+    private bool m_SkipTimeSliceObjActivate = false;
+    private bool m_IsTimeCircleMoveCompleted = false;
     
     // Constructor
     public Ultimate_BossGang(BossGang _enemy)
@@ -668,6 +700,10 @@ public class Ultimate_BossGang : BossGang_FSM
     public override void StartState()
     {
         m_Animator = m_Enemy.m_Animator;
+        
+        m_SkipTimeSliceObjActivate = false;
+        m_IsTimeCircleMoveCompleted = false;
+        
         m_Phase = 0;
         m_Timer = 0f;
         m_Color = Color.white;
@@ -700,28 +736,64 @@ public class Ultimate_BossGang : BossGang_FSM
                 m_TimeSliceObj =
                     m_Enemy.p_TimeSliceMgr.SpawnTimeSlice(m_Enemy.p_Ultimate_TimeSliceMoveSpeed,
                         m_Enemy.p_Ultimate_TImeSliceColorSpeed, m_Angle, m_Enemy.p_Ultimate_RemainTime);
+                
+                // TimeSlice Circle Setting
+                m_SkipTimeSliceObjActivate = false;
+                m_IsTimeCircleMoveCompleted = false;
+                m_TimeSliceObj.p_CircleCol.gameObject.SetActive(true);
+                m_TimeSliceObj.p_CircleCol.InitTimeSliceCircleCol(m_Enemy.p_Ultimate_CircleStartPos,
+                    m_Enemy.p_Ultimate_CircleEndPos, m_Enemy.p_Ultimate_CircleSpeed, SuccessTimeCircleMoveCompleted);
+                
+                
                 m_TimeSliceObj.StartFollow();
+                m_TimeSliceObj.m_OnHitAction = SkipCurTimeSliceObjActivate;
+                
                 m_Phase = 2;
                 break;
             
             case 2:
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= m_Enemy.p_Ultimate_SetPosTime)
+                if (m_SkipTimeSliceObjActivate)
                 {
+                    m_Phase = 3;
+                }
+                else if (m_IsTimeCircleMoveCompleted)
+                {
+                    m_TimeSliceObj.p_CircleCol.gameObject.SetActive(false);
                     m_TimeSliceObj.Stop();
                     m_Timer = 0f;
-                    m_Phase = 3;
+                    m_Phase = 4;
                 }
                 break;
             
             case 3:
+                // 그냥 사라짐
+                m_SkipTimeSliceObjActivate = false;
+                m_UltimateCount++;
+                
+                if (m_UltimateCount < m_Enemy.p_Ultimate_RepeatCount)
+                {
+                    m_Timer = 0f;
+                    m_Color = Color.white;
+                    m_Color.a = 0f;
+                    m_Phase = 1;
+                }
+                else
+                {
+                    m_Phase = -1;
+                    m_Enemy.ChangeBossFSM(BossStateName.WALK);
+                }
+                break;
+            
+            case 4:
+                // 정상 Activate
                 m_Timer += Time.deltaTime;
                 if (m_Timer >= m_Enemy.p_Ultimate_DelayTimeAfterSetPos)
                 {
                     m_UltimateCount++;
                     m_TimeSliceObj.Activate();
                     m_Enemy.m_ScreenCaptureMgr.Capture(m_TimeSliceObj.transform.position.x,
-                       m_Angle);
+                        m_TimeSliceObj.transform.position.y,
+                        m_Angle);
 
                     if (m_UltimateCount < m_Enemy.p_Ultimate_RepeatCount)
                     {
@@ -744,13 +816,22 @@ public class Ultimate_BossGang : BossGang_FSM
     {
         
     }
+
+    private void SuccessTimeCircleMoveCompleted()
+    {
+        m_IsTimeCircleMoveCompleted = true;
+    }
+    private void SkipCurTimeSliceObjActivate()
+    {
+        m_SkipTimeSliceObjActivate = true;
+    }
 }
 
 public class Counter_BossGang : BossGang_FSM
 {
     // Member Variables
     private int m_Phase = 0;
-    private Vector2 m_MapCenterPos;
+    private Vector2 m_SpawnPos;
     private float m_TimerForFade = 0f;
     private float m_TimerForCounter = 0f;
     private Color m_Color = Color.white;
@@ -773,11 +854,47 @@ public class Counter_BossGang : BossGang_FSM
         m_TimerForFade = 0f;
         m_TimerForCounter = 0f;
         m_Phase = 0;
-        m_MapCenterPos = m_Enemy.p_MapCenterTransform.position;
+
+
+        Vector2 playerPos = m_Enemy.m_Player.transform.position;
+        playerPos.y -= 0.64f;
+        
+        switch (m_Enemy.m_Player.GetIsEmptyNearPlayer(m_Enemy.p_Holo_Distance))
+        {
+            case 0:
+                m_SpawnPos = m_Enemy.p_MapCenterTransform.position;
+                break;
+            
+            case 1:
+                playerPos.x -= m_Enemy.p_Holo_Distance;
+                m_SpawnPos = playerPos;
+                break;
+            
+            case 2:
+                playerPos.x += m_Enemy.p_Holo_Distance;
+                m_SpawnPos = playerPos;
+                break;
+            
+            case 3:
+                int randomNum = UnityEngine.Random.Range(1, 3);
+                if (randomNum == 1)
+                {
+                    playerPos.x -= m_Enemy.p_Holo_Distance;
+                    m_SpawnPos = playerPos;
+                }
+                else
+                {
+                    playerPos.x += m_Enemy.p_Holo_Distance;
+                    m_SpawnPos = playerPos;
+                }
+                break;
+        }
+        
+        
         m_Enemy.SetHotBoxesActive(false);
 
         m_Enemy.m_ActionOnHit_Counter = ToAttack;
-        m_Enemy.m_WeaponMgr.ChangeWeapon(2);
+        m_Enemy.m_WeaponMgr.ChangeWeapon(3);
     }
 
     public override void UpdateState()
@@ -793,7 +910,7 @@ public class Counter_BossGang : BossGang_FSM
                 }
                 
                 m_Enemy.SetHotBoxesActive(true);
-                m_Enemy.transform.position = m_MapCenterPos;
+                m_Enemy.transform.position = m_SpawnPos;
                 if(!m_Enemy.IsFacePlayer())
                     m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
                 m_Phase = 1;
