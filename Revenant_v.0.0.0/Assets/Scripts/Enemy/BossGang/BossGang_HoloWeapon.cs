@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -8,9 +9,9 @@ using UnityEngine;
 public class BossGang_HoloWeapon : BasicWeapon_Enemy
 {
     // Member Variables
-    private List<IHotBox> m_HotBoxList = new List<IHotBox>();
-
+    private Dictionary<Collider2D, IHotBox> m_HotBoxDic = new Dictionary<Collider2D, IHotBox>();
     
+
     // Constructors
     private void Awake()
     {
@@ -19,8 +20,8 @@ public class BossGang_HoloWeapon : BasicWeapon_Enemy
 
     private void OnEnable()
     {
-        m_HotBoxList.Clear();
-        m_HotBoxList.TrimExcess();
+        m_HotBoxDic.Clear();
+        m_HotBoxDic.TrimExcess();
     }
 
     
@@ -31,8 +32,8 @@ public class BossGang_HoloWeapon : BasicWeapon_Enemy
         {
             if (hotBox.m_isEnemys)
                 return;
-            
-            m_HotBoxList.Add(hotBox);
+
+            m_HotBoxDic.Add(col, hotBox);
         }
     }
 
@@ -40,20 +41,23 @@ public class BossGang_HoloWeapon : BasicWeapon_Enemy
     {
         if (other.TryGetComponent(out IHotBox hotBox))
         {
-            if (m_HotBoxList.Contains(hotBox))
-                m_HotBoxList.Remove(hotBox);
+            if (m_HotBoxDic.ContainsKey(other))
+            {
+                m_HotBoxDic.Remove(other);
+            }
         }
     }
 
 
     public override int Fire()
     {
-        var hotBoxArr = m_HotBoxList.ToArray();
         IHotBoxParam param = new IHotBoxParam(p_BulletDamage, 0,
             transform.position, WeaponType.KNIFE);
+        var hotBoxArr = m_HotBoxDic.Values.ToArray();
         
         for (int i = 0; i < hotBoxArr.Length; i++)
         {
+            param.m_contactPoint = hotBoxArr[i].m_ParentObj.transform.position;
             hotBoxArr[i].HitHotBox(param);
         }
         

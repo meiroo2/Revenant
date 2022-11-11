@@ -10,10 +10,14 @@ public class TimeSliceObj : MonoBehaviour
     // Visible Member Variables
     public TimeSliceMgr p_TimeSliceMgr;
     public TimeSliceBullet p_Bullet;
+    public TimeSliceCircleCol p_CircleCol;
+    
     public SpriteRenderer p_Renderer;
     public Collider2D p_FloorCol;
     public Collider2D p_BulletCol;
 
+    [Title("CirclePoint")]
+    public Transform p_CircleTransform;
     
     // Member Variables
     private float m_MoveSpeed = 1f;
@@ -22,7 +26,9 @@ public class TimeSliceObj : MonoBehaviour
     public bool m_IsFired = false;
 
     private Camera m_Cam;
-    
+    private CameraMgr m_CamMgr;
+    private Vector2 m_CamCorrectionPos;
+
     [HideInInspector] public Player m_Player;
     private Color m_Color = Color.white;
 
@@ -30,11 +36,14 @@ public class TimeSliceObj : MonoBehaviour
     private Coroutine m_FollowCoroutine = null;
     private Coroutine m_ColorCoroutine = null;
 
+    public Action m_OnHitAction = null;
     
     // Constructors
     private void Awake()
     {
         m_Cam = Camera.main;
+        m_CamMgr = m_Cam.GetComponent<CameraMgr>();
+        
         p_FloorCol.enabled = false;
         p_BulletCol.enabled = true;
         m_FollowCoroutine = null;
@@ -73,6 +82,8 @@ public class TimeSliceObj : MonoBehaviour
         m_RemainTime = _remainTime;
         transform.rotation = Quaternion.Euler(0f, 0f, _angle);
         
+        m_OnHitAction = null;
+        
         p_FloorCol.enabled = false;
         p_BulletCol.enabled = true;
         m_Color = Color.white;
@@ -82,6 +93,25 @@ public class TimeSliceObj : MonoBehaviour
     }
     
     
+    // Functions
+
+    /// <summary>
+    /// CircleCol의 정보를 획득합니다.
+    /// </summary>
+    /// <param name="_infoIdx">0이면 끝까지 내려감, 1이면 맞음</param>
+    public void GetCircleColInfo(int _infoIdx)
+    {
+        switch (_infoIdx)
+        {
+            case 0:
+                break;
+            
+            case 1:
+                m_OnHitAction?.Invoke();
+                gameObject.SetActive(false);
+                break;
+        }
+    }
     
     public void Activate()
     {
@@ -98,7 +128,7 @@ public class TimeSliceObj : MonoBehaviour
     
     public void StartFollow()
     {
-        transform.position = m_Player.GetPlayerCenterPos();
+        transform.position = m_Cam.transform.position;
         m_FollowCoroutine = StartCoroutine(Following());
         m_ColorCoroutine = StartCoroutine(ColorChanging());
     }
@@ -148,8 +178,10 @@ public class TimeSliceObj : MonoBehaviour
     {
         while (true)
         {
+            m_CamCorrectionPos = m_Cam.transform.position;
+            m_CamCorrectionPos.y -= m_CamMgr.p_YValue;
             transform.position = Vector2.Lerp(transform.position,
-                m_Cam.transform.position, Time.deltaTime * m_MoveSpeed);
+                m_CamCorrectionPos, Time.deltaTime * m_MoveSpeed);
             
             yield return null;
         }

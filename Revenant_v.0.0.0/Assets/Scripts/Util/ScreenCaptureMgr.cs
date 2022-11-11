@@ -17,7 +17,8 @@ public class ScreenCaptureMgr : MonoBehaviour
     private Image m_RImg;
     
     public Camera m_Cam;
-
+    private CameraMgr m_CamMgr;
+    
     private int width = 1920;
     private int height = 1080;
 
@@ -30,11 +31,13 @@ public class ScreenCaptureMgr : MonoBehaviour
     private Coroutine TearCoroutine;
     private static readonly int Rotate = Shader.PropertyToID("_Rotate");
     private static readonly int PivotX = Shader.PropertyToID("_PivotX");
+    private static readonly int PivotY = Shader.PropertyToID("_PivotY");
 
     private void Awake()
     {
         m_Cam = Camera.main;
-
+        m_CamMgr = m_Cam.GetComponent<CameraMgr>();
+        
         if (m_Cam.TryGetComponent(out ScreenCaptureCanvas scCanvas))
         {
             var CanvasOnCam = m_Cam.GetComponentInChildren<ScreenCaptureCanvas>();
@@ -52,7 +55,7 @@ public class ScreenCaptureMgr : MonoBehaviour
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
     }
 
-    public void Capture(float _xPos, float _timeSliceAngle)
+    public void Capture(float _xPos, float _yPos, float _timeSliceAngle)
     {
         m_CamRenderTex = new RenderTexture(width, height, 24);
         
@@ -83,10 +86,16 @@ public class ScreenCaptureMgr : MonoBehaviour
         m_LImg.material.SetFloat(Rotate, angle);
         m_RImg.material.SetFloat(Rotate, angle);
 
-        float pivot = m_Cam.transform.position.x - _xPos;
-        Debug.Log(pivot.ToString());
-        m_LImg.material.SetFloat(PivotX, pivot / 8f);
-        m_RImg.material.SetFloat(PivotX, pivot / 8f);
+        float pivotXVal = m_Cam.transform.position.x - _xPos;
+        //float pivot = -0.8f;
+       // Debug.Log(pivotXVal.ToString());
+        m_LImg.material.SetFloat(PivotX, pivotXVal / 8f);
+        m_RImg.material.SetFloat(PivotX, pivotXVal / 8f);
+
+        float pivotYVal = -(m_CamMgr.p_YValue / 4.5f);
+        m_LImg.material.SetFloat(PivotY, pivotYVal);
+        m_RImg.material.SetFloat(PivotY, pivotYVal);
+        
         
         m_LImg.color = color;
         m_RImg.color = color;
