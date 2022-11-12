@@ -31,17 +31,9 @@ public class TutorialBot_HotBox : MonoBehaviour, IHotBox, IMatType
     // Functions
     public int HitHotBox(IHotBoxParam _param)
     {
-        if (_param.m_weaponType == WeaponType.KNIFE)
-        {
-            m_Enemy.AttackedByWeapon(m_HitBoxInfo, _param.m_Damage, _param.m_stunValue);
-            m_SoundPlayer.PlayHitSoundByMatType(m_matType, transform);
-        }
-        else
-        {
-            m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
-            m_SoundPlayer.PlayHitSoundByMatType(m_matType, transform);
-        }
-        
-        return 1;
+		m_Enemy.AttackedByWeapon(m_HitBoxInfo, _param.m_Damage, _param.m_stunValue);
+		m_SoundPlayer.PlayHitSoundByMatType(m_matType, transform);
+
+		return 1;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.Assertions.Must;
 
 
 
-public class Objective_Tuto00 : Objective
+public class Objective_TutoLookAt : Objective
 {
     /*
      첫 번쨰로 하는 목표

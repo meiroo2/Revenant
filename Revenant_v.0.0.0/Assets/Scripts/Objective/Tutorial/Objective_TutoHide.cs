@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class Objective_Tuto04 : Objective
+public class Objective_TutoHide : Objective
 {
      /*
      5번쨰 튜토리얼
@@ -16,6 +16,7 @@ public class Objective_Tuto04 : Objective
     private int m_Count = 0;
     private Player m_Player;
 
+    public TutorialHideObject p_TutorialHideObject;
 
     public override void InitObjective(ObjectiveMgr _mgr, ObjectiveUI _ui)
     {
@@ -32,8 +33,11 @@ public class Objective_Tuto04 : Objective
         m_InputMgr.p_FireLock = false;
         m_InputMgr.p_ReloadLock = false;
         m_InputMgr.p_RollLock = false;
+        m_InputMgr.p_HideLock = false;
+        p_TutorialHideObject.Initialize();
+        p_TutorialHideObject.action?.Invoke();
 
-        m_Player.AttachActionOnFSM(PlayerStateName.ROLL,() => AddCount(), true);
+		m_Player.AttachActionOnFSM(PlayerStateName.HIDDEN,() => AddCount(), true);
         m_Phase = 0;
         m_Count = 0;
     }
@@ -43,7 +47,7 @@ public class Objective_Tuto04 : Objective
         switch (m_Phase)
         {
             case 0:
-                if (m_Count >= 3)
+                if (m_Count >= 1)
                 {
                     m_ObjUI.SetObjectiveProgress(0, 1f);
                     m_ObjUI.SetObjectiveFontStyle(0, true);
@@ -57,12 +61,11 @@ public class Objective_Tuto04 : Objective
 
     public override void ExitObjective()
     {
-       m_Player.RemoveActionOnFSM(PlayerStateName.ROLL);
+       m_Player.RemoveActionOnFSM(PlayerStateName.HIDDEN);
     }
 
     private void AddCount()
     {
         m_Count++;
-        m_ObjUI.SetObjectiveProgress(0, m_Count * 0.33f);
     }
 }
