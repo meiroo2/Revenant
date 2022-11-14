@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -61,36 +62,34 @@ public class Objective_TutoAttack : Objective
             case 0:
                 if(m_UseLeftClickCount == 1)
                 {
-					m_ObjMgr.SendObjSuccessInfo(0, true);
+					m_ObjUI.SetObjectiveProgress(0, 1);
 					m_ObjUI.SetObjectiveFontStyle(0, true);
 				}
 				if (m_UseRightClickCount == 1)
                 {
-					m_ObjMgr.SendObjSuccessInfo(1, true);
+					m_ObjUI.SetObjectiveProgress(1, 1);
 					m_ObjUI.SetObjectiveFontStyle(1, true);
 				}
 
 
 
-                if (m_UseLeftClickCount >= 1 && m_UseRightClickCount >= 1)
+				float proceed = 0;
+				proceed = Mathf.InverseLerp(enemyCount, 0, GetActiveEnemyCount());
+
+				m_ObjUI.SetObjectiveProgress(2, proceed);
+                if(proceed >= 1)
                 {
-					float proceed = 0;
-					proceed = Mathf.InverseLerp(enemyCount, 0, GetActiveEnemyCount());
+					m_ObjUI.SetObjectiveProgress(2, 1);
+					m_ObjUI.SetObjectiveFontStyle(2, true);
+                }
 
-					m_ObjUI.SetObjectiveProgress(2, proceed);
-
-                    if(proceed >= 1)
-                    {
-						m_ObjUI.SetObjectiveFontStyle(2, true);
-						m_Phase = 1;
-                    }
-				}
-
-
+                if(proceed >= 1 && m_UseLeftClickCount >= 1 && m_UseRightClickCount >= 1)
+                {
+                    m_Phase = 1;
+                }
 				break;
             case 1:
                 m_ObjMgr.SendObjSuccessInfo(m_ObjIdx, true);
-                Debug.Log(m_ObjIdx);
                 m_Phase = -1;
                 m_InputMgr.ResetAttackAction();
                 break;

@@ -59,7 +59,6 @@ public class Objective_TutoBulletTime : Objective
             case 0:
                 if(m_UseBulletTimeCount == 1)
                 {
-					m_ObjMgr.SendObjSuccessInfo(0, true);
 					m_ObjUI.SetObjectiveFontStyle(0, true);
 					m_ObjUI.SetObjectiveProgress(0, 1);
 				}
