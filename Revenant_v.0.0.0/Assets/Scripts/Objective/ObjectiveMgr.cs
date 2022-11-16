@@ -44,6 +44,7 @@ public class ObjectiveMgr : MonoBehaviour
     [Button]
     public void ChangeObjective(int _idx)
     {
+        Debug.Log(_idx);
         if (!ReferenceEquals(m_ObjectiveSuccessWaitCoroutine, null))
         {
             StopCoroutine(m_ObjectiveSuccessWaitCoroutine);
