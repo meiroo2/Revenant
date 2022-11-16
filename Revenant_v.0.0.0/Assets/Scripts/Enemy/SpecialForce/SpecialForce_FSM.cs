@@ -49,6 +49,7 @@ public class SpecialForce_IDLE : SpecialForce_FSM
     {
         m_Enemy = _enemy;
         InitFSM();
+        _enemyState = EnemyState.Idle;
     }
     
     public override void StartState()
@@ -263,6 +264,7 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
     
     public override void StartState()
     {
+        _enemyState = EnemyState.Chase;
         m_Slot = null;
         m_UseRange = m_Enemy.m_UseRange;
 
@@ -306,7 +308,23 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
                 }
                 else
                 {
-                    m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded, m_Enemy.p_RunSpeedMulti);
+                    if (m_Enemy.WayPointsVectorList.Count != 0 && m_Enemy.WayPointsIndex < m_Enemy.WayPointsVectorList.Count)
+                    {
+                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x), m_Enemy.p_RunSpeedMulti);
+                    }
+                    else
+                    {
+                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x), m_Enemy.p_RunSpeedMulti);
+                    }
+
+                    float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+                    // 플레이어와 적이 같은 층에 있다면 문 사용 X
+                    if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair)
+                    {
+                        m_Enemy.bMoveToUsedDoor = false;
+                        m_Enemy.MoveToPlayer();
+                    }
+                    //m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded, m_Enemy.p_RunSpeedMulti);
                 }
                 break;
         }
@@ -532,6 +550,7 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
     
     public override void StartState()
     {
+        _enemyState = EnemyState.Chase;
         m_IsWeaponReady = false;
         m_Timer = m_Enemy.p_Fire_Delay;
         m_BulletCount = m_Enemy.p_Bullet_Count;
@@ -540,8 +559,6 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
         m_AtkPhase = 0;
         m_AtkInputVal = 0;
 
-        
-        
         m_FullAnimCheckElement = null;
         m_ArmAnimCheckElement = null;
 
@@ -554,6 +571,19 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
         if (!m_IsWeaponReady)
             return;
         
+        float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+        // 플레이어와 적이 같은 층에 있다면 문 사용 X
+        if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor)
+        {
+             m_Enemy.bMoveToUsedDoor = false;
+             m_Enemy.MoveToPlayer();
+        }
+
+        if (m_Enemy.bMoveToUsedDoor)
+        {
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        }
+
         switch (m_AtkPhase)
         {
             case 0:
@@ -590,11 +620,11 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
         {
             // Gap 맞추러 플레이어로 다가가야 함
             m_State = 0;
-                    
+
             m_Enemy.p_BodyAnimator.SetInteger(Walk, 1);
             m_Enemy.p_LegAnimator.SetInteger(Walk, 1);
             m_Enemy.p_ArmAnimator.SetInteger(Walk, 1);
-                    
+
             m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded);
         }
         else if (m_Distance > m_Enemy.p_GapDistance - m_MagicGap &&
@@ -602,11 +632,11 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
         {
             // MagicGap 이내 - 멈춤
             m_State = 1;
-                    
+
             m_Enemy.p_BodyAnimator.SetInteger(Walk, 0);
             m_Enemy.p_LegAnimator.SetInteger(Walk, 0);
             m_Enemy.p_ArmAnimator.SetInteger(Walk, 0);
-                    
+
             m_Enemy.ResetRigid();
         }
         else if (m_Distance < m_Enemy.p_GapDistance - m_MagicGap)
