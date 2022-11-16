@@ -5,8 +5,11 @@ using UnityEngine;
 public class TutorialStairObject : TutorialObject
 {
     private Collider2D[] m_Colliders;
-    // Start is called before the first frame update
-    protected override void Start()
+	public Transform p_StairTopTransform; // 계단 오르기 진행도 확인용
+	public Transform p_StairBottomTransform; // 계단 내려오기 진행도 확인용
+
+	// Start is called before the first frame update
+	protected override void Start()
     {
         base.Start();
         m_Colliders = GetComponentsInChildren<Collider2D>();
@@ -14,6 +17,7 @@ public class TutorialStairObject : TutorialObject
 		{
 			collider.enabled = false;
 		}
+		Initialize();
 	}
 
 	public override void Initialize()

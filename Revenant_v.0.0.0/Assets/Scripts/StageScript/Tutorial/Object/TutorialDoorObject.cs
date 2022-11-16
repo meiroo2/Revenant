@@ -19,6 +19,7 @@ public class TutorialDoorObject : TutorialObject
 
 	public void DoorOpen()
 	{
+		transform.GetChild(0).gameObject.SetActive(true);
 		m_CanEnter = true;
 		NextAnimation();
 	}
@@ -35,6 +36,7 @@ public class TutorialDoorObject : TutorialObject
 				m_camMgr.m_IsFollowTarget = false;
 				m_camMgr.m_IsMoveEnd = true;
 				m_camMgr.MoveToPosition(p_SpawnPosition.position, p_CamBoundMgr);
+				action?.Invoke();
 				StartCoroutine(FadeOut());
 			}
 		}

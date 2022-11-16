@@ -1,17 +1,19 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 
-public class Objective_Tuto03 : Objective
+public class Objective_TutoRoll : Objective
 {
-/*
-     네 번쨰로 하는 목표
-     1. 장전하기
+     /*
+     5번쨰 튜토리얼
+     1. 구르기
      */
     
     private Player_InputMgr m_InputMgr;
 
     // Objective Variables
     private int m_Phase = 0;
+    private int m_Count = 0;
     private Player m_Player;
 
 
@@ -29,8 +31,11 @@ public class Objective_Tuto03 : Objective
         m_InputMgr.p_MoveInputLock = false;
         m_InputMgr.p_FireLock = false;
         m_InputMgr.p_ReloadLock = false;
+        m_InputMgr.p_RollLock = false;
 
+        m_Player.AttachActionOnFSM(PlayerStateName.ROLL,() => AddCount(), true);
         m_Phase = 0;
+        m_Count = 0;
     }
 
     public override void UpdateObjective()
@@ -38,12 +43,12 @@ public class Objective_Tuto03 : Objective
         switch (m_Phase)
         {
             case 0:
-                if (m_InputMgr.m_IsPushReloadKey)
+                if (m_Count >= 3)
                 {
                     m_ObjUI.SetObjectiveProgress(0, 1f);
                     m_ObjUI.SetObjectiveFontStyle(0, true);
-                    
                     m_ObjMgr.SendObjSuccessInfo(m_ObjIdx, true);
+
                     m_Phase = -1;
                 }
                 break;
@@ -52,6 +57,12 @@ public class Objective_Tuto03 : Objective
 
     public override void ExitObjective()
     {
+       m_Player.RemoveActionOnFSM(PlayerStateName.ROLL);
+    }
 
+    private void AddCount()
+    {
+        m_Count++;
+        m_ObjUI.SetObjectiveProgress(0, m_Count * 0.33f);
     }
 }

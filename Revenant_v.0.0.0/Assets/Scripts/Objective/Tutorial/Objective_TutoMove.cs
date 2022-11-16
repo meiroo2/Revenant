@@ -2,7 +2,7 @@
 
 
 
-public class Objective_Tuto01 : Objective
+public class Objective_TutoMove : Objective
 {
      /*
      두 번쨰로 하는 목표
@@ -11,6 +11,7 @@ public class Objective_Tuto01 : Objective
      */
     
     private Player_InputMgr m_InputMgr;
+
 
     // Objective Variables
     private int m_Count = 0;
@@ -27,8 +28,10 @@ public class Objective_Tuto01 : Objective
         
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
-        
-        m_InputMgr.SetAllLockByBool(true);
+
+
+
+		m_InputMgr.SetAllLockByBool(true);
         m_InputMgr.p_MousePosLock = false;
         m_InputMgr.p_MoveInputLock = false;
         m_LTimer = 0f;
@@ -73,7 +76,8 @@ public class Objective_Tuto01 : Objective
             
             case 1:
                 m_ObjMgr.SendObjSuccessInfo(m_ObjIdx, true);
-                m_Phase = -1;
+
+				m_Phase = -1;
                 break;
         }
     }
