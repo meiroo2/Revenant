@@ -318,7 +318,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1665975260173792039
 Transform:
   m_ObjectHideFlags: 0
@@ -479,6 +479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 1
   <p_DamageMulti>k__BackingField: 0
 --- !u!61 &6785627411127605371
@@ -552,6 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 0
   <p_DamageMulti>k__BackingField: 0
 --- !u!58 &1789468904418629693
@@ -738,9 +740,12 @@ MonoBehaviour:
   p_OverrideEnemyMgr: 0
   <p_AngleLimit>k__BackingField: 20
   <p_VisionDistance>k__BackingField: 1.5
+  p_AtkDistance: 0
+  m_DeadReasonForMat: 0
+  WayPointsVectorList: []
+  WayPointsIndex: 0
   p_AlertSpeed: 1
   p_MeleeDistance: 0.1
-  <p_AttackDistance>k__BackingField: 0.2
   p_IsLookAround: 0
   p_LookAroundDelay: 1
   <p_PatrolPos>k__BackingField: []

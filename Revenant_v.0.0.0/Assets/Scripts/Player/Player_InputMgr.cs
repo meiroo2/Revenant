@@ -8,17 +8,149 @@ using UnityEngine.Serialization;
 public class Player_InputMgr : MonoBehaviour
 {
     // Visible Member Variables
-    public bool p_MoveInputLock = false;
-    public bool p_FireLock = false;
-    public bool p_SideAttackLock = false;
-    public bool p_ReloadLock = false;
-    public bool p_RollLock = false;
-    public bool p_BulletTimeLock = false;
-    public bool p_StairLock = false;
-    public bool p_InteractLock = false;
-    public bool p_HideLock = false;
-    public bool p_MousePosLock = false;
+
+    #region Lock_Variables
+
+    private bool m_LocalMoveInputLock = false;
+    public bool p_MoveInputLock
+    {
+        get { return m_LocalMoveInputLock; }
+        set
+        {
+            if (value)
+            {
+                m_IsPushLeftKey = false;
+                m_IsPushRightKey = false;
+            }
+
+            m_LocalMoveInputLock = value;
+        }
+    }
+
     
+    private bool m_LocalFireLock = false;
+    public bool p_FireLock
+    {
+        get { return m_LocalFireLock; }
+        set
+        {
+            if (value)
+                m_IsPushAttackKey = false;
+
+            m_LocalFireLock = value;
+        }
+    }
+
+    
+    private bool m_LocalSideAttackLock = false;
+    public bool p_SideAttackLock
+    {
+        get { return m_LocalSideAttackLock; }
+        set
+        {
+            if (value)
+                m_IsPushSideAttackKey = false;
+
+            m_LocalSideAttackLock = value;
+        }
+    }
+
+    
+    private bool m_LocalReloadLock = false;
+    public bool p_ReloadLock
+    {
+        get { return m_LocalReloadLock; }
+        set
+        {
+            if (value)
+                m_IsPushReloadKey = false;
+
+            m_LocalReloadLock = value;
+        }
+    }
+
+
+    private bool m_LocalRollLock = false;
+    public bool p_RollLock
+    {
+        get { return m_LocalRollLock; }
+        set
+        {
+            if (value)
+                m_IsPushRollKey = false;
+
+            m_LocalRollLock = value;
+        }
+    }
+    
+
+    private bool m_LocalBulletTimeLock = false;
+    public bool p_BulletTimeLock
+    {
+        get { return m_LocalBulletTimeLock; }
+        set
+        {
+            if (value)
+                m_IsPushBulletTimeKey = false;
+
+            m_LocalBulletTimeLock = value;
+        }
+    }
+    
+
+    private bool m_LocalStairLock = false;
+    public bool p_StairLock
+    {
+        get { return m_LocalStairLock; }
+        set
+        {
+            if (value)
+            {
+                m_IsPushStairDownKey = false;
+                m_IsPushStairUpKey = false;
+            }
+
+            m_LocalStairLock = value;
+        }
+    }
+    
+
+    private bool m_LocalInteractLock = false;
+    public bool p_InteractLock
+    {
+        get { return m_LocalInteractLock; }
+        set
+        {
+            if (value)
+                m_IsPushInteractKey = false;
+
+            m_LocalInteractLock = value;
+        }
+    }
+
+
+    private bool m_LocalHideLock = false;
+    public bool p_HideLock
+    {
+        get { return m_LocalHideLock; }
+        set
+        {
+            if (value)
+                m_IsPushHideKey = false;
+
+            m_LocalHideLock = value;
+        }
+    }
+
+    
+    #endregion
+    
+    
+    
+    
+    
+    public bool p_MousePosLock = false;
+
 
     // Member Variables
     public bool m_IsPushLeftKey { get; private set; }
@@ -80,7 +212,7 @@ public class Player_InputMgr : MonoBehaviour
     {
         while (true)
         {
-            if (!p_MoveInputLock)
+            if (!m_LocalMoveInputLock)
                 CalculateDirectinalKey();
 
             if (!p_StairLock)

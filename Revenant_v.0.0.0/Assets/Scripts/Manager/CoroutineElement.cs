@@ -10,10 +10,6 @@ public class CoroutineElement : MonoBehaviour
     private IEnumerator m_Enumerator = null;
     private Coroutine m_Coroutine;
     
-    
-    // Updates
-    
-
     // Functions
     /// <summary>
     /// 해당 CoroutineElement를 멈춘 후 제거합니다.
@@ -28,7 +24,6 @@ public class CoroutineElement : MonoBehaviour
 
         m_Handler.DeleteCoroutineElement(this);
     }
-
     
     /// <summary>
     /// 해당 CoroutineElement에 들어간 IEnumerator를 시작합니다.
@@ -37,7 +32,6 @@ public class CoroutineElement : MonoBehaviour
     /// <returns> CoroutineElement를 받아서 나중에 수동으로 정지합니다. </returns>
     public CoroutineElement StartCoroutine_Element(IEnumerator _enumerator)
     {
-//        Debug.Log("Element Start");
         m_Enumerator = _enumerator;
         
         if (!ReferenceEquals(m_Coroutine, null))
