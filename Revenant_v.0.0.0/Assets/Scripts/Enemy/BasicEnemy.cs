@@ -339,6 +339,7 @@ public class BasicEnemy : Human
     /** 플레이어가 AI보다 위에 있는지 판단하는 함수 */
     public bool IsPlayerUpper()
     {
+        /*
         if (transform.position.y < m_PlayerTransform.position.y)
         {
             bIsPlayerUpperThanEnemy = true;
@@ -347,6 +348,7 @@ public class BasicEnemy : Human
         {
             bIsPlayerUpperThanEnemy = false;
         }
+        */
         return bIsPlayerUpperThanEnemy;
     }
 }

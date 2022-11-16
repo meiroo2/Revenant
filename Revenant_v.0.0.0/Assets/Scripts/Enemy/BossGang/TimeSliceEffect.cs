@@ -15,6 +15,9 @@ public class TimeSliceEffect : MonoBehaviour
 
     public float m_XPos = 0f;
     public float m_ANgle = 48f;
+
+    public SpriteRenderer m_SquareRenderer;
+    
     
     private Vector2 m_OriginLocalScale;
     private Vector2 m_BigLocalScale;
@@ -29,6 +32,10 @@ public class TimeSliceEffect : MonoBehaviour
         m_BigLocalScale.x *= m_THICCVAL;
 
         objTransform.localScale = new Vector2(0f, m_OriginLocalScale.y);
+
+        Color squareColor = Color.white;
+        squareColor.a = 0f;
+        m_SquareRenderer.color = squareColor;
     }
 
     private void Start()
@@ -63,20 +70,44 @@ public class TimeSliceEffect : MonoBehaviour
         Vector2 lerpFinalScale = m_BigLocalScale;
         lerpFinalScale.x = 0f;
 
-        float lerpVal = 0.1f;
+        float lerpVal = 0f;
 
-        Color bluColor = Color.blue;
-        Color whiteCOlot = Color.white;
-        
+        Color blueColor = Color.blue;
+        Color whiteColor = Color.white;
+
+        Color blackColor = Color.black;
+        Color clearColor = Color.black;
+        clearColor.a = 0f;
+
+        m_SquareRenderer.color = blackColor;
         while (true)
         {
-            objTransform.localScale = 
-                Vector2.Lerp(m_BigLocalScale, lerpFinalScale, lerpVal);
-
-            m_Renderer.color = Vector4.Lerp(bluColor, whiteCOlot, lerpVal);
-            
-            lerpVal /= Time.unscaledDeltaTime * m_ScaleSpeed;
+            if (lerpVal < 1f)
+            {
+                lerpVal += Time.unscaledDeltaTime * m_ScaleSpeed;
+                objTransform.localScale = 
+                    Vector2.Lerp(m_BigLocalScale, lerpFinalScale, lerpVal);
+                m_Renderer.color = Vector4.Lerp(blueColor, whiteColor, lerpVal);
+            }
+            else
+            {
+                lerpVal = 1f;
+                objTransform.localScale = 
+                    Vector2.Lerp(m_BigLocalScale, lerpFinalScale, lerpVal);
+                m_Renderer.color = Vector4.Lerp(blueColor, whiteColor, lerpVal);
+                break;
+            }
             yield return null;
         }
+
+        lerpVal = 0f;
+        yield return new WaitForSecondsRealtime(0.4f);
+        while (true)
+        {
+            lerpVal += Time.unscaledDeltaTime * m_ScaleSpeed;
+            m_SquareRenderer.color = Vector4.Lerp(blackColor, clearColor, lerpVal / 2f);
+            yield return null;
+        }
+      
     }
 }

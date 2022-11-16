@@ -465,8 +465,9 @@ public class Player_HIDDEN : PlayerFSM
     public override void StartState()
     {
         m_RageGauge = m_Player.m_RageGauge;
-        //m_Player.m_ArmMgr.StopReload();
-        m_Player.m_CanAttack = false;
+		m_InitAction?.Invoke();
+		//m_Player.m_ArmMgr.StopReload();
+		m_Player.m_CanAttack = false;
         m_InputMgr = m_Player.m_InputMgr;
         m_UseRange = m_Player.m_useRange;
         
@@ -539,8 +540,8 @@ public class Player_MELEE : PlayerFSM
     {
         m_InputMgr = m_Player.m_InputMgr;
         m_Player.m_ArmMgr.StopReload();
-         
-        m_Player.m_CanAttack = false;
+		m_InitAction?.Invoke();
+		m_Player.m_CanAttack = false;
         m_Player.m_playerRotation.m_doRotate = false;
         
         m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
@@ -704,11 +705,14 @@ public class Player_BULLET_TIME : PlayerFSM
         m_AniMgr = m_Player.m_PlayerAniMgr;
         m_PlayerAnimator = m_AniMgr.p_FullBody.m_Animator;
         m_InputMgr = m_Player.m_InputMgr;
-        
-        m_Phase = 0;
+		m_InitAction?.Invoke();
+		m_Phase = 0;
         m_Timer = 0f;
         
         m_Player.m_PlayerRigid.velocity = Vector2.zero;
+        
+        // 핫박스 무적
+        m_Player.m_PlayerHotBox.gameObject.SetActive(false);
 
         // 재장전 캔슬
         m_Player.m_ArmMgr.StopReload();
@@ -793,6 +797,8 @@ public class Player_BULLET_TIME : PlayerFSM
 
     public override void ExitState()
     {
+        m_Player.m_PlayerHotBox.gameObject.SetActive(true);
+        
         m_Player.m_playerRotation.m_BanFlip = false;
         m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 0);
         m_AniMgr.p_FullBody.m_Animator.updateMode = AnimatorUpdateMode.Normal;

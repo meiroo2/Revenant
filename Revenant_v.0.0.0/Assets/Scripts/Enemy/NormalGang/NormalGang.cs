@@ -219,7 +219,7 @@ public class NormalGang : BasicEnemy
 
     public override void ChangeEnemyFSM(EnemyStateName _name)
     {
-//        Debug.Log("상태 전이" + _name);
+        Debug.Log("상태 전이" + _name);
         m_CurEnemyStateName = _name;
 
         m_CurEnemyFSM.ExitState();

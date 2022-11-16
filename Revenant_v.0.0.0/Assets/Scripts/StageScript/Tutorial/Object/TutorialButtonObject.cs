@@ -14,6 +14,7 @@ public class TutorialButtonObject : TutorialObject
 		{
 			collider.enabled = false;
 		}
+		Initialize();
 	}
 
 	public override void Initialize()

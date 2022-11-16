@@ -492,6 +492,7 @@ public class STUN_NormalGang : NormalGang_FSM
 {
     private int m_Phase;
     private Enemy_Alert m_Alert;
+    private readonly int Stun = Animator.StringToHash("Stun");
 
     public STUN_NormalGang(NormalGang _enemy)
     {
@@ -508,6 +509,8 @@ public class STUN_NormalGang : NormalGang_FSM
         m_Alert.SetCallback(NextPhase, true);
         m_Alert.SetAlertSpeed(m_Enemy.p_StunAlertSpeed);
         m_Alert.SetAlertStun();
+        
+        m_Enemy.m_Animator.SetInteger(Stun, 1);
     }
 
     public override void UpdateState()
@@ -526,6 +529,7 @@ public class STUN_NormalGang : NormalGang_FSM
     public override void ExitState()
     {
         m_Alert.SetAlertSpeed(m_Enemy.p_AlertSpeed);
+        m_Enemy.m_Animator.SetInteger(Stun, 0);
     }
 
     public override void NextPhase()

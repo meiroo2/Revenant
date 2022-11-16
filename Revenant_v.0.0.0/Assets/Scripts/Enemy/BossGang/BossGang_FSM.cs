@@ -118,6 +118,9 @@ public class Walk_BossGang : BossGang_FSM
                 float jumpMax = m_Enemy.p_JumpAtk_Distance_Max;
                 float leapMin = m_Enemy.p_LeapAtk_Distance_Min;
                 
+                m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
+                break;
+                
                 if (distance <= jumpMax && distance < leapMin)
                 {
                     // Jump만 가능
@@ -279,7 +282,7 @@ public class JumpAtk_BossGang : BossGang_FSM
                 break;
         }
     }
-
+    
     public override void ExitState()
     {
         m_Enemy.m_WeaponMgr.ReleaseWeapon();
@@ -289,6 +292,66 @@ public class JumpAtk_BossGang : BossGang_FSM
 }
 
 public class LeapAtk_BossGang : BossGang_FSM
+{
+    // Member Variables
+    private int m_Phase = 0;
+    private float m_Timer = 0f;
+    private Transform m_EnemyTransform;
+    
+    // Constructor
+    public LeapAtk_BossGang(BossGang _enemy)
+    {
+        m_Enemy = _enemy;
+    }
+    
+    
+    // Functions
+    public override void StartState()
+    {
+        m_EnemyTransform = m_Enemy.transform;
+        m_Animator = m_Enemy.m_Animator;
+        m_Phase = 0;
+        m_Timer = 0f;
+
+        m_Enemy.m_EnemyRigid.isKinematic = true;
+    }
+
+    public override void UpdateState()
+    {
+        switch (m_Phase)
+        {
+            case 0:
+                m_EnemyTransform.position = new Vector2(m_EnemyTransform.position.x,
+                    m_EnemyTransform.position.y + 1f);
+                
+                m_Enemy.p_LeapColMaster.SpawnCols(m_Enemy.m_IsRightHeaded, m_Enemy.m_Player.GetPlayerFootPos());
+                m_Phase = 1;
+                break;
+            
+            case 1:
+                m_Timer += Time.deltaTime;
+                if (m_Timer > 3f)
+                    m_Phase = 2;
+                break;
+            
+            case 2:
+                Vector2 landPos = m_Enemy.p_LeapColMaster.GetLandingPos(m_Enemy.m_Player.GetPlayerFootPos());
+                m_EnemyTransform.position = landPos;
+
+                m_Phase = -1;
+                break;
+        }
+    }
+
+    public override void ExitState()
+    {
+        m_Enemy.m_EnemyRigid.isKinematic = false;
+    }
+
+ 
+}
+/*
+ public class LeapAtk_BossGang : BossGang_FSM
 {
     // Member Variables
     private int m_Phase = 0;
@@ -369,6 +432,8 @@ public class LeapAtk_BossGang : BossGang_FSM
         m_Phase = 1;
     }
 }
+ */
+
 
 public class Stealth_BossGang : BossGang_FSM
 {

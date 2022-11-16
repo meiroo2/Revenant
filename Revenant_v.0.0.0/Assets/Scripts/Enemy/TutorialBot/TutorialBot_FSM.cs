@@ -89,7 +89,7 @@ public class TutorialBot_IDLE : TutorialBot_FSM
             }
         }
         
-        m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
+       // m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
         yield break;
     }
 }

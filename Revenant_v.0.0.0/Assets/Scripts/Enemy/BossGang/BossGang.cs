@@ -75,9 +75,10 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("Ultimate"), PropertySpace] public float p_Ultimate_CircleStartPos = -3f;
     [TabGroup("Ultimate")] public float p_Ultimate_CircleEndPos = 3f;
     [TabGroup("Ultimate")] public float p_Ultimate_CircleSpeed = 1f;
-    
+
 
     [PropertySpace(10f, 0f)]
+    public LeapColMaster p_LeapColMaster;
     public Transform p_MapCenterTransform;
     public TextMeshProUGUI p_HpText;
     public TextMeshProUGUI p_FSMText;
