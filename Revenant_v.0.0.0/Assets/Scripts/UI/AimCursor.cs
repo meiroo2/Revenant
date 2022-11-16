@@ -130,15 +130,29 @@ public class AimCursor : MonoBehaviour
                 break;
 
             case 1:
+                if (m_Lists[0].collider.CompareTag("Player"))
+                {
+                    return null;
+                    break;
+                }
+                
                 return new AimedColInfo(m_Lists[0].collider, transform.position);
                 break;
 
             case > 1:
                 Collider2D returnCol = m_Lists[0].collider;
+                if (returnCol.CompareTag("Player"))
+                {
+                    returnCol = m_Lists[1].collider;
+                }
+                
                 float minDistance = (transform.position - returnCol.transform.position).sqrMagnitude;
                 
                 for (int i = 1; i < m_ColList.Count; i++)
                 {
+                    if( m_Lists[i].collider.CompareTag("Player"))
+                        continue;
+                    
                     float distance = (transform.position - m_Lists[i].collider.transform.position).sqrMagnitude;
 
                     if (distance < minDistance)
