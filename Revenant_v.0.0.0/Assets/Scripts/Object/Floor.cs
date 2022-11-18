@@ -11,7 +11,7 @@ public class Floor : ObjectDefine, IMatType, IHotBox
     public GameObject m_ParentObj { get; set; }
     public bool m_isEnemys { get; set; } = false;
     public int m_hotBoxType { get; set; } = 1;
-    public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.OBJECT;
+    public HitBoxPoint m_HitBoxInfo { get; set; } = HitBoxPoint.FLOOR;
     private SoundPlayer m_SoundPlayer;
     
     

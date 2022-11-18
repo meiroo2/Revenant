@@ -16,6 +16,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     private SoundPlayer m_SoundPlayer;
     private ScreenEffect_UI m_ScreenEffectUI;
     private Player_MatMgr m_PlayerMatMgr;
+    private HitSFXMaker m_HitSFXMaker;
     
     public int m_hotBoxType { get; set; } = 0;
     public bool m_isEnemys { get; set; } = false;
@@ -43,6 +44,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
     {
         var instanceMgr = InstanceMgr.GetInstance();
         
+        m_HitSFXMaker = instanceMgr.GetComponentInChildren<HitSFXMaker>();
         m_UIMgr = instanceMgr.GetComponentInChildren<UIMgr>();
         m_PlayerUIMgr = instanceMgr.m_Player_UI;
         m_ScreenEffectUI = instanceMgr.m_MainCanvas.GetComponentInChildren<InGame_UI>().m_ScreenEffectUI;
@@ -66,7 +68,9 @@ public class Player_HotBox : MonoBehaviour, IHotBox
                 m_ScreenEffectUI.ActivateScreenEdgeEffect();
                 m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
                 m_SoundPlayer.PlayHitSoundByMatType(MatType.Flesh, m_Player.transform);
-
+                
+                m_HitSFXMaker.EnableNewObj(1, m_Player.GetPlayerCenterPos(), m_Player.m_IsRightHeaded);
+                
                 m_Player.setPlayerHp((m_Player.p_Hp - _param.m_Damage));
                 if (m_Player.p_Hp <= 0)
                 {

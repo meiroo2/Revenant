@@ -52,6 +52,10 @@ public class BossGang_JumpAtkWeapon : BasicWeapon_Enemy
         
         for (int i = 0; i < hotBoxArr.Length; i++)
         {
+            if(hotBoxArr[i].m_HitBoxInfo is HitBoxPoint.FLOOR or HitBoxPoint.COGNITION)
+                continue;
+
+            param.m_contactPoint = Vector2.zero;
             hotBoxArr[i].HitHotBox(param);
         }
         
