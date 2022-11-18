@@ -94,6 +94,7 @@ public class SpecialForce : BasicEnemy
 
     private int m_SpriteMode = 0;
     
+    public Player m_Player { get; private set; }
     public WeaponMgr m_WeaponMgr { get; private set; }
 
     public CoroutineHandler m_CoroutineHandler { get; private set; }
@@ -141,6 +142,7 @@ public class SpecialForce : BasicEnemy
 
         var instance = InstanceMgr.GetInstance();
         m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
+        m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
 
         SetSpriteMode(0);
         
