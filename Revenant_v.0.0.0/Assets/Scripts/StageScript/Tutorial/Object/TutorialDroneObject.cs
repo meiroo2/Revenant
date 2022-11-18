@@ -1,108 +1,53 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TutorialDroneObject : TutorialObject
 {
-
-    public List<AnimationClip> p_TutorialVideos = new();
-    private Dictionary<string, AnimationClip> m_TutorialVideosMap = new();
-	[field: SerializeField] public Animator P_VideoAnimator;
-    SpriteRenderer m_VideoSpriteRenderer;    
+    public GameObject player;
+	public float p_OffsetY;
 
     protected override void Start()
     {
-        base.Start();   
-        foreach(var video in p_TutorialVideos)
-        {
-            m_TutorialVideosMap.Add(video.name, video);
-        }
-        m_VideoSpriteRenderer = P_VideoAnimator.gameObject.GetComponent<SpriteRenderer>();
+        player = FindObjectOfType<Player>().gameObject;
 	}
 
     void Update()
     {
-        if (!m_animator.GetCurrentAnimatorStateInfo(0).IsName("Drone_contactIdle"))
-        {
-            P_VideoAnimator.GetComponent<SpriteRenderer>().enabled = false;
-		}
-        else
-        {
-			P_VideoAnimator.GetComponent<SpriteRenderer>().enabled = true;
-		}
-    }
+		FollowCharacter();
+	}
 
-    public void PlayTutorialVideo(string videoName)
+    /// <summary>
+    /// 플레이어를 따라갑니다.
+    /// </summary>
+    public void FollowCharacter()
     {
-        m_TutorialVideosMap.TryGetValue(videoName, out AnimationClip clip);
-
-        if (clip == null)
-        {
-            Debug.Log("해당 이름을 가진 클립이 없습니다");
-        }
-        else
-        {
-			if (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Drone_Idle"))
-			{
-                m_animator.SetInteger("TutorialAnimationIndex", 3);
-				m_animator.Play("Drone_contact");
-                Debug.Log("실행");
-			}
-
-            StartCoroutine(PlayVideo(videoName));
-		}
-    }
-
-    private IEnumerator PlayVideo(string videoName)
-    {
-        float alpha = 0;
-        var Mat = m_VideoSpriteRenderer.material;
-        Debug.Log(Mat.ToString());
-		while (!m_VideoSpriteRenderer.enabled)
+		float distance = transform.position.x - player.transform.position.x;
+		Vector3 targetPosition = Vector3.zero;
+		if (Vector3.Distance(transform.position, player.transform.position) > 1)
 		{
-			yield return null;
-		}
-		if (!P_VideoAnimator.GetCurrentAnimatorStateInfo(0).IsName("None"))
-        {
- 
-
-			while (true)
-            {
-
-				yield return new WaitForSeconds(0.02f);
-				alpha = Mat.GetFloat("_MainTexAlpha");
-                if(alpha > 0)
-                {
-                    alpha -= 0.05f;
-                }
-                Mat.SetFloat("_MainTexAlpha", alpha);
-				Debug.Log(Mat.GetFloat("_MainTexAlpha"));
-				if (alpha <= 0)
-                    break;
-			}
-
-        }
-
-		P_VideoAnimator.Play(videoName);
-		Mat.SetFloat("_MainTexAlpha", 0);
-		yield return null;
-
-
-		while (true)
-		{
-			yield return new WaitForSeconds(0.02f);
-			alpha = Mat.GetFloat("_MainTexAlpha");
-			if (alpha < 0.46f)
+			float scaleX;
+			if (distance < 0)
 			{
-				alpha += 0.05f;
+				scaleX = -1;
+				transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
+				targetPosition.x = player.transform.position.x + 1;
 			}
-			Mat.SetFloat("_MainTexAlpha", alpha);
-			Debug.Log(Mat.GetFloat("_MainTexAlpha"));
-			if (alpha >= 1)
-				break;
+			else if (distance > 0)
+			{
+				scaleX = 1;
+				transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
+				targetPosition.x = player.transform.position.x - 1;
+			}
+
+
+			targetPosition.y = player.transform.position.y + p_OffsetY;
+			targetPosition.z = player.transform.position.z;
+
+
+			transform.position = Vector3.MoveTowards(transform.position, targetPosition, 1 * Time.deltaTime);
 		}
-
-
-		yield return null;  
-    }
+	}
 }

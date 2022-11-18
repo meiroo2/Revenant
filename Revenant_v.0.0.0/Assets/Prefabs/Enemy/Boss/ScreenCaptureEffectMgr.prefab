@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3722177129293747252
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8993757169957744129}
+  m_Layer: 0
+  m_Name: SpriteTrigger00
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8993757169957744129
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3722177129293747252}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 37.440002, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4803104727073312602}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4803104727073312596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4803104727073312602}
+  - component: {fileID: 4803104727073312597}
+  m_Layer: 0
+  m_Name: ScreenCaptureEffectMgr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4803104727073312602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4803104727073312596}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8993757169957744129}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4803104727073312597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4803104727073312596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d55de830144df0b992d4f2af33f60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_BlackWaitTime: 1
+  p_BlackFadeSpeed: 2
+  p_LineXScale: 10
+  p_LineScaleSpeed: 2
+  m_InitLerpedPos: 3.56
+  m_AdjustAngle: 0.01293
+  m_AdjustX: 8
+  m_AdjustY: 5
+  m_Curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: -0.015705807
+      outSlope: -0.015705807
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.40416667
+    - serializedVersion: 3
+      time: 0.7056917
+      value: 0.055644777
+      inSlope: 0.20991813
+      outSlope: 0.20991813
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.23570682
+      outWeight: 0.28356642
+    - serializedVersion: 3
+      time: 0.7694504
+      value: 0.7610052
+      inSlope: 4.9250765
+      outSlope: 4.9250765
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.24940562
+      outWeight: 0.5177512
+    - serializedVersion: 3
+      time: 0.9958191
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  m_LeftMat: {fileID: 2100000, guid: 3861ff6a89e3c3c49b852d63910b5032, type: 2}
+  m_RightMat: {fileID: 2100000, guid: 7eaf3b8318c34eb428fb7cfc7fab16be, type: 2}

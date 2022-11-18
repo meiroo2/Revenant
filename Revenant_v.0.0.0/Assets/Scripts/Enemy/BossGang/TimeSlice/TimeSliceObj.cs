@@ -176,12 +176,18 @@ public class TimeSliceObj : MonoBehaviour
     
     private IEnumerator Following()
     {
+        
         while (true)
         {
+            /*
             m_CamCorrectionPos = m_Cam.transform.position;
             m_CamCorrectionPos.y -= m_CamMgr.p_YValue;
             transform.position = Vector2.Lerp(transform.position,
                 m_CamCorrectionPos, Time.deltaTime * m_MoveSpeed);
+            */
+            
+            transform.position = Vector2.Lerp(transform.position,
+                m_Player.GetPlayerCenterPos(), Time.deltaTime * m_MoveSpeed);
             
             yield return null;
         }

@@ -272,8 +272,11 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 // 플레이어와 적이 같은 층에 있다면 문 사용 X
                 if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair)
                 {
-                    m_Enemy.bMoveToUsedDoor = false;
-                    m_Enemy.MoveToPlayer();
+                    if (m_Enemy.GetDistanceBetPlayer() < 5.0f)
+                    {
+                        m_Enemy.bMoveToUsedDoor = false;
+                        m_Enemy.MoveToPlayer();
+                    }
                 }
                 else if (HeightBetweenPlayerAndEnemy <= 0.1f && !m_Enemy.bIsOnStair && !m_Enemy.m_Player.bIsOnStair)
                 {
@@ -365,8 +368,11 @@ public class ATTACK_NormalGang : NormalGang_FSM
         // 플레이어와 적이 같은 층에 있다면 문 사용 X
         if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair)
         {
-            m_Enemy.bMoveToUsedDoor = false;
-            m_Enemy.MoveToPlayer();
+            if (m_Enemy.GetDistanceBetPlayer() < 5.0f)
+            {
+                m_Enemy.bMoveToUsedDoor = false;
+                m_Enemy.MoveToPlayer();
+            }
         }
         else if (HeightBetweenPlayerAndEnemy <= 0.1f && !m_Enemy.bIsOnStair && !m_Enemy.m_Player.bIsOnStair)
         {

@@ -392,6 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 1
   <p_DamageMulti>k__BackingField: 0
 --- !u!61 &6785627411127605371
@@ -465,6 +466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p_MatType: 0
   <p_HitBoxPoint>k__BackingField: 0
   <p_DamageMulti>k__BackingField: 0
 --- !u!58 &1789468904418629693
@@ -649,6 +651,10 @@ MonoBehaviour:
   p_OverrideEnemyMgr: 0
   <p_AngleLimit>k__BackingField: 5
   <p_VisionDistance>k__BackingField: 1.5
+  p_AtkDistance: 0
+  m_DeadReasonForMat: 0
+  WayPointsVectorList: []
+  WayPointsIndex: 0
   <p_MeleeDistance>k__BackingField: 0.2
   p_IsLookAround: 1
   p_LookAroundDelay: 1
@@ -662,6 +668,9 @@ MonoBehaviour:
   p_HeadBox: {fileID: 6785627411194760967}
   p_BodyBox: {fileID: 6785627411127605370}
   m_IsTurning: 0
+  <p_BnWMat>k__BackingField: {fileID: 0}
+  <p_RedHoloMat>k__BackingField: {fileID: 2100000, guid: 341ce21ae549ba2498d668eda42037ac, type: 2}
+  <p_DisappearMat>k__BackingField: {fileID: 0}
 --- !u!50 &6785627412206059250
 Rigidbody2D:
   serializedVersion: 4

@@ -19,19 +19,22 @@ public class LeapColMaster : MonoBehaviour
     
     private Vector2 m_LeftEdgePos;
     private Vector2 m_RightEdgePos;
+
+    // 1 = Left, 2 = Right
+    public int m_SelectedLeapColIdx = 0;
     
     private void Awake()
     {
+        transform.parent = null;
+        
         m_LeftLeapCol = p_LeftCol.GetComponent<LeapCol>();
         m_LeftLeapCol.m_IsLeftCol = true;
         m_LeftLeapCol.m_LeapColMaster = this;
-        m_LeftLeapCol.m_Phase = 0;
         p_LeftCol.enabled = false;
         
         m_RightLeapCol = p_RightCol.GetComponent<LeapCol>();
         m_RightLeapCol.m_IsLeftCol = false;
         m_RightLeapCol.m_LeapColMaster = this;
-        m_RightLeapCol.m_Phase = 0;
         p_RightCol.enabled = false;
         
         p_ColMaster.SetActive(false);
@@ -40,16 +43,19 @@ public class LeapColMaster : MonoBehaviour
     
     public void SpawnCols(bool _isRightHead, Vector2 _spawnPos)
     {
+        m_SelectedLeapColIdx = 0;
         Transform masterTransform = p_ColMaster.transform;
         masterTransform.gameObject.SetActive(true);
         
-        p_LeftCol.enabled = true;
+        p_LeftCol.gameObject.SetActive(true);
         p_LeftCol.gameObject.layer = 22;
-        m_LeftLeapCol.m_Phase = 0;
+        p_LeftCol.enabled = true;
+        m_LeftLeapCol.ChangeColPhase(0);
         
-        p_RightCol.enabled = true;
+        p_RightCol.gameObject.SetActive(true);
         p_RightCol.gameObject.layer = 22;
-        m_RightLeapCol.m_Phase = 0;
+        p_RightCol.enabled = true;
+        m_RightLeapCol.ChangeColPhase(0);
         
         m_IsLeftCollide = false;
         m_IsRightCollide = false;
@@ -85,8 +91,8 @@ public class LeapColMaster : MonoBehaviour
 
     public Vector2 GetLandingPos(Vector2 _playerFootPos)
     {
-        m_LeftLeapCol.m_Phase = 1;
-        m_RightLeapCol.m_Phase = 1;
+        m_LeftLeapCol.ChangeColPhase(-1);
+        m_RightLeapCol.ChangeColPhase(-1);
 
         Vector2 LeftLandPos = p_ColMaster.transform.position;
         LeftLandPos.x -= p_LeftCol.size.x / 2f;
@@ -94,33 +100,74 @@ public class LeapColMaster : MonoBehaviour
         Vector2 RightLandPos = p_ColMaster.transform.position;
         RightLandPos.x += p_RightCol.size.x / 2f;
 
-        if (m_IsLeftCollide && m_IsRightCollide)
+        float distanceBetLeft = Vector2.Distance(_playerFootPos, LeftLandPos);
+        float distanceBetRight = Vector2.Distance(_playerFootPos, RightLandPos);
+        
+        switch (m_IsLeftCollide)
         {
-            if (Vector2.Distance(_playerFootPos, LeftLandPos) <
-                Vector2.Distance(_playerFootPos, RightLandPos))
-            {
+            case true when !m_IsRightCollide:
+                m_SelectedLeapColIdx = 1;
                 return LeftLandPos;
-            }
-            else
-            {
+            
+            case false when m_IsRightCollide:
+                m_SelectedLeapColIdx = 2;
                 return RightLandPos;
+            
+            default:
+            {
+                if (distanceBetLeft < distanceBetRight)
+                {
+                    m_SelectedLeapColIdx = 1;
+                    return LeftLandPos;
+                }
+                else
+                {
+                    m_SelectedLeapColIdx = 2;
+                    return RightLandPos;
+                }
             }
         }
-        else if (m_IsLeftCollide && !m_IsRightCollide)
-            return LeftLandPos;
-        else if (!m_IsLeftCollide && m_IsRightCollide)
-            return RightLandPos;
-        else
+    }
+
+    public void ConvertSelectedCol()
+    {
+        switch (m_SelectedLeapColIdx)
         {
-            if (Vector2.Distance(_playerFootPos, LeftLandPos) <
-                Vector2.Distance(_playerFootPos, RightLandPos))
-            {
-                return LeftLandPos;
-            }
-            else
-            {
-                return RightLandPos;
-            }
+            case 1:
+                p_RightCol.enabled = false;
+                m_LeftLeapCol.ClearList();
+                p_LeftCol.gameObject.layer = 8;
+                m_LeftLeapCol.ChangeColPhase(1);
+                break;
+            
+            case 2:
+                p_LeftCol.enabled = false;
+                m_RightLeapCol.ClearList();
+                p_RightCol.gameObject.layer = 8;
+                m_RightLeapCol.ChangeColPhase(1);
+                break;
         }
+    }
+
+    public void DoAttack()
+    {
+        switch (m_SelectedLeapColIdx)
+        {
+            case 1:
+                m_LeftLeapCol.ChangeColPhase(-1);
+                m_LeftLeapCol.Attack();
+            break;
+            
+            case 2:
+                m_RightLeapCol.ChangeColPhase(-1);
+                m_RightLeapCol.Attack();
+            break;
+        }
+    }
+
+    public void ReleaseAll()
+    {
+        p_LeftCol.gameObject.SetActive(false);
+        p_RightCol.gameObject.SetActive(false);
     }
 }
