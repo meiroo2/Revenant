@@ -11,25 +11,32 @@ public class InstanceMgr : MonoBehaviour
     
     [BoxGroup("In_World")] public GameObject p_AimCursor;
     [BoxGroup("In_World")] public GameObject p_BulletTimeMgr;
-
+    [BoxGroup("In_World")] public GameObject p_ScreenCaptureMgr;
+    
     [BoxGroup("In_Canvas")] public GameObject p_Canvas_RageGauge;
     [field: SerializeField, BoxGroup("In_Canvas")] private GameObject p_Player_UI;
 
     [field: SerializeField, BoxGroup("In_Cam")] private GameObject p_ScreenEffect_AR;
-
+    [field: SerializeField, BoxGroup("In_Cam")] private GameObject p_ScreenCaptureCanvas;
+    
     public GameObject[] m_ShouldBeMadeInWorld;
     public GameObject[] m_ShouldBeMadeInCanvas;
+    
     
     // Member Variables
     public ScreenEffect_AR m_ScreenEffect_AR { get; private set; }
     public Player_UI m_Player_UI { get; private set; }
     public LeftBullet_WUI m_LeftBullet_WUI { get; private set; }
+    public ScreenCaptureEffectMgr m_ScreenCaptureMgr { get; private set; }
+    public ScreenCaptureCanvas m_ScreenCaptureCanvas { get; private set; }
 
-
+    
+    // Instance
     private static InstanceMgr Instance;
     public static InstanceMgr GetInstance() { return Instance; }
 
     
+    // Constructors
     private void Awake()
     {
         m_MainCanvas = GameObject.FindGameObjectWithTag("MainCanvas");
@@ -56,12 +63,21 @@ public class InstanceMgr : MonoBehaviour
         }
         Instantiate(p_AimCursor, this.gameObject.transform);
         Instantiate(p_BulletTimeMgr, this.gameObject.transform);
+
+        m_ScreenCaptureMgr =
+            Instantiate(p_ScreenCaptureMgr, this.gameObject.transform).GetComponent<ScreenCaptureEffectMgr>();
     }
 
     private void SpawnInCam()
     {
+        Transform camTransform = m_MainCam.transform;
+        
         m_ScreenEffect_AR = 
-            Instantiate(p_ScreenEffect_AR, m_MainCam.transform).GetComponent<ScreenEffect_AR>();
-
+            Instantiate(p_ScreenEffect_AR, camTransform).GetComponent<ScreenEffect_AR>();
+        m_ScreenEffect_AR.transform.localPosition = Vector2.zero;
+        
+        m_ScreenCaptureCanvas =
+            Instantiate(p_ScreenCaptureCanvas, camTransform).GetComponent<ScreenCaptureCanvas>();
+        m_ScreenCaptureCanvas.transform.localPosition = Vector2.zero;
     }
 }

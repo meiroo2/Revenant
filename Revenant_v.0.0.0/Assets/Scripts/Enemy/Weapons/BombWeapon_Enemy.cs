@@ -17,11 +17,9 @@ public class BombWeapon_Enemy : BasicWeapon_Enemy
     private IHotBoxParam m_HotBoxParam;
     
     private List<IHotBox> m_HotBoxes = new List<IHotBox>();
-    private List<Collider2D> m_Cols = new List<Collider2D>();
 
-    private List<GameObject> m_ForDoubleCheck = new List<GameObject>();
-    
-    
+
+
     // Constructors
     private void Awake()
     {
@@ -34,23 +32,14 @@ public class BombWeapon_Enemy : BasicWeapon_Enemy
     // Functions
     public override int Fire()
     {
-        m_ForDoubleCheck.Clear();
         m_HotBoxParam.ResetContactPoint(transform.position);
-        
-        foreach (var ele in m_Cols)
+
+        var arr = m_HotBoxes.ToArray();
+        for (int i = 0; i < arr.Length; i++)
         {
-            m_HotBoxes.Add(ele.GetComponent<IHotBox>());
+            arr[i].HitHotBox(m_HotBoxParam);
         }
-        
-        foreach (var ele in m_HotBoxes)
-        {
-            if (m_ForDoubleCheck.Contains(ele.m_ParentObj)) 
-                continue;
-            
-            m_ForDoubleCheck.Add(ele.m_ParentObj);
-            ele.HitHotBox(m_HotBoxParam);
-        }
-        
+
         return 1;
     }
 
@@ -71,11 +60,17 @@ public class BombWeapon_Enemy : BasicWeapon_Enemy
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        m_Cols.Add(col);
+        if (col.TryGetComponent(out IHotBox hotBox))
+        {
+            m_HotBoxes.Add(hotBox);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        m_Cols.Remove(other);
+        if (other.TryGetComponent(out IHotBox hotBox))
+        {
+            m_HotBoxes.Remove(hotBox);
+        }
     }
 }

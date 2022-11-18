@@ -15,6 +15,7 @@ public enum HitBoxPoint
     HEAD,
     BODY,
     OBJECT,
+    FLOOR,
     COGNITION
 }
 

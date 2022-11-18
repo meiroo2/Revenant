@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 4803104727073312602}
   - component: {fileID: 4803104727073312597}
   m_Layer: 0
-  m_Name: ScreenCaptureMgr
+  m_Name: ScreenCaptureEffectMgr
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,8 +76,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d55de830144df0b992d4f2af33f60b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_LerpedPos: 3.2
-  m_Speed: 50
+  p_BlackWaitTime: 1
+  p_BlackFadeSpeed: 2
+  p_LineXScale: 10
+  p_LineScaleSpeed: 2
+  m_InitLerpedPos: 3.56
+  m_AdjustAngle: 0.01293
+  m_AdjustX: 8
+  m_AdjustY: 5
   m_Curve:
     serializedVersion: 2
     m_Curve:
@@ -122,4 +128,3 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_LeftMat: {fileID: 2100000, guid: 3861ff6a89e3c3c49b852d63910b5032, type: 2}
   m_RightMat: {fileID: 2100000, guid: 7eaf3b8318c34eb428fb7cfc7fab16be, type: 2}
-  m_Cam: {fileID: 0}

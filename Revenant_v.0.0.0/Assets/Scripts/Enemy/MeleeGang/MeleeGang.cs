@@ -300,7 +300,7 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
             m_MatTimeCoroutine = null;
         }
         
-        if (m_IgnoreMatChanger)
+        if (m_IgnoreMatChanger || !gameObject.activeSelf)
             return;
 
         m_CurSpriteMatType = _matType;

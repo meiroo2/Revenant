@@ -37,15 +37,12 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("JumpAtk")] public float p_JumpAtk_Distance_Max = 1f;
     
     // LeapAtk
-    [TabGroup("LeapAtk")] public float p_LeapAtk_Height = 1f;
-    [TabGroup("LeapAtk")] public float p_LeapAtk_Speed = 0.2f;
     [TabGroup("LeapAtk")] public float p_LeapAtk_Distance_Min = 1f;
-    [TabGroup("LeapAtk")] public float p_LeapAtk_SlipPwr = 4f;
-    [TabGroup("LeapAtk")] public float p_LeapAtk_AdaptiveSlipValue = 1f;
-
+    [TabGroup("LeapAtk")] public float p_LeapAtk_Height = 1f;
+    
     // Stealth
     [TabGroup("Stealth")] public float p_Stealth_Speed = 1f;
-
+    
     // Holo
     [TabGroup("Holo")] public float p_Holo_FadeSpeed = 1f;
     [TabGroup("Holo")] public float p_Holo_BeforeDelay = 0.5f;
@@ -57,6 +54,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     // Counter
     [TabGroup("Counter")] public float p_Counter_FadeSpeed = 1f;
     [TabGroup("Counter")] public float p_Counter_Time = 3f;
+    [TabGroup("Counter")] public float p_Counter_PointAtkTime = 0.5f;
     
     // Stun
     [TabGroup("Stun")] public float p_StunTime = 1f;
@@ -80,8 +78,11 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [PropertySpace(10f, 0f)]
     public LeapColMaster p_LeapColMaster;
     public Transform p_MapCenterTransform;
+    public Transform p_MapLeftLimit;
+    public Transform p_MapRightLimit;
     public TextMeshProUGUI p_HpText;
     public TextMeshProUGUI p_FSMText;
+
     [field: SerializeField] public TimeSliceMgr p_TimeSliceMgr { get; private set; }
     [field: SerializeField] private SpriteRenderer p_Renderer;
     [field: SerializeField, Space(10f)] public Enemy_HotBox p_HeadBox;
@@ -91,7 +92,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     
     
     // Member Variables
-    public ScreenCaptureMgr m_ScreenCaptureMgr { get; private set; }
+    public ScreenCaptureEffectMgr m_ScreenCaptureMgr { get; private set; }
     public SimpleEffectPuller m_SEPuller { get; private set; }
     public WeaponMgr m_WeaponMgr { get; private set; }
     private IHotBox[] m_HotBoxes;
@@ -153,15 +154,19 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         m_CurBossStateName = BossStateName.IDLE;
         m_CurEnemyFSM.StartState();
 
-        p_BezierMove.m_Speed = p_LeapAtk_Speed;
+        //p_BezierMove.m_Speed = p_LeapAtk_Speed;
         p_BezierMove.posA = 0f;
-        p_BezierMove.posB = p_LeapAtk_Height;
+        //p_BezierMove.posB = p_LeapAtk_Height;
         
         p_FSMText.text = "IDLE";
         p_HpText.text = p_Hp.ToString();
         
         // ISpriteMatChange
         InitISpriteMatChange();
+        
+        // LeapColMaster
+        p_LeapColMaster.p_LeftLimit = p_MapLeftLimit;
+        p_LeapColMaster.p_RightLimit = p_MapRightLimit;
     }
 
     private void Start()
@@ -174,7 +179,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         m_PlayerLocationSensor = tempPlayer.m_PlayerLocationSensor;
         m_SEPuller = InstanceMgr.GetInstance().GetComponentInChildren<SimpleEffectPuller>();
 
-        m_ScreenCaptureMgr = InstanceMgr.GetInstance().GetComponentInChildren<ScreenCaptureMgr>();
+        m_ScreenCaptureMgr = InstanceMgr.GetInstance().GetComponentInChildren<ScreenCaptureEffectMgr>();
     }
 
 
@@ -216,6 +221,18 @@ public class BossGang : BasicEnemy, ISpriteMatChange
             if(m_IsRightHeaded)
                 setisRightHeaded(false);
             
+            m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
+        }
+    }
+
+    public void ForceSetRigid(bool _isRight, float _addSpeed = 1f)
+    {
+        if (_isRight)
+        {
+            m_EnemyRigid.velocity = -StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
+        }
+        else
+        {
             m_EnemyRigid.velocity = StaticMethods.getLPerpVec(m_Foot.m_FootNormal).normalized * ((p_MoveSpeed) * _addSpeed);
         }
     }
