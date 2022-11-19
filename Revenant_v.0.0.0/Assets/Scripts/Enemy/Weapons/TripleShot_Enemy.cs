@@ -12,7 +12,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
     public ObjectPuller p_MuzFlashPuller;
     public Transform m_ShellPos;
     public Sprite p_BulletSprite;
-    
+    public Transform m_BulletPos;
     
     // Member Variables
     private BulletPuller m_Puller;
@@ -34,7 +34,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
         m_ShellMgr = tempIns.GetComponentInChildren<ShellMgr>();
         m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
 
-        m_BulletParam = new BulletParam(false, p_BulletSprite, true, m_Enemy_Arm.position,
+        m_BulletParam = new BulletParam(false, p_BulletSprite, true, m_BulletPos.position,
             m_Enemy_Arm.rotation, p_BulletDamage, p_BulletSpeed);
     }
 
@@ -52,7 +52,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
         m_SoundPlayer.PlayEnemySoundOnce(0, gameObject);
 
         m_BulletParam.m_IsRightHeaded = m_Enemy.m_IsRightHeaded;
-        m_BulletParam.m_Position = m_Enemy_Arm.position;
+        m_BulletParam.m_Position = m_BulletPos.position;
         m_BulletParam.m_Rotation = m_Enemy_Arm.rotation;
         
         // 불릿 랜덤 로테이션

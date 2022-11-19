@@ -556,8 +556,8 @@ public class Player_MELEE : PlayerFSM
 
        m_Player.m_SimpleEffectPuller.SpawnSimpleEffect(6, m_Player.m_PlayerFootMgr.GetFootRayHit().point,
            !m_Player.m_IsRightHeaded);
-       
-       m_Player.m_PlayerHotBox.m_hotBoxType = 2;
+
+       m_Player.m_PlayerHotBox.gameObject.SetActive(false);
     }
 
     public override void UpdateState()
@@ -599,7 +599,7 @@ public class Player_MELEE : PlayerFSM
 
     public override void ExitState()
     {
-        m_Player.m_PlayerHotBox.m_hotBoxType = 0;
+        m_Player.m_PlayerHotBox.gameObject.SetActive(true);
         m_Player.m_CanAttack = true;
         m_Player.m_CanMove = true;
         m_Player.m_playerRotation.m_doRotate = true;

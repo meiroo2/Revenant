@@ -32,13 +32,6 @@ public class WeaponMgr : MonoBehaviour
         {
             p_Weapons[i].m_SoundPlayer = soundPlayer;
         }
-        
-        for (int i = 0; i < p_Weapons.Count; i++)
-        {
-            p_Weapons[i].gameObject.SetActive(false);
-        }
-
-        p_Weapons[0].gameObject.SetActive(true);
     }
 
     // Functions

@@ -48,8 +48,10 @@ public class BGSpawn : MonoBehaviour
             m_ParaBack.enabled = true;
             m_Activated = true;
             m_Activated = true;
+            /*
             if(p_SendToBtnMgr)
                 GameObject.FindObjectOfType<Title_BtnMgr>().ActiveBtn(true);
+                */
         }
     }
 }

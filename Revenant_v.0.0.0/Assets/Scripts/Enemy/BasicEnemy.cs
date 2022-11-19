@@ -73,11 +73,6 @@ public class BasicEnemy : Human
     [HideInInspector] public List<Vector2> WayPointsVectorList;
     [HideInInspector] public int WayPointsIndex = 0;
 
-    private void Update()
-    {
-        IsPlayerUpper();
-    }
-
     // Functions
     /// <summary>
     /// 적이 플레이어를 바라보고 있다면 True를 반환합니다.

@@ -30,7 +30,7 @@ public class TutorialBot_Weapon : BasicWeapon_Enemy
         m_Puller = tempIns.GetComponentInChildren<BulletPuller>();
 
         m_BulletParam = new BulletParam(false, p_BulletSprite, true, m_Enemy_Arm.position,
-            m_Enemy_Arm.rotation, p_BulletDamage, p_BulletSpeed);
+            m_Enemy_Arm.rotation, 0, p_BulletSpeed);
     }
 
     public override int Fire()

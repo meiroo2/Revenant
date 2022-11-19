@@ -27,6 +27,8 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
     public Material m_LeftMat;
     public Material m_RightMat;
 
+    [HideInInspector] public Action m_MoveImgEndAction = null;
+    
     private ScreenCaptureCanvas m_ScreenCaptureCanvas;
     
     private Image m_LImg;
@@ -255,6 +257,7 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
             }
             yield return null;
         }
+        m_MoveImgEndAction?.Invoke();
         m_BulletTimeMgr.ChangeTimeScale(1f);
         yield break;
     }
