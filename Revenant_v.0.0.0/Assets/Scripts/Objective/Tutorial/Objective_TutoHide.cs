@@ -40,7 +40,8 @@ public class Objective_TutoHide : Objective
 		m_Player.AttachActionOnFSM(PlayerStateName.HIDDEN,() => AddCount(), true);
         m_Phase = 0;
         m_Count = 0;
-    }
+		m_ObjUI.LerpUI(false);
+	}
 
     public override void UpdateObjective()
     {

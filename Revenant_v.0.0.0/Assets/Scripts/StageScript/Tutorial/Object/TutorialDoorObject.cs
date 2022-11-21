@@ -9,6 +9,8 @@ public class TutorialDoorObject : TutorialObject
 	public Transform p_SpawnPosition;
 	public CamBoundMgr p_CamBoundMgr;
 	public Image FadeOutImage;
+	public TutorialDroneObject p_TutorialDroneObject;
+	public Vector3 p_DronePositionOffset;
 	private bool m_CanEnter = false;
 	private CameraMgr m_camMgr;
 	public override void Initialize()
@@ -32,6 +34,7 @@ public class TutorialDoorObject : TutorialObject
 			{
 				m_camMgr.m_CamBoundMgr = null;
 				collision.transform.position = p_SpawnPosition.position;
+				p_TutorialDroneObject.transform.position = collision.transform.position + p_DronePositionOffset;
 				m_camMgr.StopAllCoroutines();
 				m_camMgr.m_IsFollowTarget = false;
 				m_camMgr.m_IsMoveEnd = true;

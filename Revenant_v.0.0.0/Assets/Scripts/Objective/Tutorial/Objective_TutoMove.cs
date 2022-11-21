@@ -23,13 +23,12 @@ public class Objective_TutoMove : Objective
 
     public override void InitObjective(ObjectiveMgr _mgr, ObjectiveUI _ui)
     {
+        Debug.Log("move");
         m_ObjMgr = _mgr;
         m_ObjUI = _ui;
         
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
-
-
 
 		m_InputMgr.SetAllLockByBool(true);
         m_InputMgr.p_MousePosLock = false;
@@ -38,7 +37,8 @@ public class Objective_TutoMove : Objective
         m_RTimer = 0f;
         m_Phase = 0;
         m_Count = 0;
-    }
+		m_ObjUI.LerpUI(false);
+	}
 
     public override void UpdateObjective()
     {
@@ -53,7 +53,8 @@ public class Objective_TutoMove : Objective
                     {
                         m_ObjUI.SetObjectiveFontStyle(0, true);
                         m_Count++;
-                    }
+
+					}
                 }
 
                 if (m_InputMgr.m_IsPushRightKey && m_RTimer < 1f)

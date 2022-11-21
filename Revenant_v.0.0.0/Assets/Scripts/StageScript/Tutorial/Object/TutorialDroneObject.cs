@@ -7,11 +7,17 @@ using UnityEngine;
 public class TutorialDroneObject : TutorialObject
 {
     public GameObject player;
+	public float p_OffsetX;
 	public float p_OffsetY;
+	public float p_FollowSpeed = 2;
+	public TutorialDialog p_TutorialDialog;
 
     protected override void Start()
     {
         player = FindObjectOfType<Player>().gameObject;
+		Vector3 startPosition = transform.position;
+		startPosition.y = player.transform.position.y + p_OffsetY;
+		transform.position = startPosition;
 	}
 
     void Update()
@@ -24,30 +30,23 @@ public class TutorialDroneObject : TutorialObject
     /// </summary>
     public void FollowCharacter()
     {
-		float distance = transform.position.x - player.transform.position.x;
-		Vector3 targetPosition = Vector3.zero;
-		if (Vector3.Distance(transform.position, player.transform.position) > 1)
+        Vector3 targetPosition = player.transform.position;
+		targetPosition.y = player.transform.position.y + p_OffsetY;
+
+		if (player.transform.position.x - transform.position.x > 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+			targetPosition.x = player.transform.position.x + p_OffsetX;
+		}
+        else
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+			targetPosition.x = player.transform.position.x - p_OffsetX;
+		}
+
+		if (Mathf.Abs(player.transform.position.x - transform.position.x) > p_OffsetX)
 		{
-			float scaleX;
-			if (distance < 0)
-			{
-				scaleX = -1;
-				transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
-				targetPosition.x = player.transform.position.x + 1;
-			}
-			else if (distance > 0)
-			{
-				scaleX = 1;
-				transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
-				targetPosition.x = player.transform.position.x - 1;
-			}
-
-
-			targetPosition.y = player.transform.position.y + p_OffsetY;
-			targetPosition.z = player.transform.position.z;
-
-
-			transform.position = Vector3.MoveTowards(transform.position, targetPosition, 1 * Time.deltaTime);
+			transform.position = Vector3.MoveTowards(transform.position, targetPosition, p_FollowSpeed * Time.deltaTime);
 		}
 	}
 }

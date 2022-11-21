@@ -48,6 +48,7 @@ public class Objective_TutoBulletTime : Objective
             enemy.gameObject.SetActive(true);
 		}
 		enemyCount = tutorialEnemies.Count;
+		m_ObjUI.LerpUI(false);
 	}
 
     public override void UpdateObjective()
@@ -63,19 +64,15 @@ public class Objective_TutoBulletTime : Objective
 					m_ObjUI.SetObjectiveProgress(0, 1);
 				}
 
-                if (m_UseBulletTimeCount >= 1)
-                {
-					float proceed = 0;
-					proceed = Mathf.InverseLerp(enemyCount, 0, GetActiveEnemyCount());
-					m_ObjUI.SetObjectiveProgress(1, proceed);
+				float proceed = 0;
+				proceed = Mathf.InverseLerp(enemyCount, 0, GetActiveEnemyCount());
+				m_ObjUI.SetObjectiveProgress(1, proceed);
 
-                    if(proceed >= 1)
-                    {
-						m_ObjUI.SetObjectiveFontStyle(1, true);
-						m_Phase = 1;
-                    }
+				if (proceed >= 1 && m_UseBulletTimeCount == 1)
+				{
+					m_ObjUI.SetObjectiveFontStyle(1, true);
+					m_Phase = 1;
 				}
-
 
 				break;
             case 1:
