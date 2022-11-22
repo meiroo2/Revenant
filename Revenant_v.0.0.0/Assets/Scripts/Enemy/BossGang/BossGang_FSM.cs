@@ -80,6 +80,8 @@ public class Walk_BossGang : BossGang_FSM
         m_Animator = m_Enemy.m_Animator;
         m_Animator.SetInteger(Walk, 1);
 
+        m_Enemy.m_NextFSMForStealth = 0;
+        
         m_Phase = 0;
         m_Timer = 0f;
     }
@@ -91,6 +93,8 @@ public class Walk_BossGang : BossGang_FSM
         switch (m_Phase)
         {
             case 0:
+                // For Ultimate
+                /*
                 if (m_Enemy.m_IsUltimateBooked == 1)
                 {
                     m_Phase = -1;
@@ -101,6 +105,8 @@ public class Walk_BossGang : BossGang_FSM
                 {
                     m_Phase = 1;
                 }
+                */
+                m_Phase = 1;
                 break;
             
             case 1:
@@ -127,15 +133,115 @@ public class Walk_BossGang : BossGang_FSM
                 float distance = m_Enemy.GetDistanceBetPlayer();
                 float jumpMax = m_Enemy.p_JumpAtk_Distance_Max;
                 float leapMin = m_Enemy.p_LeapAtk_Distance_Min;
-
-                //SSSSSSSSSSSSSS
-                m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
-                break;
-                //SSSSSSSSSSSSSS
                 
                 if (distance <= jumpMax && distance < leapMin)
                 {
                     // Jump만 가능
+                    m_Enemy.m_NextFSMForStealth = 1;
+                    m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                    break;
+                }
+                else if (distance <= jumpMax && distance >= leapMin)
+                {
+                    // Jump & Leap 가능
+                    int randomNum = UnityEngine.Random.Range(0, 2);
+                
+                    switch (randomNum)
+                    {
+                        case 0:
+                            m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
+                            break;
+                    
+                        case 1:
+                            m_Enemy.m_NextFSMForStealth = 1;
+                            m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                            break;
+                    }
+                }
+                else if (distance > jumpMax && distance >= leapMin)
+                {
+                    // Leap만 됨
+                    int randomNum = UnityEngine.Random.Range(0, 2);
+                
+                    switch (randomNum)
+                    {
+                        case 0:
+                            m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
+                            break;
+
+                        case 1:
+                            m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                            break;
+                    }
+                }
+                else
+                {
+                    // 예외상황 (Stealth만 발동)
+                    m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                    break;
+                }
+                
+                break;
+        }
+    }
+
+    public override void ExitState()
+    {
+        m_Enemy.ResetRigid();
+        m_Animator.SetInteger(Walk, 0);
+    }
+    
+    /*
+     public override void UpdateState()
+    {
+        m_Timer += Time.deltaTime;
+        
+        switch (m_Phase)
+        {
+            case 0:
+                if (m_Enemy.m_IsUltimateBooked == 1)
+                {
+                    m_Phase = -1;
+                    m_Enemy.m_IsUltimateBooked = 2;
+                    m_Enemy.ChangeBossFSM(BossStateName.ULTIMATE);
+                }
+                else
+                {
+                    m_Phase = 1;
+                }
+                m_Phase = 1;
+                break;
+            
+            case 1:
+                if (m_Timer >= m_Enemy.p_Walk_Time)
+                    m_Phase = 2;
+
+                if(!m_Enemy.IsFacePlayer())
+                    m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+                
+                if (m_Enemy.GetDistanceBetPlayer() > m_Enemy.p_Walk_MinDistance)
+                {
+                    m_Animator.SetInteger(Walk, 1);
+                    m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
+                }
+                else
+                {
+                    m_Animator.SetInteger(Walk, 0);
+                }
+                break;
+            
+            case 2:
+                m_Phase = -1;
+
+                float distance = m_Enemy.GetDistanceBetPlayer();
+                float jumpMax = m_Enemy.p_JumpAtk_Distance_Max;
+                float leapMin = m_Enemy.p_LeapAtk_Distance_Min;
+                
+                if (distance <= jumpMax && distance < leapMin)
+                {
+                    // Jump만 가능
+                    m_Enemy.m_NextFSMForStealth = 1;
+                    
                     int randomNum = UnityEngine.Random.Range(0, 2);
                 
                     switch (randomNum)
@@ -189,17 +295,13 @@ public class Walk_BossGang : BossGang_FSM
                 {
                     // 예외상황 (Stealth만 발동)
                     m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                    break;
                 }
                 
                 break;
         }
     }
-
-    public override void ExitState()
-    {
-        m_Enemy.ResetRigid();
-        m_Animator.SetInteger(Walk, 0);
-    }
+     */
 }
 
 public class JumpAtk_BossGang : BossGang_FSM
@@ -604,12 +706,8 @@ public class Stealth_BossGang : BossGang_FSM
                 break;
             
             case 1:
-                
-                //SSSSSSSSSSSSSS
-                m_Enemy.ChangeBossFSM(BossStateName.HOLO);
-                break;
-                //SSSSSSSSSSSSSS
-                
+                // For Ultimate
+                /*
                 if (m_Enemy.m_IsUltimateBooked == 2)
                 {
                     m_Phase = -1;
@@ -619,22 +717,50 @@ public class Stealth_BossGang : BossGang_FSM
                 {
                     m_Phase = 2;
                 }
+                */
+                m_Phase = 2;
                 break;
             
             case 2:
-                m_Phase = -1;
-                int randomNum = UnityEngine.Random.Range(0, 2);
-
-                switch (randomNum)
+                if (m_Enemy.m_NextFSMForStealth == 1)
                 {
-                    case 0:
-                        m_Enemy.ChangeBossFSM(BossStateName.HOLO);
-                        break;
+                    // Jump 포함
+                    m_Enemy.m_NextFSMForStealth = 0;
+                    int randomNum = UnityEngine.Random.Range(0, 3);
+
+                    switch (randomNum)
+                    {
+                        case 0:
+                            m_Enemy.ChangeBossFSM(BossStateName.HOLO);
+                            break;
                     
-                    case 1:
-                        m_Enemy.ChangeBossFSM(BossStateName.COUNTER);
-                        break;
+                        case 1:
+                            m_Enemy.ChangeBossFSM(BossStateName.COUNTER);
+                            break;
+                        
+                        case 2:
+                            m_Enemy.ChangeBossFSM(BossStateName.JUMPATK);
+                            break;
+                    }
                 }
+                else
+                {
+                    int randomNum = UnityEngine.Random.Range(0, 2);
+
+                    switch (randomNum)
+                    {
+                        case 0:
+                            m_Enemy.ChangeBossFSM(BossStateName.HOLO);
+                            break;
+                    
+                        case 1:
+                            m_Enemy.ChangeBossFSM(BossStateName.COUNTER);
+                            break;
+                    }
+                }
+                
+                
+                m_Phase = -1;
                 break;
         }
     }
