@@ -63,6 +63,7 @@ public class Player : Human
     // Member Variables
     [ReadOnly] public bool bIsOnStair = false;
     public int PlayerStairNum { get; set; } = 0;
+    public int PlayerMapSectionNum { get; set; } = 0;
 
     [field: SerializeField] public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }

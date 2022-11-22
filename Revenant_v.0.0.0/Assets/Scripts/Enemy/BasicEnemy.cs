@@ -69,9 +69,12 @@ public class BasicEnemy : Human
     public bool bMoveToUseStairDown { get; set; } = false;
     public bool bIsPlayerUpperThanEnemy { get; set; } = false;
     public int EnemyStairNum { get; set; } = 0;
+    public int EnemyMapSectionNum { get; set; } = 0;
+    public bool bIsSameMapSections { get; set; } = false;
     
     [HideInInspector] public List<Vector2> WayPointsVectorList;
     [HideInInspector] public int WayPointsIndex = 0;
+    
 
     // Functions
     /// <summary>
@@ -343,5 +346,10 @@ public class BasicEnemy : Human
             bIsPlayerUpperThanEnemy = false;
         }
         return bIsPlayerUpperThanEnemy;
+    }
+
+    virtual public bool IsSameMapSections()
+    {
+        return false;
     }
 }
