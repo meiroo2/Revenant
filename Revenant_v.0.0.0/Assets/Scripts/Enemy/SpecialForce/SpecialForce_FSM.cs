@@ -311,19 +311,26 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
                     if (m_Enemy.WayPointsVectorList.Count != 0 && m_Enemy.WayPointsIndex < m_Enemy.WayPointsVectorList.Count)
                     {
                         m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x), m_Enemy.p_RunSpeedMulti);
+                        m_Enemy.MakeDelayMoveToPlayer();
                     }
                     else
                     {
                         m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x), m_Enemy.p_RunSpeedMulti);
                     }
-
-                    float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
-                    // 플레이어와 적이 같은 층에 있다면 문 사용 X
-                    if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair)
+                    
+                    if (m_Enemy.bIsSameMapSections)
                     {
                         m_Enemy.bMoveToUsedDoor = false;
                         m_Enemy.MoveToPlayer();
                     }
+                    
+                    // float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+                    // // 플레이어와 적이 같은 층에 있다면 문 사용 X
+                    // if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair && m_Enemy.EnemyMapSectionNum == m_Enemy.m_Player.PlayerMapSectionNum)
+                    // {
+                    //     m_Enemy.bMoveToUsedDoor = false;
+                    //     m_Enemy.MoveToPlayer();
+                    // }
                     //m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded, m_Enemy.p_RunSpeedMulti);
                 }
                 break;
@@ -564,6 +571,8 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
 
         m_FullAnimCheckElement = 
             m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckCognitionAnim());
+        
+        m_Enemy.MakeDelayMoveToPlayer();
     }
 
     public override void UpdateState()
@@ -571,19 +580,22 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
         if (!m_IsWeaponReady)
             return;
         
-        float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
-        // 플레이어와 적이 같은 층에 있다면 문 사용 X
-        if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor)
-        {
-             m_Enemy.bMoveToUsedDoor = false;
-             m_Enemy.MoveToPlayer();
-        }
-
-        if (m_Enemy.bMoveToUsedDoor)
-        {
-            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
-        }
-
+        /**
+         * A
+         * T
+         * T
+         * A
+         * C
+         * K
+         */
+        // float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+        // // 플레이어와 적이 같은 층에 있다면 문 사용 X
+        // if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && m_Enemy.EnemyMapSectionNum == m_Enemy.m_Player.PlayerMapSectionNum)
+        // {
+        //      m_Enemy.bMoveToUsedDoor = false;
+        //      m_Enemy.MoveToPlayer();
+        // }
+        
         switch (m_AtkPhase)
         {
             case 0:
@@ -647,6 +659,11 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             m_Enemy.p_LegAnimator.SetInteger(Walk, -1);
             m_Enemy.p_ArmAnimator.SetInteger(Walk, 1);
             m_Enemy.SetRigidByDirection(!m_Enemy.m_IsRightHeaded);
+        }
+        
+        if (m_Enemy.bMoveToUsedDoor)
+        {
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
         }
     }
 
