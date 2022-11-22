@@ -99,11 +99,11 @@ public class Objective_TutoLookAt : Objective
     {
 		if (m_Player.transform.position.x < m_ObjMgr.p_TutorialDroneObject.transform.position.x)
 		{
-			m_Player.transform.localScale = new Vector3(1, 1, 1);
+            m_Player.setisRightHeaded(true);
 		}
 		else
 		{
-			m_Player.transform.localScale = new Vector3(-1, 1, 1);
+			m_Player.setisRightHeaded(false);
 		}
 
 		if (m_CurrentDialogTextCount < p_DroneDialogTextList.Count)
