@@ -6,13 +6,15 @@ public class Enemy_WeaponMgr : WeaponMgr
     protected new void Awake()
     {
         base.Awake();
+        for (int i = 0; i < p_Weapons.Count; i++)
+        {
+            p_Weapons[i].gameObject.SetActive(false);
+        }
     }
 
     protected new void Start()
     {
         base.Start();
-        m_CurWeapon.gameObject.SetActive(false);
-        m_CurWeapon = null;
     }
 
     public override void ChangeWeapon(int _idx)
@@ -22,6 +24,16 @@ public class Enemy_WeaponMgr : WeaponMgr
             Debug.Log("WeaponMgr 총기교체 OOR ERROR");
             return;
         }
+        
+        
+        if (p_Weapons[_idx] == m_CurWeapon)
+        {
+            if(!m_CurWeapon.gameObject.activeSelf)
+                m_CurWeapon.gameObject.SetActive(true);
+            
+            return;
+        }
+
 
         if (!ReferenceEquals(m_CurWeapon, null))
         {

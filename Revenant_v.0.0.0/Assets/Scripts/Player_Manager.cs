@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 /// <summary>
@@ -21,7 +22,7 @@ public class Player_Manager : MonoBehaviour
     
     
     // Functions
-    
+
     /// <summary>
     /// 멤버 변수인 m_Player를 태그 기반으로 찾아서 할당합니다.
     /// </summary>

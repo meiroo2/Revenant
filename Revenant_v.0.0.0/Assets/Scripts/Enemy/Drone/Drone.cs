@@ -34,7 +34,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
     public BombWeapon_Enemy m_BombWeapon;
     public Enemy_HotBox p_HeadHotBox;
     public Enemy_HotBox p_BodyHotBox;
-    
+    public SpriteRenderer p_Renderer;
     
     // FSMs
     private IDLE_Drone m_IDLE;
@@ -78,8 +78,9 @@ public class Drone : BasicEnemy, ISpriteMatChange
         InitEnemy();
         
         //m_Animator.SetFloat("DetectSpeed", p_DetectSpeed);
+
         
-        m_Renderer = GetComponentInChildren<SpriteRenderer>();
+        m_Renderer = p_Renderer;
         
         m_DeadReason = -1;
         
@@ -112,6 +113,8 @@ public class Drone : BasicEnemy, ISpriteMatChange
             m_CurEnemyStateName = EnemyStateName.PATROL;
             m_CurEnemyFSM = m_PATROL;
         }
+        
+        InitISpriteMatChange();
     }
 
     public void Start()
@@ -124,7 +127,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
         
         m_CurEnemyFSM.StartState();
         
-       m_WeponMgr.ChangeWeapon(0);
+        m_WeponMgr.ChangeWeapon(0);
     }
 
     private void OnEnable()

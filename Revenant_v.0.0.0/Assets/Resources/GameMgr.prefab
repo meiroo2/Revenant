@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 3488895593461691035}
   - component: {fileID: 1403804111787752519}
   - component: {fileID: 5859269580206057153}
+  - component: {fileID: 1021972724193353491}
   m_Layer: 0
   m_Name: GameMgr
   m_TagString: GameMgr
@@ -89,58 +90,58 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   N_HP: 30
-  N_BulletDamage: 0
-  N_BulletSpeed: 0
-  N_BulletRandomRotation: 0
-  N_FireDelay: 0
-  N_Speed: 0
-  N_StunThreshold: 0
-  N_Vision_Distance: 0
-  N_GunFire_Distance: 0
-  N_MeleeAttack_Distance: 0
-  N_AlertSpeedMulti: 0
-  N_StunAlertSpeedMulti: 0
-  N_HeadDmgMulti: 0
-  N_BodyDmgMulti: 0
-  M_HP: 0
-  M_StunThreshold: 0
-  M_MeleeDamage: 0
-  M_Speed: 0
-  M_Vision_Distance: 0
-  M_MeleeAttack_Distance: 0
-  M_PointAttackTime: 0
-  M_HeadDmgMulti: 0
-  M_BodyDmgMulti: 0
-  M_FollowSpeedMulti: 0
-  M_DelayAfterAttack: 0
-  M_StunWaitTime: 0
-  D_HP: 0
-  D_BombDamage: 0
-  D_BombRadius: 0
-  D_BreakPower: 0
-  D_Speed: 0
-  D_RushSpeedMulti: 0
-  D_RushTriggerDistance: 0
-  D_DroneDmgMulti: 0
-  D_BombDmgMulti: 0
-  D_DetectSpeed: 0
-  D_VisionDistance: 0
-  D_DecidePositionPointTime: 0
-  S_HP: 0
-  S_ShieldHp: 0
-  S_MeleeDamage: 0
-  S_Speed: 0
-  S_BackSpeedMulti: 0
-  S_BrokenSpeedMulti: 0
-  S_VisionDistance: 0
-  S_AttackDistance: 0
-  S_GapDistance: 0
-  S_AtkAniSpeedMulti: 0
-  S_PointAtkTime: 0
-  S_AtkHoldTime: 0
-  S_ShieldDmgMulti: 0
-  S_HeadDmgMulti: 0
-  S_BodyDmgMulti: 0
+  N_BulletDamage: 10
+  N_BulletSpeed: 7
+  N_BulletRandomRotation: 10
+  N_FireDelay: 0.03
+  N_Speed: 1
+  N_StunThreshold: 1
+  N_Vision_Distance: 3.7
+  N_GunFire_Distance: 3
+  N_MeleeAttack_Distance: 0.4
+  N_AlertSpeedMulti: 0.7
+  N_StunAlertSpeedMulti: 0.45
+  N_HeadDmgMulti: 3
+  N_BodyDmgMulti: 2
+  M_HP: 30
+  M_StunThreshold: 1
+  M_MeleeDamage: 10
+  M_Speed: 0.6
+  M_Vision_Distance: 3
+  M_MeleeAttack_Distance: 0.4
+  M_PointAttackTime: 0.223
+  M_HeadDmgMulti: 3
+  M_BodyDmgMulti: 1
+  M_FollowSpeedMulti: 2.5
+  M_DelayAfterAttack: 0.7
+  M_StunWaitTime: 1.7
+  D_HP: 10
+  D_BombDamage: 20
+  D_BombRadius: 0.71
+  D_BreakPower: 4
+  D_Speed: 2
+  D_RushSpeedMulti: 2.5
+  D_RushTriggerDistance: 2
+  D_DroneDmgMulti: 1
+  D_BombDmgMulti: 1
+  D_DetectSpeed: 0.8
+  D_VisionDistance: 3
+  D_DecidePositionPointTime: 0.68
+  S_HP: 150
+  S_ShieldHp: 500
+  S_MeleeDamage: 10
+  S_Speed: 0.85
+  S_BackSpeedMulti: 0.55
+  S_BrokenSpeedMulti: 1.1
+  S_VisionDistance: 3
+  S_AttackDistance: 1
+  S_GapDistance: 4.2
+  S_AtkAniSpeedMulti: 1.2
+  S_PointAtkTime: 0.1
+  S_AtkHoldTime: 0.11
+  S_ShieldDmgMulti: 1
+  S_HeadDmgMulti: 1
+  S_BodyDmgMulti: 1
   SF_Hp: 30
   SF_BulletDamage: 10
   SF_BulletSpeed: 10
@@ -173,7 +174,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1cc164786c6d354ba2d8bf7303ad3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  P_HP: 50
+  P_HP: 5000
   P_StunInvincibleTime: 1
   P_Speed: 1.2
   P_BackSpeedMulti: 0.55
@@ -262,5 +263,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9dbebabd87c4979a5094048a8ec7bb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1021972724193353491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3796319072097737523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a910899dbe7242f5928a31e9914dfda7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

@@ -34,6 +34,9 @@ public class Player_MatMgr : MonoBehaviour
 
         for (int i = 0; i < m_Renderers.Length; i++)
         {
+            if(m_Renderers[i].CompareTag("Unlit"))
+                continue;
+            
             m_Renderers[i].material = p_RotateMat;
         }
         

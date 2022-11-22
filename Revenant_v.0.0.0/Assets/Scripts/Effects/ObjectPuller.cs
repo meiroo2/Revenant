@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Unity.Mathematics;
 
 public class ObjectPuller : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class ObjectPuller : MonoBehaviour
     protected ForObjPull_Once[] m_PulledObjArr;
     protected SoundPlayer m_SoundPlayer;
 
+    private Vector2 m_OriginPos;
+
     // Constructors
     protected void Awake()
     {
@@ -23,6 +26,8 @@ public class ObjectPuller : MonoBehaviour
         {
             m_PulledObjArr[i] = Instantiate(m_PullingObject, transform).GetComponent<ForObjPull_Once>();
         }
+
+        m_OriginPos = m_PulledObjArr[0].transform.localPosition;
     }
 
     protected void Start()
@@ -51,7 +56,34 @@ public class ObjectPuller : MonoBehaviour
         if (m_Idx >= m_ObjPullCount)
             m_Idx = 0;
     }
-    
-    
-    // ��Ÿ �з��ϰ� ���� ���� ���� ���
+
+    /// <summary>
+    /// ObjectPuller에서 생성과 동시에 해당 오브젝트를 받아옵니다.
+    /// Transform 초기화를 진행합니다.
+    /// </summary>
+    /// <returns></returns>
+    public virtual ForObjPull_Once GetNSpawnNewObj(Transform _parent, Transform _transform = null)
+    {
+        ForObjPull_Once returnObj = m_PulledObjArr[m_Idx];
+
+        Transform returnObjTransform = returnObj.transform;
+        returnObjTransform.parent = transform;
+        returnObjTransform.localPosition = m_OriginPos;
+        //returnObjTransform.rotation = quaternion.Euler(Vector3.zero);
+        
+        if (_transform)
+        {
+            returnObj.transform.parent = _transform;
+            returnObjTransform.rotation = 
+                quaternion.Euler(0f,0f, _parent.rotation.eulerAngles.z);
+        }
+
+        m_PulledObjArr[m_Idx].gameObject.SetActive(true);
+        m_PulledObjArr[m_Idx].InitPulledObj();
+        m_Idx++;
+        if (m_Idx >= m_ObjPullCount)
+            m_Idx = 0;
+
+        return returnObj;
+    }
 }

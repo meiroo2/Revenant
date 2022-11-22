@@ -281,6 +281,7 @@ public class SpecialForce : BasicEnemy
     
     public override void MouseTouched(bool _isTouch)
     {
+        Debug.Log("Touch");
         m_IsMouseTouched = _isTouch;
     }
 

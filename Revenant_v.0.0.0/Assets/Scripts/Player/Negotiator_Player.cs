@@ -220,6 +220,8 @@ public class Negotiator_Player : BasicWeapon_Player
     {
         MakeShell();
         p_MuzFlashPuller.EnableNewObj();
+        //p_MuzFlashPuller.GetNSpawnNewObj(m_Player.m_playerRotation.transform, m_Player.transform);
+        //p_MuzFlashPuller.GetNSpawnNewObj();
         m_BulletLaserMgr.PoolingBulletLaser(p_LaserStartPos.position, _rayDestPos);
     }
 }

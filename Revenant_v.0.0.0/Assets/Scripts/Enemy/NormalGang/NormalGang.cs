@@ -10,7 +10,7 @@ using UnityEngine.Serialization;
 using Update = UnityEngine.PlayerLoop.Update;
 
 
-public class NormalGang : BasicEnemy
+public class NormalGang : BasicEnemy, ISpriteMatChange
 {
     // Visible Member Variables
     [field: SerializeField, BoxGroup("NormalGang Values")]
@@ -24,14 +24,15 @@ public class NormalGang : BasicEnemy
 
     [field: SerializeField, BoxGroup("NormalGang Values")]
     public float p_LookAroundDelay = 1f;
-    
+
     [field: SerializeField, BoxGroup("NormalGang Values"), PropertyOrder(0)]
     public Transform[] p_PatrolPos { get; protected set; } = null;
-    
 
-    [field : SerializeField, BoxGroup("NormalGang Values"), Space(20f)]
+
+    [field: SerializeField, BoxGroup("NormalGang Values"), Space(20f)]
     public RuntimeAnimatorController p_NormalAnimator { get; protected set; }
-    [field : SerializeField, BoxGroup("NormalGang Values")]
+
+    [field: SerializeField, BoxGroup("NormalGang Values")]
     public RuntimeAnimatorController p_AttackAnimator { get; protected set; }
 
     [field: SerializeField, BoxGroup("NormalGang Values")]
@@ -76,9 +77,9 @@ public class NormalGang : BasicEnemy
         m_EnemyRotation = GetComponentInChildren<Enemy_Rotation>();
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
-        
+
         m_Alert.SetAlertSpeed(p_AlertSpeed);
-        
+
         m_IDLE = new IDLE_NormalGang(this);
         m_FOLLOW = new FOLLOW_NormalGang(this);
         m_ATTACK = new ATTACK_NormalGang(this);
@@ -87,6 +88,8 @@ public class NormalGang : BasicEnemy
 
         m_CurEnemyStateName = EnemyStateName.IDLE;
         m_CurEnemyFSM = m_IDLE;
+
+        InitISpriteMatChange();
     }
 
     private void Start()
@@ -118,6 +121,7 @@ public class NormalGang : BasicEnemy
         if (m_ObjectState == ObjectState.Pause)
             return;
 
+        IsPlayerUpper();
         m_CurEnemyFSM.UpdateState();
     }
 
@@ -125,9 +129,9 @@ public class NormalGang : BasicEnemy
     // Functions
     public override void StartPlayerCognition(bool _instant = false)
     {
-        if (m_CurEnemyStateName == EnemyStateName.DEAD || m_PlayerCognition) 
+        if (m_CurEnemyStateName == EnemyStateName.DEAD || m_PlayerCognition)
             return;
-        
+
         Debug.Log(gameObject.name + "이 플레이어를 인지합니다.");
         ChangeEnemyFSM(EnemyStateName.FOLLOW);
     }
@@ -136,18 +140,18 @@ public class NormalGang : BasicEnemy
     {
         if (m_PlayerCognition)
             return;
-        
+
         Debug.Log(gameObject.name + " 사운드 인지");
         StartPlayerCognition();
     }
-    
+
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
         if (p_OverrideEnemyMgr)
             return;
 
         var tripleshot = GetComponentInChildren<TripleShot_Enemy>();
-        
+
         p_Hp = _mgr.N_HP;
         p_MoveSpeed = _mgr.N_Speed;
         p_StunHp = _mgr.N_StunThreshold;
@@ -158,19 +162,19 @@ public class NormalGang : BasicEnemy
         p_StunAlertSpeed = _mgr.N_StunAlertSpeedMulti;
         p_HeadBox.p_DamageMulti = _mgr.N_HeadDmgMulti;
         p_BodyBox.p_DamageMulti = _mgr.N_BodyDmgMulti;
-        
+
         tripleshot.p_BulletDamage = _mgr.N_BulletDamage;
         tripleshot.p_FireDelay = _mgr.N_FireDelay;
         tripleshot.p_BulletSpeed = _mgr.N_BulletSpeed;
         tripleshot.p_BulletRandomRotation = _mgr.N_BulletRandomRotation;
-        
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-            EditorUtility.SetDirty(p_HeadBox);
-            EditorUtility.SetDirty(p_BodyBox);
-            EditorUtility.SetDirty(tripleshot);
-        #endif
+
+
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(this);
+        EditorUtility.SetDirty(p_HeadBox);
+        EditorUtility.SetDirty(p_BodyBox);
+        EditorUtility.SetDirty(tripleshot);
+#endif
     }
 
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
@@ -252,5 +256,81 @@ public class NormalGang : BasicEnemy
         }
 
         m_CurEnemyFSM.StartState();
+    }
+
+    // For MatChanger
+    public bool m_IgnoreMatChanger { get; set; }
+    public SpriteType m_SpriteType { get; set; }
+    public SpriteMatType m_CurSpriteMatType { get; set; }
+    public Material p_OriginalMat { get; set; }
+
+    [field: SerializeField, BoxGroup("ISpriteMatChange")]
+    public Material p_BnWMat { get; set; }
+
+    [field: SerializeField, BoxGroup("ISpriteMatChange")]
+    public Material p_RedHoloMat { get; set; }
+
+    [field: SerializeField, BoxGroup("ISpriteMatChange")]
+    public Material p_DisappearMat { get; set; }
+
+    private Coroutine m_MatTimeCoroutine = null;
+    private readonly int ManualTimer = Shader.PropertyToID("_ManualTimer");
+
+    public void ChangeMat(SpriteMatType _matType)
+    {
+        if (!ReferenceEquals(m_MatTimeCoroutine, null))
+        {
+            StopCoroutine(m_MatTimeCoroutine);
+            m_MatTimeCoroutine = null;
+        }
+
+        if (m_IgnoreMatChanger || !gameObject.activeSelf)
+            return;
+
+        m_CurSpriteMatType = _matType;
+        switch (_matType)
+        {
+            case SpriteMatType.ORIGIN:
+                m_Renderer.material = p_OriginalMat;
+                break;
+
+            case SpriteMatType.BnW:
+                m_Renderer.material = p_BnWMat;
+                break;
+
+            case SpriteMatType.REDHOLO:
+                m_MatTimeCoroutine = StartCoroutine(MatTimeInput());
+                m_Renderer.material = p_RedHoloMat;
+                break;
+
+            case SpriteMatType.DISAPPEAR:
+                m_Renderer.material = p_DisappearMat;
+                break;
+        }
+    }
+    
+    public void InitISpriteMatChange()
+    {
+        m_SpriteType = SpriteType.ENEMY;
+        m_CurSpriteMatType = SpriteMatType.ORIGIN;
+        p_OriginalMat = m_Renderer.material;
+        
+        if(!p_BnWMat)
+            Debug.Log("Info : ISpriteMat BnWMat Null");
+        if(!p_RedHoloMat)
+            Debug.Log("Info : ISpriteMat RedHoloMat Null");
+        if(!p_DisappearMat)
+            Debug.Log("Info : ISpriteMat DisappearMat Null");
+    }
+
+    private IEnumerator MatTimeInput()
+    {
+        float timer = 0f;
+        while (true)
+        {
+            timer += Time.unscaledDeltaTime;
+            m_Renderer.material.SetFloat(ManualTimer, timer);
+            yield return null;
+        }
     }
 }

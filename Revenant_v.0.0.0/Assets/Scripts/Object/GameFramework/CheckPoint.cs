@@ -123,6 +123,7 @@ public class CheckPoint : MonoBehaviour
         {
             // 오브젝트 제거
             Destroy(ObjectLists);
+            //ObjectLists.SetActive(false);
         }
 
         // 리스트 비우기

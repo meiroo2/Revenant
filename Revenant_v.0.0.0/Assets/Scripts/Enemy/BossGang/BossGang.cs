@@ -196,6 +196,12 @@ public class BossGang : BasicEnemy, ISpriteMatChange
             p_FSMText.transform.localScale = new Vector3(-1f, 1f, 1f);
             p_HpText.transform.localScale = p_FSMText.transform.localScale;
         }
+       
+    }
+
+    private void Update()
+    {
+        // Boss must be PERFECT!!!
         m_CurEnemyFSM.UpdateState();
     }
 

@@ -11,9 +11,12 @@ using UnityEngine;
 public class MatChanger : MonoBehaviour
 {
     // Member Variables
-    private List<ISpriteMatChange> m_EnemyMatList = new List<ISpriteMatChange>();
-    private List<ISpriteMatChange> m_BGMatList = new List<ISpriteMatChange>();
-    
+    private Dictionary<GameObject, ISpriteMatChange> m_EnemyMatDic = 
+        new Dictionary<GameObject, ISpriteMatChange>();
+
+    private Dictionary<GameObject, ISpriteMatChange> m_BGMatDic =
+        new Dictionary<GameObject, ISpriteMatChange>();
+
 
     // Constructor
     private void Awake()
@@ -31,10 +34,10 @@ public class MatChanger : MonoBehaviour
     {
         Debug.Log("MatChanger OnSceneLoaded");
 
-        m_EnemyMatList.Clear();
-        m_EnemyMatList.TrimExcess();
-        m_BGMatList.Clear();
-        m_BGMatList.TrimExcess();
+        m_EnemyMatDic.Clear();
+        m_EnemyMatDic.TrimExcess();
+        m_BGMatDic.Clear();
+        m_BGMatDic.TrimExcess();
         
         // For Enemy
         var basicEnemyList = StaticMethods.FindAllObjects<BasicEnemy>();
@@ -42,7 +45,7 @@ public class MatChanger : MonoBehaviour
         {
             if (VARIABLE.TryGetComponent(out ISpriteMatChange SMC))
             {
-                m_EnemyMatList.Add(SMC);
+               m_EnemyMatDic.Add(VARIABLE.gameObject, SMC);
             }
         }
 
@@ -51,7 +54,7 @@ public class MatChanger : MonoBehaviour
         {
             if (VARIABLE.TryGetComponent(out ISpriteMatChange SMC))
             {
-                m_BGMatList.Add(SMC);
+               m_BGMatDic.Add(VARIABLE, SMC);
             }
         }
     }
@@ -68,16 +71,28 @@ public class MatChanger : MonoBehaviour
         switch (_spType)
         {
             case SpriteType.ENEMY:
-                foreach (var VARIABLE in m_EnemyMatList)
+                foreach (var VARIABLE in m_EnemyMatDic)
                 {
-                    VARIABLE.ChangeMat(_spMatType);
+                    if(!VARIABLE.Key)
+                        continue;
+                    
+                    if(!VARIABLE.Key.activeSelf)
+                        continue;
+
+                    VARIABLE.Value.ChangeMat(_spMatType);
                 }
                 break;
             
             case SpriteType.BACKGROUND:
-                foreach (var VARIABLE in m_BGMatList)
+                foreach (var VARIABLE in m_BGMatDic)
                 {
-                    VARIABLE.ChangeMat(_spMatType);
+                    if(!VARIABLE.Key)
+                        continue;
+                    
+                    if(!VARIABLE.Key.activeSelf)
+                        continue;
+                    
+                    VARIABLE.Value.ChangeMat(_spMatType);
                 }
                 break;
         }
