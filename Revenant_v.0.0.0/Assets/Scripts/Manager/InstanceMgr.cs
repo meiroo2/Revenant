@@ -28,7 +28,7 @@ public class InstanceMgr : MonoBehaviour
     public Player_UI m_Player_UI { get; private set; }
     public LeftBullet_WUI m_LeftBullet_WUI { get; private set; }
     public ScreenCaptureEffectMgr m_ScreenCaptureMgr { get; private set; }
-    public ScreenCaptureCanvas m_ScreenCaptureCanvas { get; private set; }
+    public AR_ScreenCapture m_ScreenCaptureCanvas { get; private set; }
 
     
     // Instance
@@ -77,7 +77,7 @@ public class InstanceMgr : MonoBehaviour
         m_ScreenEffect_AR.transform.localPosition = Vector2.zero;
         
         m_ScreenCaptureCanvas =
-            Instantiate(p_ScreenCaptureCanvas, camTransform).GetComponent<ScreenCaptureCanvas>();
+            Instantiate(p_ScreenCaptureCanvas, camTransform).GetComponent<AR_ScreenCapture>();
         m_ScreenCaptureCanvas.transform.localPosition = Vector2.zero;
     }
 }
