@@ -11,7 +11,7 @@ public class ObjectiveMgr : MonoBehaviour
     public float p_ObjectiveSuccessWaitTime = 2f;
     public ObjectiveUI m_ObjectiveUI = null;
     public List<Objective> p_ObjectiveList = new List<Objective>();
-
+    public TutorialDroneObject p_TutorialDroneObject = null;
 
     // Member Variables
     public Objective m_CurObjective { get; private set; } = null;
@@ -29,12 +29,11 @@ public class ObjectiveMgr : MonoBehaviour
         m_CurObjective = p_ObjectiveList[0];
         m_ObjectiveUI.InputObjectiveToUI(m_CurObjective);
         m_CurObjective.InitObjective(this, m_ObjectiveUI);
-        m_ObjectiveUI.LerpUI(false);
     }
 
 
     // Updates
-    private void FixedUpdate()
+    private void Update()
     {
         m_CurObjective.UpdateObjective();
     }
@@ -65,7 +64,6 @@ public class ObjectiveMgr : MonoBehaviour
         m_ObjectiveUI.InputObjectiveToUI(m_CurObjective);
         
         m_CurObjective.InitObjective(this, m_ObjectiveUI);
-        m_ObjectiveUI.LerpUI(false);
     }
     
     

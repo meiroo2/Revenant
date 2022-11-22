@@ -19,7 +19,9 @@ public class Objective_TutoLookAt : Objective
     private float m_Timer = 0f;
     private int m_Phase = 0;
     private Player m_Player;
-    private bool m_Success = false;
+
+    public List<string> p_DroneDialogTextList = new();
+    private int m_CurrentDialogTextCount = 0;
     
     public override void InitObjective(ObjectiveMgr _mgr, ObjectiveUI _ui)
     {
@@ -32,18 +34,25 @@ public class Objective_TutoLookAt : Objective
         m_InputMgr.SetAllLockByBool(true);
         m_Timer = 0f;
         m_Phase = 0;
-    }
+
+		m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogActive(true);
+		m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogText(p_DroneDialogTextList[m_CurrentDialogTextCount]);
+	}
 
     public override void UpdateObjective()
     {
         switch (m_Phase)
         {
             case 0:
-                m_InputMgr.p_MousePosLock = false;
+                DialogPhase();
+				break;
+            case 1:
+                m_ObjUI.LerpUI(false);
+				m_InputMgr.p_MousePosLock = false;
                 m_Phase++;
                 break;
             
-            case 1:
+            case 2:
                 if (!m_Player.m_IsRightHeaded)
                 {
                     m_Timer += Time.deltaTime * 0.5f;
@@ -58,7 +67,7 @@ public class Objective_TutoLookAt : Objective
                 }
                 break;
             
-            case 2:
+            case 3:
                 if (m_Player.m_IsRightHeaded)
                 {
                     m_Timer += Time.deltaTime * 0.5f;
@@ -73,7 +82,7 @@ public class Objective_TutoLookAt : Objective
                 }
                 break;
             
-            case 3:
+            case 4:
                 //m_ObjMgr.SelfExit();
                 m_ObjMgr.SendObjSuccessInfo(m_ObjIdx, true);
                 m_Phase = -1;
@@ -85,4 +94,38 @@ public class Objective_TutoLookAt : Objective
     {
         
     }
+
+    public void DialogPhase()
+    {
+		if (m_Player.transform.position.x < m_ObjMgr.p_TutorialDroneObject.transform.position.x)
+		{
+            m_Player.setisRightHeaded(true);
+		}
+		else
+		{
+			m_Player.setisRightHeaded(false);
+		}
+
+		if (m_CurrentDialogTextCount < p_DroneDialogTextList.Count)
+		{
+			if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.F))
+			{
+				if (m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.isTextEnd)
+				{
+					m_CurrentDialogTextCount++;
+					if (m_CurrentDialogTextCount < p_DroneDialogTextList.Count)
+						m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogText(p_DroneDialogTextList[m_CurrentDialogTextCount]);
+				}
+				else
+				{
+					m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SkipEvent?.Invoke();
+				}
+			}
+		}
+		else
+		{
+			m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogActive(false);
+			m_Phase++;
+		}
+	}
 }

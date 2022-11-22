@@ -36,6 +36,7 @@ public class Objective_TutoEnterDoor : Objective
 		m_InputMgr.p_RollLock = false;
 		m_InputMgr.p_StairLock = false;
 
+		m_ObjUI.LerpUI(false);
 		p_TutorialDoor.action += AddCount;
         m_Phase = 0;
         m_Count = 0;

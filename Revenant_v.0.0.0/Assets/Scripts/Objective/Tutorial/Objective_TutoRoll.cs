@@ -36,7 +36,8 @@ public class Objective_TutoRoll : Objective
         m_Player.AttachActionOnFSM(PlayerStateName.ROLL,() => AddCount(), true);
         m_Phase = 0;
         m_Count = 0;
-    }
+		m_ObjUI.LerpUI(false);
+	}
 
     public override void UpdateObjective()
     {

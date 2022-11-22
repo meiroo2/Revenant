@@ -53,6 +53,7 @@ public class Objective_TutoAttack : Objective
             enemy.gameObject.SetActive(true);
 		}
 		enemyCount = tutorialEnemies.Count;
+		m_ObjUI.LerpUI(false);
 	}
 
     public override void UpdateObjective()
