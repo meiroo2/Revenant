@@ -31,6 +31,32 @@ public class CW_Useful : OdinEditorWindow
     {
         Analyze();
     }
+    
+    [PropertySpace(20f), Button(ButtonSizes.Large)]
+    private static void 플레이어_땅에_붙이기()
+    {
+        int m_LayerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("EmptyFloor"));
+        Transform playerTransform = GameObject.FindGameObjectWithTag("@Player").transform;
+        
+        RaycastHit2D m_FootHit = Physics2D.Raycast(playerTransform.position, -playerTransform.up, 
+            1f, m_LayerMask);
+
+        float posY = MathF.Round(m_FootHit.point.y + 0.64f, 2);
+        playerTransform.position = new Vector2(m_FootHit.point.x, posY);
+    }
+    
+    [PropertySpace(20f), Button(ButtonSizes.Large)]
+    private static void 보스_땅에_붙이기()
+    {
+        int m_LayerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("EmptyFloor"));
+        Transform playerTransform = GameObject.FindObjectOfType<BossGang>().transform;
+        
+        RaycastHit2D m_FootHit = Physics2D.Raycast(playerTransform.position, -playerTransform.up, 
+            1f, m_LayerMask);
+
+        float posY = MathF.Round(m_FootHit.point.y, 2);
+        playerTransform.position = new Vector2(m_FootHit.point.x, posY);
+    }
 
     private static void Analyze()
     {

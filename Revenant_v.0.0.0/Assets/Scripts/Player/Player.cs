@@ -63,6 +63,7 @@ public class Player : Human
     // Member Variables
     [ReadOnly] public bool bIsOnStair = false;
     public int PlayerStairNum { get; set; } = 0;
+    public int PlayerMapSectionNum { get; set; } = 0;
 
     [field: SerializeField] public PlayerRotation m_playerRotation { get; private set; }
     public Player_WeaponMgr m_WeaponMgr { get; private set; }
@@ -96,7 +97,8 @@ public class Player : Human
     public bool m_canChangeWeapon { get; private set; } = false;
     public bool m_CanHide { get; set; } = true;
     public int m_MoveDirection { get; private set; } = 0;
-
+    [HideInInspector] public bool m_CancelMeleeStartAnim = false;
+    
 
     private Player_IDLE m_IDLE;
     private Player_WALK m_WALK;

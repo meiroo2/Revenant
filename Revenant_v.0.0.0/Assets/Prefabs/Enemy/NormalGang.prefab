@@ -754,6 +754,9 @@ MonoBehaviour:
   <p_MeleeWeapon>k__BackingField: {fileID: 2842429624096680963}
   p_HeadBox: {fileID: 6785627411194760967}
   p_BodyBox: {fileID: 6785627411127605370}
+  <p_BnWMat>k__BackingField: {fileID: 0}
+  <p_RedHoloMat>k__BackingField: {fileID: 2100000, guid: 341ce21ae549ba2498d668eda42037ac, type: 2}
+  <p_DisappearMat>k__BackingField: {fileID: 0}
 --- !u!50 &6785627412206059250
 Rigidbody2D:
   serializedVersion: 4
@@ -960,6 +963,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6785627411087674203}
     m_Modifications:
+    - target: {fileID: 1894193744542021349, guid: c37c9bdc674541a42928ace7902cb78b, type: 3}
+      propertyPath: m_BulletPos
+      value: 
+      objectReference: {fileID: 5343720747846279799}
     - target: {fileID: 1894193744542021370, guid: c37c9bdc674541a42928ace7902cb78b, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1010,6 +1017,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c37c9bdc674541a42928ace7902cb78b, type: 3}
+--- !u!4 &5343720747846279799 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1029730797782838519, guid: c37c9bdc674541a42928ace7902cb78b, type: 3}
+  m_PrefabInstance: {fileID: 4927750536979222144}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6785627412115929189 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1894193744542021349, guid: c37c9bdc674541a42928ace7902cb78b, type: 3}

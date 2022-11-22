@@ -66,6 +66,7 @@ public class Player_IDLE : PlayerFSM
         m_RageGauge = m_Player.m_RageGauge;
         m_Player.m_CanHide = true;
         
+        m_Player.m_ArmMgr.ForceStopBackToAttackAnim();
         m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -344,6 +345,7 @@ public class Player_ROLL : PlayerFSM
         
         if (m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
         {
+            m_Player.m_CancelMeleeStartAnim = true;
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
         }
         else if (m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
@@ -528,6 +530,7 @@ public class Player_MELEE : PlayerFSM
     private Animator m_FullBodyAnimator;
     private float m_CurAniTime;
     private Player_InputMgr m_InputMgr;
+    private int m_Phase = 0;
     
     private readonly int Melee = Animator.StringToHash("Melee");
 
@@ -546,7 +549,22 @@ public class Player_MELEE : PlayerFSM
         
         m_FullBodyAnimator = m_Player.m_PlayerAniMgr.p_FullBody.m_Animator;
         m_Player.m_PlayerAniMgr.SetVisualParts(true, false, false, false);
-        m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Melee, 1);
+        
+        m_Phase = 0;
+        m_CurAniTime = 0f;
+        
+        // ROll에서 넘어왔는지 체크
+        if (m_Player.m_CancelMeleeStartAnim)
+        {
+            m_Phase = 1;
+            m_Player.m_CancelMeleeStartAnim = false;
+            m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Melee, 2);
+        }
+        else
+        {
+            m_Phase = 0;
+            m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Melee, 1);
+        }
 
         var gauge = m_Player.m_RageGauge;
         gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
@@ -556,50 +574,61 @@ public class Player_MELEE : PlayerFSM
 
        m_Player.m_SimpleEffectPuller.SpawnSimpleEffect(6, m_Player.m_PlayerFootMgr.GetFootRayHit().point,
            !m_Player.m_IsRightHeaded);
-       
-       m_Player.m_PlayerHotBox.m_hotBoxType = 2;
+
+       m_Player.m_PlayerHotBox.gameObject.SetActive(false);
     }
 
     public override void UpdateState()
     {
-        m_CurAniTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-
-        if (m_CurAniTime <= 0.2f)
-        {
-            m_Player.MoveByDirection(0);
-        }
-        else if (m_CurAniTime > 0.2f && m_CurAniTime < 0.8f)
-        {
-            m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
-        }
-        else if(m_CurAniTime < 1f)
-        {
-            m_Player.MoveByDirection(0);
-        }
-        else
-        {
-            m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
-        }
-        
-        /*
-        switch (m_CurAniTime)
-        {
-            case >= 1f:
-                m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
-                break;
-        }
-        */
-        
         if (m_Player.m_InputMgr.m_IsPushRollKey && 
             m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Roll))
         {
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
+        
+        switch (m_Phase)
+        {
+            case 0:
+                // Melee_Start Ani
+                m_CurAniTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                if (m_CurAniTime >= 1f)
+                {
+                    m_CurAniTime = 0f;
+                    m_FullBodyAnimator.SetInteger(Melee, 2);
+                    m_Phase = 1;
+                }
+                break;
+            
+            case 1:
+                // Melee_Mid Ani
+                m_Player.MoveByDirection(m_Player.m_IsRightHeaded ? 1 : -1, m_Player.p_MeleeSpeedMulti);
+                
+                m_CurAniTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                if (m_CurAniTime >= 1f)
+                {
+                    m_CurAniTime = 0f;
+                    m_FullBodyAnimator.SetInteger(Melee, 3);
+                    m_Player.MoveByDirection(0);
+                    m_Phase = 2;
+                }
+                break;
+            
+            case 2:
+                m_CurAniTime = m_FullBodyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                if (m_CurAniTime >= 1f)
+                {
+                    m_CurAniTime = 0f;
+                    m_FullBodyAnimator.SetInteger(Melee, 0);
+                    m_Player.ChangePlayerFSM(PlayerStateName.IDLE);
+                    m_Phase = -1;
+                }
+                break;
+        }
     }
 
     public override void ExitState()
     {
-        m_Player.m_PlayerHotBox.m_hotBoxType = 0;
+        m_Player.m_PlayerHotBox.gameObject.SetActive(true);
         m_Player.m_CanAttack = true;
         m_Player.m_CanMove = true;
         m_Player.m_playerRotation.m_doRotate = true;

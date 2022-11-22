@@ -281,6 +281,7 @@ public class SpecialForce : BasicEnemy
     
     public override void MouseTouched(bool _isTouch)
     {
+        Debug.Log("Touch");
         m_IsMouseTouched = _isTouch;
     }
 
@@ -390,6 +391,28 @@ public class SpecialForce : BasicEnemy
         }
 
         m_FSMLock = false;
+    }
+
+    public override bool IsSameMapSections()
+    {
+        float HeightBetweenPlayerAndEnemy = Mathf.Abs(gameObject.transform.position.y - m_Player.transform.position.y);
+        if (HeightBetweenPlayerAndEnemy <= 0.1f && bMoveToUsedDoor && EnemyMapSectionNum == m_Player.PlayerMapSectionNum)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
+    public void MakeDelayMoveToPlayer()
+    { 
+        StartCoroutine(MakeDelayIsSameMapSections());
+    }
+
+    IEnumerator MakeDelayIsSameMapSections()
+    {
+        yield return new WaitForSeconds(0.15f);
+        bIsSameMapSections = IsSameMapSections();
     }
 }
 

@@ -27,10 +27,12 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
     public Material m_LeftMat;
     public Material m_RightMat;
 
-    private ScreenCaptureCanvas m_ScreenCaptureCanvas;
+    [HideInInspector] public Action m_MoveImgEndAction = null;
     
-    private Image m_LImg;
-    private Image m_RImg;
+    private AR_ScreenCapture m_ScreenCaptureCanvas;
+    
+    private SpriteRenderer m_LImg;
+    private SpriteRenderer m_RImg;
     
     private Camera m_Cam;
     private CameraMgr m_CamMgr;
@@ -78,6 +80,17 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
     }
 
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Vector2 sans = GameMgr.GetInstance().p_PlayerMgr.GetPlayer()
+                .GetPlayerCenterPos();
+            
+            Capture(sans.x, sans.y, 30f);
+        }
+    }
+
     public void Capture(float _xPos, float _yPos, float _timeSliceAngle)
     {
         m_TimeSliceAngle = _timeSliceAngle;
@@ -89,10 +102,12 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
         RenderTexture.active = m_CamRenderTex;
         m_ScreenShotTex.ReadPixels(m_ScreenRect,0,0);
         m_ScreenShotTex.Apply();
-
-        m_LImg.sprite = Sprite.Create(m_ScreenShotTex, new Rect(0, 0, width, height),
+        m_ScreenShotTex.filterMode = FilterMode.Point;
+        Sprite CapturedSprite = Sprite.Create(m_ScreenShotTex, new Rect(0, 0, width, height),
             new Vector2(0.5f, 0.5f));
-        m_RImg.sprite = m_LImg.sprite;
+
+        m_LImg.sprite = CapturedSprite;
+        m_RImg.sprite = CapturedSprite;
         
         RenderTexture.active = null;
         m_Cam.targetTexture = null;
@@ -123,8 +138,8 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
         m_RImg.color = color;
 
 
-        m_LImg.rectTransform.anchoredPosition = Vector2.zero;
-        m_RImg.rectTransform.anchoredPosition = Vector2.zero;
+        m_LImg.transform.localPosition = Vector2.zero;
+        m_RImg.transform.localPosition = Vector2.zero;
 
         
         if (!ReferenceEquals(m_TearCoroutine, null))
@@ -229,11 +244,11 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
         float evaluated = 0f;
 
         float LerpVal = 0f;
-        Vector2 LOriginPos = m_LImg.rectTransform.anchoredPosition;
+        Vector2 LOriginPos = m_LImg.transform.localPosition;
         Vector2 LLerpPos = LOriginPos;
         LLerpPos.x -= m_InitLerpedPos;
 
-        Vector2 ROriginPos = m_RImg.rectTransform.anchoredPosition;
+        Vector2 ROriginPos = m_RImg.transform.localPosition;
         Vector2 RLerpPos = ROriginPos;
         RLerpPos.x += m_InitLerpedPos;
 
@@ -245,8 +260,8 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
             evaluated = m_Curve.Evaluate(Timer);
             LerpVal = evaluated;
             
-            m_LImg.rectTransform.anchoredPosition = Vector2.Lerp(LOriginPos, LLerpPos, LerpVal);
-            m_RImg.rectTransform.anchoredPosition = Vector2.Lerp(ROriginPos, RLerpPos, LerpVal);
+            m_LImg.transform.localPosition = Vector2.Lerp(LOriginPos, LLerpPos, LerpVal);
+            m_RImg.transform.localPosition = Vector2.Lerp(ROriginPos, RLerpPos, LerpVal);
             
             
             if (LerpVal > 1f)
@@ -255,6 +270,7 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
             }
             yield return null;
         }
+        m_MoveImgEndAction?.Invoke();
         m_BulletTimeMgr.ChangeTimeScale(1f);
         yield break;
     }

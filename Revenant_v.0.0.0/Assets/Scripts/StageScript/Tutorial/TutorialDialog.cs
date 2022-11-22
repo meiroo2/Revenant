@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialDialog : MonoBehaviour
 {
@@ -11,44 +13,37 @@ public class TutorialDialog : MonoBehaviour
 	private float currentTextCount = 0;
 
 	public Action SkipEvent;
-	public bool isTypingEffect = false;
 	public float TypingSpeed = 0.5f;
 	public bool isTextEnd { get; set; } = false;
-
-
-
-
-
 	void Start()
 	{
 		TextUI = GetComponentInChildren<TextMeshProUGUI>();
-		textString = TextUI.text;
-		if (isTypingEffect)
-			TextUI.text = "";
+		TextUI.text = "";
 		SkipEvent += SkipText;
 	}
 
 	// Update is called once per frame
-	void FixedUpdate()
+	void Update()
 	{
-		if (isTypingEffect)
+		transform.localScale = transform.parent.parent.localScale * 0.01f;
+
+		if (textString.Length > 0 && currentTextCount < textString.Length - 1)
 		{
-			if (textString.Length > 0 && currentTextCount < textString.Length - 1)
+			currentTextCount += Time.deltaTime * TypingSpeed;
+			if (textString[(int)currentTextCount] == '<')
 			{
-				currentTextCount += Time.deltaTime * TypingSpeed;
-				if (textString[(int)currentTextCount] == '<')
+				while (textString[(int)currentTextCount] != '>')
 				{
-					while (textString[(int)currentTextCount] != '>')
-					{
-						currentTextCount++;
-					}
+					currentTextCount++;
 				}
-				TextUI.text = textString.Substring(0, (int)currentTextCount + 1);
 			}
+			TextUI.text = textString.Substring(0, (int)currentTextCount + 1);
+			TextUI.text += "<alpha=#00>";
+			TextUI.text += textString.Substring((int)currentTextCount + 1, textString.Length - (int)currentTextCount - 1);
 		}
 		else
 		{
-			currentTextCount = textString.Length - 1;
+			isTextEnd = true;
 		}
 	}
 
@@ -59,9 +54,22 @@ public class TutorialDialog : MonoBehaviour
 			currentTextCount = textString.Length - 1;
 			TextUI.text = textString;
 		}
-		else
-		{
-			isTextEnd = true;
-		}
+		isTextEnd = true;
+	}
+
+	public void SetDialogText(string text)
+	{
+		textString = text;
+		currentTextCount = 0;
+		isTextEnd = false;
+
+		if(TextUI)
+		TextUI.text = "";
+	}
+
+	public void SetDialogActive(bool value)
+	{
+		transform.localScale = transform.parent.parent.localScale * 0.01f;
+		gameObject.SetActive(value);
 	}
 }

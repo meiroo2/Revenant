@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.Events;
 
 
@@ -10,21 +13,20 @@ public class EnemyTracknAction : EnemySpawner
     private bool m_IsActivated = false;
     
     // Member Variables
-    public bool[] m_IsDead;
-    
-    
+    [Space(50f)]
+    private Dictionary<GameObject, bool> m_EnemyObjDic = new Dictionary<GameObject, bool>();
+
+
     // Constructors
-    private void Awake()
+    private new void Awake()
     {
+        m_EnemyObjDic = new Dictionary<GameObject, bool>();
+        
         for (int i = 0; i < p_CheckEnemyArr.Length; i++)
         {
             p_CheckEnemyArr[i].AddEnemySpawner(this);
-        }
-
-        m_IsDead = new bool[p_CheckEnemyArr.Length];
-        for (int i = 0; i < m_IsDead.Length; i++)
-        {
-            m_IsDead[i] = false;
+           
+            m_EnemyObjDic.Add(p_CheckEnemyArr[i].gameObject, false);
         }
     }
 
@@ -32,25 +34,21 @@ public class EnemyTracknAction : EnemySpawner
     {
         if (m_IsActivated)
             return;
+
+        if (m_EnemyObjDic.ContainsKey(_enemy))
+        {
+            m_EnemyObjDic[_enemy] = true;
+        }
         
-        if (_enemy.TryGetComponent(out BasicEnemy enemy))
-        {
-            for (int i = 0; i < p_CheckEnemyArr.Length; i++)
-            {
-                if (enemy == p_CheckEnemyArr[i])
-                {
-                    m_IsDead[i] = true;
-                }
-            }
-        }
+        bool allDead = true;
 
-        bool canPass = true;
-        for (int i = 0; i < m_IsDead.Length; i++)
+        foreach (var VARIABLE in m_EnemyObjDic.Values)
         {
-            canPass = m_IsDead[i];
+            if (!VARIABLE)
+                allDead = false;
         }
-
-        if (canPass)
+        
+        if (allDead)
         {
             m_IsActivated = true;
             p_WillExecute?.Invoke();

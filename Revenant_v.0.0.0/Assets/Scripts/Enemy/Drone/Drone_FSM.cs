@@ -338,6 +338,7 @@ public class DEAD_Drone : Drone_FSM
                 
                 m_Animator.SetTrigger("Head");
                 
+                m_Enemy.m_WeponMgr.ChangeWeapon(0);
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());
                 m_Enemy.m_DeadReason = -1;
@@ -349,6 +350,7 @@ public class DEAD_Drone : Drone_FSM
                 
                 m_Animator.SetTrigger("Body");
                 
+                m_Enemy.m_WeponMgr.ChangeWeapon(0);
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());
                 m_Enemy.m_DeadReason = -1;
@@ -359,6 +361,7 @@ public class DEAD_Drone : Drone_FSM
                 m_Enemy.m_Renderer.sortingLayerName = "BackGround03";
                 m_Animator.SetInteger("Explode", 1);
                 
+                m_Enemy.m_WeponMgr.ChangeWeapon(0);
                 m_Enemy.m_WeponMgr.m_CurWeapon.Fire();
                 m_CoroutineElement = m_Handler.StartCoroutine_Handler(CheckAniEnd());
                 m_Enemy.m_DeadReason = -1;

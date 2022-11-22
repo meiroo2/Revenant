@@ -119,7 +119,8 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     /// Stealth에서 2라면 Ultimate 가면 됨
     /// </summary>
     [HideInInspector] public int m_IsUltimateBooked = 0;
-    
+
+    [HideInInspector] public int m_NextFSMForStealth = 0;
 
     /// <summary>
     /// 0 == 에러, 1 == 머리, 2 == 몸통
@@ -196,6 +197,12 @@ public class BossGang : BasicEnemy, ISpriteMatChange
             p_FSMText.transform.localScale = new Vector3(-1f, 1f, 1f);
             p_HpText.transform.localScale = p_FSMText.transform.localScale;
         }
+       
+    }
+
+    private void Update()
+    {
+        // Boss must be PERFECT!!!
         m_CurEnemyFSM.UpdateState();
     }
 

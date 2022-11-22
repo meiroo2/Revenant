@@ -164,6 +164,9 @@ public class Player_ArmMgr : MonoBehaviour
     /// <returns>0 = 실패, 1 = 성공, 2 = 재장전 시도</returns>
     public int DoAttack()
     {
+        // 각도
+        m_PlayerRotation.DoRotate();
+        
         if (m_IsReloading)
             return 0;
         
@@ -185,7 +188,7 @@ public class Player_ArmMgr : MonoBehaviour
                 
                 // 반동
                 DoRecoil();
-                
+
                 // 전투모드 바꾸고 각도 초기화
                 if (!m_Player.m_BulletTimeMgr.m_IsBulletTimeActivating)
                 {
@@ -215,6 +218,14 @@ public class Player_ArmMgr : MonoBehaviour
         return -1;
     }
 
+    public void ForceStopBackToAttackAnim()
+    {
+        if(!ReferenceEquals(m_BackToAttackCoroutine, null))
+            StopCoroutine(m_BackToAttackCoroutine);
+        
+        m_PlayerAniMgr.ChangeArmAniToAngleChange(false);
+    }
+    
     private IEnumerator BackToAttackAnimTimer()
     {
         yield return new WaitForSeconds(p_InitArmLerpDelayTime);

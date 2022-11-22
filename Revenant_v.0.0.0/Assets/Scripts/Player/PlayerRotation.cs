@@ -67,7 +67,7 @@ public class PlayerRotation : MonoBehaviour
         if (!m_doRotate)
             return;
         
-        DoRotate();
+        //DoRotate();
 
         if (m_BanFlip)
             return;
@@ -122,7 +122,7 @@ public class PlayerRotation : MonoBehaviour
         }
     }
     
-    private void DoRotate()
+    public void DoRotate()
     {
         toRotation = 
             m_Player.m_IsRightHeaded ? Quaternion.Euler(0f, 0f, m_curAnglewithLimit) : 

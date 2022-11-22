@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class Title_BtnMgr : MonoBehaviour
 {
     // Visible Member Variables
-    public int p_LoadSceneIdx;
+   // public int p_LoadSceneIdx;
     public GameObject p_Btn;
     
     
@@ -27,6 +27,6 @@ public class Title_BtnMgr : MonoBehaviour
     }
     public void LoadScene()
     {
-        SceneManager.LoadScene(p_LoadSceneIdx);
+        SceneManager.LoadScene(2);
     }
 }
