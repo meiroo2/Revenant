@@ -365,4 +365,12 @@ public class BasicEnemy : Human
 
         return false;
     }
+
+    public bool IsSameStairWithPlayer(bool EnemyIsOnStair, bool PlayerIsOnStair, int EnemyStairNum, int PlayerStairNum)
+    {
+        if (EnemyIsOnStair && PlayerIsOnStair && EnemyStairNum == PlayerStairNum)
+            return true;
+        
+        return false;
+    }
 }
