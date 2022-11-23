@@ -276,13 +276,12 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 {
                     m_Enemy.MoveToPlayer();
                 }
-                else if (m_Enemy.WayPointsVectorList.Count == 0 && m_Enemy.IsPlayerUpper() && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+                else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
                 {
-                    m_Enemy.bMoveToUseStairUp = true;
-                }
-                else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.IsPlayerUpper() && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-                {
-                    m_Enemy.bMoveToUseStairDown = true;
+                    if (m_Enemy.IsPlayerUpper())
+                        m_Enemy.bMoveToUseStairUp = true;
+                    else
+                        m_Enemy.bMoveToUseStairDown = true;
                 }
 
                 if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AtkDistance)
@@ -370,13 +369,12 @@ public class ATTACK_NormalGang : NormalGang_FSM
         {
             m_Enemy.MoveToPlayer();
         }
-        else if (m_Enemy.WayPointsVectorList.Count == 0 && m_Enemy.IsPlayerUpper() && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+        else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
         {
-            m_Enemy.bMoveToUseStairUp = true;
-        }
-        else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.IsPlayerUpper() && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-        {
-            m_Enemy.bMoveToUseStairDown = true;
+            if (m_Enemy.IsPlayerUpper())
+                m_Enemy.bMoveToUseStairUp = true;
+            else
+                m_Enemy.bMoveToUseStairDown = true;
         }
 
         switch (m_Phase)

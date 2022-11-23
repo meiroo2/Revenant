@@ -247,13 +247,12 @@ public class FOLLOW_MeleeGang : MeleeGang_FSM
             {
                 m_Enemy.MoveToPlayer();
             }
-            else if (m_Enemy.WayPointsVectorList.Count == 0 && m_Enemy.IsPlayerUpper() && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+            else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
             {
-                m_Enemy.bMoveToUseStairUp = true;
-            }
-            else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.IsPlayerUpper() && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-            {
-                m_Enemy.bMoveToUseStairDown = true;
+                if (m_Enemy.IsPlayerUpper())
+                    m_Enemy.bMoveToUseStairUp = true;
+                else
+                    m_Enemy.bMoveToUseStairDown = true;
             }
         }
         else // MinFollowDistance 안쪽일 경우
@@ -318,13 +317,12 @@ public class ATTACK_MeleeGang : MeleeGang_FSM
         {
             m_Enemy.MoveToPlayer();
         }
-        else if (m_Enemy.WayPointsVectorList.Count == 0 && m_Enemy.IsPlayerUpper() && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+        else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
         {
-            m_Enemy.bMoveToUseStairUp = true;
-        }
-        else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.IsPlayerUpper() && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-        {
-            m_Enemy.bMoveToUseStairDown = true;
+            if (m_Enemy.IsPlayerUpper())
+                m_Enemy.bMoveToUseStairUp = true;
+            else
+                m_Enemy.bMoveToUseStairDown = true;
         }
         
         switch (m_Phase)
