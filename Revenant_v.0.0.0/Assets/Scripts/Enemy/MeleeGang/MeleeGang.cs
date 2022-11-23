@@ -99,7 +99,6 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
         if (m_ObjectState == ObjectState.Pause)
             return;
         
-        IsPlayerUpper();
         m_CurEnemyFSM.UpdateState();
     }
 

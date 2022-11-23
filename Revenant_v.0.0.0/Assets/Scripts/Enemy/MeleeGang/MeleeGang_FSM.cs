@@ -219,6 +219,15 @@ public class FOLLOW_MeleeGang : MeleeGang_FSM
     public override void StartState()
     {
         _enemyState = EnemyState.Chase;
+        
+        if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+        {
+            if (m_Enemy.IsPlayerUpper())
+                m_Enemy.bMoveToUseStairUp = true;
+            else
+                m_Enemy.bMoveToUseStairDown = true;
+        }
+        
         m_Phase = 0;
     }
 
@@ -246,13 +255,6 @@ public class FOLLOW_MeleeGang : MeleeGang_FSM
             else if (m_Enemy.IsSameStairWithPlayer(m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair, m_Enemy.EnemyStairNum, m_Enemy.m_Player.PlayerStairNum))
             {
                 m_Enemy.MoveToPlayer();
-            }
-            else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-            {
-                if (m_Enemy.IsPlayerUpper())
-                    m_Enemy.bMoveToUseStairUp = true;
-                else
-                    m_Enemy.bMoveToUseStairDown = true;
             }
         }
         else // MinFollowDistance 안쪽일 경우
@@ -293,6 +295,15 @@ public class ATTACK_MeleeGang : MeleeGang_FSM
     public override void StartState()
     {
         _enemyState = EnemyState.Chase;
+        
+        if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+        {
+            if (m_Enemy.IsPlayerUpper())
+                m_Enemy.bMoveToUseStairUp = true;
+            else
+                m_Enemy.bMoveToUseStairDown = true;
+        }
+        
         m_Phase = 0;
         m_Timer = 0f;
         m_Enemy.m_EnemyRigid.constraints = RigidbodyConstraints2D.FreezeAll;
@@ -317,14 +328,7 @@ public class ATTACK_MeleeGang : MeleeGang_FSM
         {
             m_Enemy.MoveToPlayer();
         }
-        else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-        {
-            if (m_Enemy.IsPlayerUpper())
-                m_Enemy.bMoveToUseStairUp = true;
-            else
-                m_Enemy.bMoveToUseStairDown = true;
-        }
-        
+
         switch (m_Phase)
         {
             case 0:

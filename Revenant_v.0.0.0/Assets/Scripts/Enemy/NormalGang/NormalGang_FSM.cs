@@ -224,6 +224,14 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
         m_Animator.SetBool(IsWalk, true);
         m_IsFirst = true;
 
+        if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+        {
+            if (m_Enemy.IsPlayerUpper())
+                m_Enemy.bMoveToUseStairUp = true;
+            else
+                m_Enemy.bMoveToUseStairDown = true;
+        }
+        
         if (!m_Enemy.m_PlayerCognition)
             m_Phase = 0;
         else
@@ -275,13 +283,6 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 else if (m_Enemy.IsSameStairWithPlayer(m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair, m_Enemy.EnemyStairNum, m_Enemy.m_Player.PlayerStairNum))
                 {
                     m_Enemy.MoveToPlayer();
-                }
-                else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-                {
-                    if (m_Enemy.IsPlayerUpper())
-                        m_Enemy.bMoveToUseStairUp = true;
-                    else
-                        m_Enemy.bMoveToUseStairDown = true;
                 }
 
                 if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AtkDistance)
@@ -350,6 +351,14 @@ public class ATTACK_NormalGang : NormalGang_FSM
         m_PlayerTransform = m_Enemy.m_PlayerTransform;
         m_Enemy.m_EnemyRigid.constraints = RigidbodyConstraints2D.FreezeAll;
         m_Phase = 0;
+        
+        if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
+        {
+            if (m_Enemy.IsPlayerUpper())
+                m_Enemy.bMoveToUseStairUp = true;
+            else
+                m_Enemy.bMoveToUseStairDown = true;
+        }
 
         m_DistanceBetPlayer = m_Enemy.GetDistBetPlayer();
 
@@ -368,13 +377,6 @@ public class ATTACK_NormalGang : NormalGang_FSM
         else if (m_Enemy.IsSameStairWithPlayer(m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair, m_Enemy.EnemyStairNum, m_Enemy.m_Player.PlayerStairNum))
         {
             m_Enemy.MoveToPlayer();
-        }
-        else if (m_Enemy.WayPointsVectorList.Count == 0 && !m_Enemy.bIsOnStair && m_Enemy.m_Player.bIsOnStair)
-        {
-            if (m_Enemy.IsPlayerUpper())
-                m_Enemy.bMoveToUseStairUp = true;
-            else
-                m_Enemy.bMoveToUseStairDown = true;
         }
 
         switch (m_Phase)
