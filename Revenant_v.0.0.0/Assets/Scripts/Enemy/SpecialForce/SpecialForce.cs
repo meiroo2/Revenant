@@ -382,7 +382,6 @@ public class SpecialForce : BasicEnemy
                 Debug.Log("ERR : SpecialForce에서 정의되지 않은 FSM 변경 시도");
                 break;
         }
-
         
         if (isFound)
         {
@@ -393,26 +392,23 @@ public class SpecialForce : BasicEnemy
         m_FSMLock = false;
     }
 
-    public override bool IsSameMapSections()
+    public override bool IsSameFloor(bool EnemyMoveToUsedDoor, bool EnemyIsOnStair, bool PlayerIsOnStair)
     {
         float HeightBetweenPlayerAndEnemy = Mathf.Abs(gameObject.transform.position.y - m_Player.transform.position.y);
-        if (HeightBetweenPlayerAndEnemy <= 0.1f && bMoveToUsedDoor && EnemyMapSectionNum == m_Player.PlayerMapSectionNum)
+        if (HeightBetweenPlayerAndEnemy <= 0.1f)
         {
-            return true;
+            if (EnemyMoveToUsedDoor && !EnemyIsOnStair)
+            {
+                bMoveToUsedDoor = false;
+                return true;
+            }
+            else if (!EnemyIsOnStair && !PlayerIsOnStair)
+            {
+                return true;
+            }
         }
 
         return false;
-    }
-    
-    public void MakeDelayMoveToPlayer()
-    { 
-        StartCoroutine(MakeDelayIsSameMapSections());
-    }
-
-    IEnumerator MakeDelayIsSameMapSections()
-    {
-        yield return new WaitForSeconds(0.15f);
-        bIsSameMapSections = IsSameMapSections();
     }
 }
 

@@ -70,7 +70,6 @@ public class BasicEnemy : Human
     public bool bIsPlayerUpperThanEnemy { get; set; } = false;
     public int EnemyStairNum { get; set; } = 0;
     public int EnemyMapSectionNum { get; set; } = 0;
-    public bool bIsSameMapSections { get; set; } = false;
     
     [HideInInspector] public List<Vector2> WayPointsVectorList;
     [HideInInspector] public int WayPointsIndex = 0;
@@ -348,8 +347,9 @@ public class BasicEnemy : Human
         return bIsPlayerUpperThanEnemy;
     }
 
-    virtual public bool IsSameMapSections()
+    virtual public bool IsSameFloor(bool EnemyMoveToUsedDoor, bool EnemyIsOnStair, bool PlayerIsOnStair)
     {
+        
         return false;
     }
 }
