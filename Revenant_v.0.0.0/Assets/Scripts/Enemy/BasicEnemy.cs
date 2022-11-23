@@ -347,9 +347,22 @@ public class BasicEnemy : Human
         return bIsPlayerUpperThanEnemy;
     }
 
-    virtual public bool IsSameFloor(bool EnemyMoveToUsedDoor, bool EnemyIsOnStair, bool PlayerIsOnStair)
+    public bool IsSameFloorWithPlayer(bool EnemyMoveToUsedDoor, bool EnemyIsOnStair, bool PlayerIsOnStair)
     {
-        
+        float HeightBetweenPlayerAndEnemy = Mathf.Abs(transform.position.y - m_PlayerTransform.position.y);
+        if (HeightBetweenPlayerAndEnemy <= 0.1f)
+        {
+            if (EnemyMoveToUsedDoor && !EnemyIsOnStair)
+            {
+                bMoveToUsedDoor = false;
+                return true;
+            }
+            else if (!EnemyIsOnStair && !PlayerIsOnStair)
+            {
+                return true;
+            }
+        }
+
         return false;
     }
 }

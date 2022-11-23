@@ -391,25 +391,6 @@ public class SpecialForce : BasicEnemy
 
         m_FSMLock = false;
     }
-
-    public override bool IsSameFloor(bool EnemyMoveToUsedDoor, bool EnemyIsOnStair, bool PlayerIsOnStair)
-    {
-        float HeightBetweenPlayerAndEnemy = Mathf.Abs(gameObject.transform.position.y - m_Player.transform.position.y);
-        if (HeightBetweenPlayerAndEnemy <= 0.1f)
-        {
-            if (EnemyMoveToUsedDoor && !EnemyIsOnStair)
-            {
-                bMoveToUsedDoor = false;
-                return true;
-            }
-            else if (!EnemyIsOnStair && !PlayerIsOnStair)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
 
 
