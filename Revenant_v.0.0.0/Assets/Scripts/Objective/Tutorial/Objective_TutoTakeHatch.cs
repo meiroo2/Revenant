@@ -1,61 +1,70 @@
-Ôªøusing System.Collections;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
-public class Objective_TutoHide : Objective
+public class Objective_TutoTakeHatch : Objective
 {
-     /*
-     5Î≤àÏ®∞ ÌäúÌÜ†Î¶¨Ïñº
-     1. Íµ¨Î•¥Í∏∞
-     */
-    
-    private Player_InputMgr m_InputMgr;
+	/*
+	6π¯§ä ∆©≈‰∏ÆæÛ
+	1. ±∏∏£±‚
+	*/
 
-    // Objective Variables
-    private int m_Phase = 0;
-    private int m_Count = 0;
-    private Player m_Player;
+	private Player_InputMgr m_InputMgr;
 
-    public TutorialHideObject p_TutorialHideObject;
+	// Objective Variables
+	private int m_Phase = 0;
+	private int m_Count = 0;
+	private Player m_Player;
+
+	public TutorialHatchObject p_TutorialHatchObject;
 	private CameraMgr m_CameraMgr;
 
 	public List<string> p_DroneDialogTextList = new();
 	private int m_CurrentDialogTextCount = 0;
 
 	private Vector3 m_InitialRotate = new();
-
+	private bool isHatchActive = false;
 	public override void InitObjective(ObjectiveMgr _mgr, ObjectiveUI _ui)
-    {
-        m_ObjMgr = _mgr;
-        m_ObjUI = _ui;
+	{
+		m_ObjMgr = _mgr;
+		m_ObjUI = _ui;
 
 		m_CameraMgr = FindObjectOfType<CameraMgr>();
 		m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
-        m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
-        
-        m_InputMgr.SetAllLockByBool(true);
+		m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
 
-		m_CameraMgr.MoveToTarget(p_TutorialHideObject.transform, 1);
-		p_TutorialHideObject.Initialize();
-		p_TutorialHideObject.action?.Invoke();
+		m_InputMgr.SetAllLockByBool(true);
 
-		m_Player.AttachActionOnFSM(PlayerStateName.HIDDEN,() => AddCount(), true);
-        m_Phase = 0;
-        m_Count = 0;
+		m_Phase = 0;
+		m_Count = 0;
+		p_TutorialHatchObject.Initialize();
+		m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogActive(true);
+		m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogText(p_DroneDialogTextList[m_CurrentDialogTextCount]);
+		m_InitialRotate = m_Player.transform.localScale;
 	}
 
-    public override void UpdateObjective()
-    {
-        switch (m_Phase)
-        {
-			case 0: // Ïπ¥Î©îÎùº Ïù¥Îèô
+	public override void UpdateObjective()
+	{
+		m_Player.m_RageGauge.ChangeGaugeValue(150);
+		switch (m_Phase)
+		{
+			case 0:
+				DialogPhase();
+				break;
+			case 1:
+				if (!m_CameraMgr.m_IsFollowTarget)
+				{
+					if(!isHatchActive)
+					{
+						p_TutorialHatchObject.NextAnimation();
+						isHatchActive = true;
+					}
+				}
 				if (m_CameraMgr.m_IsMoveEnd == true)
 				{
 					m_Phase++;
-					m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogActive(true);
-					m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogText(p_DroneDialogTextList[m_CurrentDialogTextCount]);
-					m_InitialRotate = m_Player.transform.localScale;
 					if (m_Player.transform.position.x < m_ObjMgr.p_TutorialDroneObject.transform.position.x)
 					{
 						m_Player.setisRightHeaded(true);
@@ -64,33 +73,28 @@ public class Objective_TutoHide : Objective
 					{
 						m_Player.setisRightHeaded(false);
 					}
+					p_TutorialHatchObject.action += AddCount;
 				}
 				break;
-			case 1:
-				DialogPhase();
-				break;
 			case 2:
-                if (m_Count >= 1)
-                {
-                    m_ObjUI.SetObjectiveProgress(0, 1f);
-                    m_ObjUI.SetObjectiveFontStyle(0, true);
-                    m_ObjMgr.SendObjSuccessInfo(m_ObjIdx, true);
+				if (m_Count > 0)
+					m_Phase++;
+				break;
+			case 3:
+				m_ObjMgr.SendObjSuccessInfo(m_ObjIdx, true);
+				m_Phase = -1;
+				break;
+		}
+	}
 
-                    m_Phase = -1;
-                }
-                break;
-        }
-    }
+	public override void ExitObjective()
+	{
+	}
 
-    public override void ExitObjective()
-    {
-       m_Player.RemoveActionOnFSM(PlayerStateName.HIDDEN);
-    }
-
-    private void AddCount()
-    {
-        m_Count++;
-    }
+	private void AddCount()
+	{
+		m_Count++;
+	}
 
 	public void DialogPhase()
 	{
@@ -102,7 +106,6 @@ public class Objective_TutoHide : Objective
 		{
 			m_Player.transform.localScale = new Vector3(-1, 1, 1);
 		}
-		Debug.Log(m_Player.transform.localScale);
 
 		if (m_CurrentDialogTextCount < p_DroneDialogTextList.Count)
 		{
@@ -126,12 +129,24 @@ public class Objective_TutoHide : Objective
 			m_InputMgr.p_MousePosLock = false;
 			m_InputMgr.p_MoveInputLock = false;
 			m_InputMgr.p_FireLock = false;
+			m_InputMgr.p_SideAttackLock = false;
 			m_InputMgr.p_ReloadLock = false;
 			m_InputMgr.p_RollLock = false;
 			m_InputMgr.p_HideLock = false;
+			m_InputMgr.p_BulletTimeLock = false;
 			m_Player.transform.localScale = m_InitialRotate;
+
+			m_CameraMgr.MoveToTarget(p_TutorialHatchObject.transform, 1);
 			m_ObjUI.LerpUI(false);
 			m_Phase++;
+			if (m_Player.transform.position.x < m_ObjMgr.p_TutorialDroneObject.transform.position.x)
+			{
+				m_Player.setisRightHeaded(true);
+			}
+			else
+			{
+				m_Player.setisRightHeaded(false);
+			}
 		}
 	}
 }

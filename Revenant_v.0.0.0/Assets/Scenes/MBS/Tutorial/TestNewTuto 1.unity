@@ -9933,6 +9933,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &472997920 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3338218776711323812, guid: b45560d3edea855408905644aefc665e, type: 3}
+  m_PrefabInstance: {fileID: 1046600068}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &472997922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472997920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36c9a0be274852c49a9e590022eba4b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ObjIdx: 8
+  m_TitleTxt: "\uD574\uCE58\uC5D0 \uD0D1\uC2B9\uD558\uAE30"
+  m_ObjectiveTxtArr:
+  - "F\uB97C \uB20C\uB7EC \uD574\uCE58\uB97C \uD0D1\uC2B9\uD558\uACE0 \uB2E4\uC74C
+    \uC7A5\uC18C\uB85C \uC774\uB3D9\uD558\uAE30"
+  - 
+  - 
+  - 
+  - 
+  p_TutorialHatchObject: {fileID: 1353483612}
+  p_DroneDialogTextList:
+  - "\uBAA8\uB4E0 \uD6C8\uB828\uC774 \uC885\uB8CC\uB418\uC5C8\uB2E4"
+  - "\uD574\uCE58\uB97C \uD0C0\uACE0 \uB2E4\uC74C \uC7A5\uC18C\uB85C \uC774\uB3D9\uD558\uB3C4\uB85D"
 --- !u!1001 &476989822
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15482,6 +15512,9 @@ MonoBehaviour:
   - 
   - 
   p_TutorialHideObject: {fileID: 8379050677258689990}
+  p_DroneDialogTextList:
+  - "\uC5C4\uD3D0\uBB3C\uC5D0 \uC228\uC5B4\uC11C \uC801\uC758 \uACF5\uACA9\uC744
+    \uD68C\uD53C\uD560 \uC218 \uC788\uB2E4"
 --- !u!1 &562290069
 GameObject:
   m_ObjectHideFlags: 0
@@ -21221,6 +21254,19 @@ PrefabInstance:
       propertyPath: m_ObjectiveTxtArr.Array.data[0]
       value: "Space bar\uB97C \uB20C\uB7EC \uD68C\uD53C \uAE30\uC220 3\uD68C \uC0AC\uC6A9\uD558\uAE30"
       objectReference: {fileID: 0}
+    - target: {fileID: 1260230729151504671, guid: 956756c7f4de80243bc85968b2c74da7, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1260230729151504671, guid: 956756c7f4de80243bc85968b2c74da7, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[0]
+      value: "\uAD6C\uB974\uAE30\uB85C \uC801\uC758 \uACF5\uACA9\uC744 \uD68C\uD53C\uD560
+        \uC218 \uC788\uB2E4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 1260230729151504671, guid: 956756c7f4de80243bc85968b2c74da7, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[1]
+      value: "\uAD6C\uB974\uAE30\uB97C \uC0AC\uC6A9\uD574\uBCF4\uB3C4\uB85D"
+      objectReference: {fileID: 0}
     - target: {fileID: 8442873802166064370, guid: 956756c7f4de80243bc85968b2c74da7, type: 3}
       propertyPath: m_Name
       value: Objective_TutoRoll
@@ -23145,6 +23191,72 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &1046600068
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 169748268}
+    m_Modifications:
+    - target: {fileID: 3338218776711323812, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_Name
+      value: Objective_TutoTakeHatch
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8592835124142710997, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_ObjIdx
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b45560d3edea855408905644aefc665e, type: 3}
+      propertyPath: m_TitleTxt
+      value: "\uD574\uCE58\uC5D0 \uD0D1\uC2B9\uD558\uC138\uC694"
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8612261222782096487, guid: b45560d3edea855408905644aefc665e, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: b45560d3edea855408905644aefc665e, type: 3}
 --- !u!1 &1046727153
 GameObject:
   m_ObjectHideFlags: 0
@@ -24586,7 +24698,7 @@ MonoBehaviour:
   m_ObjIdx: 7
   m_TitleTxt: "\uBD88\uB9BF \uD0C0\uC784 \uC0AC\uC6A9\uD558\uAE30"
   m_ObjectiveTxtArr:
-  - "\uBD88\uB9BF \uD0C0\uC784 1\uD68C \uC0AC\uC6A9\uD558\uAE30"
+  - "Q\uB97C \uB20C\uB7EC \uBD88\uB9BF \uD0C0\uC784 1\uD68C \uC0AC\uC6A9\uD558\uAE30"
   - "\uBAA8\uB4E0 \uC801 \uCC98\uCE58\uD558\uAE30"
   - 
   - 
@@ -24596,7 +24708,14 @@ MonoBehaviour:
   - {fileID: 693096941}
   - {fileID: 939372671}
   - {fileID: 2132235723}
-  p_TutorialHatchObject: {fileID: 1353483612}
+  p_DroneDialogTextList:
+  - "\uAC8C\uC774\uC9C0\uAC00 \uBAA8\uB450 \uCC28\uBA74 \uBD88\uB9BF \uD0C0\uC784\uC744
+    \uC0AC\uC6A9\uD560 \uC218 \uC788\uB2E4"
+  - "Q\uB97C \uB20C\uB7EC \uBD88\uB9BF \uD0C0\uC784\uC744 \uC0AC\uC6A9\uD55C \uD6C4
+    \uB9C8\uC6B0\uC2A4 \uC67C\uCABD \uD074\uB9AD\uC744 \uC5EC\uB7EC\uBC88 \uB204\uB974\uBA74
+    \uADF8 \uD69F\uC218\uB9CC\uD07C \uCD1D\uC54C\uC744 \uD55C \uBC88\uC5D0 \uBC1C\uC0AC\uD560
+    \uC218 \uC788\uB2E4 "
+  - "\uBD88\uB9BF \uD0C0\uC784\uC744 \uC0AC\uC6A9\uD574 \uB4DC\uB860\uC744 \uCC98\uCE58\uD574\uB77C"
 --- !u!1 &1262253960
 GameObject:
   m_ObjectHideFlags: 0
@@ -34319,6 +34438,10 @@ PrefabInstance:
       value: "\uC801 \uCC98\uCE58\uD558\uAE30"
       objectReference: {fileID: 0}
     - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: tutorialEnemy
+      value: 
+      objectReference: {fileID: 970690519}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
       propertyPath: tutorialEnemies.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -34350,6 +34473,48 @@ PrefabInstance:
     - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
       propertyPath: m_ObjectiveTxtArr.Array.data[2]
       value: "\uBAA8\uB4E0 \uC801 \uCC98\uCE58\uD558\uAE30"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[0]
+      value: "\uACF5\uACA9 \uD6C8\uB828\uC744 \uC704\uD55C \uB9C8\uB124\uD0B9\uC744
+        \uBC29\uC5D0 \uBC30\uCE58\uD558\uC600\uB2E4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[1]
+      value: "\uB9C8\uC6B0\uC2A4 \uC88C\uD074\uB9AD\uC744 \uC785\uB825\uD558\uBA74
+        \uD0C4\uCC3D\uC744 \uC18C\uBE44\uD558\uC5EC \uC0AC\uACA9\uC774 \uAC00\uB2A5\uD558\uB2E4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[2]
+      value: "\uBA38\uB9AC\uB97C \uC0AC\uACA9\uD558\uBA74 \uBAB8\uD1B5\uC774\uB098
+        \uB2E4\uB9AC\uB97C \uB9DE\uCD94\uB294 \uAC83\uBCF4\uB2E4 \uB354 \uD070 \uD53C\uD574\uB97C
+        \uC904 \uC218 \uC788\uB2E4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[3]
+      value: "\uD0C4\uCC3D\uC744 \uBAA8\uB450 \uC18C\uBE44\uD558\uBA74 \uC790\uB3D9\uC73C\uB85C
+        \uC7A5\uC804\uC774 \uB418\uACE0 R\uD0A4\uB97C \uB20C\uB7EC \uC218\uB3D9\uC73C\uB85C
+        \uC7A5\uC804\uC774 \uAC00\uB2A5\uD558\uB2E4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[4]
+      value: "\uB9C8\uC6B0\uC2A4 \uC6B0\uD074\uB9AD\uC744 \uC785\uB825\uD558\uBA74
+        \uC544\uB798\uC5D0 \uC788\uB294 \uAC8C\uC774\uC9C0\uB97C \uC18C\uBAA8\uD558\uC5EC
+        \uD2B9\uC218 \uACF5\uACA9\uC774 \uAC00\uB2A5\uD558\uB2E4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[5]
+      value: "\uC0AC\uACA9 \uBC0F \uD2B9\uC218 \uACF5\uACA9\uC744 \uC774\uC6A9\uD558\uC5EC
+        \uC801\uC744 \uCC98\uCE58\uD574\uB77C"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612261222782096487, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
+      propertyPath: p_DroneDialogTextList.Array.data[6]
+      value: "\uC0AC\uACA9 \uBC0F \uD2B9\uC218 \uACF5\uACA9\uC744 \uC774\uC6A9\uD558\uC5EC
+        \uC801\uC744 \uCC98\uCE58\uD574\uB77C"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b8b9148bd6440c94f94797a0ca558553, type: 3}
@@ -38716,7 +38881,7 @@ PrefabInstance:
       objectReference: {fileID: 1128835212}
     - target: {fileID: 8796172221674825972, guid: 04b09feafa0a09248aec708989f3388d, type: 3}
       propertyPath: p_ObjectiveList.Array.size
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8796172221674825972, guid: 04b09feafa0a09248aec708989f3388d, type: 3}
       propertyPath: p_ObjectiveSuccessWaitTime
@@ -38754,6 +38919,10 @@ PrefabInstance:
       propertyPath: p_ObjectiveList.Array.data[7]
       value: 
       objectReference: {fileID: 1260572477}
+    - target: {fileID: 8796172221674825972, guid: 04b09feafa0a09248aec708989f3388d, type: 3}
+      propertyPath: p_ObjectiveList.Array.data[8]
+      value: 
+      objectReference: {fileID: 472997922}
     - target: {fileID: 8796172221674825977, guid: 04b09feafa0a09248aec708989f3388d, type: 3}
       propertyPath: m_Name
       value: ObjectiveMgr

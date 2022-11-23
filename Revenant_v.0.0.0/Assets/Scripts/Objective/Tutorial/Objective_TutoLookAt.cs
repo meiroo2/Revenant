@@ -22,8 +22,9 @@ public class Objective_TutoLookAt : Objective
 
     public List<string> p_DroneDialogTextList = new();
     private int m_CurrentDialogTextCount = 0;
-    
-    public override void InitObjective(ObjectiveMgr _mgr, ObjectiveUI _ui)
+
+	private Vector3 m_InitialRotate = new();
+	public override void InitObjective(ObjectiveMgr _mgr, ObjectiveUI _ui)
     {
         m_ObjMgr = _mgr;
         m_ObjUI = _ui;
@@ -35,8 +36,10 @@ public class Objective_TutoLookAt : Objective
         m_Timer = 0f;
         m_Phase = 0;
 
+        m_Player.transform.localScale = new Vector3(1, 1, 1);
 		m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogActive(true);
 		m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogText(p_DroneDialogTextList[m_CurrentDialogTextCount]);
+		m_InitialRotate = m_Player.transform.localScale;
 	}
 
     public override void UpdateObjective()
@@ -99,11 +102,11 @@ public class Objective_TutoLookAt : Objective
     {
 		if (m_Player.transform.position.x < m_ObjMgr.p_TutorialDroneObject.transform.position.x)
 		{
-            m_Player.setisRightHeaded(true);
+			m_Player.transform.localScale = new Vector3(1, 1, 1);
 		}
 		else
 		{
-			m_Player.setisRightHeaded(false);
+			m_Player.transform.localScale = new Vector3(-1, 1, 1);
 		}
 
 		if (m_CurrentDialogTextCount < p_DroneDialogTextList.Count)
@@ -124,6 +127,7 @@ public class Objective_TutoLookAt : Objective
 		}
 		else
 		{
+			m_Player.transform.localScale = m_InitialRotate;
 			m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogActive(false);
 			m_Phase++;
 		}
