@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Unity.Mathematics;
 using UnityEngine;
@@ -50,11 +51,7 @@ public class Objective_TutoAttack : Objective
         m_InputMgr.SetAttackAction(AddLeftClickCount);
 		m_Player.AttachActionOnFSM(PlayerStateName.MELEE, () => AddRightClickCount(), true);
 		m_CameraMgr.MoveToTarget(tutorialEnemy.transform, 1);
-
-		foreach (var enemy in tutorialEnemies)
-		{
-            enemy.gameObject.SetActive(true);
-		}
+		StartCoroutine(SpawnEnemy());
 		enemyCount = tutorialEnemies.Count;
 	}
 
@@ -117,6 +114,8 @@ public class Objective_TutoAttack : Objective
         }
     }
 
+
+
     public override void ExitObjective()
     {
         
@@ -132,6 +131,15 @@ public class Objective_TutoAttack : Objective
         }
         return count;
     }
+
+	private IEnumerator SpawnEnemy()
+	{
+		foreach (var enemy in tutorialEnemies)
+		{
+			enemy.gameObject.SetActive(true);
+			yield return new WaitForSeconds(0.5f);
+		}
+	}
 
     private void AddLeftClickCount() => m_UseLeftClickCount++;
 	private void AddRightClickCount() => m_UseRightClickCount++;

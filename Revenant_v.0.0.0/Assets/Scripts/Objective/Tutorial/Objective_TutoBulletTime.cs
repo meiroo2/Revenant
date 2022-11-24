@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -92,6 +93,14 @@ public class Objective_TutoBulletTime : Objective
 		return count;
 	}
 
+	private IEnumerator SpawnEnemy()
+	{
+		foreach (var enemy in tutorialEnemies)
+		{
+			enemy.gameObject.SetActive(true);
+			yield return new WaitForSeconds(0.5f);
+		}
+	}
 	private void AddBulletTimeCountCount() => m_UseBulletTimeCount++;
 
 	public void DialogPhase()
@@ -133,13 +142,10 @@ public class Objective_TutoBulletTime : Objective
 			m_InputMgr.p_HideLock = false;
 			m_InputMgr.p_BulletTimeLock = false;
 			m_Player.transform.localScale = m_InitialRotate;
-
-			foreach (var enemy in tutorialEnemies)
-			{
-				enemy.gameObject.SetActive(true);
-			}
+			StartCoroutine(SpawnEnemy());
 			m_ObjUI.LerpUI(false);
 			m_Phase++;
+
 			if (m_Player.transform.position.x < m_ObjMgr.p_TutorialDroneObject.transform.position.x)
 			{
 				m_Player.setisRightHeaded(true);
