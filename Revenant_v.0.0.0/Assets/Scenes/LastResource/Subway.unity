@@ -14221,7 +14221,7 @@ SpriteRenderer:
   m_Size: {x: 1.28, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &252956394
@@ -48235,6 +48235,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2855590271983462353, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: m_Damage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2855590271983462353, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: m_StunValue
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: p_ReloadSpeed
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_Hp>k__BackingField
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_MoveSpeed>k__BackingField
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_BackSpeedMulti>k__BackingField
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_RollSpeedMulti>k__BackingField
+      value: 3.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_StunAlertSpeed>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_MeleeSpeedMulti>k__BackingField
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_RollDecelerationSpeed>k__BackingField
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6699025932106853842, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
+      propertyPath: <p_JustEvadeNormalizeTime>k__BackingField.y
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 6699025932106853847, guid: 88d640bbc81855345bd7ce39a870bda5, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -48623,7 +48667,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.8
+  m_Intensity: 0.6
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 000000007f42135227296dfad399bfd99b18e247f9631f6a9f43f79f73a0ea0821ac55dfcd73ffb001e48af7b3afe6fda3c4a9b87309ee9c6118e243151b9233419dea05516600fd51314631e3965b1d
@@ -57192,10 +57236,6 @@ PrefabInstance:
     - target: {fileID: 4450013778084396112, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4718642478766582402, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
-      propertyPath: P_Speed
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae8cf7ff2f169e2458839188814b2033, type: 3}
@@ -77553,7 +77593,7 @@ SpriteRenderer:
   m_Size: {x: 0.56, y: 1.01}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1238072165
@@ -78471,7 +78511,7 @@ SpriteRenderer:
   m_Size: {x: 1.28, y: 1.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &1305719100
@@ -114711,7 +114751,7 @@ SpriteRenderer:
   m_Size: {x: 0.9, y: 1.23}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &2022845150
