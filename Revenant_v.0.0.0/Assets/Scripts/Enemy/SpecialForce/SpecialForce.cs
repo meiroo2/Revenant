@@ -15,10 +15,9 @@ public class SpecialForce : BasicEnemy
     // Visible Member Variables
     
     // Basic
-    [field: SerializeField, BoxGroup("SpecialForce")] public int p_Bullet_Count { get; private set; } = 3;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Bullet_Speed { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Bullet_Spread { get; private set; } = 5f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Fire_Speed { get; private set; } = 3f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_FireAnimSpeed { get; private set; } = 3f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Fire_Delay { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Stun_Time { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_MeleeDistance { get; private set; } = 0.4f;
@@ -48,6 +47,11 @@ public class SpecialForce : BasicEnemy
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Hide_Time_Min = 1f;
 
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Hide_Time_Cancel = 1f;
+    
+    
+    // AlertSystem
+    [field: SerializeField, BoxGroup("SpecialForce"), Title("AlertSystem")] public float p_Alert_Fade_Speed = 1f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Alert_Speed = 1f;
     
     // Assign
     [field: SerializeField, Title("Assign")]
@@ -104,6 +108,10 @@ public class SpecialForce : BasicEnemy
     public HideSlot m_CurHideSlot = null;
     public bool m_LastActionIsHide = false;
 
+    
+    // FSM Variables
+    [HideInInspector] public int m_ATK_RollState = 0;
+    
 
     // Constructors
     private void Awake()
@@ -382,7 +390,6 @@ public class SpecialForce : BasicEnemy
                 Debug.Log("ERR : SpecialForce에서 정의되지 않은 FSM 변경 시도");
                 break;
         }
-
         
         if (isFound)
         {
@@ -391,28 +398,6 @@ public class SpecialForce : BasicEnemy
         }
 
         m_FSMLock = false;
-    }
-
-    public override bool IsSameMapSections()
-    {
-        float HeightBetweenPlayerAndEnemy = Mathf.Abs(gameObject.transform.position.y - m_Player.transform.position.y);
-        if (HeightBetweenPlayerAndEnemy <= 0.1f && bMoveToUsedDoor && EnemyMapSectionNum == m_Player.PlayerMapSectionNum)
-        {
-            return true;
-        }
-
-        return false;
-    }
-    
-    public void MakeDelayMoveToPlayer()
-    { 
-        StartCoroutine(MakeDelayIsSameMapSections());
-    }
-
-    IEnumerator MakeDelayIsSameMapSections()
-    {
-        yield return new WaitForSeconds(0.15f);
-        bIsSameMapSections = IsSameMapSections();
     }
 }
 

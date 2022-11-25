@@ -77,10 +77,12 @@ public class Enemy_FootMgr : MonoBehaviour
 
         if (StairSensor && StairTrigger.m_IsUpPos && m_Enemy.bMoveToUsedStair && !m_Enemy.IsPlayerUpper())
         {
+            m_Enemy.bMoveToUseStairUp = false;
             m_Enemy.bMoveToUseStairDown = true;
         }
         else if (StairSensor && !StairTrigger.m_IsUpPos && m_Enemy.bMoveToUsedStair && m_Enemy.IsPlayerUpper())
         {
+            m_Enemy.bMoveToUseStairDown = false;
             m_Enemy.bMoveToUseStairUp = true;
         }
         

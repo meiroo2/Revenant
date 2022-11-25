@@ -85,7 +85,8 @@ public class SpecialForce_UseRange : MonoBehaviour
             m_HideSlotDic.Add(col, slot);
         }
         
-        _door = col.GetComponent<Door_Col_LayerRoom>();
+        col.TryGetComponent(out Door_Col_LayerRoom doorCol);
+        _door = doorCol;
         if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
         {
             if (Mathf.Abs(m_Enemy.transform.position.x - m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x) <= 0.1f)
@@ -101,20 +102,17 @@ public class SpecialForce_UseRange : MonoBehaviour
         if (other.CompareTag("Player"))
             return;
 
-        if (other.TryGetComponent(out Door_Col_LayerRoom doorCol))
+        other.TryGetComponent(out Door_Col_LayerRoom doorCol);
+        _door = doorCol;
+        if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
         {
-            _door = doorCol;
-
-            if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
+            if (Mathf.Abs(m_Enemy.transform.position.x - m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x) <= 0.1f)
             {
-                if (Mathf.Abs(m_Enemy.transform.position.x - m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x) <= 0.1f)
+                m_Enemy.bMoveToUsedDoor = true;
+                if (m_Enemy.bMoveToUsedDoor)
                 {
-                    m_Enemy.bMoveToUsedDoor = true;
-                    if (m_Enemy.bMoveToUsedDoor)
-                    {
-                        _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
-                        m_Enemy.MoveNextPoint();
-                    }
+                    _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
+                    m_Enemy.MoveNextPoint();
                 }
             }
         }
@@ -128,9 +126,9 @@ public class SpecialForce_UseRange : MonoBehaviour
         if (other.CompareTag("Player"))
             return;
         m_HideSlotDic.Remove(other);
-        
-        _door = other.GetComponent<Door_Col_LayerRoom>();
 
+        other.TryGetComponent(out Door_Col_LayerRoom doorColLayerRoom);
+        _door = doorColLayerRoom;
         if (Mathf.Abs(m_Enemy.transform.position.y - _player.transform.position.y) <= 0.5f && _door)
         {
             m_Enemy.bMoveToUsedDoor = false;

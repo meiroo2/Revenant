@@ -28,8 +28,8 @@ public class FadeOutTrigger : MonoBehaviour
         if (m_Triggered)
             return;
 
-        m_IngameUI.SetCallback(SceneLoad);
-        m_IngameUI.DoBlackFadeIn();
+        //m_IngameUI.SetCallback(SceneLoad);
+        //_IngameUI.DoBlackFadeIn();
     }
 
 

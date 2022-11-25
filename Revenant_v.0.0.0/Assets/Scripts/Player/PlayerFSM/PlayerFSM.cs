@@ -91,16 +91,13 @@ public class Player_IDLE : PlayerFSM
         
         if(m_InputMgr.GetDirectionalKeyInput() != 0)
             m_Player.ChangePlayerFSM(PlayerStateName.WALK);
-        else if(m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
+        else if(m_InputMgr.m_IsPushRollKey && m_RageGauge.UseSkillByConsumeRageGauge(0))
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
-        else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
+        else if(m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.UseSkillByConsumeRageGauge(1))
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
-        else if (m_InputMgr.m_IsPushBulletTimeKey)
+        else if (m_InputMgr.m_IsPushBulletTimeKey && m_RageGauge.UseSkillByConsumeRageGauge(2))
         {
-            if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
-                m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
-            else
-                m_Player.m_RageGauge.CanConsume(999999f);
+            m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
         }
         else if (m_InputMgr.m_IsPushHideKey)
         {
@@ -215,21 +212,18 @@ public class Player_WALK : PlayerFSM
         }
 
 
-        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
+        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.UseSkillByConsumeRageGauge(0))
         {
             m_Player.setisRightHeaded(m_CurInput > 0);
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
-        else if (m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
+        else if (m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.UseSkillByConsumeRageGauge(1))
         {
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
         }
-        else if (m_InputMgr.m_IsPushBulletTimeKey)
+        else if (m_InputMgr.m_IsPushBulletTimeKey && m_RageGauge.UseSkillByConsumeRageGauge(2))
         {
-            if (m_Player.m_BulletTimeMgr.m_IsGaugeFull)
-                m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
-            else
-                m_Player.m_RageGauge.CanConsume(999999f);
+            m_Player.ChangePlayerFSM(PlayerStateName.BULLET_TIME);
         }
         else if (m_InputMgr.m_IsPushHideKey)
         {
@@ -325,7 +319,7 @@ public class Player_ROLL : PlayerFSM
         m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Roll, 1);
         
         m_Player.m_SoundPlayer.PlayPlayerSoundOnce(4);
-        m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue - m_RageGauge.p_Gauge_Consume_Roll);
+        //m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue - m_RageGauge.p_Gauge_Consume_Roll);
 
         // 코루틴 시작
         m_JustEvadeCoroutineElement = 
@@ -343,7 +337,7 @@ public class Player_ROLL : PlayerFSM
             m_DecelerationSpeed += m_Timer * m_Player.p_RollDecelerationSpeed;
         
         
-        if (m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Melee))
+        if (m_InputMgr.m_IsPushSideAttackKey && m_RageGauge.UseSkillByConsumeRageGauge(1))
         {
             m_Player.m_CancelMeleeStartAnim = true;
             m_Player.ChangePlayerFSM(PlayerStateName.MELEE);
@@ -424,13 +418,13 @@ public class Player_ROLL : PlayerFSM
     private void JustEvadeGaugeUp()
     {
         var rageGauge = m_Player.m_RageGauge;
-        rageGauge.ChangeGaugeValue(rageGauge.m_CurGaugeValue + rageGauge.p_Gauge_Refill_JustEvade);
+        rageGauge.AddGaugeValue(rageGauge.p_Gauge_Refill_JustEvade);
     }
 
     private void EvadeGaugeUp()
     {
         var rageGauge = m_Player.m_RageGauge;
-        rageGauge.ChangeGaugeValue(rageGauge.m_CurGaugeValue + rageGauge.p_Gauge_Refill_Evade);
+        rageGauge.AddGaugeValue(rageGauge.p_Gauge_Refill_Evade);
     }
 
     private void SafetyOut()
@@ -485,7 +479,7 @@ public class Player_HIDDEN : PlayerFSM
     {
         m_KeyInput = m_InputMgr.GetDirectionalKeyInput();
 
-        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.CanConsume(m_RageGauge.p_Gauge_Consume_Roll))
+        if (m_InputMgr.m_IsPushRollKey && m_RageGauge.UseSkillByConsumeRageGauge(0))
         {
             if(m_KeyInput > 0)
                 m_Player.setisRightHeaded(true);
@@ -566,9 +560,6 @@ public class Player_MELEE : PlayerFSM
             m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Melee, 1);
         }
 
-        var gauge = m_Player.m_RageGauge;
-        gauge.ChangeGaugeValue(gauge.m_CurGaugeValue - gauge.p_Gauge_Consume_Melee);
-        
         m_Player.m_MeleeAttack.StartMelee();
         m_Player.m_SoundPlayer.PlayPlayerSoundOnce(3);
 
@@ -581,7 +572,7 @@ public class Player_MELEE : PlayerFSM
     public override void UpdateState()
     {
         if (m_Player.m_InputMgr.m_IsPushRollKey && 
-            m_Player.m_RageGauge.CanConsume(m_Player.m_RageGauge.p_Gauge_Consume_Roll))
+            m_Player.m_RageGauge.UseSkillByConsumeRageGauge(0))
         {
             m_Player.ChangePlayerFSM(PlayerStateName.ROLL);
         }
@@ -787,8 +778,11 @@ public class Player_BULLET_TIME : PlayerFSM
         {
             case 0:
                 m_Timer += Time.unscaledDeltaTime;
-                var m_RageGaugeUI = GameObject.FindObjectOfType<RageGauge_UI>();
-                m_RageGaugeUI.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit);
+                
+                // 수정요망
+                //var m_RageGaugeUI = GameObject.FindObjectOfType<RageGauge_UI>();
+                //m_RageGaugeUI.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit);
+                
                 if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer >= m_BulletTimeLimit)
                 {
                     // AR 끔
