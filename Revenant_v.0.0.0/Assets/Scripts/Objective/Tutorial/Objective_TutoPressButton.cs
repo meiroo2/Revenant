@@ -137,7 +137,6 @@ public class Objective_TutoPressButton : Objective
 		{
 			m_Player.transform.localScale = new Vector3(-1, 1, 1);
 		}
-		Debug.Log(m_Player.transform.localScale);
 
 		if (m_CurrentDialogTextCount < p_DroneDialogTextList.Count)
 		{
