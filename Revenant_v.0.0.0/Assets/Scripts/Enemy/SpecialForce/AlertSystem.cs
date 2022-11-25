@@ -12,6 +12,9 @@ public class AlertSystem : MonoBehaviour
 {
     // Member Variables
     public Animator m_Animator { get; private set; }
+
+    public bool m_IsOnline { get; private set; } = false;
+
     private readonly int AlertSpeed = Animator.StringToHash("AlertSpeed");
     private readonly int StunAlertSpeed = Animator.StringToHash("StunAlertSpeed");
     private readonly int FadeIn = Animator.StringToHash("FadeIn");
@@ -39,7 +42,7 @@ public class AlertSystem : MonoBehaviour
     /// <summary>
     /// Alert를 Stun 상태로 가도록 지시합니다.
     /// </summary>
-    public void DoStun()
+    public void DoStun(Action _action)
     {
         if(!ReferenceEquals(m_GaugeUpCoroutine, null))
             StopCoroutine(m_GaugeUpCoroutine);
@@ -57,10 +60,10 @@ public class AlertSystem : MonoBehaviour
         
         m_Animator.SetInteger(Stun, 1);
 
-        m_StunCoroutine = StartCoroutine(CalStun());
+        m_StunCoroutine = StartCoroutine(CalStun(_action));
     }
 
-    private IEnumerator CalStun()
+    private IEnumerator CalStun(Action _action)
     {
         while (true)
         {
@@ -72,6 +75,8 @@ public class AlertSystem : MonoBehaviour
 
         m_Animator.SetInteger(Stun, 0);
         m_IsGaugeUp = false;
+        
+        _action?.Invoke();
         
         yield break;
     }
@@ -89,6 +94,18 @@ public class AlertSystem : MonoBehaviour
             StopCoroutine(m_GaugeUpCoroutine);
 
         m_GaugeUpCoroutine = StartCoroutine(CalGaugeUp(_action));
+    }
+
+    /// <summary>
+    /// GauguUp 함수를 취소합니다.
+    /// </summary>
+    public void CancelGaugeUp()
+    {
+        m_Animator.SetInteger(GaugeUp, 0);
+        m_Animator.SetInteger(Attack, 0);
+        
+        if(!ReferenceEquals(m_GaugeUpCoroutine, null))
+            StopCoroutine(m_GaugeUpCoroutine);
     }
 
     private IEnumerator CalGaugeUp(Action _action)
@@ -154,6 +171,7 @@ public class AlertSystem : MonoBehaviour
                 break;
         }
 
+        m_IsOnline = true;
         m_Animator.SetInteger(FadeIn, 2);
         _action?.Invoke();
         

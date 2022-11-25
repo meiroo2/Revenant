@@ -23,12 +23,12 @@ public enum UseableObjList
     STAIRPOS,
     LAYERDOOR,
     CHECKPOINT,
+    JUSTTOUCH
 }
 
 public interface IUseableObj
 {
-    /// <summary> IUseableObj�� ��ӹ��� ������Ʈ�� Outline�� Ȱ��ȭ��ŵ�ϴ�. </summary>
-    /// <param name="_isOn"> ����/���� ���� </param>
+
     public void ActivateOutline(bool _isOn)
     {
     }
@@ -37,5 +37,5 @@ public interface IUseableObj
 
     public UseableObjList m_ObjProperty { get; set; }
     public bool m_isOn { get; set; }
-    public int useObj(IUseableObjParam _param);               // ������Ʈ�� ��� �� ȣ��Ǵ� �Լ�(���� ������Ʈ�� ���� �߰��� ��)
+    public int useObj(IUseableObjParam _param);
 }

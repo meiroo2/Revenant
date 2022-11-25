@@ -53,7 +53,7 @@ public class Objective_TutoBulletTime : Objective
 
     public override void UpdateObjective()
     {
-        m_Player.m_RageGauge.ChangeGaugeValue(150);
+        //m_Player.m_RageGauge.ChangeGaugeValue(150);
 
 		switch (m_Phase)
         {

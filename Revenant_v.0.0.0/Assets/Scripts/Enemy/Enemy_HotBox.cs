@@ -80,10 +80,10 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
 
                 if (_param.m_MakeRageParticle)
                     m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform,
-                        () => m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue +
-                                                           (_param.m_Damage * p_DamageMulti) *
-                                                           m_RageGauge.p_Gauge_Refill_Attack_Multi));
-
+                        () => m_RageGauge.AddGaugeValue((_param.m_Damage * p_DamageMulti) *
+                                                        m_RageGauge.p_Gauge_Refill_Attack_Multi)
+                        );
+                
                 m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti, _param.m_stunValue);
                 break;
             
@@ -102,10 +102,10 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                 m_PlayerUI.ActiveHitmark(1);
 
                 if (_param.m_MakeRageParticle)
-                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform, 
-                        () => m_RageGauge.ChangeGaugeValue(m_RageGauge.m_CurGaugeValue +
-                                                           (_param.m_Damage * p_DamageMulti) *
-                                                           m_RageGauge.p_Gauge_Refill_Attack_Multi));
+                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform,
+                        () => m_RageGauge.AddGaugeValue((_param.m_Damage * p_DamageMulti) *
+                                                        m_RageGauge.p_Gauge_Refill_Attack_Multi)
+                    );
                 
                 m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti, _param.m_stunValue);
                 break;
