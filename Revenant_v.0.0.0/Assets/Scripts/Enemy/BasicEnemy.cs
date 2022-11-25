@@ -67,10 +67,8 @@ public class BasicEnemy : Human
     public bool bMoveToUsedStair { get; set; } = false;
     public bool bMoveToUseStairUp { get; set; } = false;
     public bool bMoveToUseStairDown { get; set; } = false;
-    public bool bIsPlayerUpperThanEnemy { get; set; } = false;
     public int EnemyStairNum { get; set; } = 0;
     public int EnemyMapSectionNum { get; set; } = 0;
-    public bool bIsSameMapSections { get; set; } = false;
     
     [HideInInspector] public List<Vector2> WayPointsVectorList;
     [HideInInspector] public int WayPointsIndex = 0;
@@ -339,17 +337,36 @@ public class BasicEnemy : Human
     {
         if (transform.position.y < m_PlayerTransform.position.y)
         {
-            bIsPlayerUpperThanEnemy = true;
+            return true;
         }
-        else
-        {
-            bIsPlayerUpperThanEnemy = false;
-        }
-        return bIsPlayerUpperThanEnemy;
+        return false;
     }
 
-    virtual public bool IsSameMapSections()
+    /** 플레이어랑 같은 바닥에 있는지 판단하는 함수 */
+    public bool IsSameFloorWithPlayer(bool EnemyMoveToUsedDoor, bool EnemyIsOnStair, bool PlayerIsOnStair)
     {
+        float HeightBetweenPlayerAndEnemy = Mathf.Abs(transform.position.y - m_PlayerTransform.position.y);
+        if (HeightBetweenPlayerAndEnemy <= 0.1f)
+        {
+            if (EnemyMoveToUsedDoor && !EnemyIsOnStair)
+            {
+                bMoveToUsedDoor = false;
+                return true;
+            }
+            else if (!EnemyIsOnStair && !PlayerIsOnStair)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** 플레이어랑 같은 계단에 있는지 판단하는 함수 */
+    public bool IsSameStairWithPlayer(bool EnemyIsOnStair, bool PlayerIsOnStair, int EnemyStairNum, int PlayerStairNum)
+    {
+        if (EnemyIsOnStair && PlayerIsOnStair && EnemyStairNum == PlayerStairNum)
+            return true;
+        
         return false;
     }
 }
