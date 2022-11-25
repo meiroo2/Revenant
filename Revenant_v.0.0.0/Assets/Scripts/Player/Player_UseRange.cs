@@ -59,7 +59,17 @@ public class Player_UseRange : MonoBehaviour
         switch (collision.tag)
         {
             case "UseableObj":
-                m_UseableObjList.Add(collision);
+                if (collision.TryGetComponent(out IUseableObj iUse))
+                {
+                    if (iUse.m_ObjProperty == UseableObjList.JUSTTOUCH)
+                    {
+                        iUse.useObj(new IUseableObjParam(m_Player.transform, true, GetInstanceID()));
+                    }
+                    else
+                    {
+                        m_UseableObjList.Add(collision);
+                    }
+                }
                 break;
             
             case "HideSlot":

@@ -23,9 +23,7 @@ public class GameMgr : MonoBehaviour
 
 
     // Member Variables
-    private InGame_UI m_IngameUI;
-    private Player_UI m_PlayerUI;
-    
+
     private static GameMgr m_Instance = null;
     public static GameMgr GetInstance() { return m_Instance; }
     private bool m_isStartTimer = false;

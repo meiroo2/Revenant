@@ -45,7 +45,7 @@ public class TutorialHatchObject : TutorialObject
 		{
 			m_animator.enabled = true;
 			transform.GetChild(0).gameObject.SetActive(false);
-			NextAnimation();
+			action?.Invoke();
 			collision.gameObject.SetActive(false);
 
 			foreach(var obj in ActiveOffPrefabs)

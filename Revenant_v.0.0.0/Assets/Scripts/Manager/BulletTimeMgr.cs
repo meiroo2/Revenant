@@ -39,7 +39,6 @@ public class BulletTimeMgr : MonoBehaviour
     
     // Member Variables
     private RageGauge m_RageGauge;
-    private RageGauge_UI m_RageGaugeUI;
     public bool m_IsGaugeFull { get; private set; } = false;
 
     private const int m_NumofMarker = 8;
@@ -98,8 +97,7 @@ public class BulletTimeMgr : MonoBehaviour
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
         m_ScreenEffect_AR = instance.m_ScreenEffect_AR;
-
-        m_RageGaugeUI = FindObjectOfType<RageGauge_UI>();
+        
         m_MatChanger = GameMgr.GetInstance().p_MatChanger;
     }
 
@@ -203,8 +201,7 @@ public class BulletTimeMgr : MonoBehaviour
     {
         if (_isStart)
         {
-            m_RageGaugeUI.OnBulletTimeStart?.Invoke();
-			m_RageGauge.TempStopRageGauge(true);
+            m_RageGauge.TempStopRageGauge(true);
 
             m_SEThunderCoroutine = StartCoroutine(SpawnThunderCoroutine());
             m_IsBulletTimeActivating = true;
@@ -216,8 +213,7 @@ public class BulletTimeMgr : MonoBehaviour
         }
         else
         {
-			m_RageGaugeUI.OnBulletTimeEnd?.Invoke();
-			m_RageGauge.TempStopRageGauge(false);
+            m_RageGauge.TempStopRageGauge(false);
             
             StopCoroutine(m_SEThunderCoroutine);
             

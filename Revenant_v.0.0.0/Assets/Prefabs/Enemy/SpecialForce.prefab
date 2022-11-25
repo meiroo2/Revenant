@@ -815,6 +815,8 @@ MonoBehaviour:
   p_Hide_Find_Distance: 1
   p_Hide_Time_Min: 1
   p_Hide_Time_Cancel: 1
+  p_Alert_Fade_Speed: 1
+  p_Alert_Speed: 1
   p_AlertSystem: {fileID: 3437383704689682652}
   p_FullRenderer: {fileID: 4597090503309720324}
   p_FullAnimator: {fileID: 4597090503309720325}
@@ -838,6 +840,7 @@ MonoBehaviour:
   m_IsMouseTouched: 0
   m_CurHideSlot: {fileID: 0}
   m_LastActionIsHide: 0
+  m_ATK_RollState: 0
 --- !u!50 &4597090504026434923
 Rigidbody2D:
   serializedVersion: 4
@@ -902,7 +905,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5955127528518930980}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.029, y: 0.218, z: 0}
+  m_LocalPosition: {x: 0.078, y: 0.124, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1215,7 +1218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   p_MatType: 0
-  <p_HitBoxPoint>k__BackingField: 3
+  <p_HitBoxPoint>k__BackingField: 4
   <p_DamageMulti>k__BackingField: 0
 --- !u!61 &7054679192688962931
 BoxCollider2D:

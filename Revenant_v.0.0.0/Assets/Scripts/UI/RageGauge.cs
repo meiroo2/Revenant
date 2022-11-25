@@ -19,10 +19,11 @@ public class RageGauge : MonoBehaviour
     
     // Member Variables
     private bool m_TempStop = false;
-    public float m_CurGaugeValue { get; private set; } = 0;
+    private float m_CurGaugeValue = 0f;
     private bool m_SafetyLock = false;
+    public bool m_IsHitMaxOnce = false;
 
-
+    
     // 0-1의 Fill Amount 비례수
     private float m_Multiply = 0.1f;
 
@@ -35,6 +36,7 @@ public class RageGauge : MonoBehaviour
 	// Constructors
 	private void Awake()
     {
+        m_CurGaugeValue = 0f;
         m_Multiply = 1f / p_Gauge_Max;
     }
 
@@ -66,21 +68,65 @@ public class RageGauge : MonoBehaviour
     {
         m_TempStop = _isStop;
     }
-    
+
     /// <summary>
-    /// 원하는 양만큼 게이지 양이 충분한지 알려줍니다.
+    /// RageGauge를 사용해 스킬을 발동합니다.
+    /// 성공했을 경우 게이지를 깎고 True를 반환합니다.
     /// </summary>
-    /// <param name="_value">원하는 소모량</param>
-    /// <returns>소모 가능 여부</returns>
-    public bool CanConsume(float _value)
+    /// <param name="_idx"></param>
+    /// <returns></returns>
+    public bool UseSkillByConsumeRageGauge(int _idx)
     {
-        bool returnVal = m_CurGaugeValue - _value >= 0;
+        switch (_idx)
+        {
+            case 0:
+                // Roll
+                if (m_CurGaugeValue - p_Gauge_Consume_Roll >= 0f)
+                {
+                    p_RageGaugeUI.ForceStopShake(0);
+                    ChangeGaugeValue(m_CurGaugeValue - p_Gauge_Consume_Roll);
+                    return true;
+                }
+                else
+                {
+                    p_RageGaugeUI.ShakeImg(0);
+                    return false;
+                }
+                break;
+            
+            case 1:
+                // Melee
+                if (m_CurGaugeValue - p_Gauge_Consume_Melee >= 0f)
+                {
+                    p_RageGaugeUI.ForceStopShake(1);
+                    ChangeGaugeValue(m_CurGaugeValue - p_Gauge_Consume_Melee);
+                    return true;
+                }
+                else
+                {
+                    p_RageGaugeUI.ShakeImg(1);
+                    return false;
+                }
 
-        if (!returnVal)
-            p_RageGaugeUI.OnNotAbleBulletTime?.Invoke();
+                break;
+            
+            case 2:
+                // Ult
+                if (m_IsHitMaxOnce)
+                {
+                    p_RageGaugeUI.ForceStopShake(2);
+                    m_IsHitMaxOnce = false;
+                    return true;
+                }
+                else
+                {
+                    p_RageGaugeUI.ShakeImg(2);
+                    return false;
+                }
+                break;
+        }
 
-
-		return returnVal;
+        return false;
     }
 
     
@@ -99,14 +145,14 @@ public class RageGauge : MonoBehaviour
             {
                 if (m_CurGaugeValue < p_Gauge_Refill_Limit)
                 {
-                    ChangeGaugeValue(m_CurGaugeValue + (Time.deltaTime * p_Gauge_Refill_Nature));
+                    ChangeGaugeValue(m_CurGaugeValue + (Time.unscaledDeltaTime * p_Gauge_Refill_Nature));
                     
                     if (m_CurGaugeValue > p_Gauge_Refill_Limit)
                         ChangeGaugeValue(p_Gauge_Refill_Limit);
                 }
                 else if(m_CurGaugeValue > p_Gauge_Refill_Limit)
                 {
-                    ChangeGaugeValue(m_CurGaugeValue - (Time.deltaTime * p_Gauge_Consume_Nature));
+                    ChangeGaugeValue(m_CurGaugeValue - (Time.unscaledDeltaTime * p_Gauge_Consume_Nature));
 
                     if (m_CurGaugeValue < p_Gauge_Refill_Limit)
                         ChangeGaugeValue(p_Gauge_Refill_Limit);
@@ -115,8 +161,6 @@ public class RageGauge : MonoBehaviour
                 {
 
                 }
-                
-                
             }
 
             yield return null;
@@ -125,36 +169,54 @@ public class RageGauge : MonoBehaviour
         yield break;
     }
 
+    
+    /// <summary>
+    /// 광분 게이지에 값을 추가합니다.
+    /// </summary>
+    /// <param name="_input"></param>
+    public void AddGaugeValue(float _input)
+    {
+        if (_input <= 0f)
+            return;
+        
+        ChangeGaugeValue(m_CurGaugeValue + _input);
+    }
+
+    private float[] m_FloatArr = new float[4];
     /// <summary>
     /// 현재 광분 게이지 값을 변경합니다.
     /// </summary>
     /// <param name="_input">원하는 값</param>
-    public void ChangeGaugeValue(float _input)
+    private void ChangeGaugeValue(float _input)
     {
-        if (_input < 0)
+        if (_input < 0f)
             return;
         
         m_SafetyLock = true;
-
-        // Max치보다 높게 들어올 경우 풀로 채워줘야 함
-        if (_input >= p_Gauge_Max)
-        {
-            _input = p_Gauge_Max;
-        }
-        
         m_CurGaugeValue = _input;
-        // p_GaugeImg.fillAmount = m_CurGaugeValue * m_Multiply;
-        p_RageGaugeUI.p_GaugeImg.fillAmount = m_CurGaugeValue * m_Multiply;
-        p_RageGaugeUI.p_GaugeImg.color = Color.Lerp(p_RageGaugeUI.NatureRefillColor, p_RageGaugeUI.NatureConsumeColor, (m_CurGaugeValue - p_Gauge_Refill_Limit) / (p_Gauge_Max - p_Gauge_Refill_Limit));
-		// 만약 Max치를 찍었을 경우, 불릿타임 사용 가능 인디케이터를 띄웁니다.
-		if (m_CurGaugeValue >= p_Gauge_Max && !m_BulletTimeMgr.m_IsGaugeFull)
-        {
-            m_BulletTimeMgr.SetCanUseBulletTime();
-            p_RageGaugeUI.p_BulletTimeIndicator.enabled = true;
-            
-            //m_BulletTimeMgr.AddFinaleAction(() => p_BulletTimeIndicator.enabled = false);
-        }
         
+        // Max치보다 높게 들어올 경우 풀로 채워줘야 함
+        if (m_CurGaugeValue > p_Gauge_Max)
+            m_CurGaugeValue = p_Gauge_Max;
+        
+        m_FloatArr[0] = m_CurGaugeValue / p_Gauge_Max;
+        m_FloatArr[1] = m_CurGaugeValue / p_Gauge_Consume_Roll;
+        m_FloatArr[2] = m_CurGaugeValue / p_Gauge_Consume_Melee;
+
+        if (!m_IsHitMaxOnce)
+        {
+            m_FloatArr[3] = m_CurGaugeValue / p_Gauge_Max;
+            if (m_FloatArr[3] >= 1f)
+            {
+                m_IsHitMaxOnce = true;
+            }
+        }
+
+        for (int i = 0; i < m_FloatArr.Length; i++)
+        {
+            p_RageGaugeUI.UpdateRageGaugeUI(i, m_FloatArr[i]);
+        }
+
         m_SafetyLock = false;
     }
 }
