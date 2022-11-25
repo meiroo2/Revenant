@@ -47,7 +47,7 @@ public class Objective_TutoTakeHatch : Objective
 
 	public override void UpdateObjective()
 	{
-		m_Player.m_RageGauge.ChangeGaugeValue(150);
+		m_Player.m_RageGauge.AddGaugeValue(999999f);
 		switch (m_Phase)
 		{
 			case 0:
