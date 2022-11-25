@@ -55,15 +55,11 @@ public class CheckPoint : MonoBehaviour
         SetUpSectionNumber();
         SetUpIsActivated();
         DestroyAssignedObjects();
-
+        
         if (bActivated)
         {
             p_Animator.SetInteger(Activate, 1);
             p_Animator.SetInteger(AfterIdle, 1);
-        }
-        else
-        {
-            p_Animator.enabled = false;
         }
     }
 

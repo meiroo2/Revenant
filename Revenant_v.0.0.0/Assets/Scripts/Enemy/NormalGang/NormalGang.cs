@@ -120,8 +120,7 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
     {
         if (m_ObjectState == ObjectState.Pause)
             return;
-
-        IsPlayerUpper();
+        
         m_CurEnemyFSM.UpdateState();
     }
 

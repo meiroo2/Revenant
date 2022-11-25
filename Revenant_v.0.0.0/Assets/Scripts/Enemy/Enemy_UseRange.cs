@@ -8,7 +8,6 @@ public class Enemy_UseRange : MonoBehaviour
     // Visible Member Variables
     public Enemy_FootMgr p_Enemy_FootMgr;
 
-
     // Member Variables
     private BasicEnemy m_Enemy;
     private StairPos m_StairPos;
@@ -28,20 +27,21 @@ public class Enemy_UseRange : MonoBehaviour
     {
         _player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
     }
-
+    
     // Physics
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.CompareTag("Player"))
             return;
 
-        _door = col.GetComponent<Door_Col_LayerRoom>();
+        col.TryGetComponent(out Door_Col_LayerRoom doorCol);
+        _door = doorCol;
         if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
         {
             if (Mathf.Abs(m_Enemy.transform.position.x - m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x) <= 0.1f)
             {
                 _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
-                m_Enemy.WayPointsIndex++;
+                m_Enemy.MoveNextPoint();
             }
 
             //m_Enemy.bUsedDoor = true;
@@ -60,25 +60,21 @@ public class Enemy_UseRange : MonoBehaviour
     {
         if (other.CompareTag("Player"))
             return;
-
-        if (other.TryGetComponent(out Door_Col_LayerRoom doorCol))
-        {
-            _door = doorCol;
         
-            if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
+        other.TryGetComponent(out Door_Col_LayerRoom doorCol);
+        _door = doorCol;
+        if (m_Enemy.m_CurEnemyFSM._enemyState == Enemy_FSM.EnemyState.Chase && m_Enemy.bMoveToUsedDoor && _door)
+        {
+            if (Mathf.Abs(m_Enemy.transform.position.x - m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x) <= 0.1f)
             {
-                if (Mathf.Abs(m_Enemy.transform.position.x - m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x) <= 0.1f)
+                m_Enemy.bMoveToUsedDoor = true;
+                if (m_Enemy.bMoveToUsedDoor)
                 {
-                    m_Enemy.bMoveToUsedDoor = true;
-                    if (m_Enemy.bMoveToUsedDoor)
-                    {
-                        _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
-                        m_Enemy.WayPointsIndex++;
-                    }
+                    _door.m_Door.MoveToOtherSide(m_Enemy.transform, false);
+                    m_Enemy.MoveNextPoint();
                 }
             }
         }
-        
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -86,18 +82,11 @@ public class Enemy_UseRange : MonoBehaviour
         if (other.CompareTag("Player"))
             return;
 
-        _door = other.GetComponent<Door_Col_LayerRoom>();
-        // if (_door)
-        // {
-        //     m_Enemy.bMoveToUsedDoor = false;
-        //     //Debug.Log("Exit bMoveToUseDoor - " + m_Enemy.bMoveToUsedDoor);
-        // }
-
+        other.TryGetComponent(out Door_Col_LayerRoom doorCol);
+        _door = doorCol;
         if (Mathf.Abs(m_Enemy.transform.position.y - _player.transform.position.y) <= 0.5f && _door)
         {
             m_Enemy.bMoveToUsedDoor = false;
-            // m_Enemy.WayPointsIndex = 0;
-            // m_Enemy.WayPointsVectorList.Clear();
         }
 
         // m_UseableObj = other.GetComponent<IUseableObj>();
