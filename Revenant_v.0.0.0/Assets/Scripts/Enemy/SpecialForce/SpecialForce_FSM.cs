@@ -1,7 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using FMOD.Studio;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 
 public class SpecialForce_FSM : Enemy_FSM
@@ -254,7 +255,8 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
     private SpecialForce_UseRange m_UseRange;
 
     private HideSlot m_Slot;
-    private static readonly int Walk = Animator.StringToHash("Walk");
+    private readonly int Walk = Animator.StringToHash("Walk");
+    private readonly int Cognition = Animator.StringToHash("Cognition");
 
     public SpecialForce_FOLLOW(SpecialForce _enemy)
     {
@@ -269,20 +271,40 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
         m_UseRange = m_Enemy.m_UseRange;
 
         m_Enemy.m_PlayerCognition = true;
-        m_Phase = 0;
         m_WalkVal = 0;
 
         m_WalkStartCheckElement = null;
-
-        m_Enemy.SetSpriteMode(1);
-
-        m_WalkStartCheckElement =
-            m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(WalkStartCheck());
+        
         
         m_MouseOnElement = null;
         m_RollDelayElement = null;
         m_IsMouseCal = false;
         m_RollBook = false;
+
+
+        m_Phase = 0;
+        if (!m_Enemy.p_AlertSystem.m_IsOnline)
+        {
+            m_Phase = -1;
+            m_Enemy.p_AlertSystem.SetFadeInSpeed(m_Enemy.p_Alert_Fade_Speed);
+            
+            m_Enemy.p_AlertSystem.DoFadeIn(() =>
+            {
+                m_Enemy.SetSpriteMode(1);
+                
+                m_WalkStartCheckElement =
+                    m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(WalkStartCheck());
+                
+                m_Phase = 0;
+            });
+        }
+        else
+        {
+            m_Enemy.SetSpriteMode(1);
+            m_Enemy.p_FullAnimator.SetInteger(Cognition, 0);
+            m_WalkStartCheckElement =
+                m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(WalkStartCheck());
+        }
     }
 
     public override void UpdateState()
@@ -293,6 +315,23 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
         switch (m_Phase)
         {
             case 0:
+                if (m_Enemy.m_IsMouseTouched && !m_IsMouseCal && !m_RollBook)
+                {
+                    Debug.Log("시작시작");
+                    m_IsMouseCal = true;
+                    m_MouseOnElement = m_Enemy.m_CoroutineHandler.
+                        StartCoroutine_Handler(MouseOnCheck());
+                }
+                else if(!m_Enemy.m_IsMouseTouched)
+                {
+                    if (m_IsMouseCal)
+                    {
+                        m_MouseOnElement.StopCoroutine_Element();
+                        m_MouseOnElement = null;
+                        m_IsMouseCal = false;
+                    }
+                }
+                
                 if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_AtkDistance)
                 {
                     m_Enemy.ResetRigid();
@@ -308,41 +347,36 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
                 }
                 else
                 {
-                    // 플레이어가 사용한 오브젝트로 이동
                     if (m_Enemy.WayPointsVectorList.Count != 0 && m_Enemy.WayPointsIndex < m_Enemy.WayPointsVectorList.Count)
                     {
-                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x));
+                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x), m_Enemy.p_RunSpeedMulti);
+                        m_Enemy.MakeDelayMoveToPlayer();
                     }
                     else
                     {
-                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
+                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x), m_Enemy.p_RunSpeedMulti);
                     }
-
-                    if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
+                    
+                    if (m_Enemy.bIsSameMapSections)
                     {
+                        m_Enemy.bMoveToUsedDoor = false;
                         m_Enemy.MoveToPlayer();
                     }
+                    
+                    // float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+                    // // 플레이어와 적이 같은 층에 있다면 문 사용 X
+                    // if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair && m_Enemy.EnemyMapSectionNum == m_Enemy.m_Player.PlayerMapSectionNum)
+                    // {
+                    //     m_Enemy.bMoveToUsedDoor = false;
+                    //     m_Enemy.MoveToPlayer();
+                    // }
+                    //m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded, m_Enemy.p_RunSpeedMulti);
                 }
                 break;
         }
         
         
-        if (m_Enemy.m_IsMouseTouched && !m_IsMouseCal && !m_RollBook)
-        {
-            Debug.Log("시작시작");
-            m_IsMouseCal = true;
-            m_MouseOnElement = m_Enemy.m_CoroutineHandler.
-                StartCoroutine_Handler(MouseOnCheck());
-        }
-        else if(!m_Enemy.m_IsMouseTouched)
-        {
-            if (m_IsMouseCal)
-            {
-                m_MouseOnElement.StopCoroutine_Element();
-                m_MouseOnElement = null;
-                m_IsMouseCal = false;
-            }
-        }
+        
     }
 
     public override void ExitState()
@@ -467,6 +501,8 @@ public class SpecialForce_ROLL : SpecialForce_FSM
     {
         m_Animator = m_Enemy.m_Animator;
         m_Enemy.SetHotBoxesActive(false);
+        m_Enemy.SetSpriteMode(0);
+        m_Animator.runtimeAnimatorController = m_Enemy.p_FightFullCont;
         m_Animator.SetInteger(Roll, 1);
 
         m_Element = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckRoll());
@@ -501,6 +537,13 @@ public class SpecialForce_ROLL : SpecialForce_FSM
             yield return null;
         }
 
+        if (m_Enemy.m_ATK_RollState == 2)
+        {
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
+            m_Element.StopCoroutine_Element();
+            yield break;
+        }
+        
         if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_AtkDistance)
         {
             m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
@@ -525,12 +568,16 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
     private float m_Timer = 0f;
     private readonly int Cognition = Animator.StringToHash("Cognition");
 
-    private int m_State = 0;
+    private Transform m_EnemyTransform;
+    
+    private int m_GapMoveState = 0;
     private float m_Distance = 0f;
     private int m_AtkPhase = 0;
     private int m_BulletCount = 0;
     
     private int m_AtkInputVal = 0;
+
+    private int m_Phase = 0;
     
     private readonly int Walk = Animator.StringToHash("Walk");
     private static readonly int Attack = Animator.StringToHash("Attack");
@@ -548,94 +595,186 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
     public override void StartState()
     {
         _enemyState = EnemyState.Chase;
-        m_IsWeaponReady = false;
-        m_Timer = m_Enemy.p_Fire_Delay;
-        m_BulletCount = m_Enemy.p_Bullet_Count;
-        m_State = 0;
-        m_Distance = 0f;
-        m_AtkPhase = 0;
-        m_AtkInputVal = 0;
 
+        m_EnemyTransform = m_Enemy.transform;
+        m_IsWeaponReady = false;
+        m_Timer = 0f;
+        
+        m_BulletCount = 2;
+        m_GapMoveState = 0;
+        m_Distance = 0f;
+        m_AtkInputVal = 0;
+        
         m_FullAnimCheckElement = null;
         m_ArmAnimCheckElement = null;
 
-        m_FullAnimCheckElement = 
-            m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckCognitionAnim());
+        m_Enemy.MakeDelayMoveToPlayer();
+        
+        m_Phase = 0;
+        
+        m_AtkPhase = 0;
+        m_Enemy.p_AlertSystem.SetAlertSpeed(m_Enemy.p_Alert_Speed);
+        // First
+        switch (m_Enemy.m_ATK_RollState)
+        {
+            case 0:
+                // Roll에서 넘어오지 않음
+                m_FullAnimCheckElement = 
+                    m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckCognitionAnim());
+                
+                m_Enemy.p_AlertSystem.AlertGaugeUp(() => m_Phase = 2);
+                break;
+            
+            case 1:
+                // 개시 Roll에서 넘어옴
+                m_Phase = 1;
+                m_Enemy.m_ATK_RollState = 0;
+                
+                m_FullAnimCheckElement = 
+                    m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckCognitionAnim());
+                
+                m_Enemy.p_AlertSystem.AlertGaugeUp(() => m_Phase = 2);
+                
+                break;
+            
+            case 2:
+                // 게이지 채웠는데 근거리여서 구른 후
+                m_Enemy.m_ATK_RollState = 0;
+                m_Enemy.SetSpriteMode(2);
+                m_IsWeaponReady = true;
+                FacePlayer();
+                m_Phase = 3;
+                break;
+        }
+        
+       
     }
 
     public override void UpdateState()
     {
-        if (!m_IsWeaponReady)
-            return;
+        #region Decoy
+
+        /*
+       if (!m_IsWeaponReady)
+           return;
+       */
         
-        if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
-        {
-            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
-        }
-        
-        switch (m_AtkPhase)
+        // float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
+        // // 플레이어와 적이 같은 층에 있다면 문 사용 X
+        // if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && m_Enemy.EnemyMapSectionNum == m_Enemy.m_Player.PlayerMapSectionNum)
+        // {
+        //      m_Enemy.bMoveToUsedDoor = false;
+        //      m_Enemy.MoveToPlayer();
+        // }
+
+        #endregion
+        m_Distance = m_Enemy.GetDistanceBetPlayer();
+        Debug.Log(m_Phase);
+        switch (m_Phase)
         {
             case 0:
-                // 최초 시작
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= m_Enemy.p_Fire_Delay)
+                // 첫 조우 시 마우스 닿았는지 1회 측정
+                if (m_Enemy.m_IsMouseTouched)
                 {
-                    m_ArmAnimCheckElement = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckArmAnim());
-                    m_AtkPhase = -1;
+                    if (StaticMethods.GetProbabilityWinning(m_Enemy.p_Roll_Chance))
+                    {
+                        Debug.Log("첫 ATK_Distance 조우시 구르기 확률당첨");
+                        m_Enemy.m_ATK_RollState = 1;
+
+                        if (!m_Enemy.IsFacePlayer())
+                            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+                        
+                        m_Enemy.p_AlertSystem.CancelGaugeUp();
+                        
+                        m_Enemy.ChangeEnemyFSM(EnemyStateName.ROLL);
+                    }
                 }
+                
+                m_Phase = 1;
                 break;
             
             case 1:
-                // 이후 반복발사
-                if (m_BulletCount <= 0)
+                // Gap Move(Alert 올라가는 중)
+                FacePlayer();
+                GapMove();
+                break;
+            
+            case 2:
+                // 아무튼 게이지를 다 채움
+                FacePlayer();
+                
+                if (m_Distance <= m_Enemy.p_MeleeDistance)
                 {
-                    m_AtkPhase = 0;
-                    m_BulletCount = m_Enemy.p_Bullet_Count;
+                    // 게이지 채웠는데 거리 내부
+                    m_Enemy.m_ATK_RollState = 2;
+                    m_Enemy.ChangeEnemyFSM(EnemyStateName.ROLL);
+                    m_Phase = -1;
                     break;
                 }
-                
-                m_ArmAnimCheckElement = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckArmAnim());
-                m_AtkPhase = -1;
+                else
+                {
+                    if (!m_IsWeaponReady)
+                    {
+                        m_Enemy.SetSpriteMode(2);
+                        m_IsWeaponReady = true;
+                    }
+                    m_Phase = 3;
+                }
+                break;
+            
+            case 3:
+                // 1회차 발사
+                m_Enemy.ResetRigid();
+                StopAnim();
+                m_AtkPhase = 0;
+                m_ArmAnimCheckElement =
+                    m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckArmAnim());
+                m_Phase = 4;
+                break;
+            
+            case 4:
+                // 2회차 발사
+                if (m_AtkPhase == 1)
+                {
+                    m_AtkPhase = 0;
+                    m_ArmAnimCheckElement =
+                        m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckArmAnim());
+                    m_Phase = 5;
+                }
+                break;
+            
+            case 5:
+                // 2회차 사격 끙남
+                if (m_AtkPhase == 1)
+                {
+                    FacePlayer();
+                    GapMove();
+                    m_Timer += Time.deltaTime;
+
+                    if (m_Timer < m_Enemy.p_Fire_Delay)
+                        break;
+
+                    m_Timer = 0f;
+                    if (m_Distance <= m_Enemy.p_AtkDistance)
+                    {
+                        m_Phase = -1;
+                        StartState();
+                    }
+                    else
+                    {
+                        m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+                        m_Phase = -1;
+                    }
+                }
                 break;
         }
         
-        m_Distance = m_Enemy.GetDistanceBetPlayer();
         
-        // 방향은 무조건 플레이어 고정
-        if(!m_Enemy.IsFacePlayer())
-            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
-
-        if (m_Distance > m_Enemy.p_GapDistance + m_MagicGap)
+        
+        
+        if (m_Enemy.bMoveToUsedDoor)
         {
-            // Gap 맞추러 플레이어로 다가가야 함
-            m_State = 0;
-
-            m_Enemy.p_BodyAnimator.SetInteger(Walk, 1);
-            m_Enemy.p_LegAnimator.SetInteger(Walk, 1);
-            m_Enemy.p_ArmAnimator.SetInteger(Walk, 1);
-
-            m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded);
-        }
-        else if (m_Distance > m_Enemy.p_GapDistance - m_MagicGap &&
-                 m_Distance < m_Enemy.p_GapDistance + m_MagicGap)
-        {
-            // MagicGap 이내 - 멈춤
-            m_State = 1;
-
-            m_Enemy.p_BodyAnimator.SetInteger(Walk, 0);
-            m_Enemy.p_LegAnimator.SetInteger(Walk, 0);
-            m_Enemy.p_ArmAnimator.SetInteger(Walk, 0);
-
-            m_Enemy.ResetRigid();
-        }
-        else if (m_Distance < m_Enemy.p_GapDistance - m_MagicGap)
-        {
-            // Gap 맞추러 뒷걸음질
-            m_State = 2;
-            m_Enemy.p_BodyAnimator.SetInteger(Walk, 1);
-            m_Enemy.p_LegAnimator.SetInteger(Walk, -1);
-            m_Enemy.p_ArmAnimator.SetInteger(Walk, 1);
-            m_Enemy.SetRigidByDirection(!m_Enemy.m_IsRightHeaded);
+            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
         }
     }
 
@@ -648,15 +787,70 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             m_FullAnimCheckElement.StopCoroutine_Element();
             m_FullAnimCheckElement = null;
         }
+
+        if (!ReferenceEquals(m_ArmAnimCheckElement, null))
+        {
+            m_ArmAnimCheckElement.StopCoroutine_Element();
+            m_ArmAnimCheckElement = null;
+        }
+    }
+
+    private void StopAnim()
+    {
+        m_Enemy.p_BodyAnimator.SetInteger(Walk, 0);
+        m_Enemy.p_LegAnimator.SetInteger(Walk, 0);
+        m_Enemy.p_ArmAnimator.SetInteger(Walk, 0);
+    }
+
+    private void FacePlayer()
+    {
+        if(!m_Enemy.IsFacePlayer())
+            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+    }
+
+    private void GapMove()
+    {
+        if (m_Distance > m_Enemy.p_GapDistance + m_MagicGap)
+        {
+            // Gap 맞추러 플레이어로 다가가야 함
+            m_GapMoveState = 0;
+
+            m_Enemy.p_BodyAnimator.SetInteger(Walk, 1);
+            m_Enemy.p_LegAnimator.SetInteger(Walk, 1);
+            m_Enemy.p_ArmAnimator.SetInteger(Walk, 1);
+
+            m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded);
+        }
+        else if (m_Distance > m_Enemy.p_GapDistance - m_MagicGap &&
+                 m_Distance < m_Enemy.p_GapDistance + m_MagicGap)
+        {
+            // MagicGap 이내 - 멈춤
+            m_GapMoveState = 1;
+
+            m_Enemy.p_BodyAnimator.SetInteger(Walk, 0);
+            m_Enemy.p_LegAnimator.SetInteger(Walk, 0);
+            m_Enemy.p_ArmAnimator.SetInteger(Walk, 0);
+
+            m_Enemy.ResetRigid();
+        }
+        else if (m_Distance < m_Enemy.p_GapDistance - m_MagicGap)
+        {
+            // Gap 맞추러 뒷걸음질
+            m_GapMoveState = 2;
+            m_Enemy.p_BodyAnimator.SetInteger(Walk, 1);
+            m_Enemy.p_LegAnimator.SetInteger(Walk, -1);
+            m_Enemy.p_ArmAnimator.SetInteger(Walk, 1);
+            m_Enemy.SetRigidByDirection(!m_Enemy.m_IsRightHeaded);
+        }
     }
 
     private IEnumerator CheckArmAnim()
     {
         Animator armAnimator = m_Enemy.p_ArmAnimator;
         BasicWeapon weapon = m_Enemy.p_SingleRifleWeapon;
-        armAnimator.SetFloat(AttackSpeed, m_Enemy.p_Fire_Speed);
+        armAnimator.SetFloat(AttackSpeed, m_Enemy.p_FireAnimSpeed);
         
-        if (m_BulletCount == m_Enemy.p_Bullet_Count)
+        if (m_BulletCount == 2)
         {
             // Max치일 떄
             armAnimator.SetInteger(Attack, 1);
@@ -671,30 +865,10 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             }
 
             m_BulletCount--;
-            m_Timer = 0f;
             m_AtkPhase = 1;
             yield break;
         }
-        else if (m_BulletCount > 1)
-        {
-            // 1발 초과 남음
-            armAnimator.Play("Attack", -1, 0f);
-            weapon.Fire();
-            while (true)
-            {
-                yield return null;
-                if (armAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
-                {
-                    break;
-                }
-            }
-            
-            m_BulletCount--;
-            m_Timer = 0f;
-            m_AtkPhase = 1;
-            yield break;
-        }
-        else if(m_BulletCount == 1)
+        else
         {
             // 마지막 발
             armAnimator.Play("Attack", -1, 0f);
@@ -719,7 +893,6 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             }
             armAnimator.SetInteger(Attack, 0);
             m_BulletCount--;
-            m_Timer = 0f;
             m_AtkPhase = 1;
             yield break;
         }
@@ -753,7 +926,6 @@ public class SpecialForce_STUN : SpecialForce_FSM
     // Member Variables
     private int m_Phase;
     
-    private CoroutineElement m_StunElement;
     private readonly int Stun = Animator.StringToHash("Stun");
 
     public SpecialForce_STUN(SpecialForce _enemy)
@@ -765,8 +937,8 @@ public class SpecialForce_STUN : SpecialForce_FSM
     public override void StartState()
     {
         m_Phase = 0;
-        m_StunElement = null;
-        m_StunElement = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CalStun());
+        m_Enemy.p_AlertSystem.CancelGaugeUp();
+        m_Enemy.p_AlertSystem.DoStun(StunFinalStep);
         
         m_Enemy.SetSpriteMode(1);
         m_Enemy.p_FullAnimator.SetInteger(Stun, 1);
@@ -780,12 +952,6 @@ public class SpecialForce_STUN : SpecialForce_FSM
     public override void ExitState()
     {
         m_Enemy.p_FullAnimator.SetInteger(Stun, 0);
-        
-        if (!ReferenceEquals(m_StunElement, null))
-        {
-            m_StunElement.StopCoroutine_Element();
-            m_StunElement = null;
-        }
     }
 
     public override void NextPhase()
@@ -793,10 +959,8 @@ public class SpecialForce_STUN : SpecialForce_FSM
        
     }
 
-    private IEnumerator CalStun()
+    private void StunFinalStep()
     {
-        yield return new WaitForSeconds(m_Enemy.p_Stun_Time);
-
         if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_AtkDistance)
         {
             m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
@@ -805,9 +969,6 @@ public class SpecialForce_STUN : SpecialForce_FSM
         {
             m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
         }
-       
-        
-        yield break;
     }
 }
 
@@ -828,6 +989,7 @@ public class SpecialForce_DEAD : SpecialForce_FSM
     
     public override void StartState()
     {
+        m_Enemy.p_AlertSystem.gameObject.SetActive(false);
         m_Enemy.SetSpriteMode(1);
         m_Enemy.p_FullAnimator.SetInteger(Dead, 1);
 

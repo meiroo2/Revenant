@@ -66,9 +66,13 @@ public class AimCursor : MonoBehaviour
     // Updates
     private IEnumerator UpdateRoutine()
     {
+        Vector3 screenMousePos;
+        
         while (true)
         {
-            transform.position = m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
+            screenMousePos = m_MainCamera.ScreenToWorldPoint(Input.mousePosition);
+            screenMousePos.z = 0f;
+            transform.position = screenMousePos;
             CalculateAimRaycast();
 
             yield return null;

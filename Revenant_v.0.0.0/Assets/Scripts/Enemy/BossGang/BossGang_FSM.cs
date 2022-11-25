@@ -78,8 +78,6 @@ public class Walk_BossGang : BossGang_FSM
     public override void StartState()
     {
         m_Animator = m_Enemy.m_Animator;
-        m_Animator.SetInteger(Walk, 1);
-
         m_Enemy.m_NextFSMForStealth = 0;
         
         m_Phase = 0;
@@ -110,29 +108,78 @@ public class Walk_BossGang : BossGang_FSM
                 break;
             
             case 1:
+                //  걷기
                 if (m_Timer >= m_Enemy.p_Walk_Time)
+                {
+                    m_Animator.SetInteger(Walk, 2);
                     m_Phase = 2;
+                    break;
+                }
 
                 if(!m_Enemy.IsFacePlayer())
                     m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
                 
-                if (m_Enemy.GetDistanceBetPlayer() > m_Enemy.p_Walk_MinDistance)
+                m_Animator.SetInteger(Walk, 1);
+                m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
+                
+                if (m_Enemy.GetDistanceBetPlayer() < m_Enemy.p_Walk_MinDistance)
                 {
-                    m_Animator.SetInteger(Walk, 1);
-                    m_Enemy.SetRigidByDirection(m_Enemy.GetIsLeftThenPlayer());
-                }
-                else
-                {
-                    m_Animator.SetInteger(Walk, 0);
+                    m_Enemy.ResetRigid();
+                    m_Animator.SetInteger(Walk, 2);
+                    m_Phase = 2;
+                    break;
                 }
                 break;
             
             case 2:
+                // 멈추기 시
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    m_Animator.SetInteger(Walk, 0);
+                    m_Phase = 3;
+                    break;
+                }
+                break;
+            
+            case 3:
+                // 멈추기 완료
+                if (m_Timer >= m_Enemy.p_Walk_Time)
+                {
+                    m_Phase = 4;
+                    break;
+                }
+
+                if(!m_Enemy.IsFacePlayer())
+                    m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
+                
+                if (m_Enemy.GetDistanceBetPlayer() >= m_Enemy.p_Walk_MinDistance)
+                {
+                    m_Phase = 1;
+                    break;
+                }
+                break;
+
+            case 4:
                 m_Phase = -1;
 
                 float distance = m_Enemy.GetDistanceBetPlayer();
                 float jumpMax = m_Enemy.p_JumpAtk_Distance_Max;
                 float leapMin = m_Enemy.p_LeapAtk_Distance_Min;
+                
+                //SANS
+                int randomSans = UnityEngine.Random.Range(0, 2);
+                switch (randomSans)
+                {
+                    case 0:
+                        m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
+                        break;
+                    
+                    case 1:
+                        m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
+                        break;
+                }
+
+                break;
                 
                 if (distance <= jumpMax && distance < leapMin)
                 {
@@ -490,16 +537,17 @@ public class LeapAtk_BossGang : BossGang_FSM
         {
             case 0:
                 // Leap_Stealth 뒤로 후퇴 (Leap이 1)
-                m_Timer += Time.deltaTime;
                 m_Enemy.ForceSetRigid(!m_Enemy.m_IsRightHeaded);
 
-                if (m_Timer > 0.5f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Phase = 1;
                     m_Timer = 0f;
 
                     m_Animator.SetInteger(Leap, 2);
                     m_Enemy.ResetRigid();
+                    
+                    // Leap 공중 포지션 결정
                     m_EnemyTransform.position = GetJumpPos();
                     m_Enemy.p_LeapColMaster.SpawnCols(m_Enemy.m_IsRightHeaded, m_Enemy.m_Player.GetPlayerFootPos());
                     break;
@@ -508,8 +556,7 @@ public class LeapAtk_BossGang : BossGang_FSM
                 
             case 1:
                 // Leap_Appear
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= 0.5f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Timer = 0f;
                     m_Animator.SetInteger(Leap, 3);
@@ -520,7 +567,7 @@ public class LeapAtk_BossGang : BossGang_FSM
             case 2:
                 // Leap_Idle
                 m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f)
+                if (m_Timer >= 0.5f)
                 {
                     m_Timer = 0f;
                     m_Animator.SetInteger(Leap, 4);
@@ -529,13 +576,25 @@ public class LeapAtk_BossGang : BossGang_FSM
                     m_Enemy.p_LeapColMaster.ConvertSelectedCol();
                     
                     m_Phase = 3;
+
+                    Vector2 footPos = m_Enemy.m_Player.GetPlayerFootPos();
+                    if (m_Enemy.m_IsRightHeaded)
+                    {
+                        footPos.x += 1.5f;
+                    }
+                    else
+                    {
+                        footPos.x -= 1.5f;
+                    }
+                   
+                    InstanceMgr.GetInstance().GetComponentInChildren<SimpleEffectPuller>()
+                        .SpawnSimpleEffect(9, footPos, m_Enemy.m_IsRightHeaded);
                 }
                 break;
             
             case 3:
                 // Leap_Start
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= 0.5f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Timer = 0f;
                     m_Animator.SetInteger(Leap, 5);
@@ -548,8 +607,8 @@ public class LeapAtk_BossGang : BossGang_FSM
                 break;
             
             case 4:
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f)
+                // Leap_End
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Timer = 0f;
                     m_Animator.SetInteger(Leap, 0);
@@ -706,6 +765,28 @@ public class Stealth_BossGang : BossGang_FSM
                 break;
             
             case 1:
+                //SANS
+                int randomSans = UnityEngine.Random.Range(0, 4);
+                switch (randomSans)
+                {
+                    case 0:
+                        m_Enemy.ChangeBossFSM(BossStateName.HOLO);
+                        break;
+                    
+                    case 1:
+                        m_Enemy.ChangeBossFSM(BossStateName.COUNTER);
+                        break;
+                    
+                    case 2:
+                        m_Enemy.ChangeBossFSM(BossStateName.JUMPATK);
+                        break;
+                    
+                    case 3:
+                        m_Enemy.ChangeBossFSM(BossStateName.ULTIMATE);
+                        break;
+                }
+               
+                
                 // For Ultimate
                 /*
                 if (m_Enemy.m_IsUltimateBooked == 2)
@@ -901,7 +982,7 @@ public class Holo_BossGang : BossGang_FSM
             case 5:
                 // HoloFake_Appear
                 m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Timer = 0f;
                     m_Animator.SetInteger(Holo, 2);
@@ -912,7 +993,7 @@ public class Holo_BossGang : BossGang_FSM
             case 6:
                 // HoloFake_Atk
                 m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Timer = 0f;
                     m_Animator.SetInteger(Holo, 3);
@@ -923,7 +1004,7 @@ public class Holo_BossGang : BossGang_FSM
             case 7:
                 // HoloFake_Disappear
                 m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Timer = 0f;
                     m_Phase = m_Enemy.m_Player.GetIsEmptyNearPlayer(m_Enemy.p_Holo_Distance);
@@ -934,7 +1015,7 @@ public class Holo_BossGang : BossGang_FSM
             case 8:
                 // HoloReal_Appear
                 m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Timer = 0f;
                     m_Enemy.SetHotBoxesActive(true);
@@ -946,16 +1027,22 @@ public class Holo_BossGang : BossGang_FSM
             
             case 9:
                 // HoloReal_Atk
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f)
                 {
                     m_Timer = 0f;
-                    
                     m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
+                    
+                    m_Phase = 10;
+                }
+                break;
+            
+            case 10:
+                // HoloReal_End
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
                     m_Animator.SetInteger(Holo, 0);
-                    
                     m_Enemy.ChangeBossFSM(BossStateName.WALK);
-                    
+
                     m_Phase = -1;
                 }
                 break;

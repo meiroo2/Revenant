@@ -16,11 +16,13 @@ public class Player_ArmMgr : MonoBehaviour
     public float p_RecoilSpeed = 20f;
 
     public Transform[] p_RecoilTransforms;
-    
+
+    // Assign
+    [Space(20f)] 
+    public Player_AniMgr m_PlayerAniMgr;
     
     // Member Variables
     public bool m_IsReloading { get; private set; } = false;
-    private Player_AniMgr m_PlayerAniMgr;
     private WeaponMgr m_WeaponMgr;
     private PlayerRotation m_PlayerRotation;
     private Player m_Player;
@@ -63,7 +65,6 @@ public class Player_ArmMgr : MonoBehaviour
         
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_WeaponMgr = m_Player.m_WeaponMgr;
-        m_PlayerAniMgr = m_Player.m_PlayerAniMgr;
         m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
     }
     
