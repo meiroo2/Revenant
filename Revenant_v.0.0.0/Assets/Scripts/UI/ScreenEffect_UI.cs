@@ -37,6 +37,7 @@ public class ScreenEffect_UI : MonoBehaviour
     private Coroutine m_VignetteCoroutine;
 
     private BulletTime_AR m_BulletTime_AR;
+    private RageGauge_UI m_RageGauge_UI;
     
     
     // Constructor
@@ -79,19 +80,12 @@ public class ScreenEffect_UI : MonoBehaviour
     {
         var instance = InstanceMgr.GetInstance();
         m_BulletTime_AR = instance.m_BulletTime_AR;
+        m_RageGauge_UI = instance.m_RageGauge.p_RageGaugeUI;
         //m_BulletTime_AR.p_FadeSpeed = p_AREffectSpeed;
     }
 
 
     // Updates
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            ActivateScreenColorDistortionEffect();
-            ActivateLensDistortEffect(0.15f);
-        }
-    }
 
 
     // Functions
@@ -99,6 +93,7 @@ public class ScreenEffect_UI : MonoBehaviour
     public void ActivateAREffect(bool _isTrue)
     {
         m_BulletTime_AR.ActivateUsingFade(_isTrue);
+        m_RageGauge_UI.MoveRageGaugeUI(_isTrue);
     }
 
     /// <summary>

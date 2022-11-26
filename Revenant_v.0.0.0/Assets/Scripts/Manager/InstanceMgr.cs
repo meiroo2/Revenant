@@ -29,8 +29,9 @@ public class InstanceMgr : MonoBehaviour
     public LeftBullet_WUI m_LeftBullet_WUI { get; private set; }
     public ScreenCaptureEffectMgr m_ScreenCaptureMgr { get; private set; }
     public AR_ScreenCapture m_ScreenCaptureCanvas { get; private set; }
+    public RageGauge m_RageGauge { get; private set; }
 
-    
+
     // Instance
     private static InstanceMgr Instance;
     public static InstanceMgr GetInstance() { return Instance; }
@@ -51,15 +52,13 @@ public class InstanceMgr : MonoBehaviour
             Instantiate(m_ShouldBeMadeInCanvas[i], m_MainCanvas.transform);
         }
 
-        Instantiate(p_Canvas_RageGauge, m_MainCanvas.transform);
+        m_RageGauge = Instantiate(p_Canvas_RageGauge, m_MainCanvas.transform).GetComponent<RageGauge>();
         m_Player_UI = Instantiate(p_Player_UI, m_MainCanvas.transform).GetComponent<Player_UI>();
         
-        // SANS
-        /*
+        
         m_BulletTime_AR = 
             Instantiate(p_BulletTime_AR, m_MainCanvas.transform).GetComponent<BulletTime_AR>();
         m_BulletTime_AR.transform.localPosition = Vector2.zero;
-        */
     }
 
     private void SpawnInWorld()

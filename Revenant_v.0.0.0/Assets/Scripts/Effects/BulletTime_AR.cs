@@ -33,14 +33,7 @@ public class BulletTime_AR : MonoBehaviour
     
     
     // Functions
-    private void Update()
-    {
-       if(Input.GetKeyDown(KeyCode.P))
-           ActivateUsingFade(false);
-       
-       if(Input.GetKeyDown(KeyCode.L))
-           ActivateUsingFade(true);
-    }
+    
 
     /// <summary>
     /// 해당 이펙트를 Fade in/out으로 부드럽게 나타내거나 없앱니다.
@@ -98,7 +91,7 @@ public class BulletTime_AR : MonoBehaviour
                 imageElement.color = Color.Lerp(startColor, endColor, lerpVal);
             }
 
-            lerpVal += Time.deltaTime * p_FadeSpeed;
+            lerpVal += Time.unscaledDeltaTime * p_FadeSpeed;
             if (lerpVal >= 1f)
             {
                 lerpVal = 1f;
@@ -122,7 +115,7 @@ public class BulletTime_AR : MonoBehaviour
     {
         while (true)
         {
-            m_Timer += Time.deltaTime;
+            m_Timer += Time.unscaledDeltaTime;
             
             foreach (var VARIABLE in _matImgList)
             {

@@ -93,13 +93,7 @@ public class RageGauge_UI : MonoBehaviour
 	}
 	
 	// Updates
-	private void Update()
-	{
-		if(Input.GetKeyDown(KeyCode.L))
-			MoveRageGaugeUI(true);
-		else if(Input.GetKeyDown(KeyCode.P))
-			MoveRageGaugeUI(false);
-	}
+	
 
 	// Functions
 	public IEnumerator UIOnEnumerator(Image _img)
@@ -150,9 +144,9 @@ public class RageGauge_UI : MonoBehaviour
 		{
 			_transform.localPosition = Vector2.Lerp(_initPos, _destPos, lerpVal);
 			
-			lerpVal += (Time.deltaTime * speed);
-			speed += Time.deltaTime * 50f;
-			Debug.Log(lerpVal);
+			lerpVal += (Time.unscaledDeltaTime * speed);
+			speed += Time.unscaledDeltaTime * 50f;
+
 			if (lerpVal >= 1f)
 			{
 				lerpVal = 1f;
@@ -267,7 +261,7 @@ public class RageGauge_UI : MonoBehaviour
 		while (true)
 		{
 			_image.material.SetFloat(UiTime, lerpVal);
-			lerpVal += Time.deltaTime * 3.5f;
+			lerpVal += Time.unscaledDeltaTime * 3.5f;
 
 			if (lerpVal >= 1f)
 			{
