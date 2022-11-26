@@ -133,6 +133,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_BulletDamage;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_BulletSpeed;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_BulletRandomRotation;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_FireAnimSpeed;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_FireDelay;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_MoveSpeed;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_RunSpeedMulti;
@@ -140,7 +141,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_StunThreshold;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_VisionDistance;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_AttackDistance;
-    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_MeleeDistance;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_MeleeRollDistance;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_GapDistance;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_HeadDmgMulti;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_BodyDmgMulti;
@@ -432,13 +433,14 @@ public class CW_EnemyManipulator : OdinEditorWindow
             _enemyMgr.SF_BulletDamage = SF_BulletDamage;
             _enemyMgr.SF_BulletSpeed = SF_BulletSpeed;
             _enemyMgr.SF_BulletRandomRotation = SF_BulletRandomRotation;
+            _enemyMgr.SF_FireAnimSpeed = SF_FireAnimSpeed;
             _enemyMgr.SF_FireDelay = SF_FireDelay;
             _enemyMgr.SF_MoveSpeed = SF_MoveSpeed;
             _enemyMgr.SF_OnAlert_MoveSpeedMulti = SF_RunSpeedMulti;
             _enemyMgr.SF_StunThreshold = SF_StunThreshold;
             _enemyMgr.SF_VisionDistance = SF_VisionDistance;
             _enemyMgr.SF_AttackDistance = SF_AttackDistance;
-            _enemyMgr.SF_MeleeDistance = SF_MeleeDistance;
+            _enemyMgr.SF_MeleeRollDistance = SF_MeleeRollDistance;
             _enemyMgr.SF_GapDistance = SF_GapDistance;
             _enemyMgr.SF_HeadDmgMulti = SF_HeadDmgMulti;
             _enemyMgr.SF_BodyDmgMulti = SF_BodyDmgMulti;
@@ -456,6 +458,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
             SF_BulletDamage = _enemyMgr.SF_BulletDamage;
             SF_BulletSpeed = _enemyMgr.SF_BulletSpeed;
             SF_BulletRandomRotation = _enemyMgr.SF_BulletRandomRotation;
+            SF_FireAnimSpeed = _enemyMgr.SF_FireAnimSpeed;
             SF_FireDelay = _enemyMgr.SF_FireDelay;
             SF_MoveSpeed = _enemyMgr.SF_MoveSpeed;
             SF_RunSpeedMulti = _enemyMgr.SF_OnAlert_MoveSpeedMulti;
@@ -463,7 +466,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
             SF_StunThreshold = _enemyMgr.SF_StunThreshold;
             SF_VisionDistance = _enemyMgr.SF_VisionDistance;
             SF_AttackDistance = _enemyMgr.SF_AttackDistance;
-            SF_MeleeDistance = _enemyMgr.SF_MeleeDistance;
+            SF_MeleeRollDistance = _enemyMgr.SF_MeleeRollDistance;
             SF_GapDistance = _enemyMgr.SF_GapDistance;
             SF_HeadDmgMulti = _enemyMgr.SF_HeadDmgMulti;
             SF_BodyDmgMulti = _enemyMgr.SF_BodyDmgMulti;

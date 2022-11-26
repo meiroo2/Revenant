@@ -349,11 +349,13 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
                 {
                     if (m_Enemy.WayPointsVectorList.Count != 0 && m_Enemy.WayPointsIndex < m_Enemy.WayPointsVectorList.Count)
                     {
-                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x));
+                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.WayPointsVectorList[m_Enemy.WayPointsIndex].x),
+                            m_Enemy.p_RunSpeedMulti);
                     }
                     else
                     {
-                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
+                        m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x),
+                            m_Enemy.p_RunSpeedMulti);
                     }
 
                     if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
@@ -648,10 +650,13 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
 
     public override void UpdateState()
     {
+        // 태현님 수정
+        /*
         if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
         {
             m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
         }
+        */
         
         m_Distance = m_Enemy.GetDistanceBetPlayer();
 
@@ -688,7 +693,7 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
                 // 아무튼 게이지를 다 채움
                 FacePlayer();
                 
-                if (m_Distance <= m_Enemy.p_MeleeDistance)
+                if (m_Distance <= m_Enemy.p_MeleeRollDistance)
                 {
                     // 게이지 채웠는데 거리 내부
                     m_Enemy.m_ATK_RollState = 2;

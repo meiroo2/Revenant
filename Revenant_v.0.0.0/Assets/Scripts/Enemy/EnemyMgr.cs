@@ -78,6 +78,7 @@ public class EnemyMgr : MonoBehaviour
     public int SF_BulletDamage;
     public float SF_BulletSpeed;
     public float SF_BulletRandomRotation;
+    public float SF_FireAnimSpeed;
     public float SF_FireDelay;
     public float SF_MoveSpeed;
     public float SF_OnAlert_MoveSpeedMulti;
@@ -85,7 +86,7 @@ public class EnemyMgr : MonoBehaviour
     public int SF_StunThreshold;
     public float SF_VisionDistance;
     public float SF_AttackDistance;
-    public float SF_MeleeDistance;
+    public float SF_MeleeRollDistance;
     public float SF_GapDistance;
     public int SF_HeadDmgMulti;
     public int SF_BodyDmgMulti;

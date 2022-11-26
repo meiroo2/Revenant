@@ -36,7 +36,7 @@ public class ScreenEffect_UI : MonoBehaviour
     private Coroutine m_ColorDistortionCoroutine;
     private Coroutine m_VignetteCoroutine;
 
-    private ScreenEffect_AR m_ScreenEffect_AR;
+    private BulletTime_AR m_BulletTime_AR;
     
     
     // Constructor
@@ -78,8 +78,8 @@ public class ScreenEffect_UI : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_ScreenEffect_AR = instance.m_ScreenEffect_AR;
-        m_ScreenEffect_AR.p_FadeSpeed = p_AREffectSpeed;
+        m_BulletTime_AR = instance.m_BulletTime_AR;
+        //m_BulletTime_AR.p_FadeSpeed = p_AREffectSpeed;
     }
 
 
@@ -98,7 +98,7 @@ public class ScreenEffect_UI : MonoBehaviour
 
     public void ActivateAREffect(bool _isTrue)
     {
-        m_ScreenEffect_AR.ActivateUsingFade(_isTrue);
+        m_BulletTime_AR.ActivateUsingFade(_isTrue);
     }
 
     /// <summary>

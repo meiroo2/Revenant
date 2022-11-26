@@ -20,7 +20,7 @@ public class SpecialForce : BasicEnemy
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_FireAnimSpeed { get; private set; } = 3f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Fire_Delay { get; private set; } = 1f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Stun_Time { get; private set; } = 1f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_MeleeDistance { get; private set; } = 0.4f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_MeleeRollDistance { get; private set; } = 0.4f;
     [field: SerializeField, BoxGroup("SpecialForce")] public int p_HeadDmgMulti { get; private set; } = 2;
     [field: SerializeField, BoxGroup("SpecialForce")] public int p_BodyDmgMulti { get; private set; } = 1;
     
@@ -74,7 +74,6 @@ public class SpecialForce : BasicEnemy
     
     [field: SerializeField] public Enemy_HotBox[] p_HitHotboxes { get; private set; }
     public SingleRifle p_SingleRifleWeapon;
-    public MeleeWeapon_Enemy p_MeleeWeapon;
     public Enemy_HotBox p_HeadHotBox;
     public Enemy_HotBox p_BodyHotBox;
     
@@ -214,7 +213,6 @@ public class SpecialForce : BasicEnemy
 
         p_Hp = _mgr.SF_Hp;
         p_SingleRifleWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
-        p_MeleeWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
         p_SingleRifleWeapon.p_BulletRandomRotation = p_Bullet_Spread;
         p_Bullet_Speed = _mgr.SF_BulletSpeed;
         p_SingleRifleWeapon.p_BulletSpeed = p_Bullet_Speed;
@@ -225,7 +223,7 @@ public class SpecialForce : BasicEnemy
         p_StunHp = _mgr.SF_StunThreshold;
         p_VisionDistance = _mgr.SF_VisionDistance;
         p_AtkDistance = _mgr.SF_AttackDistance;
-        p_MeleeDistance = _mgr.SF_MeleeDistance;
+        p_MeleeRollDistance = _mgr.SF_MeleeRollDistance;
         p_GapDistance = _mgr.SF_GapDistance;
 
         p_HeadDmgMulti = _mgr.SF_HeadDmgMulti;
@@ -246,7 +244,6 @@ public class SpecialForce : BasicEnemy
             EditorUtility.SetDirty(p_HeadHotBox);
             EditorUtility.SetDirty(p_BodyHotBox);
             EditorUtility.SetDirty(p_SingleRifleWeapon);
-            EditorUtility.SetDirty(p_MeleeWeapon);
         #endif
     }
 

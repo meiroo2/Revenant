@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 public class RageGauge_UI : MonoBehaviour
@@ -20,6 +21,12 @@ public class RageGauge_UI : MonoBehaviour
 	[BoxGroup("게이지 비주얼")] public RectTransform p_MeleeParentTransform;
 	[BoxGroup("게이지 비주얼")] public RectTransform p_UltParentTransform;
 
+	[Space(20f)] 
+	public Image p_RollEffectImg;
+	public Image p_MeleeEffectImg;
+	public Image p_UltEffectImg;
+	
+	
 	[Space(10f)]
 	[BoxGroup("게이지 비주얼")] public Sprite p_RollGaugeNormalSprite;
 	[BoxGroup("게이지 비주얼")] public Sprite p_RollGaugeFullSprite;
@@ -27,12 +34,19 @@ public class RageGauge_UI : MonoBehaviour
 	[BoxGroup("게이지 비주얼")] public Sprite p_MeleeGaugeFullSprite;
 	[BoxGroup("게이지 비주얼")] public Sprite p_UltGaugeNormalSprite;
 	[BoxGroup("게이지 비주얼")] public Sprite p_UltGaugeFullSprite;
+
+	[Space(20f)]
+	public float p_MoveSpeed = 2f;
+	public float p_UIOnSpeed = 2f;
 	
 	// Assign
-	public Material m_IndicateMat;
-	public RageGauge m_RageGauge;
+
 	
 	// Member Variables
+	private Vector2 m_InitPos;
+	private Vector2 m_MovedPos;
+	private Coroutine m_UIMoveCoroutine = null;
+	
 	private Vector2 m_RollImgOriginPos;
 	private Vector2 m_MeleeImgOriginPos;
 	private Vector2 m_UltImgOriginPos;
@@ -55,6 +69,9 @@ public class RageGauge_UI : MonoBehaviour
 	private float m_Timer = 0f;
 	private static readonly int ManualTimer = Shader.PropertyToID("_ManualTimer");
 
+	private Coroutine m_UIOnCoroutine = null;
+	private readonly int UiTime = Shader.PropertyToID("_UiTime");
+
 	private void Awake()
 	{
 		m_OriginMat = p_GaugeImg.material;
@@ -69,6 +86,84 @@ public class RageGauge_UI : MonoBehaviour
 		p_UltGaugeImg.fillAmount = 0f;
 	}
 
+	private void Start()
+	{
+		m_InitPos = transform.localPosition;
+		m_MovedPos = new Vector2(m_InitPos.x, m_InitPos.y - 200f);
+	}
+	
+	// Updates
+	private void Update()
+	{
+		if(Input.GetKeyDown(KeyCode.L))
+			MoveRageGaugeUI(true);
+		else if(Input.GetKeyDown(KeyCode.P))
+			MoveRageGaugeUI(false);
+	}
+
+	// Functions
+	public IEnumerator UIOnEnumerator(Image _img)
+	{
+		Material mat = Instantiate(_img.material);
+		_img.material = mat;
+		
+		float lerpVal = 1f;
+		while (true)
+		{
+			_img.material.SetFloat(UiTime, lerpVal);
+			
+			lerpVal -= Time.deltaTime * p_UIOnSpeed;
+
+			if (lerpVal <= 0f)
+			{
+				lerpVal = 0f;
+				_img.material.SetFloat(UiTime, lerpVal);
+				
+				break;
+			}
+			
+			yield return null;
+		}
+
+		yield break;
+	}
+	
+	public void MoveRageGaugeUI(bool _toOutside)
+	{
+		if (!ReferenceEquals(m_UIMoveCoroutine, null))
+		{
+			StopCoroutine(m_UIMoveCoroutine);
+			m_UIMoveCoroutine = null;
+		}
+
+		if (_toOutside)
+			m_UIMoveCoroutine = StartCoroutine(MoveSomeTransform(transform, m_InitPos, m_MovedPos));
+		else
+			m_UIMoveCoroutine = StartCoroutine(MoveSomeTransform(transform, m_MovedPos, m_InitPos));
+	}
+
+	private IEnumerator MoveSomeTransform(Transform _transform, Vector2 _initPos, Vector2 _destPos)
+	{
+		float speed = p_MoveSpeed;
+		float lerpVal = 0f;
+		while (true)
+		{
+			_transform.localPosition = Vector2.Lerp(_initPos, _destPos, lerpVal);
+			
+			lerpVal += (Time.deltaTime * speed);
+			speed += Time.deltaTime * 50f;
+			Debug.Log(lerpVal);
+			if (lerpVal >= 1f)
+			{
+				lerpVal = 1f;
+				_transform.localPosition = Vector2.Lerp(_initPos, _destPos, lerpVal);
+				break;
+			}
+
+			yield return null;
+		}
+	}
+	
 	public void UpdateRageGaugeUI(int _idx, float _fillAmount)
 	{
 		if (_fillAmount < 0f)
@@ -88,21 +183,26 @@ public class RageGauge_UI : MonoBehaviour
 				// Roll
 				if (p_RollGaugeImg.fillAmount < 1f)
 				{
+					// 1f 밑이였음
+					
 					if (_fillAmount >= 1f)
 					{
 						p_RollGaugeImg.sprite = p_RollGaugeFullSprite;
+						StartCoroutine(ActivateEffect(p_RollEffectImg));
+						StartCoroutine(UIOnEnumerator(p_RollGaugeImg));
 					}
 
 					p_RollGaugeImg.fillAmount = _fillAmount;
 				}
 				else
 				{
+					// 이미 1f였음
+					
 					if (_fillAmount < 1f)
 					{
 						p_RollGaugeImg.sprite = p_RollGaugeNormalSprite;
+						p_RollGaugeImg.fillAmount = _fillAmount;
 					}
-					
-					p_RollGaugeImg.fillAmount = _fillAmount;
 				}
 				break;
 			
@@ -110,9 +210,13 @@ public class RageGauge_UI : MonoBehaviour
 				// Melee
 				if (p_MeleeGaugeImg.fillAmount < 1f)
 				{
+					// 1f 밑이였음
+					
 					if (_fillAmount >= 1f)
 					{
 						p_MeleeGaugeImg.sprite = p_MeleeGaugeFullSprite;
+						StartCoroutine(ActivateEffect(p_MeleeEffectImg));
+						StartCoroutine(UIOnEnumerator(p_MeleeGaugeImg));
 					}
 
 					p_MeleeGaugeImg.fillAmount = _fillAmount;
@@ -122,9 +226,8 @@ public class RageGauge_UI : MonoBehaviour
 					if (_fillAmount < 1f)
 					{
 						p_MeleeGaugeImg.sprite = p_MeleeGaugeNormalSprite;
+						p_MeleeGaugeImg.fillAmount = _fillAmount;
 					}
-					
-					p_MeleeGaugeImg.fillAmount = _fillAmount;
 				}
 				break;
 			
@@ -135,6 +238,8 @@ public class RageGauge_UI : MonoBehaviour
 					if (_fillAmount >= 1f)
 					{
 						p_UltGaugeImg.sprite = p_UltGaugeFullSprite;
+						StartCoroutine(ActivateEffect(p_UltEffectImg));
+						StartCoroutine(UIOnEnumerator(p_UltGaugeImg));
 					}
 
 					p_UltGaugeImg.fillAmount = _fillAmount;
@@ -144,14 +249,39 @@ public class RageGauge_UI : MonoBehaviour
 					if (_fillAmount < 1f)
 					{
 						p_UltGaugeImg.sprite = p_UltGaugeNormalSprite;
+						p_UltGaugeImg.fillAmount = _fillAmount;
 					}
-					
-					p_UltGaugeImg.fillAmount = _fillAmount;
 				}
 				break;
 		}
 	}
 
+	private IEnumerator ActivateEffect(Image _image)
+	{
+		Material mat = Instantiate(_image.material);
+		_image.material = mat;
+		
+	    int UiTime = Shader.PropertyToID("_UiTime");
+		float lerpVal = 0.4f;
+		
+		while (true)
+		{
+			_image.material.SetFloat(UiTime, lerpVal);
+			lerpVal += Time.deltaTime * 3.5f;
+
+			if (lerpVal >= 1f)
+			{
+				lerpVal = 1f;
+				_image.material.SetFloat(UiTime, lerpVal);
+				break;
+			}
+
+			yield return null;
+		}
+
+		yield break;
+	}
+	
 	/// <summary>
 	/// Idx에 따라 스킬 Icon을 흔듭니다.
 	/// 0, 1, 2 -> Roll, Melee, Ult
