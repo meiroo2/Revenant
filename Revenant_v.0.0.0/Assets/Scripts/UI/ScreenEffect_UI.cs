@@ -90,12 +90,6 @@ public class ScreenEffect_UI : MonoBehaviour
 
     // Functions
 
-    public void ActivateAREffect(bool _isTrue)
-    {
-        m_BulletTime_AR.ActivateUsingFade(_isTrue);
-        m_RageGauge_UI.MoveRageGaugeUI(_isTrue);
-    }
-
     /// <summary>
     /// 카메라에 비네팅 효과를 부드럽게 넣거나 뻅니다.
     /// </summary>

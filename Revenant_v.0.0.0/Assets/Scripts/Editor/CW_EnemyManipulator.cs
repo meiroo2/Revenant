@@ -132,7 +132,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_Hp;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_BulletDamage;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_BulletSpeed;
-    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_BulletRandomRotation;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_BulletSpread;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_FireAnimSpeed;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_FireDelay;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_MoveSpeed;
@@ -434,7 +434,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
             _enemyMgr.SF_Hp = SF_Hp;
             _enemyMgr.SF_BulletDamage = SF_BulletDamage;
             _enemyMgr.SF_BulletSpeed = SF_BulletSpeed;
-            _enemyMgr.SF_BulletRandomRotation = SF_BulletRandomRotation;
+            _enemyMgr.SF_BulletSpread = SF_BulletSpread;
             _enemyMgr.SF_FireAnimSpeed = SF_FireAnimSpeed;
             _enemyMgr.SF_FireDelay = SF_FireDelay;
             _enemyMgr.SF_MoveSpeed = SF_MoveSpeed;
@@ -464,7 +464,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
             SF_Hp = _enemyMgr.SF_Hp;
             SF_BulletDamage = _enemyMgr.SF_BulletDamage;
             SF_BulletSpeed = _enemyMgr.SF_BulletSpeed;
-            SF_BulletRandomRotation = _enemyMgr.SF_BulletRandomRotation;
+            SF_BulletSpread = _enemyMgr.SF_BulletSpread;
             SF_FireAnimSpeed = _enemyMgr.SF_FireAnimSpeed;
             SF_FireDelay = _enemyMgr.SF_FireDelay;
             SF_MoveSpeed = _enemyMgr.SF_MoveSpeed;

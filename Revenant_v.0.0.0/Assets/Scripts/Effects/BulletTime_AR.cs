@@ -12,7 +12,7 @@ public class BulletTime_AR : MonoBehaviour
     public float p_FadeSpeed = 1f;
     public List<Image> m_ImgList = new List<Image>();
     public List<Image> m_MatImgList = new List<Image>();
-    public Image m_GaugeImg;
+    public Image p_GaugeImg;
     
     // Member Variables
     private float m_Timer = 0f;
@@ -33,7 +33,23 @@ public class BulletTime_AR : MonoBehaviour
     
     
     // Functions
-    
+
+    /// <summary>
+    /// BulletTime시 나오는 게이지의 양을 조절합니다.
+    /// 파라미터 안전처리 완료
+    /// </summary>
+    /// <param name="_fillAmount"></param>
+    public void ChangeGaugeFill(float _fillAmount)
+    {
+        float _val = _fillAmount;
+        
+        if (_val < 0f)
+            _val = 0f;
+        else if (_val > 1f)
+            _val = 1f;
+
+        p_GaugeImg.fillAmount = _val;
+    }
 
     /// <summary>
     /// 해당 이펙트를 Fade in/out으로 부드럽게 나타내거나 없앱니다.

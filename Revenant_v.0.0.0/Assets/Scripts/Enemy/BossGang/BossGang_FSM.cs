@@ -401,7 +401,9 @@ public class JumpAtk_BossGang : BossGang_FSM
                 m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
                 if (m_NormalTime >= 0.5f)
                 {
-                    m_Enemy.m_SEPuller.SpawnSimpleEffect(7, m_Enemy.transform.position);
+                    m_Enemy.m_SEPuller.SpawnSimpleEffect(10, new Vector2(m_Enemy.transform.position.x,
+                        m_Enemy.transform.position.y + 0.32f));
+                    
                     m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                     m_Phase = 1;
                 }

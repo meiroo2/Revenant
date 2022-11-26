@@ -89,7 +89,8 @@ public class Player : Human
     public Negotiator_Player m_Negotiator { get; private set; }
     public Player_WorldUI m_WorldUI { get; private set; }
     public Player_InputMgr m_InputMgr { get; private set; }
-
+    public BulletTime_AR m_BulletTimeAR { get; private set; }
+    public RageGauge_UI m_RageUI { get; private set; }
 
     private bool m_isRecoveringRollCount = false;
     public float m_LeftRollCount { get; set; }
@@ -109,8 +110,7 @@ public class Player : Human
     private Player_BULLET_TIME m_BULLETTIME;
 
     private HideSlot m_CurHideSlot;
-
-    private RageGauge m_RageUI;
+    
     private Player_MatMgr _mPlayerMatMgr;
     public SoundPlayer m_SoundPlayer { get; private set; }
     public HitSFXMaker m_HitSFXMaker { get; private set; }
@@ -153,18 +153,20 @@ public class Player : Human
     {
         var instance = InstanceMgr.GetInstance();
         m_PlayerUIMgr = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
-        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SoundMgr = instance.GetComponentInChildren<SoundMgr>();
         m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
         m_SimpleEffectPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
-
-        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
+        
+        m_RageGauge = instance.m_RageGauge;
+        m_RageUI = m_RageGauge.p_RageGaugeUI;
         m_ScreenEffectUI = instance.m_MainCanvas.GetComponentInChildren<InGame_UI>()
             .GetComponentInChildren<ScreenEffect_UI>();
 
+        m_BulletTimeAR = instance.m_BulletTime_AR;
+        
         m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
 
         m_IDLE = new Player_IDLE(this);

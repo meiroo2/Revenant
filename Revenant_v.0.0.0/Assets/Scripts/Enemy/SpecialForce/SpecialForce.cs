@@ -214,7 +214,7 @@ public class SpecialForce : BasicEnemy
         p_SingleRifleWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
         p_Bullet_Speed = _mgr.SF_BulletSpeed;
         p_SingleRifleWeapon.p_BulletSpeed = p_Bullet_Speed;
-        p_SingleRifleWeapon.p_BulletRandomRotation = p_Bullet_Spread;
+        p_SingleRifleWeapon.p_BulletSpread = _mgr.SF_BulletSpread;
         p_FireAnimSpeed = _mgr.SF_FireAnimSpeed;
         p_Fire_Delay = _mgr.SF_FireDelay;
         p_MoveSpeed = _mgr.SF_MoveSpeed;

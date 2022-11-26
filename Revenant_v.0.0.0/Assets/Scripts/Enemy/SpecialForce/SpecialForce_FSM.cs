@@ -972,6 +972,8 @@ public class SpecialForce_DEAD : SpecialForce_FSM
     
     public override void StartState()
     {
+        m_Enemy.SetHotBoxesActive(false);
+        
         m_Enemy.p_AlertSystem.gameObject.SetActive(false);
         m_Enemy.SetSpriteMode(1);
         m_Enemy.p_FullAnimator.SetInteger(Dead, 1);

@@ -707,6 +707,7 @@ public class Player_BULLET_TIME : PlayerFSM
     private Animator m_PlayerAnimator;
     private Player_AniMgr m_AniMgr;
     private BulletTimeMgr m_BulletTimeMgr;
+    private BulletTime_AR m_BulletTimeAR;
     private readonly int h_BulletTime = Animator.StringToHash("BulletTime");
     private int m_Phase = 0;
     private float m_BulletTimeLimit = 0f;
@@ -721,6 +722,7 @@ public class Player_BULLET_TIME : PlayerFSM
 
     public override void StartState()
     {
+        m_BulletTimeAR = m_Player.m_BulletTimeAR;
         m_BulletTimeMgr = m_Player.m_BulletTimeMgr;
         m_AniMgr = m_Player.m_PlayerAniMgr;
         m_PlayerAnimator = m_AniMgr.p_FullBody.m_Animator;
@@ -740,15 +742,10 @@ public class Player_BULLET_TIME : PlayerFSM
         // 플립제거
         m_Player.m_playerRotation.m_BanFlip = true;
 
-        // AR 온
-        m_Player.m_ScreenEffectUI.ActivateAREffect(true);
-        
-        // 비네팅 온
-        m_Player.m_ScreenEffectUI.ActivateVignetteEffect(true);
-        
-        // 머터리얼 교체 온
-        // 흠...
-        
+        // AR 온 & 게이지 내리기
+        m_BulletTimeAR.ActivateUsingFade(true);
+        m_Player.m_RageUI.MoveRageGaugeUI(true);
+
         // 강제 재장전
         m_Player.m_WeaponMgr.m_CurWeapon.SetLeftRounds(m_Player.m_WeaponMgr.m_CurWeapon.p_MaxRound);
 
@@ -779,16 +776,10 @@ public class Player_BULLET_TIME : PlayerFSM
             case 0:
                 m_Timer += Time.unscaledDeltaTime;
                 
-                // 수정요망
-                //var m_RageGaugeUI = GameObject.FindObjectOfType<RageGauge_UI>();
-                //m_RageGaugeUI.GetTimePassed((m_BulletTimeLimit - m_Timer) / m_BulletTimeLimit);
+                m_BulletTimeAR.ChangeGaugeFill(1f - (m_Timer / m_BulletTimeLimit));
                 
                 if (m_Player.m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0 ||  m_Timer >= m_BulletTimeLimit)
                 {
-                    // AR 끔
-                    m_Player.m_ScreenEffectUI.ActivateAREffect(false);
-                    // 비네팅 끔
-                    m_Player.m_ScreenEffectUI.ActivateVignetteEffect(false);
                     m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 2);
                     m_Phase = 1;
                     
@@ -825,5 +816,8 @@ public class Player_BULLET_TIME : PlayerFSM
         m_Player.m_playerRotation.m_BanFlip = false;
         m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 0);
         m_AniMgr.p_FullBody.m_Animator.updateMode = AnimatorUpdateMode.Normal;
+        
+        m_BulletTimeAR.ActivateUsingFade(false);
+        m_Player.m_RageUI.MoveRageGaugeUI(false);
     }
 }
