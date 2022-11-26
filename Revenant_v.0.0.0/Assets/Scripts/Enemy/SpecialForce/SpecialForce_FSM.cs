@@ -920,6 +920,7 @@ public class SpecialForce_STUN : SpecialForce_FSM
     {
         m_Phase = 0;
         m_Enemy.p_AlertSystem.CancelGaugeUp();
+        m_Enemy.p_AlertSystem.SetStunAlertSpeed(m_Enemy.p_StunAlertSpeed);
         m_Enemy.p_AlertSystem.DoStun(StunFinalStep);
         
         m_Enemy.SetSpriteMode(1);

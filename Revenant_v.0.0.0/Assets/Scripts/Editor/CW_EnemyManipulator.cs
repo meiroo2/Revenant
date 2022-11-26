@@ -137,7 +137,7 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_FireDelay;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_MoveSpeed;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_RunSpeedMulti;
-    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_StunTime;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_StunAlertSpeed;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_StunThreshold;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_VisionDistance;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_AttackDistance;
@@ -145,7 +145,9 @@ public class CW_EnemyManipulator : OdinEditorWindow
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_GapDistance;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_HeadDmgMulti;
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static int SF_BodyDmgMulti;
-
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_AlertSpeed;
+    [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth)] public static float SF_AlertFadeSpeed;
+    
     // Roll Values
     [TabGroup("SpecialForce"), ShowInInspector, TableList, LabelWidth(m_LabelWidth), Title("Roll Values")]
     public static float SF_Roll_Refresh;
@@ -436,7 +438,9 @@ public class CW_EnemyManipulator : OdinEditorWindow
             _enemyMgr.SF_FireAnimSpeed = SF_FireAnimSpeed;
             _enemyMgr.SF_FireDelay = SF_FireDelay;
             _enemyMgr.SF_MoveSpeed = SF_MoveSpeed;
-            _enemyMgr.SF_OnAlert_MoveSpeedMulti = SF_RunSpeedMulti;
+            _enemyMgr.SF_RunSpeedMulti = SF_RunSpeedMulti;
+
+            _enemyMgr.SF_StunAlertSpeed = SF_StunAlertSpeed;
             _enemyMgr.SF_StunThreshold = SF_StunThreshold;
             _enemyMgr.SF_VisionDistance = SF_VisionDistance;
             _enemyMgr.SF_AttackDistance = SF_AttackDistance;
@@ -451,6 +455,9 @@ public class CW_EnemyManipulator : OdinEditorWindow
             _enemyMgr.SF_Roll_Chance = SF_Roll_Chance;
             _enemyMgr.SF_Roll_Cooldown = SF_Roll_Cooldown;
             _enemyMgr.SF_Roll_Speed_Multi = SF_Roll_Speed_Multi;
+
+            _enemyMgr.SF_AlertSpeed = SF_AlertSpeed;
+            _enemyMgr.SF_AlertFadeSpeed = SF_AlertFadeSpeed;
         }
         else
         {
@@ -461,8 +468,9 @@ public class CW_EnemyManipulator : OdinEditorWindow
             SF_FireAnimSpeed = _enemyMgr.SF_FireAnimSpeed;
             SF_FireDelay = _enemyMgr.SF_FireDelay;
             SF_MoveSpeed = _enemyMgr.SF_MoveSpeed;
-            SF_RunSpeedMulti = _enemyMgr.SF_OnAlert_MoveSpeedMulti;
-            SF_StunTime = _enemyMgr.SF_StunTime;
+            SF_RunSpeedMulti = _enemyMgr.SF_RunSpeedMulti;
+
+            SF_StunAlertSpeed = _enemyMgr.SF_StunAlertSpeed;
             SF_StunThreshold = _enemyMgr.SF_StunThreshold;
             SF_VisionDistance = _enemyMgr.SF_VisionDistance;
             SF_AttackDistance = _enemyMgr.SF_AttackDistance;
@@ -470,13 +478,16 @@ public class CW_EnemyManipulator : OdinEditorWindow
             SF_GapDistance = _enemyMgr.SF_GapDistance;
             SF_HeadDmgMulti = _enemyMgr.SF_HeadDmgMulti;
             SF_BodyDmgMulti = _enemyMgr.SF_BodyDmgMulti;
-            
+
             SF_Roll_Refresh = _enemyMgr.SF_Roll_Refresh;
             SF_Roll_Tick_Min = _enemyMgr.SF_Roll_Tick.x;
             SF_Roll_Tick_Max = _enemyMgr.SF_Roll_Tick.y;
             SF_Roll_Chance = _enemyMgr.SF_Roll_Chance;
             SF_Roll_Cooldown = _enemyMgr.SF_Roll_Cooldown;
             SF_Roll_Speed_Multi = _enemyMgr.SF_Roll_Speed_Multi;
+
+            SF_AlertSpeed = _enemyMgr.SF_AlertSpeed;
+            SF_AlertFadeSpeed = _enemyMgr.SF_AlertFadeSpeed;
         }
 
         #if UNITY_EDITOR
