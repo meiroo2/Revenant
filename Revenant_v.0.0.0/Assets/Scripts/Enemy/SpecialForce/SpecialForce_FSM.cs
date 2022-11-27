@@ -360,15 +360,6 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
                     {
                         m_Enemy.MoveToPlayer();
                     }
-                    
-                    // float HeightBetweenPlayerAndEnemy = Mathf.Abs(m_Enemy.m_Player.transform.position.y - m_Enemy.transform.position.y);
-                    // // 플레이어와 적이 같은 층에 있다면 문 사용 X
-                    // if (HeightBetweenPlayerAndEnemy <= 0.1f && m_Enemy.bMoveToUsedDoor && !m_Enemy.bIsOnStair && m_Enemy.EnemyMapSectionNum == m_Enemy.m_Player.PlayerMapSectionNum)
-                    // {
-                    //     m_Enemy.bMoveToUsedDoor = false;
-                    //     m_Enemy.MoveToPlayer();
-                    // }
-                    //m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded, m_Enemy.p_RunSpeedMulti);
                 }
                 break;
         }
@@ -648,10 +639,11 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
 
     public override void UpdateState()
     {
-        if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
-        {
-            m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
-        }
+        // if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
+        // {
+        //     //m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
+        //     m_Enemy.MoveToPlayer();
+        // }
         
         m_Distance = m_Enemy.GetDistanceBetPlayer();
 
