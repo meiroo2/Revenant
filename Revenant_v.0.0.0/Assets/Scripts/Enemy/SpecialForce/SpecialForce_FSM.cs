@@ -312,6 +312,11 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
         if(!m_Enemy.IsFacePlayer())
             m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
 
+        if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
+        {
+            m_Enemy.MoveToPlayer();
+        }
+        
         switch (m_Phase)
         {
             case 0:
@@ -354,11 +359,6 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
                     else
                     {
                         m_Enemy.SetRigidByDirection(!(m_Enemy.transform.position.x > m_Enemy.m_Player.transform.position.x));
-                    }
-
-                    if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
-                    {
-                        m_Enemy.MoveToPlayer();
                     }
                 }
                 break;
@@ -639,11 +639,10 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
 
     public override void UpdateState()
     {
-        // if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
-        // {
-        //     //m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
-        //     m_Enemy.MoveToPlayer();
-        // }
+        if (m_Enemy.IsSameFloorWithPlayer(m_Enemy.bMoveToUsedDoor, m_Enemy.bIsOnStair, m_Enemy.m_Player.bIsOnStair))
+        {
+            m_Enemy.MoveToPlayer();
+        }
         
         m_Distance = m_Enemy.GetDistanceBetPlayer();
 
