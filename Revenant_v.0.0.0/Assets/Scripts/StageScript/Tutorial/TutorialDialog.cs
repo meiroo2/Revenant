@@ -14,6 +14,8 @@ public class TutorialDialog : MonoBehaviour
 
 	public Action SkipEvent;
 	public float TypingSpeed = 0.5f;
+
+	public Animator DialogEndUI;
 	public bool isTextEnd { get; set; } = false;
 	void Start()
 	{
@@ -43,7 +45,11 @@ public class TutorialDialog : MonoBehaviour
 		}
 		else
 		{
-			isTextEnd = true;
+			if(!isTextEnd)
+			{
+				isTextEnd = true;
+				DialogEndUI.SetBool("isTextEnd", isTextEnd);
+			}
 		}
 	}
 
@@ -55,6 +61,7 @@ public class TutorialDialog : MonoBehaviour
 			TextUI.text = textString;
 		}
 		isTextEnd = true;
+		DialogEndUI.SetBool("isTextEnd", isTextEnd);
 	}
 
 	public void SetDialogText(string text)
@@ -62,8 +69,8 @@ public class TutorialDialog : MonoBehaviour
 		textString = text;
 		currentTextCount = 0;
 		isTextEnd = false;
-
-		if(TextUI)
+		DialogEndUI.SetBool("isTextEnd", isTextEnd);
+		if (TextUI)
 		TextUI.text = "";
 	}
 
@@ -71,5 +78,6 @@ public class TutorialDialog : MonoBehaviour
 	{
 		transform.localScale = transform.parent.parent.localScale * 0.01f;
 		gameObject.SetActive(value);
+		DialogEndUI.gameObject.SetActive(value);
 	}
 }

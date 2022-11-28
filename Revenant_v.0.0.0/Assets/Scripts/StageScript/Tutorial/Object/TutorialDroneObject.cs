@@ -20,7 +20,7 @@ public class TutorialDroneObject : TutorialObject
 		transform.position = startPosition;
 	}
 
-    void FixedUpdate()
+    void Update()
     {
 		FollowCharacter();
 	}
