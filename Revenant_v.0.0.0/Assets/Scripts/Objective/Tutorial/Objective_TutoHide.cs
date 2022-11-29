@@ -125,9 +125,7 @@ public class Objective_TutoHide : Objective
 			m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogActive(false);
 			m_InputMgr.p_MousePosLock = false;
 			m_InputMgr.p_MoveInputLock = false;
-			m_InputMgr.p_FireLock = false;
-			m_InputMgr.p_ReloadLock = false;
-			m_InputMgr.p_RollLock = false;
+			m_InputMgr.p_StairLock = false;
 			m_InputMgr.p_HideLock = false;
 			m_Player.transform.localScale = m_InitialRotate;
 			m_ObjUI.LerpUI(false);

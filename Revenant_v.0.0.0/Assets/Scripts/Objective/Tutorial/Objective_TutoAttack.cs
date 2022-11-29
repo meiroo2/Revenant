@@ -20,7 +20,8 @@ public class Objective_TutoAttack : Objective
     private int m_Phase = 0;
 
     private int m_UseLeftClickCount = 0;
-    private int m_UseRightClickCount = 0;   
+    private int m_UseRightClickCount = 0;
+	private int m_ReloadCount = 0;
 
     private Player m_Player;
 
@@ -91,17 +92,24 @@ public class Objective_TutoAttack : Objective
 					m_ObjUI.SetObjectiveFontStyle(1, true);
 				}
 
+				if (m_InputMgr.m_IsPushReloadKey)
+				{
+					m_ObjUI.SetObjectiveProgress(2, 1f);
+					m_ObjUI.SetObjectiveFontStyle(2, true);
+					m_ReloadCount++;
+				}
+
 				float proceed = 0;
 				proceed = Mathf.InverseLerp(enemyCount, 0, GetActiveEnemyCount());
 
-				m_ObjUI.SetObjectiveProgress(2, proceed);
+				m_ObjUI.SetObjectiveProgress(3, proceed);
                 if(proceed >= 1)
                 {
-					m_ObjUI.SetObjectiveProgress(2, 1);
-					m_ObjUI.SetObjectiveFontStyle(2, true);
+					m_ObjUI.SetObjectiveProgress(3, 1);
+					m_ObjUI.SetObjectiveFontStyle(3, true);
                 }
 
-                if(proceed >= 1 && m_UseLeftClickCount >= 1 && m_UseRightClickCount >= 1)
+                if(proceed >= 1 && m_UseLeftClickCount >= 1 && m_UseRightClickCount >= 1 && m_ReloadCount >= 1)
                 {
 					m_Phase++;
                 }
