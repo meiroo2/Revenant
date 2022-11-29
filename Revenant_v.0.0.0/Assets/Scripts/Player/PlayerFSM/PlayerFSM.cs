@@ -70,6 +70,8 @@ public class Player_IDLE : PlayerFSM
         m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
         
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeAll;
+        
+        m_Player.ActiveBreathCoroutine(true);
     }
 
     public override void UpdateState()
@@ -108,6 +110,7 @@ public class Player_IDLE : PlayerFSM
 
     public override void ExitState()
     {
+        m_Player.ActiveBreathCoroutine(false);
         m_Player.m_CanHide = false;
         m_Player.m_PlayerRigid.constraints = RigidbodyConstraints2D.FreezeRotation;
         ExitFinalProcess();
@@ -245,7 +248,7 @@ public class Player_WALK : PlayerFSM
             m_WalkSoundCoroutineElement.StopCoroutine_Element();
             m_WalkSoundCoroutineElement = null;
         }
-        
+
         ExitFinalProcess();
     }
 
@@ -462,7 +465,7 @@ public class Player_HIDDEN : PlayerFSM
     {
         m_RageGauge = m_Player.m_RageGauge;
 		m_InitAction?.Invoke();
-		//m_Player.m_ArmMgr.StopReload();
+
 		m_Player.m_CanAttack = false;
         m_InputMgr = m_Player.m_InputMgr;
         m_UseRange = m_Player.m_useRange;
@@ -473,6 +476,9 @@ public class Player_HIDDEN : PlayerFSM
         m_Player.m_SoundPlayer.PlayPlayerSoundOnce(5);
         m_Player.m_CanMove = false;
         m_Player.m_CanAttack = false;
+        
+        // RageGauge 숨기시 일시정지
+        m_RageGauge.TempStopRageGauge(true);
     }
 
     public override void UpdateState()
@@ -511,6 +517,8 @@ public class Player_HIDDEN : PlayerFSM
         m_Player.m_PlayerAniMgr.p_FullBody.SetAnim_Int(Hide, 0);
         m_Player.m_PlayerAniMgr.SetVisualParts(false, true, true, false);
 
+        // RageGauge 업데이트 복구
+        m_RageGauge.TempStopRageGauge(false);
         
         m_Player.m_CanMove = true;
         m_Player.m_CanAttack = true;

@@ -38,6 +38,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     
     // LeapAtk
     [TabGroup("LeapAtk")] public float p_LeapAtk_Distance_Min = 1f;
+    [TabGroup("LeapAtk")] public float p_LeapAtk_MoveDistance = 1f;
     [TabGroup("LeapAtk")] public float p_LeapAtk_Height = 1f;
     
     // Stealth
@@ -97,6 +98,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     public WeaponMgr m_WeaponMgr { get; private set; }
     private IHotBox[] m_HotBoxes;
     public Player m_Player { get; private set; }
+    
     [HideInInspector] public Action m_ActionOnHit_Holo = null;
     [HideInInspector] public Action m_ActionOnHit_Counter = null; 
     [HideInInspector] public Action m_ActionOnHit_Ultimate = null; 

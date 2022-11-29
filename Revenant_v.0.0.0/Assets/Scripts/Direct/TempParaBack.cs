@@ -1,37 +1,52 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TempParaBack : MonoBehaviour
 {
-    private Camera mainCam;
-    private Vector3 m_BackPosVec;
-    private Vector3 m_OriginPos;
-    public bool m_isPixelPerfectCam = true;
+    // Visible Member Variables
+    public String m_StandardTransformName;
+    
+    
+    // Member Variables
+    private Transform m_StandardTransform = null;
+    private Transform m_MainCamTransform;
+    
+    private Vector3 m_CalculatedPos;
+
+    private Vector3 m_StandardPos;
+    private Vector3 m_TransformOriginPos;
+    private float m_XPosDifferenceBetStandard;
+    
     public float m_ParaValue = 0.1f;
 
     private void Awake()
     {
-        mainCam = Camera.main;
-        m_OriginPos = transform.position;
+        m_StandardTransform = GameObject.Find(m_StandardTransformName).transform;
+        if (!m_StandardTransform)
+        {
+            Debug.Log("ERR : TempParaBack can't find m_StandardTransform");
+        }
+    }
+
+    private void Start()
+    {
+        m_MainCamTransform = Camera.main.transform;
+        
+        m_StandardPos = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform.position;
+        m_TransformOriginPos = transform.localPosition;
+
+        m_XPosDifferenceBetStandard = m_TransformOriginPos.x - m_StandardTransform.position.x;
     }
 
     private void Update()
     {
-        m_BackPosVec = m_OriginPos;
+        m_XPosDifferenceBetStandard = m_MainCamTransform.position.x - m_StandardTransform.position.x;
+        m_CalculatedPos = m_TransformOriginPos;
+        
+        m_CalculatedPos.x += m_XPosDifferenceBetStandard * m_ParaValue;
 
-        m_BackPosVec.x = m_BackPosVec.x + (m_OriginPos.x - mainCam.transform.position.x) * m_ParaValue;
-       // m_BackPosVec.y = m_BackPosVec.y + (m_OriginPos.y - mainCam.transform.position.y) * m_ParaValue;
-
-        if(m_isPixelPerfectCam)
-        {
-            m_BackPosVec.x = Mathf.RoundToInt(m_BackPosVec.x * 100);
-            //m_BackPosVec.y = Mathf.RoundToInt(m_BackPosVec.y * 100);
-
-            m_BackPosVec.x = m_BackPosVec.x / 100;
-           // m_BackPosVec.y = m_BackPosVec.y / 100;
-        }
-
-        transform.position = m_BackPosVec;
+        transform.localPosition = m_CalculatedPos;
     }
 }
