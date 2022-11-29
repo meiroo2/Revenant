@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2404465247629175222}
-  - component: {fileID: 2404465247629175224}
+  - component: {fileID: 6820291714715964266}
   m_Layer: 0
   m_Name: BoomBox
   m_TagString: Untagged
@@ -35,7 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2404465247629175224
+--- !u!114 &6820291714715964266
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,12 +44,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2404465247629175223}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a51e94c17e14b648a597d8ac639b1c8, type: 3}
+  m_Script: {fileID: 11500000, guid: 110c13b29bca49f45a9b356efaa9de53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_Hp: 30
-  p_Damage: 10
-  p_StunValue: 10
+  Hp: 30
+  Damage: 10
+  StunValue: 10
 --- !u!1 &2404465248269986424
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,8 +164,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6939551353508335166}
-  - component: {fileID: 6939551353508335136}
   - component: {fileID: 6939551353508335167}
+  - component: {fileID: 4297562486103528492}
   m_Layer: 19
   m_Name: HotBox
   m_TagString: Untagged
@@ -188,19 +188,6 @@ Transform:
   m_Father: {fileID: 2404465247629175222}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6939551353508335136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6939551353508335165}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da0f3ede62b447b186d07ab75a5638e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_BoomBox: {fileID: 0}
 --- !u!61 &6939551353508335167
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -227,6 +214,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.4}
   m_EdgeRadius: 0
+--- !u!114 &4297562486103528492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6939551353508335165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b553e8c55694e44e908a975d2f6ff2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Breakable: {fileID: 0}
 --- !u!1 &6939551353887308700
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,26 +6,25 @@ public class Breakable_MultipleHitBox : Breakable
 {
     public override void GetHit(int _damage)
     {
-        if (Hp <= 0)
+        if (Health <= 0)
             return;
         
-        Hp -= _damage;
+        Health -= _damage;
         
-        if (Hp == 20)
+        if (Health == 20)
         {
-            //m_Animator.SetTrigger("Explode");
             Debug.Log("맞음 ==== 체력 20");
+            m_Animator.SetInteger("Hp", Health);
         }
-        else if (Hp == 10)
+        else if (Health == 10)
         {
-            //m_Animator.SetTrigger("Explode");
             Debug.Log("맞음 == 체력 10");
+            m_Animator.SetInteger("Hp", Health);
         }
-        else if (Hp == 0)
+        else if (Health == 0)
         {
-            m_Animator.SetTrigger("Break");
+            m_Animator.SetInteger("Hp", Health);
             m_HotBox.gameObject.SetActive(false);
-            m_Coroutine = StartCoroutine(CheckExplodeEnd());
         }
     }
 }
