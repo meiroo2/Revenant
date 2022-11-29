@@ -66,7 +66,7 @@ public class BulletTimeMgr : MonoBehaviour
     private Coroutine m_SEThunderCoroutine;
     private Coroutine m_SEBeforeBTCoroutine;
 
-    private ScreenEffect_AR m_ScreenEffect_AR;
+    private BulletTime_AR m_BulletTime_AR;
 
     public GameObject m_ARScreenEffect { get; private set; }
 
@@ -96,7 +96,7 @@ public class BulletTimeMgr : MonoBehaviour
         m_InputMgr = instance.GetComponentInChildren<Player_InputMgr>();
         m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SEPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
-        m_ScreenEffect_AR = instance.m_ScreenEffect_AR;
+        m_BulletTime_AR = instance.m_BulletTime_AR;
         
         m_MatChanger = GameMgr.GetInstance().p_MatChanger;
     }

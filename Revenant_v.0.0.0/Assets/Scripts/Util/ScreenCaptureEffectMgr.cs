@@ -80,6 +80,7 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
     }
 
+    /*
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -90,6 +91,7 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
             Capture(sans.x, sans.y, 30f);
         }
     }
+    */
 
     public void Capture(float _xPos, float _yPos, float _timeSliceAngle)
     {

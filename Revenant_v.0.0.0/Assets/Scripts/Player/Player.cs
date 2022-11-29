@@ -53,7 +53,12 @@ public class Player : Human
 
     [BoxGroup("Player Values")] public float p_JustEvadeStopTime = 0.1f;
 
-
+    // Breath
+    [Title("For Breath Effect"), BoxGroup("Player Values")]
+    public Vector2 m_BreathPivotPos;
+    public float m_BreathDelay = 0.5f;
+    public int[] p_BreathEffectSceneIdxArr;
+    
 
     public Player_DeadProcess p_DeadProcess;
     [field: SerializeField] public Transform p_CenterTransform { get; private set; }
@@ -89,7 +94,8 @@ public class Player : Human
     public Negotiator_Player m_Negotiator { get; private set; }
     public Player_WorldUI m_WorldUI { get; private set; }
     public Player_InputMgr m_InputMgr { get; private set; }
-
+    public BulletTime_AR m_BulletTimeAR { get; private set; }
+    public RageGauge_UI m_RageUI { get; private set; }
 
     private bool m_isRecoveringRollCount = false;
     public float m_LeftRollCount { get; set; }
@@ -109,8 +115,7 @@ public class Player : Human
     private Player_BULLET_TIME m_BULLETTIME;
 
     private HideSlot m_CurHideSlot;
-
-    private RageGauge m_RageUI;
+    
     private Player_MatMgr _mPlayerMatMgr;
     public SoundPlayer m_SoundPlayer { get; private set; }
     public HitSFXMaker m_HitSFXMaker { get; private set; }
@@ -124,6 +129,9 @@ public class Player : Human
 
     private bool m_SafeFSMLock = false;
 
+    // For Breath Effect
+    private Coroutine m_BreathCoroutine = null;
+    
 
     // Constructor
     private void Awake()
@@ -153,18 +161,20 @@ public class Player : Human
     {
         var instance = InstanceMgr.GetInstance();
         m_PlayerUIMgr = instance.m_MainCanvas.GetComponentInChildren<Player_UI>();
-        m_RageUI = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
         m_SoundMgr = instance.GetComponentInChildren<SoundMgr>();
         m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_HitSFXMaker = instance.GetComponentInChildren<HitSFXMaker>();
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = instance.GetComponentInChildren<ParticleMgr>();
         m_SimpleEffectPuller = instance.GetComponentInChildren<SimpleEffectPuller>();
-
-        m_RageGauge = instance.m_MainCanvas.GetComponentInChildren<RageGauge>();
+        
+        m_RageGauge = instance.m_RageGauge;
+        m_RageUI = m_RageGauge.p_RageGaugeUI;
         m_ScreenEffectUI = instance.m_MainCanvas.GetComponentInChildren<InGame_UI>()
             .GetComponentInChildren<ScreenEffect_UI>();
 
+        m_BulletTimeAR = instance.m_BulletTime_AR;
+        
         m_InputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
 
         m_IDLE = new Player_IDLE(this);
@@ -533,5 +543,52 @@ public class Player : Human
                     StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal) * (p_MoveSpeed * _multi);
                 break;
         }
+    }
+
+    /// <summary>
+    /// Player의 숨 이펙트를 켜거나 끕니다.
+    /// </summary>
+    /// <param name="_isActive"></param>
+    public void ActiveBreathCoroutine(bool _isActive)
+    {
+        if (!ReferenceEquals(m_BreathCoroutine, null))
+        {
+            StopCoroutine(m_BreathCoroutine);
+            m_BreathCoroutine = null;
+        }
+
+        int curSceneIdx = GameMgr.GetInstance().m_CurSceneIdx;
+        bool isSceneCorrect = false;
+        for (int i = 0; i < p_BreathEffectSceneIdxArr.Length; i++)
+        {
+            if (curSceneIdx == p_BreathEffectSceneIdxArr[i])
+            {
+                isSceneCorrect = true;
+                break;
+            }
+        }
+
+        if (!isSceneCorrect)
+            return;
+        
+        if (_isActive)
+            m_BreathCoroutine = StartCoroutine(BreathEnumerator());
+    }
+
+    private IEnumerator BreathEnumerator()
+    {
+        Vector2 spawnPos;
+        while (true)
+        {
+            spawnPos = transform.position;
+            spawnPos.x += m_IsRightHeaded ? m_BreathPivotPos.x : -m_BreathPivotPos.x;
+            spawnPos.y += m_BreathPivotPos.y;
+
+            m_SimpleEffectPuller.SpawnSimpleEffect(11, spawnPos, !m_IsRightHeaded);
+            
+            yield return new WaitForSeconds(m_BreathDelay);
+        }
+
+        yield break;
     }
 }

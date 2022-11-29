@@ -19,8 +19,7 @@ public class SpecialForce : BasicEnemy
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Bullet_Spread { get; private set; } = 5f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_FireAnimSpeed { get; private set; } = 3f;
     [field: SerializeField, BoxGroup("SpecialForce")] public float p_Fire_Delay { get; private set; } = 1f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_Stun_Time { get; private set; } = 1f;
-    [field: SerializeField, BoxGroup("SpecialForce")] public float p_MeleeDistance { get; private set; } = 0.4f;
+    [field: SerializeField, BoxGroup("SpecialForce")] public float p_MeleeRollDistance { get; private set; } = 0.4f;
     [field: SerializeField, BoxGroup("SpecialForce")] public int p_HeadDmgMulti { get; private set; } = 2;
     [field: SerializeField, BoxGroup("SpecialForce")] public int p_BodyDmgMulti { get; private set; } = 1;
     
@@ -74,7 +73,6 @@ public class SpecialForce : BasicEnemy
     
     [field: SerializeField] public Enemy_HotBox[] p_HitHotboxes { get; private set; }
     public SingleRifle p_SingleRifleWeapon;
-    public MeleeWeapon_Enemy p_MeleeWeapon;
     public Enemy_HotBox p_HeadHotBox;
     public Enemy_HotBox p_BodyHotBox;
     
@@ -214,18 +212,18 @@ public class SpecialForce : BasicEnemy
 
         p_Hp = _mgr.SF_Hp;
         p_SingleRifleWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
-        p_MeleeWeapon.p_BulletDamage = _mgr.SF_BulletDamage;
-        p_SingleRifleWeapon.p_BulletRandomRotation = p_Bullet_Spread;
         p_Bullet_Speed = _mgr.SF_BulletSpeed;
         p_SingleRifleWeapon.p_BulletSpeed = p_Bullet_Speed;
+        p_SingleRifleWeapon.p_BulletSpread = _mgr.SF_BulletSpread;
+        p_FireAnimSpeed = _mgr.SF_FireAnimSpeed;
         p_Fire_Delay = _mgr.SF_FireDelay;
         p_MoveSpeed = _mgr.SF_MoveSpeed;
-        p_RunSpeedMulti = _mgr.SF_OnAlert_MoveSpeedMulti;
-        p_Stun_Time = _mgr.SF_StunTime;
+        p_RunSpeedMulti = _mgr.SF_RunSpeedMulti;
+        p_StunAlertSpeed = _mgr.SF_StunAlertSpeed;
         p_StunHp = _mgr.SF_StunThreshold;
         p_VisionDistance = _mgr.SF_VisionDistance;
         p_AtkDistance = _mgr.SF_AttackDistance;
-        p_MeleeDistance = _mgr.SF_MeleeDistance;
+        p_MeleeRollDistance = _mgr.SF_MeleeRollDistance;
         p_GapDistance = _mgr.SF_GapDistance;
 
         p_HeadDmgMulti = _mgr.SF_HeadDmgMulti;
@@ -241,12 +239,14 @@ public class SpecialForce : BasicEnemy
         p_Roll_Cooldown = _mgr.SF_Roll_Cooldown;
         p_Roll_Speed_Multi = _mgr.SF_Roll_Speed_Multi;
 
+        p_Alert_Speed = _mgr.SF_AlertSpeed;
+        p_Alert_Fade_Speed = _mgr.SF_AlertFadeSpeed;
+
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
             EditorUtility.SetDirty(p_HeadHotBox);
             EditorUtility.SetDirty(p_BodyHotBox);
             EditorUtility.SetDirty(p_SingleRifleWeapon);
-            EditorUtility.SetDirty(p_MeleeWeapon);
         #endif
     }
 
