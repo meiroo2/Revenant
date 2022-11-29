@@ -31,9 +31,6 @@ public class Objective_TutoEnterDoor : Objective
 
 		m_InputMgr.p_MousePosLock = false;
 		m_InputMgr.p_MoveInputLock = false;
-		m_InputMgr.p_FireLock = false;
-		m_InputMgr.p_ReloadLock = false;
-		m_InputMgr.p_RollLock = false;
 		m_InputMgr.p_StairLock = false;
 
 		m_ObjUI.LerpUI(false);
