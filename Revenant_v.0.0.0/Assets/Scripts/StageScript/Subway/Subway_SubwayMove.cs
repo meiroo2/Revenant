@@ -5,29 +5,20 @@ using UnityEngine;
 
 public class Subway_SubwayMove : MonoBehaviour
 {
-    public Transform p_MoveDestTransform;
-    public float p_Speed = 1f;
+    public Transform EndTransform;
+    public float BrakingTime = 3.0f;
 
-    private float m_LerpVal = 0f;
-    private Vector2 m_StartPos;
-    private Vector2 m_EndPos;
+    private Vector2 vel = Vector2.zero;
 
     private Coroutine m_MoveCoroutine = null;
     
-    private void Awake()
-    {
-        m_StartPos = transform.position;
-        m_EndPos = m_StartPos;
-        m_EndPos.x = p_MoveDestTransform.position.x;
-    }
-
-    public void MoveToDest()
+    public void MoveToTargetTransform()
     {
         if (!ReferenceEquals(m_MoveCoroutine, null))
         {
             StopCoroutine(m_MoveCoroutine);
         }
-
+        
         m_MoveCoroutine = StartCoroutine(MoveEnumerator());
     }
 
@@ -35,16 +26,35 @@ public class Subway_SubwayMove : MonoBehaviour
     {
         while (true)
         {
-            transform.position = Vector2.Lerp(m_StartPos, m_EndPos, m_LerpVal);
-            m_LerpVal += Time.deltaTime * p_Speed;
+            transform.position = Vector2.SmoothDamp(transform.position, EndTransform.position, ref vel, BrakingTime);
 
-            if (m_LerpVal >= 1f)
+            if(IsReachedTargetTransform())
             {
-                m_LerpVal = 1f;
-                transform.position = Vector2.Lerp(m_StartPos, m_EndPos, m_LerpVal);
                 break;
             }
             yield return null;
         }
+    }
+
+    /** 액션용 함수 */
+    public void ArrivedTargetTransform()
+    {
+        Debug.Log("액션 부르기! ArrivedTargetTransform");
+
+        if(IsReachedTargetTransform())
+        {
+            // To do
+        }
+    }
+
+    private bool IsReachedTargetTransform()
+    {
+        if (Vector2.Distance(transform.position, EndTransform.position) <= 0.1f)
+        {
+            Debug.Log("TargetTransform에 도착");
+            return true;
+        }
+
+        return false;
     }
 }

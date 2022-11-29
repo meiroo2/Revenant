@@ -1,12 +1,11 @@
-﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-
-public class BoomBox_HotBox : MonoBehaviour, IHotBox
+public class Breakable_Hotbox : MonoBehaviour, IHotBox
 {
-    // Member Variables
-    [HideInInspector] public BoomBox m_BoomBox;
-
+    [HideInInspector] public Breakable Breakable;
+    
     // IHotBox Variables
     public GameObject m_ParentObj { get; set; }
     public int m_hotBoxType { get; set; } = 0;
@@ -19,12 +18,11 @@ public class BoomBox_HotBox : MonoBehaviour, IHotBox
     {
         m_ParentObj = this.gameObject;
     }
-
-
+    
     // Functions
     public int HitHotBox(IHotBoxParam _param)
     {
-        m_BoomBox.GetHit(_param.m_Damage);
+        Breakable.GetHit(_param.m_Damage);
         return 1;
     }
 }
