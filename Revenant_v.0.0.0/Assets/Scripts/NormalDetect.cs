@@ -7,6 +7,7 @@ public class NormalDetect : MonoBehaviour
     public Vector2 p_NormalVec;
 
     private RaycastHit2D m_RayHit;
+    
     void Update()
     {
         m_RayHit = Physics2D.Raycast(transform.position, -transform.up,

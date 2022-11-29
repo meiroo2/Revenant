@@ -11,10 +11,12 @@ public class TutorialDroneObject : TutorialObject
 	public float p_OffsetY;
 	public float p_FollowSpeed = 2;
 	public TutorialDialog p_TutorialDialog;
+	private Rigidbody2D rigidbody;
 
     protected override void Start()
     {
         player = FindObjectOfType<Player>().gameObject;
+		rigidbody = GetComponent<Rigidbody2D>();
 		Vector3 startPosition = transform.position;
 		startPosition.y = player.transform.position.y + p_OffsetY;
 		transform.position = startPosition;
@@ -30,7 +32,7 @@ public class TutorialDroneObject : TutorialObject
     /// </summary>
     public void FollowCharacter()
     {
-        Vector3 targetPosition = player.transform.position;
+        Vector2 targetPosition = player.transform.position;
 		targetPosition.y = player.transform.position.y + p_OffsetY;
 
 		if (player.transform.position.x - transform.position.x > 0)
@@ -46,7 +48,9 @@ public class TutorialDroneObject : TutorialObject
 
 		if (Mathf.Abs(player.transform.position.x - transform.position.x) > p_OffsetX)
 		{
-			transform.position = Vector3.MoveTowards(transform.position, targetPosition, p_FollowSpeed * Time.deltaTime);
+			Vector2 moveVector = targetPosition - (Vector2)transform.position;
+			moveVector.Normalize();
+			rigidbody.AddForce(moveVector * p_FollowSpeed, ForceMode2D.Force);
 		}
 	}
 }

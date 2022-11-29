@@ -7,9 +7,9 @@ using UnityEngine.Events;
 public class SubWay_RailTrigger : MonoBehaviour
 {
     public UnityEvent m_TriggerAction;
-    
+
     [ReadOnly] public bool m_IsUsed = false;
-   
+    
 
     private void OnTriggerEnter2D(Collider2D col)
     {

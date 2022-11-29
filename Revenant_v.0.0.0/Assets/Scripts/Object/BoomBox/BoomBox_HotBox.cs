@@ -6,8 +6,7 @@ public class BoomBox_HotBox : MonoBehaviour, IHotBox
 {
     // Member Variables
     [HideInInspector] public BoomBox m_BoomBox;
-    
-    
+
     // IHotBox Variables
     public GameObject m_ParentObj { get; set; }
     public int m_hotBoxType { get; set; } = 0;

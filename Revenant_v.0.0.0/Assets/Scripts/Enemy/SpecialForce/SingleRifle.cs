@@ -6,7 +6,7 @@ using UnityEngine;
 public class SingleRifle : BasicWeapon_Enemy
 {
  // Visible Member Variables
-    public float p_BulletRandomRotation = 5f;
+    public float p_BulletSpread = 5f;
     public float p_FireDelay = 0.05f;
     public ObjectPuller p_MuzFlashPuller;
     public Transform m_ShellPos;
@@ -46,7 +46,7 @@ public class SingleRifle : BasicWeapon_Enemy
         m_BulletParam.m_Rotation = m_Enemy_Arm.rotation;
         
         // 불릿 랜덤 로테이션
-        float randomRotation = Random.Range(-p_BulletRandomRotation, p_BulletRandomRotation);
+        float randomRotation = Random.Range(-p_BulletSpread, p_BulletSpread);
         m_BulletParam.m_Rotation = Quaternion.Euler(m_BulletParam.m_Rotation.eulerAngles.x,
             m_BulletParam.m_Rotation.eulerAngles.y, m_BulletParam.m_Rotation.eulerAngles.z + randomRotation);
         

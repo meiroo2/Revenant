@@ -36,7 +36,8 @@ public class ScreenEffect_UI : MonoBehaviour
     private Coroutine m_ColorDistortionCoroutine;
     private Coroutine m_VignetteCoroutine;
 
-    private ScreenEffect_AR m_ScreenEffect_AR;
+    private BulletTime_AR m_BulletTime_AR;
+    private RageGauge_UI m_RageGauge_UI;
     
     
     // Constructor
@@ -78,28 +79,16 @@ public class ScreenEffect_UI : MonoBehaviour
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
-        m_ScreenEffect_AR = instance.m_ScreenEffect_AR;
-        m_ScreenEffect_AR.p_FadeSpeed = p_AREffectSpeed;
+        m_BulletTime_AR = instance.m_BulletTime_AR;
+        m_RageGauge_UI = instance.m_RageGauge.p_RageGaugeUI;
+        //m_BulletTime_AR.p_FadeSpeed = p_AREffectSpeed;
     }
 
 
     // Updates
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            ActivateScreenColorDistortionEffect();
-            ActivateLensDistortEffect(0.15f);
-        }
-    }
 
 
     // Functions
-
-    public void ActivateAREffect(bool _isTrue)
-    {
-        m_ScreenEffect_AR.ActivateUsingFade(_isTrue);
-    }
 
     /// <summary>
     /// 카메라에 비네팅 효과를 부드럽게 넣거나 뻅니다.

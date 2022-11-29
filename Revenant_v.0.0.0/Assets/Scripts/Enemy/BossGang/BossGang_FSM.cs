@@ -91,6 +91,7 @@ public class Walk_BossGang : BossGang_FSM
         switch (m_Phase)
         {
             case 0:
+                // SANS
                 // For Ultimate
                 /*
                 if (m_Enemy.m_IsUltimateBooked == 1)
@@ -166,19 +167,8 @@ public class Walk_BossGang : BossGang_FSM
                 float jumpMax = m_Enemy.p_JumpAtk_Distance_Max;
                 float leapMin = m_Enemy.p_LeapAtk_Distance_Min;
                 
-                //SANS
-                int randomSans = UnityEngine.Random.Range(0, 2);
-                switch (randomSans)
-                {
-                    case 0:
-                        m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
-                        break;
-                    
-                    case 1:
-                        m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
-                        break;
-                }
-
+                // SANS
+                m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
                 break;
                 
                 if (distance <= jumpMax && distance < leapMin)
@@ -401,7 +391,9 @@ public class JumpAtk_BossGang : BossGang_FSM
                 m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
                 if (m_NormalTime >= 0.5f)
                 {
-                    m_Enemy.m_SEPuller.SpawnSimpleEffect(7, m_Enemy.transform.position);
+                    m_Enemy.m_SEPuller.SpawnSimpleEffect(10, new Vector2(m_Enemy.transform.position.x,
+                        m_Enemy.transform.position.y + 0.32f));
+                    
                     m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                     m_Phase = 1;
                 }
@@ -508,6 +500,7 @@ public class LeapAtk_BossGang : BossGang_FSM
     private int m_Phase = 0;
     private float m_Timer = 0f;
     private Transform m_EnemyTransform;
+    private Vector2 m_ColSpawnPos;
     private Vector2 m_LandPos;
     private readonly int Leap = Animator.StringToHash("Leap");
 
@@ -548,8 +541,14 @@ public class LeapAtk_BossGang : BossGang_FSM
                     m_Enemy.ResetRigid();
                     
                     // Leap 공중 포지션 결정
+                    m_ColSpawnPos = m_EnemyTransform.position;
+                    m_ColSpawnPos.x += m_Enemy.m_IsRightHeaded
+                        ? m_Enemy.p_LeapAtk_MoveDistance
+                        : -m_Enemy.p_LeapAtk_MoveDistance;
+                    
                     m_EnemyTransform.position = GetJumpPos();
-                    m_Enemy.p_LeapColMaster.SpawnCols(m_Enemy.m_IsRightHeaded, m_Enemy.m_Player.GetPlayerFootPos());
+                    
+                    m_Enemy.p_LeapColMaster.SpawnCols(m_Enemy.m_IsRightHeaded, m_ColSpawnPos);
                     break;
                 }
                 break;
@@ -576,19 +575,9 @@ public class LeapAtk_BossGang : BossGang_FSM
                     m_Enemy.p_LeapColMaster.ConvertSelectedCol();
                     
                     m_Phase = 3;
-
-                    Vector2 footPos = m_Enemy.m_Player.GetPlayerFootPos();
-                    if (m_Enemy.m_IsRightHeaded)
-                    {
-                        footPos.x += 1.5f;
-                    }
-                    else
-                    {
-                        footPos.x -= 1.5f;
-                    }
+                    
                    
-                    InstanceMgr.GetInstance().GetComponentInChildren<SimpleEffectPuller>()
-                        .SpawnSimpleEffect(9, footPos, m_Enemy.m_IsRightHeaded);
+                    m_Enemy.m_SEPuller.SpawnSimpleEffect(9, m_LandPos, m_Enemy.m_IsRightHeaded);
                 }
                 break;
             
@@ -608,6 +597,16 @@ public class LeapAtk_BossGang : BossGang_FSM
             
             case 4:
                 // Leap_End
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    m_Timer = 0f;
+                    m_Animator.SetInteger(Leap, 6);
+                    m_Phase = 5;
+                }
+                break;
+            
+            case 5:
+                // PocketToIdle
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
                     m_Timer = 0f;
@@ -765,27 +764,9 @@ public class Stealth_BossGang : BossGang_FSM
                 break;
             
             case 1:
-                //SANS
-                int randomSans = UnityEngine.Random.Range(0, 4);
-                switch (randomSans)
-                {
-                    case 0:
-                        m_Enemy.ChangeBossFSM(BossStateName.HOLO);
-                        break;
-                    
-                    case 1:
-                        m_Enemy.ChangeBossFSM(BossStateName.COUNTER);
-                        break;
-                    
-                    case 2:
-                        m_Enemy.ChangeBossFSM(BossStateName.JUMPATK);
-                        break;
-                    
-                    case 3:
-                        m_Enemy.ChangeBossFSM(BossStateName.ULTIMATE);
-                        break;
-                }
-               
+                // SANS
+                m_Enemy.ChangeBossFSM(BossStateName.COUNTER);
+                break; 
                 
                 // For Ultimate
                 /*
@@ -1027,7 +1008,7 @@ public class Holo_BossGang : BossGang_FSM
             
             case 9:
                 // HoloReal_Atk
-                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f)
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.3f)
                 {
                     m_Timer = 0f;
                     m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
@@ -1040,9 +1021,26 @@ public class Holo_BossGang : BossGang_FSM
                 // HoloReal_End
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
+                    m_Animator.SetInteger(Holo, -1);
+                    m_Phase = 11;
+                }
+                break;
+            
+            case 11:
+                // HoloReal_SwordToPocket
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
+                    m_Animator.SetInteger(Holo, -2);
+                    m_Phase = 12;
+                }
+                break;
+            
+            case 12:
+                // PocketToIdle
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                {
                     m_Animator.SetInteger(Holo, 0);
                     m_Enemy.ChangeBossFSM(BossStateName.WALK);
-
                     m_Phase = -1;
                 }
                 break;
@@ -1199,7 +1197,7 @@ public class Ultimate_BossGang : BossGang_FSM
                 else
                 {
                     m_Timer = 0f;
-                    m_Animator.SetInteger(Ult, 6);
+                    m_Animator.SetInteger(Ult, 0);
                     m_Phase = 8;
                 }
                 break;
@@ -1224,12 +1222,26 @@ public class Ultimate_BossGang : BossGang_FSM
                 break;
             
             case 6:
-                m_Animator.SetInteger(Ult, 5);
+                // 마지막인지 한번 더 해야 하는지 결정(Ult_Start 막프레임 상태)
                 m_Enemy.m_ScreenCaptureMgr.m_MoveImgEndAction = null;
+                
+                m_Timer = 0f;
+                m_Color = Color.white;
+                m_Color.a = 0f;
+                
+                if (m_UltimateCount < m_Enemy.p_Ultimate_RepeatCount)
+                {
+                    m_Animator.SetInteger(Ult, 5);
+                }
+                else
+                {
+                    m_Animator.SetInteger(Ult, 6);
+                }
                 m_Phase = 7;
                 break;
             
             case 7:
+                // Ult_End
                 m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
                 if (m_NormalTime >= 1f)
                 {
@@ -1237,26 +1249,22 @@ public class Ultimate_BossGang : BossGang_FSM
                     if (m_UltimateCount < m_Enemy.p_Ultimate_RepeatCount)
                     {
                         m_Animator.SetInteger(Ult, 3);
-                        m_Timer = 0f;
-                        m_Color = Color.white;
-                        m_Color.a = 0f;
                         m_Phase = 1;
                     }
                     else
                     {
                         m_Timer = 0f;
-                        m_Animator.SetInteger(Ult, 6);
+                        m_Animator.SetInteger(Ult, 7);
                         m_Phase = 8;
                     }
                 }
                 break;
             
             case 8:
-                m_Timer += Time.deltaTime;
-                if (m_Timer >= 1f)
+                // PocketToIdle
+                m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                if (m_NormalTime >= 1f)
                 {
-                    m_Timer = 0f;
-                    m_Animator.SetInteger(Ult, 0);
                     m_Enemy.ChangeBossFSM(BossStateName.WALK);
                     m_Phase = -1;
                 }
@@ -1418,6 +1426,27 @@ public class Counter_BossGang : BossGang_FSM
                 m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
                 if (m_NormalTime >= 1f)
                 {
+                    m_Animator.SetInteger(Counter, 5);
+                    m_Phase = 6;
+                }
+                break;
+            
+            case 6:
+                // To Pocket
+                m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                if (m_NormalTime >= 1f)
+                {
+                    m_Animator.SetInteger(Counter, 6);
+                    m_Phase = 7;
+                }
+                break;
+            
+            case 7:
+                // To Idle
+                m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                if (m_NormalTime >= 1f)
+                {
+                    m_Animator.SetInteger(Counter, 0);
                     m_Enemy.ChangeBossFSM(BossStateName.WALK);
                     m_Phase = -1;
                 }

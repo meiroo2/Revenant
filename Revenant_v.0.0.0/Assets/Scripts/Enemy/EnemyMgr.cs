@@ -77,15 +77,16 @@ public class EnemyMgr : MonoBehaviour
     public int SF_Hp;
     public int SF_BulletDamage;
     public float SF_BulletSpeed;
-    public float SF_BulletRandomRotation;
+    public float SF_BulletSpread;
+    public float SF_FireAnimSpeed;
     public float SF_FireDelay;
     public float SF_MoveSpeed;
-    public float SF_OnAlert_MoveSpeedMulti;
-    public float SF_StunTime;
+    public float SF_RunSpeedMulti;
+    public float SF_StunAlertSpeed;
     public int SF_StunThreshold;
     public float SF_VisionDistance;
     public float SF_AttackDistance;
-    public float SF_MeleeDistance;
+    public float SF_MeleeRollDistance;
     public float SF_GapDistance;
     public int SF_HeadDmgMulti;
     public int SF_BodyDmgMulti;
@@ -94,7 +95,8 @@ public class EnemyMgr : MonoBehaviour
     public int SF_Roll_Chance;
     public float SF_Roll_Cooldown;
     public float SF_Roll_Speed_Multi;
-    
+    public float SF_AlertSpeed;
+    public float SF_AlertFadeSpeed;
     
 
     // Member Variables
