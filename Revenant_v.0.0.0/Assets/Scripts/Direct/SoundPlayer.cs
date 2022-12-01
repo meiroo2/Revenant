@@ -14,7 +14,7 @@ public class SoundPlayer : MonoBehaviour
 
 
     // Member Variables
-    public static EventInstance m_BGMInstance;
+    public static EventInstance m_BGMInstance { get; private set; }
 
     // Constructors
     private void Awake()
@@ -26,14 +26,18 @@ public class SoundPlayer : MonoBehaviour
 
         if (state == FMOD.Studio.PLAYBACK_STATE.STOPPED)
         {
-            m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Shield");
+            m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Lab");
             m_BGMInstance.start();
         }
     }
 
     // Updates
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+            m_BGMInstance.setVolume(0f);
+    }
 
-    
     // Physics
 
 
@@ -74,6 +78,7 @@ public class SoundPlayer : MonoBehaviour
                 break;
             
             case 1:
+                // 소음기 소리
                 FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/P_Fire");
                 break;
             
@@ -82,10 +87,11 @@ public class SoundPlayer : MonoBehaviour
                 break;
             
             case 3: // 근접공격
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/P_Roll");
+                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/P_Slash");
                 break;
             
             case 4:
+                // Roll
                 FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/P_Roll");
                 break;
             
@@ -95,6 +101,21 @@ public class SoundPlayer : MonoBehaviour
             
             case 6:
                 FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/P_Stand");    
+                break;
+            
+            case 7:
+                // 저스트회피 시작
+                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/P_JustStart");  
+                break;
+            
+            case 8:
+                // Timescale 복구 트랜지션 사운드 시작
+                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/P_Repair");  
+                break;
+            
+            case 9:
+                // 우클릭 공격
+                  
                 break;
         }
     }
@@ -120,6 +141,286 @@ public class SoundPlayer : MonoBehaviour
 
         return eventInstance;
     }
+    
+    
+    /// <summary>
+    /// Enemy에 할당된 사운드를 재생합니다.
+    /// </summary>
+    /// <param name="_enemyNum">Norm, Melee, Drone, Shield</param>
+    /// <param name="_soundNum"></param>
+    /// <param name="_position"></param>
+    /// <param name="_matType"></param>
+    public void PlayEnemySound(int _enemyNum, int _soundNum, Vector2 _position, MatType _matType = MatType.Dirt)
+    {
+        EventInstance eventInstance;
+        
+        switch (_enemyNum)
+        {
+            case 0:
+                // NormalGang
+                eventInstance = GetNormalGangInstance(_soundNum, _matType);
+                eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(_position));
+                eventInstance.start();
+                eventInstance.release();
+                break;
+            
+            case 1:
+                // MeleeGang
+                eventInstance = GetMeleeGangInstance(_soundNum, _matType);
+                eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(_position));
+                eventInstance.start();
+                eventInstance.release();
+                break;
+            
+            case 2:
+                // DroneGang
+                eventInstance = GetDroneGangInstance(_soundNum, _matType);
+                eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(_position));
+                eventInstance.start();
+                eventInstance.release();
+                break;
+            
+            case 3:
+                // ShieldGang
+                eventInstance = GetShieldGangInstance(_soundNum, _matType);
+                eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(_position));
+                eventInstance.start();
+                eventInstance.release();
+                break;
+            
+            case 4:
+                // SpecialForce
+                eventInstance = GetSpecialForceInstance(_soundNum, _matType);
+                eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(_position));
+                eventInstance.start();
+                eventInstance.release();
+                break;
+        }
+    }
+
+    private EventInstance GetSpecialForceInstance(int _soundNum, MatType _matType)
+    {
+        EventInstance eventInstance = new EventInstance();
+
+        switch (_soundNum)
+        {
+            case 0:
+                // Walk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/SpecialForce/SF_Walk");
+                break;
+            
+            case 1:
+                // Roll
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/SpecialForce/SF_Roll");
+                break;
+            
+            case 2:
+                // Atk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/SpecialForce/SF_Atk");
+                break;
+            
+            case 3:
+                // Alert
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/Alert_Full");
+                break;
+        }
+        
+        return eventInstance;
+    }
+    
+    private EventInstance GetDroneGangInstance(int _soundNum, MatType _matType)
+    {
+        EventInstance eventInstance = new EventInstance();
+
+        switch (_soundNum)
+        {
+            case 0:
+                // Walk
+                break;
+            
+            case 1:
+                // Small Boom
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/DroneGang/DG_SBoom");
+                break;
+            
+            case 2:
+                // Big Boom
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/DroneGang/DG_BBoom");
+                break;
+        }
+        
+        return eventInstance;
+    }
+
+    private EventInstance GetNormalGangInstance(int _soundNum, MatType _matType)
+    {
+        EventInstance eventInstance = new EventInstance();
+
+        switch (_soundNum)
+        {
+            case 0:
+                // Walk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/NormalGang/NG_Walk");
+                
+                switch (_matType)
+                {
+                    case MatType.Dirt:
+                        eventInstance.setParameterByNameWithLabel("Texture", "Dirt");
+                        break;
+                    
+                    case MatType.Stone:
+                        eventInstance.setParameterByNameWithLabel("Texture", "Stone");
+                        break;
+                    
+                    case MatType.Metal:
+                        eventInstance.setParameterByNameWithLabel("Texture", "Metal");
+                        break;
+                }
+                break;
+            
+            case 1:
+                // Atk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/NormalGang/NG_Atk");
+                break;
+            
+            case 2:
+                // Melee Atk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/NormalGang/NG_Melee");
+                break;
+            
+            case 3:
+                // Melee Hit
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/NormalGang/NG_MeleeHit");
+                break;
+            
+            case 4:
+                // Pickup
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/NormalGang/NG_PickUp");
+                break;
+            
+            case 5:
+                // Alert Beep
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                        "event:/SFX/Enemy/Alert_Full");
+                break;
+            
+            case 6:
+                // Dead
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/NormalGang/NG_Dead");
+                break;
+
+        }
+        
+        return eventInstance;
+    }
+    
+    private EventInstance GetMeleeGangInstance(int _soundNum, MatType _matType)
+    {
+        EventInstance eventInstance = new EventInstance();
+
+        switch (_soundNum)
+        {
+            case 0:
+                // Walk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/MeleeGang/MG_Walk");
+                
+                switch (_matType)
+                {
+                    case MatType.Dirt:
+                        eventInstance.setParameterByNameWithLabel("Texture", "Dirt");
+                        break;
+                    
+                    case MatType.Stone:
+                        eventInstance.setParameterByNameWithLabel("Texture", "Stone");
+                        break;
+                    
+                    case MatType.Metal:
+                        eventInstance.setParameterByNameWithLabel("Texture", "Metal");
+                        break;
+                }
+                break;
+            
+            case 1:
+                // Atk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/MeleeGang/MG_Atk");
+                break;
+            
+            case 2:
+                // Bat Hit
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/MeleeGang/MG_AtkHit");
+                break;
+            
+            case 3:
+                // Dead
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/MeleeGang/MG_Dead");
+                break;
+        }
+        
+        return eventInstance;
+    }
+    
+    private EventInstance GetShieldGangInstance(int _soundNum, MatType _matType)
+    {
+        EventInstance eventInstance = new EventInstance();
+
+        switch (_soundNum)
+        {
+            case 0:
+                // Walk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/ShieldGang/SG_Walk");
+                break;
+            
+            case 1:
+                // Atk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/ShieldGang/SG_Atk");
+                break;
+            
+            case 2:
+                // Axe Hit
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/ShieldGang/SG_AtkHit");
+                break;
+            
+            case 3:
+                // Shield Hit
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/ShieldGang/SG_ShieldHit");
+                break;
+            
+            case 4:
+                // Shield Break;
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/ShieldGang/SG_ShieldBreak");
+                break;
+            
+            case 5:
+                // Dead
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/ShieldGang/SG_Dead");
+                break;
+        }
+        
+        return eventInstance;
+    }
+    
     
     public void PlayCommonSoundByMatType(int _idx, MatType _matType, Vector2 _position)
     {
@@ -163,6 +464,10 @@ public class SoundPlayer : MonoBehaviour
                         break;
                 }
                 break;
+            
+            case 2:
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance("event:/SFX/Enemy/ShieldGang/SG_Walk");
+                break;
         }
 
         return eventInstance;
@@ -184,6 +489,50 @@ public class SoundPlayer : MonoBehaviour
         eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(_position));
         eventInstance.start();
         eventInstance.release();
+    }
+
+    /// <summary>
+    /// 특정하게 붙여서 발동되는 사운드를 재생하고 돌려줍니다.
+    /// </summary>
+    /// <param name="_enemyNum"></param>
+    /// <param name="_soundNum"></param>
+    /// <param name="_toAttach"></param>
+    /// <returns></returns>
+    public EventInstance GetAttachedEnemySound(int _enemyNum, int _soundNum, Transform _toAttach)
+    {
+        EventInstance eventInstance;
+        
+        switch (_enemyNum)
+        {
+            case 0:
+                // NormalGang
+                
+                break;
+            
+            case 1:
+                // MeleeGang
+                
+                break;
+            
+            case 2:
+                // DroneGang
+                switch (_soundNum)
+                {
+                    case 0:
+                        eventInstance = FMODUnity.RuntimeManager.CreateInstance("event:/SFX/Enemy/DroneGang/DG_Fly");
+                        FMODUnity.RuntimeManager.AttachInstanceToGameObject(eventInstance, _toAttach);
+                        return eventInstance;
+                        break;
+                }
+                break;
+            
+            case 3:
+                // ShieldGang
+                break;
+        }
+
+        eventInstance = FMODUnity.RuntimeManager.CreateInstance(null);
+        return eventInstance;
     }
 
     private EventInstance GetHitSoundInstance(MatType _matType)
@@ -226,111 +575,14 @@ public class SoundPlayer : MonoBehaviour
                 else
                     FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Enemy/ShieldGang/E_Swing");
                 break;
-        }
-    }
-
-
-    /*
-    public void playPlayerSFXSound(int _num)
-    {
-        switch (_num)
-        {
-            case 0:  
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/Roll/Player_Roll");
-                break;
-            
-            case 1: 
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/GunTic/Player_GunTic");
-                break;
-            
-            case 2:   
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/GunReload/Player_GunReload");
-                break;
-            
-            case 3:   
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Enemy/BulletHit/Enemy_BulletHit_Body");
-                break;
-            
-            case 4:    
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Move/Walk/Walk_Dirt");
-                break;
-            
-            case 5:   
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/Sit Roll/Player_Sit");
-                break;
-            
-            case 6:   
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/Sit Roll/Player_Stand");
-                break;
-        }
-    }
-    public void playGunFireSound(int _num, GameObject _position)
-    {
-        switch (_num)
-        {
-            case 0:
-                FMODUnity.RuntimeManager.PlayOneShotAttached("event:/SFX/Player/P_Fire", _position);
-                break;
-            
-            case 1:
-                FMODUnity.RuntimeManager.PlayOneShotAttached("event:/SFX/Enemy/Gunshot_3bursts/Enemy_Gunshot_3bursts", _position);
-                break;
             
             case 2:
-                FMODUnity.RuntimeManager.PlayOneShotAttached("event:/SFX/Enemy/AttackClose/Enemy_AttackClose", _position);
+                // Slash Hit
+                if (_toAttach)
+                    FMODUnity.RuntimeManager.PlayOneShotAttached("event:/SFX/Enemy/Slash_Hit", _toAttach);
+                else
+                    FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Enemy/Slash_Hit");
                 break;
         }
     }
-    public void playGunFireSound(int _num, Vector2 _position)
-    {
-        FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/Gunshot/Player_Gunshot", _position);
-    }
-    public void playAttackedSound(MatType _matType, GameObject _position)
-    {
-        FMODUnity.RuntimeManager.PlayOneShotAttached("event:/SFX/Weapons/Bullet_Hit/Normal", _position);
-    }
-    public void playAttackedSound(MatType _matType, Vector2 _position)
-    {
-        switch (_matType)
-        {
-            case MatType.Normal:
-                //Debug.Log("사운드재생");
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Enemy/BulletHit/Enemy_BulletHit_Metal", _position);
-                break;
-
-            case MatType.Target_Head:
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Enemy/BulletHit/Enemy_BulletHit_Head", _position);
-                break;
-
-            case MatType.Target_Body:
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Enemy/BulletHit/Enemy_BulletHit_Body", _position);
-                break;
-        }
-    }
-    public void playSFXSound(int _input, Vector2 _position)
-    {
-        switch (_input)
-        {
-            case 0:
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Player/Shell/Player_Shell", _position);
-                break;
-        }
-    }
-
-    public void PlayUISound(int _input)
-    {
-        switch (_input)
-        {
-            case 0:  
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/UI/Hitmark_UI");
-                break;
-            
-            case 1:
-                FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/UI/Hitmark_UI1");
-                break;
-        }
-    }
-
-    // ??? ??????? ???? ???? ???? ???
-    */
 }

@@ -12,9 +12,12 @@ public class Enemy_FootMgr : MonoBehaviour
 
     private Vector2 m_TempVecForRay;
 
+    public MatType m_CurMatType { get; private set; } = MatType.Dirt;
+
     public Vector2 m_FootNormal { get; private set; }
     private Vector2 m_FootRayPos;
     private RaycastHit2D m_FootHit;
+    private RaycastHit2D m_InitFootHit;
     private int m_LayerMask;
     private bool m_IsOnStair = false;
     private StairPos m_StairPos = null;
@@ -58,8 +61,29 @@ public class Enemy_FootMgr : MonoBehaviour
                 break;
         }
 
-        m_FootHit = Physics2D.Raycast(m_FootRayPos, -transform.up, 0.3f, m_LayerMask);
+        m_InitFootHit = Physics2D.Raycast(m_FootRayPos, -transform.up, 0.3f, m_LayerMask);
 
+        if (!ReferenceEquals(m_FootHit.collider, null))
+        {
+            // 만약 방금 밟은 콜라이더랑 다를 경우
+            if (m_InitFootHit.collider != m_FootHit.collider)
+            {
+                if (m_InitFootHit.collider.TryGetComponent(out IMatType matType))
+                {
+                    m_CurMatType = matType.m_matType;
+                }
+                m_FootHit = m_InitFootHit;
+            }
+        }
+        else
+        {
+            m_FootHit = m_InitFootHit;
+            if (m_FootHit.collider.TryGetComponent(out IMatType _matType))
+            {
+                m_CurMatType = _matType.m_matType;
+            }
+        }
+        
         Debug.DrawRay(m_FootRayPos, -transform.up * 0.3f, Color.blue, 0.05f);
         m_FootNormal = m_FootHit.normal;
     }

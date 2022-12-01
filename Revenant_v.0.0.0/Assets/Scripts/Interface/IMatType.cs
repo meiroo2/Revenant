@@ -7,6 +7,7 @@ public enum MatType
     Normal,
     Dirt,
     Wood,
+    Stone,
     Metal,
     Flesh
 }

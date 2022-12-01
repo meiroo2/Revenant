@@ -140,6 +140,8 @@ public class SpecialForce : BasicEnemy
         
         m_CurEnemyStateName = EnemyStateName.IDLE;
         m_CurEnemyFSM = m_IDLE;
+
+        m_EnemyIdx = 4;
     }
 
     private void Start()
@@ -153,6 +155,7 @@ public class SpecialForce : BasicEnemy
         SetSpriteMode(0);
         
         m_CurEnemyFSM.StartState();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
     }
 
 

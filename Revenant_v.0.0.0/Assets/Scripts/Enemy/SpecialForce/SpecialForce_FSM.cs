@@ -305,6 +305,8 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
             m_WalkStartCheckElement =
                 m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(WalkStartCheck());
         }
+        
+        m_Enemy.StartWalkSound(true, 0.25f);
     }
 
     public override void UpdateState()
@@ -389,6 +391,7 @@ public class SpecialForce_FOLLOW : SpecialForce_FSM
         }
         
         m_Enemy.ResetRigid();
+        m_Enemy.StartWalkSound(false);
     }
 
     private IEnumerator MouseOnCheck()
@@ -488,6 +491,8 @@ public class SpecialForce_ROLL : SpecialForce_FSM
 
     public override void StartState()
     {
+        m_Enemy.m_SoundPlayer.PlayEnemySound(4,1,m_Enemy.transform.position);
+        
         m_Animator = m_Enemy.m_Animator;
         m_Enemy.SetHotBoxesActive(false);
         m_Enemy.SetSpriteMode(0);
@@ -679,6 +684,7 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             
             case 2:
                 // 아무튼 게이지를 다 채움
+                m_Enemy.m_SoundPlayer.PlayEnemySound(4,3,m_EnemyTransform.position);
                 FacePlayer();
                 
                 if (m_Distance <= m_Enemy.p_MeleeRollDistance)
@@ -790,6 +796,8 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             m_Enemy.p_ArmAnimator.SetInteger(Walk, 1);
 
             m_Enemy.SetRigidByDirection(m_Enemy.m_IsRightHeaded);
+            
+            m_Enemy.StartWalkSound(true, 0.5f);
         }
         else if (m_Distance > m_Enemy.p_GapDistance - m_MagicGap &&
                  m_Distance < m_Enemy.p_GapDistance + m_MagicGap)
@@ -802,6 +810,8 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             m_Enemy.p_ArmAnimator.SetInteger(Walk, 0);
 
             m_Enemy.ResetRigid();
+            
+            m_Enemy.StartWalkSound(false);
         }
         else if (m_Distance < m_Enemy.p_GapDistance - m_MagicGap)
         {
@@ -811,6 +821,8 @@ public class SpecialForce_ATTACK : SpecialForce_FSM
             m_Enemy.p_LegAnimator.SetInteger(Walk, -1);
             m_Enemy.p_ArmAnimator.SetInteger(Walk, 1);
             m_Enemy.SetRigidByDirection(!m_Enemy.m_IsRightHeaded);
+            
+            m_Enemy.StartWalkSound(true, 0.5f);
         }
     }
 
@@ -960,6 +972,8 @@ public class SpecialForce_DEAD : SpecialForce_FSM
     
     public override void StartState()
     {
+        m_Enemy.StartWalkSound(false);
+        
         m_Enemy.SetHotBoxesActive(false);
         
         m_Enemy.p_AlertSystem.gameObject.SetActive(false);

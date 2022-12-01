@@ -770,6 +770,8 @@ public class Player_BULLET_TIME : PlayerFSM
         m_SoundInstance = m_Player.m_SoundPlayer.GetPlayerSoundInstance(0);
         FMODUnity.RuntimeManager.AttachInstanceToGameObject(m_SoundInstance, m_PlayerTransform);
         m_SoundInstance.start();
+
+        FMODUnity.RuntimeManager.StudioSystem.setParameterByName("TimeScale", 1f);
     }
 
     public override void UpdateState()
@@ -793,6 +795,8 @@ public class Player_BULLET_TIME : PlayerFSM
                     
                     // 사운드 테스트
                     m_SoundInstance.keyOff();
+                    m_SoundInstance.release();
+                    m_Player.m_SoundPlayer.PlayPlayerSoundOnce(8);
                 }
                 break;
             
@@ -804,6 +808,7 @@ public class Player_BULLET_TIME : PlayerFSM
                     m_AniMgr.p_FullBody.SetAnim_Int("BulletTime", 3);
                     m_BulletTimeMgr.FireAll();
 
+                    
                     m_Phase = 2;
                 }
                 break;
@@ -819,6 +824,8 @@ public class Player_BULLET_TIME : PlayerFSM
 
     public override void ExitState()
     {
+        FMODUnity.RuntimeManager.StudioSystem.setParameterByName("TimeScale", 0f);
+
         m_Player.m_PlayerHotBox.gameObject.SetActive(true);
         
         m_Player.m_playerRotation.m_BanFlip = false;

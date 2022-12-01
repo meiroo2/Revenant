@@ -41,6 +41,7 @@ public class ShieldGang : BasicEnemy
     public float p_AtkHoldTime = 0.5f;
 
 
+    public WallSensor p_WallSensor;
     public RuntimeAnimatorController p_ShieldAnimator;
     public RuntimeAnimatorController p_NudeAnimator;
     public Transform p_HotBoxesTransform;
@@ -60,7 +61,8 @@ public class ShieldGang : BasicEnemy
     private ROTATION_ShieldGang m_ROTATION;
     private STUN_ShieldGang m_STUN;
     private HIT_ShieldGang m_HIT;
-    
+
+    public SoundPlayer m_SoundPlayer { get; private set; }
     public HitSFXMaker m_HitSFXMaker { get; private set; }
     public CoroutineHandler m_CoroutineHandler { get; private set; }
     public Shield m_Shield { get; private set; }
@@ -94,6 +96,7 @@ public class ShieldGang : BasicEnemy
         m_OriginPos = transform.position;
         m_PlayerTransform = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform;
         m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_HitSFXMaker = InstanceMgr.GetInstance().GetComponentInChildren<HitSFXMaker>();
         
         m_IDLE = new IDLE_ShieldGang(this);
@@ -166,6 +169,9 @@ public class ShieldGang : BasicEnemy
 
         if (p_Shield_Hp > 0)
         {
+            // Shield Hit
+            m_SoundPlayer.PlayEnemySound(3, 3, GetBodyCenterPos());
+            
             if (m_CurEnemyStateName is EnemyStateName.IDLE or EnemyStateName.FOLLOW)
                 ChangeEnemyFSM(EnemyStateName.HIT);
 
@@ -173,8 +179,10 @@ public class ShieldGang : BasicEnemy
         }
         else
         {
+            // Shield Break
             if (!m_IsShieldBroken)
             {
+                m_SoundPlayer.PlayEnemySound(3, 4, GetBodyCenterPos());
                 ChangeEnemyFSM(EnemyStateName.HIT);
             }
             
