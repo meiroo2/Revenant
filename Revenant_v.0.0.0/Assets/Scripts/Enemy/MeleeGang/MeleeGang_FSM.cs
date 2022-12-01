@@ -412,6 +412,8 @@ public class DEAD_MeleeGang : MeleeGang_FSM
     
     public override void StartState()
     {
+        m_Enemy.m_IsDead = true;
+        
         m_DeathSoundPlayed = false;
         m_Phase = 0;
         m_Time = 0f;

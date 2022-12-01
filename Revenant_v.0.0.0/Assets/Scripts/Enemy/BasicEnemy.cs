@@ -40,6 +40,8 @@ public class BasicEnemy : Human
     
 
     // Member Variables
+    public bool m_IsDead = false;
+    
     private RaycastHit2D m_NullHit;
     public SpriteRenderer m_Renderer { get; protected set; }
     private List<EnemySpawner> m_EnemySpawnerList = new List<EnemySpawner>();

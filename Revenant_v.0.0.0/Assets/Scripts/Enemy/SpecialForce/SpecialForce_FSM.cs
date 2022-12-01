@@ -972,6 +972,8 @@ public class SpecialForce_DEAD : SpecialForce_FSM
     
     public override void StartState()
     {
+        m_Enemy.m_IsDead = true;
+        
         m_Enemy.StartWalkSound(false);
         
         m_Enemy.SetHotBoxesActive(false);

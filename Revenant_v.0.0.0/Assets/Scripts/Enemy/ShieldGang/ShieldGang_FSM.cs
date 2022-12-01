@@ -677,6 +677,8 @@ public class DEAD_ShieldGang : ShieldGang_FSM
     
     public override void StartState()
     {
+        m_Enemy.m_IsDead = true;
+        
         m_EnemyAnimator = m_Enemy.m_Animator;
         
         m_Enemy.m_SoundPlayer.PlayEnemySound(3, 5, m_Enemy.GetBodyCenterPos());

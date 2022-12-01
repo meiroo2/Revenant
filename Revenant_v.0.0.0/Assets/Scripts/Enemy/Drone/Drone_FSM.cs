@@ -329,6 +329,8 @@ public class DEAD_Drone : Drone_FSM
     
     public override void StartState()
     {
+        m_Enemy.m_IsDead = true;
+        
         m_Enemy.m_FlySoundInstance.stop(STOP_MODE.ALLOWFADEOUT);
 
         m_CoroutineElement = null;

@@ -568,6 +568,8 @@ public class DEAD_NormalGang : NormalGang_FSM
 
     public override void StartState()
     {
+        m_Enemy.m_IsDead = true;
+        
         m_Enemy.m_SoundPlayer.PlayEnemySound(0,6,m_Enemy.transform.position);
         
         m_Enemy.SetHotBoxesActive(false);
