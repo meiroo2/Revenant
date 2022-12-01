@@ -350,6 +350,7 @@ public class BulletTimeMgr : MonoBehaviour
         float timer = 0f;
         float speed = 1.15f;
         
+        m_Player.m_SoundPlayer.PlayPlayerSoundOnce(7);
         while (true)
         {
             Time.timeScale /= speed;
@@ -361,7 +362,6 @@ public class BulletTimeMgr : MonoBehaviour
 
             yield return new WaitForSecondsRealtime(0.02f);
         }
-
         
         while (true)
         {

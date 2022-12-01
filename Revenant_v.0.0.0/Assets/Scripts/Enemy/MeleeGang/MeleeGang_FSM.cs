@@ -228,6 +228,8 @@ public class FOLLOW_MeleeGang : MeleeGang_FSM
                 m_Enemy.bMoveToUseStairDown = true;
         }
         
+        m_Enemy.StartWalkSound(true, 0.3f);
+        
         m_Phase = 0;
     }
 
@@ -265,6 +267,7 @@ public class FOLLOW_MeleeGang : MeleeGang_FSM
 
     public override void ExitState()
     {
+        m_Enemy.StartWalkSound(false);
         m_Enemy.ResetRigid();
     }
 
@@ -316,6 +319,9 @@ public class ATTACK_MeleeGang : MeleeGang_FSM
 
         // 애니메이터 -> 공격시작
         m_EnemyAnimator.SetInteger("Attack", 1);
+        
+        // 사운드 플레이
+        m_Enemy.m_SoundPlayer.PlayEnemySound(1, 1, m_Enemy.GetBodyCenterPos());
     }
 
     public override void UpdateState()
@@ -335,6 +341,7 @@ public class ATTACK_MeleeGang : MeleeGang_FSM
                 // AttackTiming에 공격판정
                 if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > m_Enemy.p_AttackTiming)
                 {
+                    //m_Enemy.m_SoundPlayer.PlayEnemySound(1, 2, m_Enemy.GetBodyCenterPos());
                     m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                     m_Phase = 1;
                 }
@@ -394,6 +401,7 @@ public class DEAD_MeleeGang : MeleeGang_FSM
     private float m_Time = 0f;
     private float m_Fade = 1f;
     private int m_Phase = 0;
+    private bool m_DeathSoundPlayed = false;
     
     // Constructor
     public DEAD_MeleeGang(MeleeGang _enemy)
@@ -401,9 +409,10 @@ public class DEAD_MeleeGang : MeleeGang_FSM
         m_Enemy = _enemy;
         m_EnemyAnimator = m_Enemy.GetComponentInChildren<Animator>();
     }
-
+    
     public override void StartState()
     {
+        m_DeathSoundPlayed = false;
         m_Phase = 0;
         m_Time = 0f;
         m_Fade = 1f;
@@ -451,6 +460,15 @@ public class DEAD_MeleeGang : MeleeGang_FSM
                 }
 
                 break;
+        }
+
+        if (!m_DeathSoundPlayed)
+        {
+            if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
+            {
+                m_DeathSoundPlayed = true;
+                m_Enemy.m_SoundPlayer.PlayEnemySound(1, 3, m_Enemy.GetBodyCenterPos());
+            }
         }
     }
 

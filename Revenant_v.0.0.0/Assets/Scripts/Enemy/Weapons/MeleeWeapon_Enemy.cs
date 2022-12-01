@@ -23,7 +23,7 @@ public class MeleeWeapon_Enemy : BasicWeapon_Enemy
     {
         if (m_HotBoxColliderList.Count <= 0)
             return 0;
-
+        
         float minDist = 999999f;
         int minIdx = 0;
         for (int i = 0; i < m_HotBoxColliderList.Count; i++)
@@ -35,7 +35,7 @@ public class MeleeWeapon_Enemy : BasicWeapon_Enemy
                 minIdx = i;
             }
         }
-
+        
         if (m_HotBoxColliderList[minIdx].TryGetComponent(out IHotBox hotBox))
         {
             hotBox.HitHotBox(new IHotBoxParam(10, 0, transform.position,
@@ -67,18 +67,18 @@ public class MeleeWeapon_Enemy : BasicWeapon_Enemy
     {
         if(col.TryGetComponent(out IHotBox hotBox))
         {
-            if (hotBox.m_isEnemys == false)
+            if (hotBox.m_isEnemys == false && hotBox.m_HitBoxInfo == HitBoxPoint.BODY)
             {
                 m_HotBoxColliderList.Add(col);
             }
         }
     }
-
+    
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.TryGetComponent(out IHotBox hotBox))
         {
-            if (hotBox.m_isEnemys == false)
+            if (hotBox.m_isEnemys == false && hotBox.m_HitBoxInfo == HitBoxPoint.BODY)
             {
                 m_HotBoxColliderList.Remove(other);
             }

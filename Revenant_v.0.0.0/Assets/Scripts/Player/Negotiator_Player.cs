@@ -10,9 +10,7 @@ public class Negotiator_Player : BasicWeapon_Player
     public Transform p_LaserStartPos;
     public ObjectPuller p_MuzFlashPuller;
     public Transform m_ShellPos;
-    public Sprite p_BulletSprite;
-    
-    
+
     // Member Variables
     private BulletLaserMgr m_BulletLaserMgr;
     private Player_HitscanRay m_PlayerHitscanRay;
@@ -47,7 +45,8 @@ public class Negotiator_Player : BasicWeapon_Player
         m_BulletLaserMgr = tempIns.GetComponentInChildren<BulletLaserMgr>();
         m_BulletTimeMgr = tempIns.GetComponentInChildren<BulletTimeMgr>();
         m_ParticleMgr = tempIns.GetComponentInChildren<ParticleMgr>();
-
+        m_BallLauncher = m_Player.m_BallLauncher;
+        
         m_PlayerUI = tempIns.m_MainCanvas.GetComponentInChildren<Player_UI>();
 
         m_PlayerUI.SetLeftRounds(m_LeftRounds);
@@ -200,6 +199,13 @@ public class Negotiator_Player : BasicWeapon_Player
 
         // UI 업데이트 필요
         m_PlayerUI.SetLeftRounds(m_LeftRounds);
+
+        if (m_Player.m_IsRightHeaded)
+            m_BallLauncher.LaunchBall(m_Player.m_ArmMgr.transform.position,m_Player.m_ArmMgr.transform.right);
+        else
+        {
+            m_BallLauncher.LaunchBall(m_Player.m_ArmMgr.transform.position,-m_Player.m_ArmMgr.transform.right);
+        }
     }
 
     private void MakeShell()

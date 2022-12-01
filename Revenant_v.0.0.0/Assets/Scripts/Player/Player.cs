@@ -90,6 +90,7 @@ public class Player : Human
     public ScreenEffect_UI m_ScreenEffectUI { get; private set; }
     public SimpleEffectPuller m_SimpleEffectPuller { get; private set; }
 
+    public BallLauncher m_BallLauncher { get; private set; }
     public ParticleMgr m_ParticleMgr { get; private set; }
     public Negotiator_Player m_Negotiator { get; private set; }
     public Player_WorldUI m_WorldUI { get; private set; }
@@ -150,6 +151,7 @@ public class Player : Human
         m_ArmMgr = GetComponentInChildren<Player_ArmMgr>();
         m_Negotiator = GetComponentInChildren<Negotiator_Player>();
         m_WorldUI = GetComponentInChildren<Player_WorldUI>();
+        m_BallLauncher = GetComponentInChildren<BallLauncher>();
 
         m_ObjectType = ObjectType.Player;
         m_ObjectState = ObjectState.Active;

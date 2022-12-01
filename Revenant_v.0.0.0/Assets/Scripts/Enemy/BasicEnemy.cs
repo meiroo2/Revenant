@@ -72,8 +72,46 @@ public class BasicEnemy : Human
     
     [HideInInspector] public List<Vector2> WayPointsVectorList;
     [HideInInspector] public int WayPointsIndex = 0;
+
+    public SoundPlayer m_SoundPlayer { get; protected set; }
+    protected int m_EnemyIdx = 0;
+    private Coroutine m_WalkSoundCoroutine = null;
+    private bool m_IsWalking = false;
     
     // Functions
+    
+    public virtual void StartWalkSound(bool _start, float _time = 1f)
+    {
+        if (_start && m_IsWalking)
+            return;
+        
+        if (!ReferenceEquals(m_WalkSoundCoroutine, null))
+        {
+            StopCoroutine(m_WalkSoundCoroutine);
+            m_WalkSoundCoroutine = null;
+        }
+
+        if (!_start)
+        {
+            m_IsWalking = false;
+            return;
+        }
+
+        m_IsWalking = true;
+        m_WalkSoundCoroutine = StartCoroutine(WalkSoundEnumerator(_time));
+    }
+
+    private IEnumerator WalkSoundEnumerator(float _time)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_time);
+            m_SoundPlayer.PlayEnemySound(m_EnemyIdx, 0, transform.position, m_Foot.m_CurMatType);
+        }
+        
+        yield break;
+    }
+    
     /// <summary>
     /// 적이 플레이어를 바라보고 있다면 True를 반환합니다.
     /// </summary>

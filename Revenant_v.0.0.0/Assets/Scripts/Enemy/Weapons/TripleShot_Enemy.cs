@@ -49,7 +49,7 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
     {
         m_LeftFire--;
         
-        m_SoundPlayer.PlayEnemySoundOnce(0, gameObject);
+        m_SoundPlayer.PlayEnemySound(0, 1, m_Enemy.transform.position);
 
         m_BulletParam.m_IsRightHeaded = m_Enemy.m_IsRightHeaded;
         m_BulletParam.m_Position = m_BulletPos.position;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using FMOD.Studio;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -35,6 +36,7 @@ public class IDLE_Drone : Drone_FSM
 {
     private float Timer = 0f;
     
+    
     public IDLE_Drone(Drone _enemy)
     {
         m_Enemy = _enemy;
@@ -43,7 +45,7 @@ public class IDLE_Drone : Drone_FSM
     
     public override void StartState()
     {
-        
+        m_Enemy.m_FlySoundInstance.start();
     }
 
     public override void UpdateState()
@@ -90,6 +92,8 @@ public class PATROL_Drone : Drone_FSM
     
     public override void StartState()
     {
+        m_Enemy.m_FlySoundInstance.start();
+        
         m_EnemyTransform = m_Enemy.transform;
         m_Animator = m_Enemy.m_Animator;
 
@@ -168,6 +172,8 @@ public class FOLLOW_Drone : Drone_FSM
     
     public override void StartState()
     {
+        m_Enemy.m_FlySoundInstance.start();
+        
         m_Animator = m_Enemy.m_Animator;
         m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
         m_Phase = 0;
@@ -323,6 +329,8 @@ public class DEAD_Drone : Drone_FSM
     
     public override void StartState()
     {
+        m_Enemy.m_FlySoundInstance.stop(STOP_MODE.ALLOWFADEOUT);
+
         m_CoroutineElement = null;
         m_Handler = GameMgr.GetInstance().p_CoroutineHandler;
 
@@ -333,6 +341,9 @@ public class DEAD_Drone : Drone_FSM
         switch (m_Enemy.m_DeadReason)
         {
             case 0: // 몸체 피격
+                m_Enemy.m_SoundPlayer.PlayEnemySound(2, 1, m_Enemy.transform.position);
+
+                
                 m_Enemy.m_SimpleEffectPuller.SpawnSimpleEffect(8, new Vector2(m_Enemy.transform.position.x,
                     m_Enemy.transform.position.y - 0.3f));
                 
@@ -345,6 +356,8 @@ public class DEAD_Drone : Drone_FSM
                 break;
             
             case 1: // 폭탄 피격
+                m_Enemy.m_SoundPlayer.PlayEnemySound(2, 1, m_Enemy.transform.position);
+
                 m_Enemy.m_SimpleEffectPuller.SpawnSimpleEffect(8, new Vector2(m_Enemy.transform.position.x,
                     m_Enemy.transform.position.y - 0.3f));
                 
@@ -357,6 +370,8 @@ public class DEAD_Drone : Drone_FSM
                 break;
             
             case 2: // 잘 폭발
+                m_Enemy.m_SoundPlayer.PlayEnemySound(2, 2, m_Enemy.transform.position);
+                
                 m_Enemy.m_SimpleEffectPuller.SpawnSimpleEffect(8, m_Enemy.transform.position);
                 m_Enemy.m_Renderer.sortingLayerName = "BackGround03";
                 m_Animator.SetInteger("Explode", 1);
