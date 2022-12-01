@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2404465247629175222}
-  - component: {fileID: 6820291714715964266}
+  - component: {fileID: 141535718011382000}
   m_Layer: 0
-  m_Name: BoomBox
+  m_Name: Breakable_BreakBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,7 +35,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6820291714715964266
+--- !u!114 &141535718011382000
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,12 +44,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2404465247629175223}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 110c13b29bca49f45a9b356efaa9de53, type: 3}
+  m_Script: {fileID: 11500000, guid: 47dfc4eba7f1ad94fa30f763d53a2021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HitCount: 1
-  Damage: 10
-  StunValue: 10
+  HitCount: 2
 --- !u!1 &2404465248269986424
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,7 +122,7 @@ SpriteRenderer:
   m_SortingLayerID: -141892607
   m_SortingLayer: 10
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1457594181, guid: 21234f74f1320c34e8d5f40388124a57, type: 3}
+  m_Sprite: {fileID: 313268518, guid: be3a09c28697f4e489b163281bea3a65, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -145,7 +143,7 @@ Animator:
   m_GameObject: {fileID: 2404465248269986424}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e2b4aee877d369242a5d6feae6730999, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8a6916f922ec6e24fac2e1da56444112, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -165,7 +163,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6939551353508335166}
   - component: {fileID: 6939551353508335167}
-  - component: {fileID: 4297562486103528492}
+  - component: {fileID: 5151856281421750150}
   m_Layer: 19
   m_Name: HotBox
   m_TagString: Untagged
@@ -214,7 +212,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.4}
   m_EdgeRadius: 0
---- !u!114 &4297562486103528492
+--- !u!114 &5151856281421750150
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
