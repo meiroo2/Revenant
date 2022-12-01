@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using FMOD;
+using FMOD.Studio;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -52,6 +53,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
     private Enemy_HotBox[] m_HotBoxes;
     public Enemy_WeaponMgr m_WeponMgr;
     public Drone_CrashCol m_CrashCol { get; private set; }
+    public SoundPlayer m_SoundPlayer { get; private set; }
 
     public SimpleEffectPuller m_SimpleEffectPuller { get; private set; }
 
@@ -70,6 +72,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
     private float m_VisionAngle = 0f;
     private static readonly int DetectSpeed = Animator.StringToHash("DetectSpeed");
 
+    public EventInstance m_FlySoundInstance;
 
     // Constructors
     public void Awake()
@@ -119,6 +122,8 @@ public class Drone : BasicEnemy, ISpriteMatChange
 
     public void Start()
     {
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
+        
         m_Animator.SetFloat(DetectSpeed, p_DetectSpeed);
         var instance = InstanceMgr.GetInstance();
         m_SimpleEffectPuller = InstanceMgr.GetInstance().GetComponentInChildren<SimpleEffectPuller>();
@@ -128,6 +133,8 @@ public class Drone : BasicEnemy, ISpriteMatChange
         m_CurEnemyFSM.StartState();
         
         m_WeponMgr.ChangeWeapon(0);
+        
+        m_FlySoundInstance = m_SoundPlayer.GetAttachedEnemySound(2, 0, transform);
     }
 
     private void OnEnable()

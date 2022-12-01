@@ -45,7 +45,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: fd9cada15a06cdd4ab5b347c766a79f9, type: 2}
+  m_Motion: {fileID: 7400000, guid: fd912e16ed0b7d94e94f6f633e9ce223, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -72,7 +72,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 44725a7f5c9912e4fb2411585ce9fd09, type: 2}
+  m_Motion: {fileID: 7400000, guid: 5bb25cf45a6caf445897139c3907fbbc, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -87,10 +87,10 @@ AnimatorController:
   m_Name: Breakable_OneHitBox_Controller
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Break
-    m_Type: 9
+  - m_Name: Hp
+    m_Type: 3
     m_DefaultFloat: 0
-    m_DefaultInt: 0
+    m_DefaultInt: 10
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
   m_AnimatorLayers:
@@ -114,8 +114,8 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Break
+  - m_ConditionMode: 6
+    m_ConditionEvent: Hp
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -6429604702406301866}

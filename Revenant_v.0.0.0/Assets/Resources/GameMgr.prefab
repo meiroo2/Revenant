@@ -145,12 +145,12 @@ MonoBehaviour:
   SF_Hp: 500
   SF_BulletDamage: 10
   SF_BulletSpeed: 10
-  SF_BulletRandomRotation: 2
+  SF_BulletSpread: 0
   SF_FireAnimSpeed: 3
   SF_FireDelay: 1
   SF_MoveSpeed: 0.5
-  SF_OnAlert_MoveSpeedMulti: 3
-  SF_StunTime: 0
+  SF_RunSpeedMulti: 0
+  SF_StunAlertSpeed: 0
   SF_StunThreshold: 20
   SF_VisionDistance: 2
   SF_AttackDistance: 1.5
@@ -163,6 +163,8 @@ MonoBehaviour:
   SF_Roll_Chance: 45
   SF_Roll_Cooldown: 0
   SF_Roll_Speed_Multi: 3
+  SF_AlertSpeed: 0
+  SF_AlertFadeSpeed: 0
 --- !u!114 &4718642478766582402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,7 +181,7 @@ MonoBehaviour:
   P_StunInvincibleTime: 1
   P_Speed: 1.1
   P_BackSpeedMulti: 0.55
-  P_RollSpeedMulti: 3.2
+  P_RollSpeedMulti: 3.1
   P_MeleeSpeedMulti: 11
   P_MeleeDamage: 20
   P_MeleeStunValue: 20

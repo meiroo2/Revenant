@@ -174,6 +174,10 @@ public class Player_ArmMgr : MonoBehaviour
         if(m_WeaponMgr.m_CurWeapon.m_LeftRounds <= 0)
             DoReload();
         
+        
+        FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BulletFull",
+            (float)m_WeaponMgr.m_CurWeapon.m_LeftRounds / 8f);
+        
         switch (m_WeaponMgr.m_CurWeapon.Fire())
         {
             case 0:

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -51,7 +53,17 @@ public class EnemyTracknAction : EnemySpawner
         if (allDead)
         {
             m_IsActivated = true;
-            p_WillExecute?.Invoke();
+
+            if (p_SpawnDelay <= 0f)
+                p_WillExecute?.Invoke();
+            else
+                StartCoroutine(WaitnExecute(p_WillExecute));
         }
+    }
+
+    private IEnumerator WaitnExecute(UnityEvent _event)
+    {
+        yield return new WaitForSeconds(p_SpawnDelay);
+        _event?.Invoke();
     }
 }

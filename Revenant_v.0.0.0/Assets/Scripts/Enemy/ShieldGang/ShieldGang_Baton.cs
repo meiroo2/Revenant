@@ -30,7 +30,7 @@ public class ShieldGang_Baton : BasicWeapon_Enemy
         for (int i = 0; i < m_HotBoxList.Count; i++)
         {
             m_HotBoxList[i].HitHotBox(new IHotBoxParam(p_BulletDamage, p_StunValue,
-                m_HotBoxList[i].m_ParentObj.transform.position, WeaponType.KNIFE));
+                m_HotBoxList[i].m_ParentObj.transform.position, WeaponType.AXE));
         }
         
         /*

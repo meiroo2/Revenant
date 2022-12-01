@@ -18,7 +18,8 @@ public class BasicWeapon_Player : BasicWeapon
     protected AimCursor m_AimCursor;
     protected Player m_Player;
     protected Player_UI m_PlayerUI;
-
+    protected BallLauncher m_BallLauncher;
+    
     public bool m_isReloading { get; protected set; }
     
     

@@ -18,6 +18,7 @@ public class TempParaBack : MonoBehaviour
     private Vector3 m_StandardPos;
     private Vector3 m_TransformOriginPos;
     private float m_XPosDifferenceBetStandard;
+    private bool m_IsFound = false;
     
     public float m_ParaValue = 0.1f;
 
@@ -28,10 +29,17 @@ public class TempParaBack : MonoBehaviour
         {
             Debug.Log("ERR : TempParaBack can't find m_StandardTransform");
         }
+        else
+        {
+            m_IsFound = true;
+        }
     }
 
     private void Start()
     {
+        if(!m_IsFound)
+            return;
+        
         m_MainCamTransform = Camera.main.transform;
         
         m_StandardPos = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform.position;
@@ -42,6 +50,9 @@ public class TempParaBack : MonoBehaviour
 
     private void Update()
     {
+        if(!m_IsFound)
+            return;
+        
         m_XPosDifferenceBetStandard = m_MainCamTransform.position.x - m_StandardTransform.position.x;
         m_CalculatedPos = m_TransformOriginPos;
         

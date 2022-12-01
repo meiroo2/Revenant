@@ -46,7 +46,6 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
     /// </summary>
     public int m_DeathReason { get; private set; } = 0;
 
-
     // Constructor
     private void Awake()
     {
@@ -81,6 +80,8 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
         
         // ISpriteMatChange
         InitISpriteMatChange();
+
+        m_EnemyIdx = 1;
     }
 
     private void Start()
@@ -88,6 +89,7 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
         m_OriginPos = transform.position;
 
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_PlayerTransform = m_Player.transform;
         m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
     }
@@ -104,6 +106,8 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
 
 
     // Functions
+
+
     public override void SetRigidByDirection(bool _isRight, float _addSpeed = 1f)
     {
         if (_isRight)

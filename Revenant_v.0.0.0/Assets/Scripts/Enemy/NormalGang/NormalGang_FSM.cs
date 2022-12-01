@@ -204,7 +204,7 @@ public class IDLE_NormalGang : NormalGang_FSM
 
 public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
 {
-    private Vector2 m_DistanceBetPlayer;
+    private float m_DistanceBetPlayer;
     private AnimatorStateInfo m_CurAnimState;
     private float m_StuckTimer = 0f;
     private int m_Phase = 0;
@@ -236,11 +236,13 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
             m_Phase = 0;
         else
             m_Phase = 3;
+        
+        m_Enemy.StartWalkSound(true, 0.5f);
     }
 
     public override void UpdateState()
     {
-        m_DistanceBetPlayer = m_Enemy.GetDistBetPlayer();
+        m_DistanceBetPlayer = m_Enemy.GetDistanceBetPlayer();
 
         switch (m_Phase)
         {
@@ -248,6 +250,10 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                 //_enemyState = EnemyState.Alert;
                 m_Enemy.m_Alert.SetAlertActive(true);
                 m_Animator.SetTrigger(IsChange);
+                
+                // Pickup Sound
+                m_Enemy.m_SoundPlayer.PlayEnemySound(0,4,m_Enemy.transform.position);
+                
                 m_Phase = 1;
                 break;
 
@@ -285,9 +291,10 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
                     m_Enemy.MoveToPlayer();
                 }
 
-                if (m_DistanceBetPlayer.magnitude < m_Enemy.p_AtkDistance)
+                if (m_DistanceBetPlayer < m_Enemy.p_AtkDistance)
                     m_Phase = 4;
                 break;
+            
             case 4: // 사정거리 도달
                 //_enemyState = EnemyState.Attack;
                 m_Enemy.ChangeEnemyFSM(EnemyStateName.ATTACK);
@@ -298,6 +305,8 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
 
     public override void ExitState()
     {
+        m_Enemy.StartWalkSound(false);
+        
         m_Animator.SetBool(IsWalk, false);
         m_Phase = 0;
     }
@@ -315,12 +324,6 @@ public class FOLLOW_NormalGang : NormalGang_FSM // 추격입니다
             NextPhase();
         }
     }
-
-    private void MoveTowardPlayer()
-    {
-        if (!(m_DistanceBetPlayer.magnitude > m_Enemy.p_AtkDistance)) return;
-        m_Enemy.SetRigidByDirection(!(m_DistanceBetPlayer.x > 0));
-    }
 }
 
 
@@ -328,7 +331,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
 {
     private readonly Transform m_EnemyTransform;
     private Transform m_PlayerTransform;
-    private Vector2 m_DistanceBetPlayer;
+    private float m_DistanceBetPlayer;
     private int m_Phase = 0;
     private int m_Angle = 0;
     private float m_Timer = 0.2f;
@@ -360,12 +363,8 @@ public class ATTACK_NormalGang : NormalGang_FSM
                 m_Enemy.bMoveToUseStairDown = true;
         }
 
-        m_DistanceBetPlayer = m_Enemy.GetDistBetPlayer();
-
-        if (m_DistanceBetPlayer.x > 0 && m_Enemy.m_IsRightHeaded == true)
-            m_Enemy.setisRightHeaded(false);
-        else if (m_DistanceBetPlayer.x < 0 && m_Enemy.m_IsRightHeaded == false)
-            m_Enemy.setisRightHeaded(true);
+        if (!m_Enemy.IsFacePlayer())
+            m_Enemy.setisRightHeaded(!m_Enemy.m_IsRightHeaded);
     }
 
     public override void UpdateState()
@@ -395,14 +394,27 @@ public class ATTACK_NormalGang : NormalGang_FSM
                 //Debug.Log("콜백 대기 느낌표 채움");
                 break;
 
-            case 2: // 근접공격 사거리 = 3, 총 사거리 = 4
-                m_Phase = m_Enemy.GetDistBetPlayer().magnitude <= m_Enemy.p_MeleeDistance ? 3 : 5;
+            case 2: // 근접공격 사거리 = 3, 총 사거리 = 5
+                if (m_Enemy.GetDistanceBetPlayer() <= m_Enemy.p_MeleeDistance)
+                {
+                    m_Enemy.m_SoundPlayer.PlayEnemySound(0,2,m_Enemy.transform.position);
+                    m_Animator.SetTrigger(Melee);
+                    m_Phase = 3;
+                }
+                else
+                {
+                    m_Enemy.m_SoundPlayer.PlayEnemySound(0,5,m_Enemy.transform.position);
+                    m_Phase = 5;
+                }
                 break;
 
             case 3: // 칼로 공격 
-                m_Animator.SetTrigger(Melee);
-                m_Enemy.p_MeleeWeapon.Fire();
-                m_Phase = 4;
+                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >=
+                    m_Enemy.p_MeleePointAtkTime)
+                {
+                    m_Enemy.p_MeleeWeapon.Fire();
+                    m_Phase = 4;
+                }
                 break;
 
             case 4: // 칼 공격 중(애니메이션 종료 대기)
@@ -438,7 +450,7 @@ public class ATTACK_NormalGang : NormalGang_FSM
             case 8: // 거리 재판별
                 m_Enemy.m_Alert.SetAlertFill(false);
                 m_Phase = 9;
-                if (m_Enemy.GetDistBetPlayer().magnitude > m_Enemy.p_AtkDistance)
+                if (m_Enemy.GetDistanceBetPlayer() > m_Enemy.p_AtkDistance)
                 {
                     m_Enemy.ChangeEnemyFSM(EnemyStateName.FOLLOW);
                 }
@@ -542,8 +554,12 @@ public class STUN_NormalGang : NormalGang_FSM
 
 public class DEAD_NormalGang : NormalGang_FSM
 {
+    // Member Variables
     private float m_Time = 3f;
-
+    private bool m_PlayDeadSound = false;
+    
+    
+    // Functions
     public DEAD_NormalGang(NormalGang _enemy)
     {
         m_Enemy = _enemy;
@@ -552,6 +568,8 @@ public class DEAD_NormalGang : NormalGang_FSM
 
     public override void StartState()
     {
+        m_Enemy.m_SoundPlayer.PlayEnemySound(0,6,m_Enemy.transform.position);
+        
         m_Enemy.SetHotBoxesActive(false);
         m_Enemy.m_Alert.gameObject.SetActive(false);
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;

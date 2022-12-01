@@ -85,6 +85,14 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                         );
                 
                 m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti, _param.m_stunValue);
+
+                switch (_param.m_weaponType)
+                {
+                    case WeaponType.KNIFE:
+                        m_SoundPlayer.PlayEnemySoundOnce(2, gameObject);
+                        break;
+                }
+                
                 break;
             
             case HitBoxPoint.BODY:
@@ -108,6 +116,14 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                     );
                 
                 m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti, _param.m_stunValue);
+                
+                switch (_param.m_weaponType)
+                {
+                    case WeaponType.KNIFE:
+                        m_SoundPlayer.PlayEnemySoundOnce(2, gameObject);
+                        break;
+                }
+                
                 break;
             
             case HitBoxPoint.COGNITION:

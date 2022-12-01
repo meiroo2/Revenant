@@ -20,6 +20,9 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
     public float p_MeleeDistance = 0.1f;
 
     [field: SerializeField, BoxGroup("NormalGang Values")]
+    public float p_MeleePointAtkTime = 0.5f;
+    
+    [field: SerializeField, BoxGroup("NormalGang Values")]
     public bool p_IsLookAround = false;
 
     [field: SerializeField, BoxGroup("NormalGang Values")]
@@ -59,6 +62,8 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
     private Vector2 m_DistBetPlayer;
     private Enemy_HotBox[] m_HotBoxes;
     public Transform m_GunPos { get; protected set; } = null;
+    
+    
 
     // Constructor
     private void Awake()
@@ -90,6 +95,8 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
         m_CurEnemyFSM = m_IDLE;
 
         InitISpriteMatChange();
+        
+        m_EnemyIdx = 0;
     }
 
     private void Start()
@@ -99,6 +106,7 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
         m_OriginPos = transform.position;
 
         var instance = InstanceMgr.GetInstance();
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerTransform = m_Player.transform;
         m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
@@ -212,12 +220,6 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
     {
         m_AngleBetPlayer = StaticMethods.getAnglePhase(m_GunPos.position,
             m_PlayerTransform.position, 3, p_AngleLimit);
-    }
-
-    public Vector2 GetDistBetPlayer()
-    {
-        return new Vector2(transform.position.x - m_PlayerTransform.position.x,
-            transform.position.y - m_PlayerTransform.position.y);
     }
 
     public override void ChangeEnemyFSM(EnemyStateName _name)

@@ -367,7 +367,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 492541667
-  m_SortingLayer: 19
+  m_SortingLayer: 20
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 85cf1dfd4a0a4bf45a40510d4d5fa0df, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -799,6 +799,9 @@ MonoBehaviour:
   p_ReloadSpeed: 1
   <p_JustEvadeNormalizeTime>k__BackingField: {x: 0, y: 1}
   p_JustEvadeStopTime: 0.1
+  m_BreathPivotPos: {x: 0, y: 0}
+  m_BreathDelay: 0.5
+  p_BreathEffectSceneIdxArr: 
   p_DeadProcess: {fileID: 5956622052202863798}
   <p_CenterTransform>k__BackingField: {fileID: 5349450568617132045}
   <p_LeftBullet_WUI>k__BackingField: {fileID: 358508849789631831}
@@ -1146,6 +1149,7 @@ GameObject:
   - component: {fileID: 6699025932563789977}
   - component: {fileID: 544675569204524179}
   - component: {fileID: 4288753431227060481}
+  - component: {fileID: 1774678747838161107}
   m_Layer: 12
   m_Name: Player_Arm
   m_TagString: Player
@@ -1225,6 +1229,22 @@ MonoBehaviour:
   - {fileID: 6699025932563789976}
   - {fileID: 1950669921304428607}
   m_PlayerAniMgr: {fileID: 6699025932106853853}
+--- !u!114 &1774678747838161107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6699025932563789979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9093be0f36a04a168bdddc66986bfd25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_Ball: {fileID: 1040234324813690685, guid: 6cbd22701a4c2c948971088eb9b049f9, type: 3}
+  p_ArrLength: 10
+  p_DeadTime: 1
+  p_Power: 10
 --- !u!1 &6699025933326278796
 GameObject:
   m_ObjectHideFlags: 0
@@ -1709,6 +1729,10 @@ PrefabInstance:
       propertyPath: p_BulletSpeed
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 4188078021910403264, guid: df3132bddb624964a98df92c9dcc9a7f, type: 3}
+      propertyPath: p_BallLauncher
+      value: 
+      objectReference: {fileID: 1774678747838161107}
     - target: {fileID: 4188078021910403264, guid: df3132bddb624964a98df92c9dcc9a7f, type: 3}
       propertyPath: p_BulletDamage
       value: 10

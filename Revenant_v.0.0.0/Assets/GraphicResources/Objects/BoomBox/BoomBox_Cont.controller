@@ -14,7 +14,7 @@ AnimatorStateMachine:
     m_Position: {x: 201.39984, y: 199.00217, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6429604702406301866}
-    m_Position: {x: 516.8162, y: 265.49533, z: 0}
+    m_Position: {x: 520, y: 260, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -87,12 +87,12 @@ AnimatorController:
   m_Name: BoomBox_Cont
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Explode
-    m_Type: 9
+  - m_Name: Hp
+    m_Type: 3
     m_DefaultFloat: 0
-    m_DefaultInt: 0
+    m_DefaultInt: 10
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -114,8 +114,8 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Explode
+  - m_ConditionMode: 6
+    m_ConditionEvent: Hp
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -6429604702406301866}

@@ -6,6 +6,7 @@ public enum WeaponType
     BULLET,
     GRENADE,
     KNIFE,
+    AXE,
     BULLET_TIME,
     MOUSE
 }
