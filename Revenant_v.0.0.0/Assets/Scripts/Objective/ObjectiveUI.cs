@@ -12,7 +12,8 @@ public class ObjectiveUI : MonoBehaviour
     public RectTransform m_UIRect;
     public TextMeshProUGUI m_TitleTxt;
     public TextMeshProUGUI[] m_ObjectiveTextArr = new TextMeshProUGUI[5];
-    public Image[] m_ProgressImgArr = new Image[5];
+	public Image[] m_ProgressImgArr = new Image[5];
+	public Image[] m_ClearEffectArr = new Image[5];
     
     
     
@@ -26,7 +27,7 @@ public class ObjectiveUI : MonoBehaviour
     private Vector2 m_OriginRectPos;
     private Vector2 m_OuterRectPos;
     private Coroutine m_LerpCoroutine;
-    
+    private bool isClearEffectOn = false;
     
     // Constructors
     private void Awake()
@@ -59,9 +60,15 @@ public class ObjectiveUI : MonoBehaviour
     private IEnumerator LerpUIEnumerator(bool _isPush, Action _action)
     {
         float timer = 0f;
+
+        while(isClearEffectOn)
+        {
+            yield return null;
+        }
+
         while (true)
         {
-            timer += Time.deltaTime * p_LerpSpeed;
+			timer += Time.deltaTime * p_LerpSpeed;
             if (_isPush)
             {
                 m_UIRect.anchoredPosition =
@@ -98,8 +105,30 @@ public class ObjectiveUI : MonoBehaviour
             return;
 
         m_ObjectiveTextArr[_idx].fontStyle = _isSuccess ? FontStyles.Strikethrough : FontStyles.Normal;
+
+        if (_isSuccess)
+            StartCoroutine(StartProceedSuccessEffect(_idx));
     }
     
+    IEnumerator StartProceedSuccessEffect(int _idx)
+    {
+        var mat = Instantiate(m_ClearEffectArr[_idx].material);
+        isClearEffectOn = true;
+		float timer = 0;
+		yield return null;
+
+		while (timer < 2)
+        {
+            timer += Time.deltaTime;
+			mat.SetFloat("_TutoUiTime", timer);
+            m_ClearEffectArr[_idx].material = mat;
+			yield return null;
+		}
+
+        isClearEffectOn = false;
+		yield break;
+	}
+
     /// <summary>
     /// Objective를 받아서 UI를 표기합니다.
     /// </summary>
@@ -118,7 +147,19 @@ public class ObjectiveUI : MonoBehaviour
             m_ObjectiveTextArr[i].text = m_CurObjective.m_ObjectiveTxtArr[i];
         }
 
-        m_Length = m_CurObjective.m_ObjectiveTxtArr.Length;
+		foreach (var obj in m_ObjectiveTextArr)
+		{
+			if (obj.text == "")
+			{
+				obj.transform.parent.gameObject.SetActive(false);
+			}
+            else
+			{
+				obj.transform.parent.gameObject.SetActive(true);
+			}
+		}
+
+		m_Length = m_CurObjective.m_ObjectiveTxtArr.Length;
         
         return 1;
     }
