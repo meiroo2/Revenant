@@ -15,6 +15,8 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
     private int GetEnemyNumFromEnemyList;
     private int GetEnemyNumFromSpawnerList;
 
+    private BasicEnemy EnemyListToActivateFromSpawner_Cast_BasicEnemy;
+
     private void Awake()
     {
         m_ObjProperty = UseableObjList.CHECKPOINT;
@@ -76,6 +78,11 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
             GetEnemyNumFromSpawnerList = _checkPoint.EnemyListFromSpawner.Count;
         else
             GetEnemyNumFromSpawnerList = 0;
+
+        foreach (var enemyListFromSpawner in _checkPoint.EnemyListFromSpawner)
+        {
+            EnemyListToActivateFromSpawner_Cast_BasicEnemy = enemyListFromSpawner.GetComponent<BasicEnemy>();
+        }
     }
 
     /** 적을 리스트에서 지우는 함수 */
@@ -115,7 +122,7 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
             for (int i = 0; i < GetEnemyNumFromSpawnerList; i++)
             {
                 // 적이 죽으면
-                if (_checkPoint.EnemyListFromSpawner.Count == GetEnemyNumFromSpawnerList && _checkPoint.EnemyListFromSpawner[i].gameObject.activeSelf == false)
+                if (_checkPoint.EnemyListFromSpawner.Count == GetEnemyNumFromSpawnerList && EnemyListToActivateFromSpawner_Cast_BasicEnemy.m_IsDead)
                 {
                     // 리스트에서 죽은 적을 제거
                     _checkPoint.EnemyListFromSpawner.RemoveAt(i);
