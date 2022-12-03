@@ -17,6 +17,8 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
     
     public float p_LineXScale = 3f;
     public float p_LineScaleSpeed = 2f;
+
+    public float p_LineMatSpeed = 1f;
     
     public float m_InitLerpedPos = 3.56f;
     
@@ -55,6 +57,7 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
     private static readonly int PivotY = Shader.PropertyToID("_PivotY");
 
     private float m_TimeSliceAngle;
+    private readonly int BossCutTime = Shader.PropertyToID("_BossCutTime");
 
     private void Awake()
     {
@@ -198,19 +201,23 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
         SpriteRenderer lineSprite = m_ScreenCaptureCanvas.m_LineSpriteForEffect;
         Transform lineTransform = lineSprite.transform;
         
-        Vector2 lineBigScale = m_ScreenCaptureCanvas.m_LineOriginScale;
-        lineBigScale.x *= p_LineXScale;
-        Vector2 lineEndScale = lineBigScale;
-        lineEndScale.x = 0f;
+        // 머터리얼 초기화
+        lineSprite.material.SetFloat(BossCutTime, 0f);
+        
+        Vector2 lineStartScale = m_ScreenCaptureCanvas.m_LineOriginScale;
+        lineStartScale.x *= p_LineXScale;
+        Vector2 lineEndScale = m_ScreenCaptureCanvas.m_LineOriginScale;
+   
         
         lineSprite.gameObject.SetActive(true);
 
-        lineTransform.localScale = lineBigScale;
+        lineTransform.localScale = lineStartScale;
         lineTransform.position = _linePos;
         lineTransform.rotation = Quaternion.Euler(0f,0f,_angle);
         
         
         float lerpVal = 0f;
+        // Scale First
         while (true)
         {
             yield return null;
@@ -218,15 +225,31 @@ public class ScreenCaptureEffectMgr : MonoBehaviour
             if (lerpVal < 1f)
             {
                 lerpVal += Time.unscaledDeltaTime * p_LineScaleSpeed;
-                
-                lineTransform.localScale = Vector2.Lerp(lineBigScale, lineEndScale, lerpVal);
-                lineSprite.color = Vector4.Lerp(blueColor, whiteColor, lerpVal);
+                lineTransform.localScale = Vector2.Lerp(lineStartScale, lineEndScale, lerpVal);
             }
             else
             {
                 lerpVal = 1f;
-                lineTransform.localScale = Vector2.Lerp(lineBigScale, lineEndScale, lerpVal);
-                lineSprite.color = Vector4.Lerp(blueColor, whiteColor, lerpVal);
+                lineTransform.localScale = Vector2.Lerp(lineStartScale, lineEndScale, lerpVal);
+                break;
+            }
+        }
+
+        lerpVal = 0f;
+        // Mat Last
+        while (true)
+        {
+            yield return null;
+            
+            if (lerpVal < 1f)
+            {
+                lerpVal += Time.unscaledDeltaTime * p_LineMatSpeed;
+                lineSprite.material.SetFloat(BossCutTime, lerpVal);
+            }
+            else
+            {
+                lerpVal = 1f;
+                lineSprite.material.SetFloat(BossCutTime, lerpVal);
                 break;
             }
         }

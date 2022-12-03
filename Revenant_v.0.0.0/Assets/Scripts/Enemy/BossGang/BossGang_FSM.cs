@@ -91,20 +91,16 @@ public class Walk_BossGang : BossGang_FSM
         switch (m_Phase)
         {
             case 0:
-                // SANS
-                // For Ultimate
-                /*
                 if (m_Enemy.m_IsUltimateBooked == 1)
                 {
                     m_Phase = -1;
                     m_Enemy.m_IsUltimateBooked = 2;
-                    m_Enemy.ChangeBossFSM(BossStateName.ULTIMATE);
+                    m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
                 }
                 else
                 {
                     m_Phase = 1;
                 }
-                */
                 m_Phase = 1;
                 break;
             
@@ -166,11 +162,7 @@ public class Walk_BossGang : BossGang_FSM
                 float distance = m_Enemy.GetDistanceBetPlayer();
                 float jumpMax = m_Enemy.p_JumpAtk_Distance_Max;
                 float leapMin = m_Enemy.p_LeapAtk_Distance_Min;
-                
-                // SANS
-                m_Enemy.ChangeBossFSM(BossStateName.STEALTH);
-                break;
-                
+
                 if (distance <= jumpMax && distance < leapMin)
                 {
                     // Jump만 가능
@@ -381,6 +373,8 @@ public class JumpAtk_BossGang : BossGang_FSM
         m_MovePoint.y += m_Enemy.p_JumpAtk_Height;
 
         m_Enemy.transform.position = m_MovePoint;
+        
+        m_Enemy.SetHotBoxesActive(true);
     }
 
     public override void UpdateState()
@@ -549,6 +543,8 @@ public class LeapAtk_BossGang : BossGang_FSM
                     m_EnemyTransform.position = GetJumpPos();
                     
                     m_Enemy.p_LeapColMaster.SpawnCols(m_Enemy.m_IsRightHeaded, m_ColSpawnPos);
+                    
+                    m_Enemy.SetHotBoxesActive(true);
                     break;
                 }
                 break;
@@ -575,9 +571,11 @@ public class LeapAtk_BossGang : BossGang_FSM
                     m_Enemy.p_LeapColMaster.ConvertSelectedCol();
                     
                     m_Phase = 3;
-                    
-                   
-                    m_Enemy.m_SEPuller.SpawnSimpleEffect(9, m_LandPos, m_Enemy.m_IsRightHeaded);
+
+                    if (m_Enemy.p_LeapColMaster.IsSelectedShort())
+                        m_Enemy.m_SEPuller.SpawnSimpleEffect(12, m_LandPos, m_Enemy.m_IsRightHeaded);
+                    else
+                        m_Enemy.m_SEPuller.SpawnSimpleEffect(9, m_LandPos, m_Enemy.m_IsRightHeaded);
                 }
                 break;
             
@@ -764,12 +762,6 @@ public class Stealth_BossGang : BossGang_FSM
                 break;
             
             case 1:
-                // SANS
-                m_Enemy.ChangeBossFSM(BossStateName.COUNTER);
-                break; 
-                
-                // For Ultimate
-                /*
                 if (m_Enemy.m_IsUltimateBooked == 2)
                 {
                     m_Phase = -1;
@@ -779,8 +771,6 @@ public class Stealth_BossGang : BossGang_FSM
                 {
                     m_Phase = 2;
                 }
-                */
-                m_Phase = 2;
                 break;
             
             case 2:
@@ -1057,6 +1047,7 @@ public class Holo_BossGang : BossGang_FSM
     private void GotoStun()
     {
         m_Animator.SetInteger(Holo, 6);
+        m_Animator.Play("Stun", -1, 0f);
         m_DoUpdate = false;
         m_Enemy.ChangeBossFSM(BossStateName.STUN);
     }
@@ -1532,25 +1523,13 @@ public class DEAD_BossGang : BossGang_FSM
         m_Phase = 0;
         m_Color = Color.white;
 
+        m_Enemy.m_Animator.SetInteger("Dead", 1);
         m_Enemy.SetHotBoxesActive(false);
     }
 
     public override void UpdateState()
     {
-        switch (m_Phase)
-        {
-            case 0:
-                m_Color.a -= Time.deltaTime * m_Enemy.p_Stealth_Speed;
-                m_Enemy.m_Renderer.color = m_Color;
-                if (m_Color.a <= 0f)
-                {
-                    m_Phase = -1;
-                    m_Color.a = 0f;
-                    m_Enemy.m_Renderer.color = m_Color;
-                    m_Enemy.gameObject.SetActive(false);
-                }
-                break;
-        }
+        
     }
 
     public override void ExitState()

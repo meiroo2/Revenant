@@ -555,9 +555,11 @@ public class STUN_NormalGang : NormalGang_FSM
 public class DEAD_NormalGang : NormalGang_FSM
 {
     // Member Variables
-    private float m_Time = 3f;
+    private float m_Time = 0f;
     private bool m_PlayDeadSound = false;
-    
+    private float m_FadeValue = 1f;
+    private readonly int Fade = Shader.PropertyToID("_Fade");
+    private Color m_WhiteColor;
     
     // Functions
     public DEAD_NormalGang(NormalGang _enemy)
@@ -568,6 +570,9 @@ public class DEAD_NormalGang : NormalGang_FSM
 
     public override void StartState()
     {
+        m_WhiteColor = Color.white;
+        m_FadeValue = 1f;
+        m_Time = 0f;
         m_Enemy.m_IsDead = true;
         
         m_Enemy.m_SoundPlayer.PlayEnemySound(0,6,m_Enemy.transform.position);
@@ -580,9 +585,36 @@ public class DEAD_NormalGang : NormalGang_FSM
 
     public override void UpdateState()
     {
-        m_Time -= Time.deltaTime;
-        if (m_Time <= 0f)
-            m_Enemy.gameObject.SetActive(false);
+        if (m_Time < 3f)
+        {
+            m_Time += Time.deltaTime;
+            return;
+        }
+        
+        switch (m_Enemy.m_DeadReasonForMat)
+        {
+            case 0:
+                // 노말 사망
+                m_Enemy.m_Renderer.color = m_WhiteColor;
+                
+                m_WhiteColor.a -= Time.deltaTime;
+                if(m_WhiteColor.a <= 0f)
+                    m_Enemy.gameObject.SetActive(false);
+                break;
+            
+            case 1:
+                // 불릿타임 사망(머터리얼은 이미 교체됨)
+                if (m_Enemy.m_CurSpriteMatType is SpriteMatType.ORIGIN or SpriteMatType.DISAPPEAR)
+                {
+                    m_Enemy.m_Renderer.material.SetFloat(Fade, m_FadeValue);
+                    m_FadeValue -= Time.deltaTime;
+                    if (m_FadeValue <= 0f)
+                    {
+                        m_Enemy.gameObject.SetActive(false);
+                    }
+                }
+                break;
+        }
     }
 
     public override void ExitState()

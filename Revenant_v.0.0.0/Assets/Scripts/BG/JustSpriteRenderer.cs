@@ -6,11 +6,12 @@ using UnityEngine.Tilemaps;
 public class JustSpriteRenderer : MonoBehaviour, ISpriteMatChange
 {
     // Member Variables
-    public SpriteRenderer p_Renderer;
+    private SpriteRenderer p_Renderer;
     
     // Constructors
     private void Awake()
     {
+        p_Renderer = GetComponent<SpriteRenderer>();
         InitISpriteMatChange();
     }
 
@@ -23,6 +24,7 @@ public class JustSpriteRenderer : MonoBehaviour, ISpriteMatChange
     [field: SerializeField, BoxGroup("ISpriteMatChange")] public Material p_BnWMat { get; set; }
     [field: SerializeField, BoxGroup("ISpriteMatChange")] public Material p_RedHoloMat { get; set; }
     [field: SerializeField, BoxGroup("ISpriteMatChange")] public Material p_DisappearMat { get; set; }
+    
     
     public void ChangeMat(SpriteMatType _matType)
     {

@@ -958,7 +958,14 @@ public class SpecialForce_STUN : SpecialForce_FSM
 public class SpecialForce_DEAD : SpecialForce_FSM
 {
     // Member Variables
-    private CoroutineElement m_DeadAnimCheckElement;
+    private float m_Time = 0f;
+    private int m_Phase = 0;
+    private bool m_DeathSoundPlayed = false;
+    
+    private Color m_WhiteColor = Color.white;
+    
+    private float m_FadeValue = 1f;
+    private readonly int Fade = Shader.PropertyToID("_Fade");
     
     // Hash Variables
     private readonly int Dead = Animator.StringToHash("Dead");
@@ -973,6 +980,7 @@ public class SpecialForce_DEAD : SpecialForce_FSM
     public override void StartState()
     {
         m_Enemy.m_IsDead = true;
+        m_Time = 0f;
         
         m_Enemy.StartWalkSound(false);
         
@@ -980,59 +988,58 @@ public class SpecialForce_DEAD : SpecialForce_FSM
         
         m_Enemy.p_AlertSystem.gameObject.SetActive(false);
         m_Enemy.SetSpriteMode(1);
+        
         m_Enemy.p_FullAnimator.SetInteger(Dead, 1);
-
-        m_DeadAnimCheckElement = null;
-        m_DeadAnimCheckElement = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(CheckAnim());
     }
 
     public override void UpdateState()
     {
-       
+        /*
+        if (!m_DeathSoundPlayed)
+        {
+            if (m_Enemy.p_FullAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
+            {
+                m_DeathSoundPlayed = true;
+                m_Enemy.m_SoundPlayer.PlayEnemySound(1, 3, m_Enemy.GetBodyCenterPos());
+            }
+        }
+        */
+        
+        if (m_Time < 3f)
+        {
+            m_Time += Time.deltaTime;
+            return;
+        }
+
+        switch (m_Enemy.m_DeadReasonForMat)
+        {
+            case 0:
+                // 노말 사망
+                m_Enemy.m_Renderer.color = m_WhiteColor;
+                
+                m_WhiteColor.a -= Time.deltaTime;
+                if(m_WhiteColor.a <= 0f)
+                    m_Enemy.gameObject.SetActive(false);
+                break;
+            
+            case 1:
+                // 불릿타임 사망(머터리얼은 이미 교체됨)
+                if (m_Enemy.m_CurSpriteMatType is SpriteMatType.ORIGIN or SpriteMatType.DISAPPEAR)
+                {
+                    m_Enemy.m_Renderer.material.SetFloat(Fade, m_FadeValue);
+                    m_FadeValue -= Time.deltaTime;
+                    if (m_FadeValue <= 0f)
+                    {
+                        m_Enemy.gameObject.SetActive(false);
+                    }
+                }
+                break;
+        }
     }
 
     public override void ExitState()
     {
-        if (!ReferenceEquals(m_DeadAnimCheckElement, null))
-        {
-            m_DeadAnimCheckElement.StopCoroutine_Element();
-            m_DeadAnimCheckElement = null;
-        }
-    }
-
-    private IEnumerator CheckAnim()
-    {
-        Animator fullAnimator = m_Enemy.p_FullAnimator;
-        while (true)
-        {
-            yield return null;
-
-            if (fullAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
-            {
-                break;
-            }
-        }
-
-        SpriteRenderer renderer = m_Enemy.p_FullRenderer;
-        Color color = Color.white;
         
-        while (true)
-        {
-            yield return null;
-
-            color.a -= Time.deltaTime;
-
-            if (color.a <= 0f)
-            {
-                color.a = 0f;
-                renderer.color = color;
-                break;
-            }
-            
-            renderer.color = color;
-        }
-        
-        m_Enemy.gameObject.SetActive(false);
     }
 }
 

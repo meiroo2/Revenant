@@ -192,7 +192,7 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
             EditorUtility.SetDirty(meleeWeapon);
         #endif
     }
-    public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
+    public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue, WeaponType _weaponType)
     {
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
@@ -210,6 +210,15 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
         
         if (p_Hp <= 0)
         {
+            // 불릿타임으로 막타 맞아서 사망 시
+            if (_weaponType == WeaponType.BULLET_TIME)
+            {
+                m_DeadReasonForMat = 1;
+                p_OriginalMat = p_DisappearMat;
+                
+                ChangeMat(SpriteMatType.DISAPPEAR);
+            }
+            
             if (_point == HitBoxPoint.HEAD)
                 m_DeathReason = 1;
             else if (_point == HitBoxPoint.BODY)
@@ -311,19 +320,23 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
         switch (_matType)
         {
             case SpriteMatType.ORIGIN:
+                m_CurSpriteMatType = SpriteMatType.ORIGIN;
                 m_Renderer.material = p_OriginalMat;
                 break;
             
             case SpriteMatType.BnW:
+                m_CurSpriteMatType = SpriteMatType.BnW;
                 m_Renderer.material = p_BnWMat;
                 break;
             
             case SpriteMatType.REDHOLO:
+                m_CurSpriteMatType = SpriteMatType.REDHOLO;
                 m_MatTimeCoroutine = StartCoroutine(MatTimeInput());
                 m_Renderer.material = p_RedHoloMat;
                 break;
             
             case SpriteMatType.DISAPPEAR:
+                m_CurSpriteMatType = SpriteMatType.DISAPPEAR;
                 m_Renderer.material = p_DisappearMat;
                 break;
         }

@@ -12,14 +12,18 @@ public class TimeSliceObj : MonoBehaviour
     public TimeSliceBullet p_Bullet;
     public TimeSliceCircleCol p_CircleCol;
     
-    public SpriteRenderer p_Renderer;
+    public SpriteRenderer p_FrontCutRenderer;
     public Collider2D p_FloorCol;
     public Collider2D p_BulletCol;
+    
+    public Material p_FrontCutMaterial;
 
     [Title("CirclePoint")]
     public Transform p_CircleTransform;
     
     // Member Variables
+    private Material m_UnlitMat;
+    
     private float m_MoveSpeed = 1f;
     private float m_ColorSpeed = 1f;
     private float m_RemainTime = 1f;
@@ -35,23 +39,26 @@ public class TimeSliceObj : MonoBehaviour
     private Coroutine m_LifeCycleCoroutine = null;
     private Coroutine m_FollowCoroutine = null;
     private Coroutine m_ColorCoroutine = null;
+    private Coroutine m_FadeInOnFireCoroutine = null;
 
     public Action m_OnHitAction = null;
-    
+    private readonly int ShadowTime = Shader.PropertyToID("_ShadowTime");
+
     // Constructors
     private void Awake()
     {
+        m_UnlitMat = p_FrontCutRenderer.material;
+        
         m_Cam = Camera.main;
         m_CamMgr = m_Cam.GetComponent<CameraMgr>();
         
         p_FloorCol.enabled = false;
         p_BulletCol.enabled = true;
         m_FollowCoroutine = null;
-        m_Color = Color.white;
+        m_Color = Color.red;
         m_Color.a = 0f;
         
-        
-        p_Renderer.color = m_Color;
+        p_FrontCutRenderer.color = m_Color;
     }
 
     /// <summary>
@@ -86,10 +93,11 @@ public class TimeSliceObj : MonoBehaviour
         
         p_FloorCol.enabled = false;
         p_BulletCol.enabled = true;
-        m_Color = Color.white;
+        m_Color = Color.red;
         m_Color.a = 0f;
 
-        p_Renderer.color = m_Color;
+        p_FrontCutRenderer.material = m_UnlitMat;
+        p_FrontCutRenderer.color = m_Color;
     }
     
     
@@ -117,6 +125,10 @@ public class TimeSliceObj : MonoBehaviour
     {
         if (m_IsFired)
             return;
+
+        p_FrontCutRenderer.material = p_FrontCutMaterial;
+        p_FrontCutRenderer.material.SetFloat(ShadowTime, 0f);
+        p_FrontCutRenderer.color = Color.white;
         
         m_IsFired = true;
         p_Bullet.Fire();
@@ -124,6 +136,14 @@ public class TimeSliceObj : MonoBehaviour
         p_FloorCol.enabled = true;
 
         m_LifeCycleCoroutine = StartCoroutine(LifeCycle());
+
+        // Cut하고 천천히 들어오는 알파값
+        if (!ReferenceEquals(m_FadeInOnFireCoroutine, null))
+        {
+            StopCoroutine(m_FadeInOnFireCoroutine);
+            m_FadeInOnFireCoroutine = null;
+        }
+        m_FadeInOnFireCoroutine = StartCoroutine(FadeInOnFireEnumerator());
     }
     
     public void StartFollow()
@@ -147,22 +167,22 @@ public class TimeSliceObj : MonoBehaviour
         }
         m_Color = Color.yellow;
         m_Color.a = 1f;
-        p_Renderer.color = m_Color;
+        p_FrontCutRenderer.color = m_Color;
     }
     
     private IEnumerator ColorChanging()
     {
         m_Color.a = 0f;
-        p_Renderer.color = m_Color;
+        p_FrontCutRenderer.color = m_Color;
         while (true)
         {
             m_Color.a += Time.deltaTime * m_ColorSpeed;
-            p_Renderer.color = m_Color;
+            p_FrontCutRenderer.color = m_Color;
 
             if (m_Color.a >= 1f)
             {
                 m_Color.a = 1f;
-                p_Renderer.color = m_Color;
+                p_FrontCutRenderer.color = m_Color;
                 break;
             }
 
@@ -176,7 +196,6 @@ public class TimeSliceObj : MonoBehaviour
     
     private IEnumerator Following()
     {
-        
         while (true)
         {
             /*
@@ -195,9 +214,54 @@ public class TimeSliceObj : MonoBehaviour
         yield break;
     }
 
+    /// <summary>
+    /// World에 생성되는 TimeSlice를 생성하되 Alpha값으로 천천히 들어오게 함.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator FadeInOnFireEnumerator()
+    {
+        Color whiteColor = Color.white;
+        whiteColor.a = 0f;
+        p_FrontCutRenderer.color = whiteColor;
+        
+        yield return new WaitForSecondsRealtime(1.3f);
+
+        while (true)
+        {
+            p_FrontCutRenderer.color = whiteColor;
+            whiteColor.a += Time.deltaTime;
+
+            if (whiteColor.a >= 1f)
+            {
+                whiteColor.a = 1f;
+                p_FrontCutRenderer.color = whiteColor;
+                break;
+            }
+            yield return null;
+        }
+        
+        yield break;
+    }
+    
     private IEnumerator LifeCycle()
     {
         yield return new WaitForSeconds(m_RemainTime);
+
+        float matVal = 0f;
+        while (true)
+        {
+            p_FrontCutRenderer.material.SetFloat(ShadowTime, matVal);
+            matVal += Time.deltaTime;
+            
+            if (matVal >= 1f)
+            {
+                matVal = 1f;
+                p_FrontCutRenderer.material.SetFloat(ShadowTime, matVal);
+                break;
+            }
+            yield return null;
+        }
+        
         transform.parent = p_TimeSliceMgr.transform;
         gameObject.SetActive(false);
     }
