@@ -62,7 +62,9 @@ public class Enemy_FootMgr : MonoBehaviour
         }
 
         m_InitFootHit = Physics2D.Raycast(m_FootRayPos, -transform.up, 0.3f, m_LayerMask);
-
+        if(ReferenceEquals(m_InitFootHit.collider, null))
+            return;
+        
         if (!ReferenceEquals(m_FootHit.collider, null))
         {
             // 만약 방금 밟은 콜라이더랑 다를 경우

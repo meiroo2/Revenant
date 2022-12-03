@@ -61,86 +61,93 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
     
     public int HitHotBox(IHotBoxParam _param)
     {
-       // Debug.Log("Heaqd Hit"+ p_HitBoxPoint);
-        switch (p_HitBoxPoint)
+        if (p_HitBoxPoint == HitBoxPoint.HEAD)
         {
-            case HitBoxPoint.HEAD:
-                if (_param.m_weaponType == WeaponType.MOUSE)
-                    return 0;
-                    
-                if (_param.m_weaponType != WeaponType.BULLET_TIME)
+            switch (_param.m_weaponType)
+            {
+                case WeaponType.BULLET_TIME:
+                    m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
+                    break;
+                
+                case WeaponType.BULLET:
                     m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
-                else
-                {
-                    m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
-                }
+                    break;
                 
-                m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
-                m_PlayerUI.ActiveHitmark(0);
-
-                if (_param.m_MakeRageParticle)
-                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform,
-                        () => m_RageGauge.AddGaugeValue((_param.m_Damage * p_DamageMulti) *
-                                                        m_RageGauge.p_Gauge_Refill_Attack_Multi)
-                        );
+                case WeaponType.KNIFE:
+                    m_SoundPlayer.PlayEnemySoundOnce(2, gameObject);
+                    m_HitSFXMaker.EnableNewObj(1, _param.m_contactPoint);
+                    break;
                 
-                m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti, _param.m_stunValue);
-
-                switch (_param.m_weaponType)
-                {
-                    case WeaponType.KNIFE:
-                        m_SoundPlayer.PlayEnemySoundOnce(2, gameObject);
-                        break;
-                }
-                
-                break;
-            
-            case HitBoxPoint.BODY:
-                if (_param.m_weaponType == WeaponType.MOUSE)
+                default:
                     return 0;
-                
-                if (_param.m_weaponType != WeaponType.BULLET_TIME)
-                    m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
-                else
-                {
-                    m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
-                }
-                
-                m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
-                m_PlayerUI.ActiveHitmark(1);
-
-                if (_param.m_MakeRageParticle)
-                    m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform,
-                        () => m_RageGauge.AddGaugeValue((_param.m_Damage * p_DamageMulti) *
-                                                        m_RageGauge.p_Gauge_Refill_Attack_Multi)
-                    );
-                
-                m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti, _param.m_stunValue);
-                
-                switch (_param.m_weaponType)
-                {
-                    case WeaponType.KNIFE:
-                        m_SoundPlayer.PlayEnemySoundOnce(2, gameObject);
-                        break;
-                }
-                
-                break;
+                    break;
+            }
             
-            case HitBoxPoint.COGNITION:
-                switch (_param.m_weaponType)
-                {
-                    case WeaponType.MOUSE:
-                        m_Enemy.MouseTouched(_param.m_Damage > 0 ? true : false);
-                        break;
-                }
+            m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
+            m_PlayerUI.ActiveHitmark(0);
+
+            if (_param.m_MakeRageParticle)
+                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform,
+                    () => m_RageGauge.AddGaugeValue(
+                        (_param.m_Damage * p_DamageMulti) * m_RageGauge.p_Gauge_Refill_Attack_Multi
+                        )
+                );
                 
-                break;
+            m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti,
+                _param.m_stunValue, _param.m_weaponType);
+            
+            return 1;
         }
-        
-        // 파티클 생성 필요(함수 넘겨야 함)
-        
-        
-        
-        return 1;
+        else if (p_HitBoxPoint == HitBoxPoint.BODY)
+        {
+            switch (_param.m_weaponType)
+            {
+                case WeaponType.BULLET_TIME:
+                    m_SEPuller.SpawnSimpleEffect(5, _param.m_contactPoint);
+                    break;
+                
+                case WeaponType.BULLET:
+                    m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
+                    break;
+                
+                case WeaponType.KNIFE:
+                    m_SoundPlayer.PlayEnemySoundOnce(2, gameObject);
+                    m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
+                    break;
+                
+                default:
+                    return 0;
+                    break;
+            }
+            
+            
+            m_SoundPlayer.PlayHitSoundByMatType(p_MatType, transform);
+            m_PlayerUI.ActiveHitmark(1);
+
+            if (_param.m_MakeRageParticle)
+                m_ParticleMgr.MakeParticle(_param.m_contactPoint, m_PlayerCenterTransform,
+                    () => m_RageGauge.AddGaugeValue(
+                        (_param.m_Damage * p_DamageMulti) * m_RageGauge.p_Gauge_Refill_Attack_Multi
+                    )
+                );
+                
+            m_Enemy.AttackedByWeapon(p_HitBoxPoint, _param.m_Damage * p_DamageMulti,
+                _param.m_stunValue, _param.m_weaponType);
+            
+            return 1;
+        }
+        else if (p_HitBoxPoint == HitBoxPoint.COGNITION)
+        {
+            switch (_param.m_weaponType)
+            {
+                case WeaponType.MOUSE:
+                    m_Enemy.MouseTouched(_param.m_Damage > 0 ? true : false);
+                    break;
+            }
+            
+            return 1;
+        }
+
+        return 0;
     }
 }

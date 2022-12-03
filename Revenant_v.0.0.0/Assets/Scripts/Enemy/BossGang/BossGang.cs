@@ -152,6 +152,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         m_ULTIMATE = new Ultimate_BossGang(this);
         m_COUNTER = new Counter_BossGang(this);
         m_STUN = new Stun_BossGang(this);
+        m_DEAD = new DEAD_BossGang(this);
         
         m_CurEnemyFSM = m_IDLE;
         m_CurBossStateName = BossStateName.IDLE;
@@ -258,7 +259,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
             EditorUtility.SetDirty(p_BodyBox);
         #endif
     }
-    public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
+    public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue, WeaponType _weaponType)
     {
         if (p_Hp <= 0)
             return;
@@ -293,6 +294,11 @@ public class BossGang : BasicEnemy, ISpriteMatChange
                 break;
         }
 
+        if (p_Hp <= 0)
+        {
+            ChangeBossFSM(BossStateName.DEAD);
+        }
+        
         p_HpText.text = p_Hp.ToString();
     }
 

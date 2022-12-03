@@ -60,7 +60,11 @@ public class BasicEnemy : Human
     protected Vector2 m_MovePoint;
     private Coroutine m_MatCoroutine;
 
-    [HideInInspector] public int m_DeadReasonForMat = 0;
+    /// <summary>
+    /// 사망 사유를 기재합니다. 머터리얼 교체용
+    /// 0기본, 1불릿타임
+    /// </summary>
+    public int m_DeadReasonForMat { get; protected set; } = 0;
 
     public bool m_PlayerCognition { get; set; } = false;
     
@@ -79,7 +83,7 @@ public class BasicEnemy : Human
     protected int m_EnemyIdx = 0;
     private Coroutine m_WalkSoundCoroutine = null;
     private bool m_IsWalking = false;
-    
+
     // Functions
     
     public virtual void StartWalkSound(bool _start, float _time = 1f)
@@ -189,7 +193,7 @@ public class BasicEnemy : Human
         return transform.position.x < m_PlayerTransform.position.x ? true : false;
     }
 
-    public virtual void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
+    public virtual void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue, WeaponType _weaponType)
     {
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;
@@ -199,6 +203,7 @@ public class BasicEnemy : Human
 
         if (p_Hp <= 0)
         {
+            // MatType Check
             ChangeEnemyFSM(EnemyStateName.DEAD);
             return;
         }

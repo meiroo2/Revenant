@@ -24,7 +24,8 @@ public class Shield : MonoBehaviour, IHotBox, IMatType
     private List<Rigidbody2D> m_SpriteRigids = new List<Rigidbody2D>();
 
     private SoundPlayer m_SoundPlayer;
-    
+
+    private SimpleEffectPuller m_SEPuller;
     
     // Constructors
     private void Awake()
@@ -47,6 +48,7 @@ public class Shield : MonoBehaviour, IHotBox, IMatType
 
     private void Start()
     {
+        m_SEPuller = InstanceMgr.GetInstance().GetComponentInChildren<SimpleEffectPuller>();
         m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
     }
 
@@ -54,6 +56,8 @@ public class Shield : MonoBehaviour, IHotBox, IMatType
     // Functions
     public int HitHotBox(IHotBoxParam _param)
     {
+        m_SEPuller.SpawnSimpleEffect(14, _param.m_contactPoint);
+        
         m_SoundPlayer.PlayHitSoundByMatType(m_matType, transform.position);
         
         if (m_ShieldGang.UpdateShieldDmg(_param.m_Damage * m_ShieldGang.p_Shield_Dmg_Multi) == 1)
