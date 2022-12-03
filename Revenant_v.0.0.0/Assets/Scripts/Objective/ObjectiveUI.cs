@@ -20,7 +20,7 @@ public class ObjectiveUI : MonoBehaviour
     private int m_Length = 0;
     private Objective m_CurObjective = null;
 
-    private float m_XLerpGap = 895f;
+    private float m_XLerpGap = 1500f;
     
     public bool m_IsLerping { get; private set; } = false;
     private Vector2 m_OriginRectPos;
