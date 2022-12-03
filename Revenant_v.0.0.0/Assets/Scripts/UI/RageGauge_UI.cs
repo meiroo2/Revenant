@@ -34,7 +34,8 @@ public class RageGauge_UI : MonoBehaviour
 	[BoxGroup("게이지 비주얼")] public Sprite p_MeleeGaugeFullSprite;
 	[BoxGroup("게이지 비주얼")] public Sprite p_UltGaugeNormalSprite;
 	[BoxGroup("게이지 비주얼")] public Sprite p_UltGaugeFullSprite;
-
+	[BoxGroup("게이지 비주얼")] public Image p_UltOvaSprite;
+	
 	[Space(20f)]
 	public float p_MoveSpeed = 2f;
 	public float p_UIOnSpeed = 2f;
@@ -234,6 +235,7 @@ public class RageGauge_UI : MonoBehaviour
 						p_UltGaugeImg.sprite = p_UltGaugeFullSprite;
 						StartCoroutine(ActivateEffect(p_UltEffectImg));
 						StartCoroutine(UIOnEnumerator(p_UltGaugeImg));
+						StartCoroutine(UIOnEnumerator(p_UltOvaSprite));
 					}
 
 					p_UltGaugeImg.fillAmount = _fillAmount;

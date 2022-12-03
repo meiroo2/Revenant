@@ -6,6 +6,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public enum BossStateName
 {
@@ -76,6 +77,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("Ultimate")] public float p_Ultimate_CircleSpeed = 1f;
 
 
+
     [PropertySpace(10f, 0f)]
     public LeapColMaster p_LeapColMaster;
     public Transform p_MapCenterTransform;
@@ -83,14 +85,16 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     public Transform p_MapRightLimit;
     public TextMeshProUGUI p_HpText;
     public TextMeshProUGUI p_FSMText;
-
+    
+    
     [field: SerializeField] public TimeSliceMgr p_TimeSliceMgr { get; private set; }
     [field: SerializeField] private SpriteRenderer p_Renderer;
     [field: SerializeField, Space(10f)] public Enemy_HotBox p_HeadBox;
     [field: SerializeField] public Enemy_HotBox p_BodyBox;
     [field: SerializeField] public BezierMove p_BezierMove;
     [field: SerializeField] public CircleCollider2D p_RigidCol;
-    
+    public Image p_BossHpImage;
+    private float p_MaxHp;
     
     // Member Variables
     public ScreenCaptureEffectMgr m_ScreenCaptureMgr { get; private set; }
@@ -171,6 +175,10 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         // LeapColMaster
         p_LeapColMaster.p_LeftLimit = p_MapLeftLimit;
         p_LeapColMaster.p_RightLimit = p_MapRightLimit;
+
+        // Hp UI
+        p_MaxHp = p_Hp;
+        p_BossHpImage.fillAmount = 1f;
     }
 
     private void Start()
@@ -293,7 +301,9 @@ public class BossGang : BasicEnemy, ISpriteMatChange
                 }
                 break;
         }
-
+        
+        p_BossHpImage.fillAmount = p_Hp / p_MaxHp;
+        
         if (p_Hp <= 0)
         {
             ChangeBossFSM(BossStateName.DEAD);
