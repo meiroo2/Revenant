@@ -14,13 +14,16 @@ public class LeapColMaster : MonoBehaviour
     public bool m_IsLeftCollide = false;
     public bool m_IsRightCollide = false;
 
+    public BossGang p_BossGang;
     private LeapCol m_LeftLeapCol;
     private LeapCol m_RightLeapCol;
     
     private Vector2 m_LeftEdgePos;
     private Vector2 m_RightEdgePos;
 
-    // 1 = Left, 2 = Right
+    /// <summary>
+    /// 1 = left, 2 = right
+    /// </summary>
     public int m_SelectedLeapColIdx = 0;
     
     private void Awake()
@@ -89,6 +92,11 @@ public class LeapColMaster : MonoBehaviour
         masterTransform.position = spawnPos;
     }
 
+    /// <summary>
+    /// 어디에 떨어질지 ColIdx를 설정하고, 착지 좌표를 Return합니다.
+    /// </summary>
+    /// <param name="_playerFootPos"></param>
+    /// <returns></returns>
     public Vector2 GetLandingPos(Vector2 _playerFootPos)
     {
         m_LeftLeapCol.ChangeColPhase(-1);
@@ -129,6 +137,25 @@ public class LeapColMaster : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 현재 선택된 Collider가 가까운 곳인지 판별해줍니다.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsSelectedShort()
+    {
+        if (p_BossGang.m_IsRightHeaded)
+        {
+            return m_SelectedLeapColIdx == 1 ? true : false;
+        }
+        else
+        {
+            return m_SelectedLeapColIdx == 2 ? true : false;
+        }
+    }
+
+    /// <summary>
+    /// 선택된 Collider의 타입을 바꾸어 공격을 준비합니다.
+    /// </summary>
     public void ConvertSelectedCol()
     {
         switch (m_SelectedLeapColIdx)

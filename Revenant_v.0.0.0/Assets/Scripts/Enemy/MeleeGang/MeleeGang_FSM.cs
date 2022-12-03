@@ -399,9 +399,13 @@ public class DEAD_MeleeGang : MeleeGang_FSM
 {
     // Member Variables
     private float m_Time = 0f;
-    private float m_Fade = 1f;
     private int m_Phase = 0;
     private bool m_DeathSoundPlayed = false;
+    
+    private Color m_WhiteColor;
+    
+    private float m_FadeValue = 1f;
+    private readonly int Fade = Shader.PropertyToID("_Fade");
     
     // Constructor
     public DEAD_MeleeGang(MeleeGang _enemy)
@@ -412,13 +416,15 @@ public class DEAD_MeleeGang : MeleeGang_FSM
     
     public override void StartState()
     {
+        m_WhiteColor = Color.white;
+        
         m_Enemy.m_IsDead = true;
         
         m_DeathSoundPlayed = false;
         m_Phase = 0;
         m_Time = 0f;
-        m_Fade = 1f;
-        
+        m_FadeValue = 1f;
+
         m_Enemy.SetEnemyHotBox(false);
         m_Enemy.SendDeathAlarmToSpawner();
         m_Enemy.m_EnemyRigid.velocity = Vector2.zero;
@@ -441,29 +447,6 @@ public class DEAD_MeleeGang : MeleeGang_FSM
 
     public override void UpdateState()
     {
-        m_Time += Time.deltaTime;
-
-        switch (m_Phase)
-        {
-            case 0:
-                if (m_Time > 2f)
-                {
-                    m_Phase = 1;
-                }
-                break;
-            
-            case 1:
-                m_Fade -= Time.deltaTime;
-                m_Enemy.m_Renderer.material.SetFloat("_Fade", m_Fade);
-                if (m_Fade <= 0f)
-                {
-                    m_Phase = -1;
-                    m_Enemy.gameObject.SetActive(false);
-                }
-
-                break;
-        }
-
         if (!m_DeathSoundPlayed)
         {
             if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.2f)
@@ -471,6 +454,37 @@ public class DEAD_MeleeGang : MeleeGang_FSM
                 m_DeathSoundPlayed = true;
                 m_Enemy.m_SoundPlayer.PlayEnemySound(1, 3, m_Enemy.GetBodyCenterPos());
             }
+        }
+        
+        if (m_Time < 3f)
+        {
+            m_Time += Time.deltaTime;
+            return;
+        }
+
+        switch (m_Enemy.m_DeadReasonForMat)
+        {
+            case 0:
+                // 노말 사망
+                m_Enemy.m_Renderer.color = m_WhiteColor;
+                
+                m_WhiteColor.a -= Time.deltaTime;
+                if(m_WhiteColor.a <= 0f)
+                    m_Enemy.gameObject.SetActive(false);
+                break;
+            
+            case 1:
+                // 불릿타임 사망(머터리얼은 이미 교체됨)
+                if (m_Enemy.m_CurSpriteMatType is SpriteMatType.ORIGIN or SpriteMatType.DISAPPEAR)
+                {
+                    m_Enemy.m_Renderer.material.SetFloat(Fade, m_FadeValue);
+                    m_FadeValue -= Time.deltaTime;
+                    if (m_FadeValue <= 0f)
+                    {
+                        m_Enemy.gameObject.SetActive(false);
+                    }
+                }
+                break;
         }
     }
 

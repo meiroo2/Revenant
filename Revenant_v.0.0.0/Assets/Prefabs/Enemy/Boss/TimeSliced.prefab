@@ -104,7 +104,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 492541667
-  m_SortingLayer: 19
+  m_SortingLayer: 20
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
@@ -198,9 +198,10 @@ MonoBehaviour:
   p_TimeSliceMgr: {fileID: 0}
   p_Bullet: {fileID: 7343613824639524734}
   p_CircleCol: {fileID: 3617643944365043086}
-  p_Renderer: {fileID: 9222274999531171291}
+  p_FrontCutRenderer: {fileID: 9222274999531171291}
   p_FloorCol: {fileID: 9222275000888993399}
   p_BulletCol: {fileID: 9222274999352141191}
+  p_FrontCutMaterial: {fileID: 2100000, guid: 061b5bbc1c7010d4ea4453b04592168f, type: 2}
   p_CircleTransform: {fileID: 0}
   m_IsFired: 0
   m_Player: {fileID: 0}
@@ -307,7 +308,7 @@ GameObject:
   - component: {fileID: 9222274999531171288}
   - component: {fileID: 9222274999531171291}
   m_Layer: 0
-  m_Name: Sprite
+  m_Name: FrontCut
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -348,7 +349,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -367,10 +368,10 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 492541667
-  m_SortingLayer: 19
-  m_SortingOrder: 0
+  m_SortingLayer: 20
+  m_SortingOrder: 1
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

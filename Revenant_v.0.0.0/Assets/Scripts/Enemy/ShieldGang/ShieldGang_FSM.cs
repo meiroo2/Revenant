@@ -666,8 +666,12 @@ public class CHANGE_ShieldGang : ShieldGang_FSM
 public class DEAD_ShieldGang : ShieldGang_FSM
 {
     // Member Variables
-    private CoroutineElement m_Element;
-    private static readonly int Dead = Animator.StringToHash("Dead");
+    private float m_Time = 0f;
+    private float m_FadeValue = 1f;
+    private Color m_WhiteColor;
+    private readonly int Fade = Shader.PropertyToID("_Fade");
+    
+    private readonly int Dead = Animator.StringToHash("Dead");
 
     // Constructor
     public DEAD_ShieldGang(ShieldGang _enemy)
@@ -677,73 +681,62 @@ public class DEAD_ShieldGang : ShieldGang_FSM
     
     public override void StartState()
     {
-        m_Enemy.m_IsDead = true;
-        
         m_EnemyAnimator = m_Enemy.m_Animator;
         
+        m_WhiteColor = Color.white;
+        m_FadeValue = 1f;
+        m_Time = 0f;
+        m_Enemy.m_IsDead = true;
+        
+        m_Enemy.m_Animator.SetInteger(Dead, 1);
         m_Enemy.m_SoundPlayer.PlayEnemySound(3, 5, m_Enemy.GetBodyCenterPos());
         
         m_Enemy.SendDeathAlarmToSpawner();
         m_Enemy.SetHotBoxesActive(false);
-        switch (m_Enemy.m_DeadReasonForMat)
-        {
-            case 0:
-                m_EnemyAnimator.SetInteger(Dead, 1);
-                m_Element = m_Enemy.m_CoroutineHandler.StartCoroutine_Handler(NormalDead());
-                break;
-        }
     }
 
     public override void UpdateState()
     {
-
+        if (m_Time < 3f)
+        {
+            m_Time += Time.deltaTime;
+            return;
+        }
+        
+        switch (m_Enemy.m_DeadReasonForMat)
+        {
+            case 0:
+                // 노말 사망
+                m_Enemy.m_Renderer.color = m_WhiteColor;
+                
+                m_WhiteColor.a -= Time.deltaTime;
+                if(m_WhiteColor.a <= 0f)
+                    m_Enemy.gameObject.SetActive(false);
+                break;
+            
+            case 1:
+                // 불릿타임 사망(머터리얼은 이미 교체됨)
+                if (m_Enemy.m_CurSpriteMatType is SpriteMatType.ORIGIN or SpriteMatType.DISAPPEAR)
+                {
+                    m_Enemy.m_Renderer.material.SetFloat(Fade, m_FadeValue);
+                    m_FadeValue -= Time.deltaTime;
+                    if (m_FadeValue <= 0f)
+                    {
+                        m_Enemy.gameObject.SetActive(false);
+                    }
+                }
+                break;
+        }
     }
 
     public override void ExitState()
     {
         m_Enemy.SetHotBoxesActive(true);
-        if (!ReferenceEquals(m_Element, null))
-        {
-            m_Element.StopCoroutine_Element();
-            m_Element = null;
-        }
     }
 
     public override void NextPhase()
     {
         
-    }
-
-    private IEnumerator NormalDead()
-    {
-        while (true)
-        {
-            yield return null;
-
-            if (m_EnemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
-            {
-                break;
-            }
-        }
-
-        SpriteRenderer renderer = m_Enemy.m_Renderer;
-        Color color = renderer.color;
-        while (true)
-        {
-            color.a -= Time.deltaTime;
-            renderer.color = color;
-
-            if (color.a <= 0f)
-                break;
-            
-            yield return null;
-        }
-        
-        m_Element.StopCoroutine_Element();
-        m_Element = null;
-        m_Enemy.gameObject.SetActive(false);
-        
-        yield break;
     }
 }
 

@@ -232,7 +232,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
         m_Callback = null;
     }
     
-    public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue)
+    public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue, WeaponType _weaponType)
     {
         if (m_CurEnemyStateName == EnemyStateName.DEAD)
             return;

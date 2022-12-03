@@ -33,7 +33,7 @@ public class TutorialBot_HotBox : MonoBehaviour, IHotBox, IMatType
     {
         m_SoundPlayer.PlayHitSoundByMatType(m_matType, transform);
         m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
-		m_Enemy.AttackedByWeapon(m_HitBoxInfo, _param.m_Damage, _param.m_stunValue);
+		m_Enemy.AttackedByWeapon(m_HitBoxInfo, _param.m_Damage, _param.m_stunValue, _param.m_weaponType);
 		m_SoundPlayer.PlayHitSoundByMatType(m_matType, transform);
 
 		return 1;
