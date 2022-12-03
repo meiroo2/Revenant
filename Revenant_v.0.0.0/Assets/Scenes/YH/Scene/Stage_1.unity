@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 25126822}
   - component: {fileID: 25126823}
+  - component: {fileID: 25126824}
   m_Layer: 0
   m_Name: Door_light_1
   m_TagString: Untagged
@@ -351,6 +352,26 @@ MonoBehaviour:
   - {x: 0.04268557, y: 0.012016565, z: 0}
   - {x: -0.11803657, y: 0.10247794, z: 0}
   - {x: -0.25216013, y: 0.095309585, z: 0}
+--- !u!95 &25126824
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25126821}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e09e2bad3aba3a14c84053254fe480cc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &47369253
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,12 +419,12 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_LightType: 1
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.85
+  m_FalloffIntensity: 1
   m_Color: {r: 1, g: 0, b: 0.1658535, a: 1}
-  m_Intensity: 1.2
+  m_Intensity: 5
   m_LightVolumeIntensity: 0.03
   m_LightVolumeIntensityEnabled: 1
-  m_ApplyToSortingLayers: 0000000073a0ea086118e243
+  m_ApplyToSortingLayers: 000000006118e243
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -582,7 +603,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: -0.2
 --- !u!212 &51917247
 SpriteRenderer:
@@ -685,7 +706,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.764
   m_Color: {r: 0.36320752, g: 0.64514613, b: 1, a: 1}
-  m_Intensity: 30
+  m_Intensity: 80
   m_LightVolumeIntensity: 0.03
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 6118e24301e48af7a3c4a9b8
@@ -1284,7 +1305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: -0.08
 --- !u!212 &172063107
 SpriteRenderer:
@@ -1711,7 +1732,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: 0
 --- !u!212 &217285812
 SpriteRenderer:
@@ -1830,6 +1851,255 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f5d37b720fd40f438058d545b8975d3, type: 3}
+--- !u!1 &247079716
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 247079717}
+  - component: {fileID: 247079719}
+  - component: {fileID: 247079718}
+  m_Layer: 0
+  m_Name: Door_light_1 (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &247079717
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247079716}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: -1}
+  m_LocalPosition: {x: 0.029, y: 0.1, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2127566832}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &247079718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247079716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_LightType: 1
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.865
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.32
+  m_LightVolumeIntensity: 1
+  m_LightVolumeIntensityEnabled: 1
+  m_ApplyToSortingLayers: 0000000073a0ea08
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowIntensityEnabled: 0
+  m_ShadowIntensity: 0.75
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_Vertices:
+  - position: {x: 0.14165074, y: -0.045612186, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.27434528, y: 0.010707498, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.27944207, y: -0.040223032, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.04268557, y: 0.012016565, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.11803657, y: 0.10247794, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.18605441, y: -0.04486862, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.25216013, y: 0.095309585, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.18605441, y: -0.04486862, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.14165074, y: -0.045612186, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.27944207, y: -0.040223032, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.27434528, y: 0.010707498, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.04268557, y: 0.012016565, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.11803657, y: 0.10247794, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.25216013, y: 0.095309585, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 1}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.4392, y: -0.1643, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.3996, y: -0.2258, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.3455, y: -0.275, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.2804, y: -0.3084, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.1867, y: -0.3248, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.1409, y: -0.3256, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.1526, y: -0.3254, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.2904, y: -0.32, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.3625, y: -0.3076, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.4289, y: -0.2769, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.4851, y: -0.2301, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.5273, y: -0.1704, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.5526, y: -0.1017, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.558, y: -0.0123, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.5529, y: 0.0386, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.5362, y: 0.1098, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.5015, y: 0.1743, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.4514, y: 0.2276, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.3892, y: 0.2661, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.3191, y: 0.2871, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.2759, y: 0.2907, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.1167, y: 0.2916, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: 0.0193, y: 0.3464, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.0486, y: 0.3737, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.1328, y: 0.382, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.2669, y: 0.3749, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.3388, y: 0.3615, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.4048, y: 0.33, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.4604, y: 0.2824, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.5018, y: 0.222, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.5261, y: 0.153, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.5317, y: 0.0801, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  - position: {x: -0.5053, y: -0.0242, z: 0}
+    color: {r: 0, g: 0, b: 0, a: 0}
+    uv: {x: 0, y: 0}
+  m_Triangles: 00000100020000000300010000000400030005000400000004000500060007000e000e0007000e000f0007000f001000070010001100070011001200070008001300070012001300080013001400080009001500080014001500090015001600090016001700090017001800090018001900090019001a0009001a001b0009000a001c0009001b001c000a001c001d000a001d001e000a001e001f000a001f0020000a00200021000a00210022000a000b0023000a00220023000b000c0024000b00230024000c00240025000c00250026000c000d0027000c00260027000d00270028000d00280029000d0029002a000d002a002b000d002b002c000d002c002d000d002d002e000e0007000d000e002e000d00
+  m_LocalBounds:
+    m_Center: {x: 0.0131500065, y: 0.0282, z: 0}
+    m_Extent: {x: 0.54485, y: 0.3538, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 0
+  m_PointLightOuterRadius: 1
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.28
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.18605441, y: -0.04486862, z: 0}
+  - {x: 0.14165074, y: -0.045612186, z: 0}
+  - {x: 0.27944207, y: -0.040223032, z: 0}
+  - {x: 0.27434528, y: 0.010707498, z: 0}
+  - {x: 0.04268557, y: 0.012016565, z: 0}
+  - {x: -0.11803657, y: 0.10247794, z: 0}
+  - {x: -0.25216013, y: 0.095309585, z: 0}
+--- !u!95 &247079719
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247079716}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &248653452
 GameObject:
   m_ObjectHideFlags: 0
@@ -1840,6 +2110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 248653453}
   - component: {fileID: 248653454}
+  - component: {fileID: 248653455}
   m_Layer: 0
   m_Name: door_light
   m_TagString: Untagged
@@ -2427,6 +2698,26 @@ MonoBehaviour:
   - {x: 0.04282909, y: 0.051053453, z: 0}
   - {x: 0.58953625, y: 1.2730979, z: 0}
   - {x: -0.630039, y: 0.8672842, z: 0}
+--- !u!95 &248653455
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248653452}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 565b5e43939e79b449f45fe19d703f4f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &264105568
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3971,7 +4262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: -0.2
 --- !u!212 &748834224
 SpriteRenderer:
@@ -4070,7 +4361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: -0.2
 --- !u!212 &761902089
 SpriteRenderer:
@@ -4192,6 +4483,7 @@ GameObject:
   m_Component:
   - component: {fileID: 801749118}
   - component: {fileID: 801749119}
+  - component: {fileID: 801749120}
   m_Layer: 0
   m_Name: door_light_nm
   m_TagString: Untagged
@@ -4779,6 +5071,26 @@ MonoBehaviour:
   - {x: 0.04282909, y: 0.051053453, z: 0}
   - {x: 0.58953625, y: 1.2730979, z: 0}
   - {x: -0.630039, y: 0.8672842, z: 0}
+--- !u!95 &801749120
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801749117}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9d080ed2c4b263641b9b079aefe2d224, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &850062748
 GameObject:
   m_ObjectHideFlags: 0
@@ -5339,7 +5651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: 0.02
 --- !u!212 &943881430
 SpriteRenderer:
@@ -6576,7 +6888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: -0.02
 --- !u!212 &1176314126
 SpriteRenderer:
@@ -7223,7 +7535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: -0.04
 --- !u!212 &1379565068
 SpriteRenderer:
@@ -7484,7 +7796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: 0
 --- !u!212 &1448862080
 SpriteRenderer:
@@ -7853,7 +8165,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.8
+  m_Intensity: 1.22
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: f9631f6a
@@ -9199,7 +9511,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.42
+  m_Intensity: 0.39
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 9b18e247
@@ -9273,6 +9585,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 213165113}
     m_Modifications:
+    - target: {fileID: 3327419194253399554, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
+      propertyPath: ColorModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3327419194253399554, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
+      propertyPath: ColorModule.gradient.minMaxState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3327419194253399554, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: -0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 3327419194253399554, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3327419194253399555, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -9320,6 +9648,14 @@ PrefabInstance:
     - target: {fileID: 3327419194253399556, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
       propertyPath: m_Name
       value: SnowPrefab01_St101
+      objectReference: {fileID: 0}
+    - target: {fileID: 3327419194253399557, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
+      propertyPath: m_SortingLayer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3327419194253399557, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1138890849
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5edebf97cec365c42afd8e7f5aa852b6, type: 3}
@@ -9447,7 +9783,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5567242690226346776, guid: 06500bfe132babb43971e5d24b658861, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.01
       objectReference: {fileID: 0}
     - target: {fileID: 5567242690226346776, guid: 06500bfe132babb43971e5d24b658861, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9482,6 +9818,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5567242690226346779, guid: 06500bfe132babb43971e5d24b658861, type: 3}
+      propertyPath: ColorModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5567242690226346779, guid: 06500bfe132babb43971e5d24b658861, type: 3}
       propertyPath: ShapeModule.m_Scale.x
       value: 9.29
       objectReference: {fileID: 0}
@@ -9499,11 +9839,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5567242690226346779, guid: 06500bfe132babb43971e5d24b658861, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
-      value: 2.8
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5567242690226346779, guid: 06500bfe132babb43971e5d24b658861, type: 3}
+      propertyPath: InitialModule.gravityModifier.scalar
+      value: -0.05
       objectReference: {fileID: 0}
     - target: {fileID: 5567242690226346779, guid: 06500bfe132babb43971e5d24b658861, type: 3}
       propertyPath: InitialModule.startLifetime.minScalar
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5567242690226346779, guid: 06500bfe132babb43971e5d24b658861, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.key1.a
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06500bfe132babb43971e5d24b658861, type: 3}
@@ -9713,7 +10061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d6f905a6fd6d144ab0612a6458655ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPixelPerfectCam: 1
+  m_StandardTransformName: 
   m_ParaValue: 0
 --- !u!212 &1923197703
 SpriteRenderer:
@@ -9927,7 +10275,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1.23
+  m_Intensity: 1.06
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 9f43f79f
@@ -10821,6 +11169,7 @@ Transform:
   - {fileID: 25126822}
   - {fileID: 248653453}
   - {fileID: 801749118}
+  - {fileID: 247079717}
   m_Father: {fileID: 1261059251}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
