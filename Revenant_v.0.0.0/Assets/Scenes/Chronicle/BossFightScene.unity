@@ -1903,7 +1903,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 670215009}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
@@ -5417,25 +5417,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 477785462565095557, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2909035714414264647, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4256589355312007162, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5309511007728924468, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7821610519519267193, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
+      propertyPath: p_HeadCol
+      value: 
+      objectReference: {fileID: 1974988375}
+    - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
+      propertyPath: p_Walk_Time
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
       propertyPath: p_BossHpImage
@@ -5450,32 +5442,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 767429055}
     - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: p_Stealth_Speed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: p_Holo_FadeSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: p_Counter_FadeSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
       propertyPath: p_MapCenterTransform
       value: 
       objectReference: {fileID: 2021153935}
     - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
       propertyPath: <p_Hp>k__BackingField
-      value: 1000
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: p_Ultimate_AngleLimit.x
-      value: -45
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681093471351819046, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: p_Ultimate_AngleLimit.y
-      value: 45
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 8681093471351819047, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
       propertyPath: m_RootOrder
@@ -5487,7 +5459,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8681093471351819047, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.213
+      value: 5.748
       objectReference: {fileID: 0}
     - target: {fileID: 8681093471351819047, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5529,12 +5501,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: BossGang
       objectReference: {fileID: 0}
-    - target: {fileID: 8681093473104535608, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
-      propertyPath: <p_DamageMulti>k__BackingField
-      value: 2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
+--- !u!58 &1974988375 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 8681093473104535609, guid: 57a4e9f8a0d541e4c9e24e2ec91b836e, type: 3}
+  m_PrefabInstance: {fileID: 1968218517}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2021153934
 GameObject:
   m_ObjectHideFlags: 0

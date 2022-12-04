@@ -14,6 +14,7 @@ public class BulletTime_AR : MonoBehaviour
     public List<Image> m_MatImgList = new List<Image>();
     public Image p_GaugeImg;
     
+    
     // Member Variables
     private float m_Timer = 0f;
     private readonly int TimeInput = Shader.PropertyToID("_TimeInput");
@@ -21,13 +22,31 @@ public class BulletTime_AR : MonoBehaviour
 
     private Coroutine m_FadeCoroutine = null;
     private Coroutine m_MatImgCoroutine = null;
+
+    private List<Color> m_ImgColorList = new List<Color>();
+    private List<Color> m_ImgClearColorList = new List<Color>();
+    
     
     // Constructors
     private void Awake()
     {
-        foreach (var VARIABLE in m_ImgList)
+        for (int i = 0; i < m_ImgList.Count; i++)
         {
-            VARIABLE.color = m_ClearColor;
+            m_ImgColorList.Add(m_ImgList[i].color);
+            m_ImgClearColorList.Add(m_ImgList[i].color);
+        }
+        
+        for (int i = 0; i < m_ImgClearColorList.Count; i++)
+        {
+            m_ImgClearColorList[i] = new Color(m_ImgClearColorList[i].r, m_ImgClearColorList[i].g,
+                m_ImgClearColorList[i].b, 0f);
+        }
+        
+        
+        // 각 ClearColor로 할당
+        for (int i = 0; i < m_ImgList.Count; i++)
+        {
+            m_ImgList[i].color = m_ImgClearColorList[i];
         }
     }
     
@@ -92,30 +111,52 @@ public class BulletTime_AR : MonoBehaviour
     {
         Color startColor = Color.white;
         Color endColor = startColor;
-
+        
         if (_toFadeIn)
             startColor.a = 0f;
         else
             endColor.a = 0f;
-
+        
         float lerpVal = 0f;
         while (true)
         {
-            
-            foreach (var imageElement in _fadeImgList)
-            {
-                imageElement.color = Color.Lerp(startColor, endColor, lerpVal);
-            }
-
             lerpVal += Time.unscaledDeltaTime * p_FadeSpeed;
+            
+            if (_toFadeIn)
+            {
+                for (int i = 0; i < m_ImgList.Count; i++)
+                {
+                    m_ImgList[i].color = Color.Lerp(m_ImgClearColorList[i], m_ImgColorList[i], lerpVal);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < m_ImgList.Count; i++)
+                {
+                    m_ImgList[i].color = Color.Lerp(m_ImgColorList[i], m_ImgClearColorList[i], lerpVal);
+                }
+            }
+            
+            
             if (lerpVal >= 1f)
             {
                 lerpVal = 1f;
-                foreach (var imageElement in _fadeImgList)
+                
+                if (_toFadeIn)
                 {
-                    imageElement.color = Color.Lerp(startColor, endColor, lerpVal);
+                    for (int i = 0; i < m_ImgList.Count; i++)
+                    {
+                        m_ImgList[i].color = Color.Lerp(m_ImgClearColorList[i], m_ImgColorList[i], lerpVal);
+                    }
                 }
-
+                else
+                {
+                    for (int i = 0; i < m_ImgList.Count; i++)
+                    {
+                        m_ImgList[i].color = Color.Lerp(m_ImgColorList[i], m_ImgClearColorList[i], lerpVal);
+                    }
+                }
+                
                 break;
             }
             
