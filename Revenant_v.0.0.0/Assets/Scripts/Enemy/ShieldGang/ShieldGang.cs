@@ -63,8 +63,7 @@ public class ShieldGang : BasicEnemy, ISpriteMatChange
     private ROTATION_ShieldGang m_ROTATION;
     private STUN_ShieldGang m_STUN;
     private HIT_ShieldGang m_HIT;
-
-    public SoundPlayer m_SoundPlayer { get; private set; }
+    
     public HitSFXMaker m_HitSFXMaker { get; private set; }
     public CoroutineHandler m_CoroutineHandler { get; private set; }
     public Shield m_Shield { get; private set; }

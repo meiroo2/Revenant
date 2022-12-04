@@ -37,6 +37,8 @@ public class FadeDoorCol_LayerRoom : MonoBehaviour, IUseableObj
         if (m_isOn)
             return 0;
         
+        Debug.Log("Sans");
+        
         m_isOn = true;
         m_IngameUI.DoBlackFade(true, 2f, () => PassnFade(_param));
         return 1;

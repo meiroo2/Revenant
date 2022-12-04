@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -8,8 +9,9 @@ public class Trigger_Collider : MonoBehaviour
     public Animator p_AnimatorToManipulate;
     public bool p_CanOpen = false;
     public bool p_CanClose = false;
-   
-
+    public bool p_InitOpen = true;
+    public List<GameObject> p_AfterActiveObjList = new List<GameObject>();
+    
     // Member Variables
     private bool m_IsUsed = false;
     private readonly int Open = Animator.StringToHash("Open");
@@ -18,7 +20,9 @@ public class Trigger_Collider : MonoBehaviour
     // Constructor
     private void Awake()
     {
-        p_AnimatorToManipulate.SetInteger(Open, -1);
+        CheckObjList();
+        SetActiveObjList(false);
+        p_AnimatorToManipulate.SetInteger(Open, p_InitOpen ? 1 : 0);
     }
 
 
@@ -36,11 +40,13 @@ public class Trigger_Collider : MonoBehaviour
             
             case true when !p_CanClose:
                 p_AnimatorToManipulate.SetInteger(Open, 1);
+                SetActiveObjList(true);
                 m_IsUsed = true;
                 break;
             
             case false when p_CanClose:
                 p_AnimatorToManipulate.SetInteger(Open, 0);
+                SetActiveObjList(true);
                 m_IsUsed = true;
                 break;
         }
@@ -59,6 +65,24 @@ public class Trigger_Collider : MonoBehaviour
             
             case false when p_CanClose:
                 break;
+        }
+    }
+    
+    // Functions
+    private void CheckObjList()
+    {
+        foreach (var VARIABLE in p_AfterActiveObjList)
+        {
+            if(!VARIABLE)
+                Debug.LogError("ERR : Trigger_Collider NULL");
+        }
+    }
+    
+    public void SetActiveObjList(bool _toActive)
+    {
+        foreach (var VARIABLE in p_AfterActiveObjList)
+        {
+            VARIABLE.SetActive(_toActive);
         }
     }
 }
