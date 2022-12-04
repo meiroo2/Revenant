@@ -43,13 +43,13 @@ public class Objective_TutoBulletTime : Objective
 		m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogActive(true);
 		m_ObjMgr.p_TutorialDroneObject.p_TutorialDialog.SetDialogText(p_DroneDialogTextList[m_CurrentDialogTextCount]);
 		m_InitialRotate = m_Player.transform.localScale;
-		
-		m_Player.m_RageGauge.AddGaugeValue(999999f);
 	}
 
     public override void UpdateObjective()
     {
-	    switch (m_Phase)
+		m_Player.m_RageGauge.AddGaugeValue(999999f);
+
+		switch (m_Phase)
         {
 			case 0:
 				DialogPhase();
