@@ -6,6 +6,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public enum BossStateName
 {
@@ -31,9 +32,6 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     
     // JumpAtk
     [TabGroup("JumpAtk")] public float p_JumpAtk_Height = 1f;
-    [TabGroup("JumpAtk")] public float p_JumpAtk_DelayTime = 1f;
-    [TabGroup("JumpAtk")] public float p_JumpAtk_Speed = 1f;
-    [TabGroup("JumpAtk")] public float p_JumpAtk_AccelSpeed = 1f;
     [TabGroup("JumpAtk")] public float p_JumpAtk_Distance_Max = 1f;
     
     // LeapAtk
@@ -46,8 +44,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     
     // Holo
     [TabGroup("Holo")] public float p_Holo_FadeSpeed = 1f;
-    [TabGroup("Holo")] public float p_Holo_BeforeDelay = 0.5f;
-    [TabGroup("Holo")] public float p_HoloReal_AfterDelay = 0.5f;
+    [TabGroup("Holo")] public float p_Holo_BeforeAtkDelay = 1f;
     [TabGroup("Holo")] public float p_Holo_Distance = 0.4f;
     [TabGroup("Holo")] public int p_Holo_MaxCount = 4;
     [TabGroup("Holo")] public int p_Holo_FakeChance = 70;
@@ -76,6 +73,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("Ultimate")] public float p_Ultimate_CircleSpeed = 1f;
 
 
+
     [PropertySpace(10f, 0f)]
     public LeapColMaster p_LeapColMaster;
     public Transform p_MapCenterTransform;
@@ -83,16 +81,31 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     public Transform p_MapRightLimit;
     public TextMeshProUGUI p_HpText;
     public TextMeshProUGUI p_FSMText;
-
+    
+    
     [field: SerializeField] public TimeSliceMgr p_TimeSliceMgr { get; private set; }
     [field: SerializeField] private SpriteRenderer p_Renderer;
     [field: SerializeField, Space(10f)] public Enemy_HotBox p_HeadBox;
     [field: SerializeField] public Enemy_HotBox p_BodyBox;
     [field: SerializeField] public BezierMove p_BezierMove;
     [field: SerializeField] public CircleCollider2D p_RigidCol;
+    public Image p_BossHpImage;
+    public CircleCollider2D p_HeadCol;
+    public BoxCollider2D p_BodyCol;
     
+    private float p_MaxHp;
     
     // Member Variables
+    public readonly Vector2 p_HeadColWalkPos = new Vector2(0.029f, 0.549f);
+    public readonly Vector2 p_HeadColFightPos = new Vector2(0.067f, 0.409f);
+
+    public readonly Vector2 p_BodyColWalkPos = new Vector2(0.018f, 0.324f);
+    public readonly Vector2 p_BodyColFightPos = new Vector2(0.018f, 0.258f);
+
+    public readonly Vector2 p_BodyInitSize = new Vector2(0.25f, 0.45f);
+    public readonly Vector2 p_BodyFightSize = new Vector2(0.37f, 0.32f);
+    
+    
     public ScreenCaptureEffectMgr m_ScreenCaptureMgr { get; private set; }
     public SimpleEffectPuller m_SEPuller { get; private set; }
     public WeaponMgr m_WeaponMgr { get; private set; }
@@ -171,6 +184,10 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         // LeapColMaster
         p_LeapColMaster.p_LeftLimit = p_MapLeftLimit;
         p_LeapColMaster.p_RightLimit = p_MapRightLimit;
+
+        // Hp UI
+        p_MaxHp = p_Hp;
+        p_BossHpImage.fillAmount = 1f;
     }
 
     private void Start()
@@ -190,17 +207,18 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     // Updates
     private void FixedUpdate()
     {
-        if (m_IsRightHeaded)
+        if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Walk"))
         {
-            p_FSMText.transform.localScale = new Vector3(1f, 1f, 1f);
-            p_HpText.transform.localScale = p_FSMText.transform.localScale;
+            p_HeadCol.transform.localPosition = p_HeadColWalkPos;
+            p_BodyCol.transform.localPosition = p_BodyColWalkPos;
+            p_BodyCol.size = p_BodyInitSize;
         }
         else
         {
-            p_FSMText.transform.localScale = new Vector3(-1f, 1f, 1f);
-            p_HpText.transform.localScale = p_FSMText.transform.localScale;
+            p_HeadCol.transform.localPosition = p_HeadColFightPos;
+            p_BodyCol.transform.localPosition = p_BodyColFightPos;
+            p_BodyCol.size = p_BodyFightSize;
         }
-       
     }
 
     private void Update()
@@ -293,7 +311,9 @@ public class BossGang : BasicEnemy, ISpriteMatChange
                 }
                 break;
         }
-
+        
+        p_BossHpImage.fillAmount = p_Hp / p_MaxHp;
+        
         if (p_Hp <= 0)
         {
             ChangeBossFSM(BossStateName.DEAD);

@@ -262,7 +262,7 @@ public class Player_WALK : PlayerFSM
             collider = m_Player.m_PlayerFootMgr.GetFootRayHit().collider;
             if (ReferenceEquals(collider, null))
             {
-                Debug.LogError("ERR : There is no Collider On CheckMatType()");
+                Debug.LogWarning("ERR : There is no Collider On CheckMatType()");
             }
 
             if (collider.TryGetComponent(out IMatType matType))
@@ -271,7 +271,7 @@ public class Player_WALK : PlayerFSM
             }
             else
             {
-                Debug.LogError("ERR : There is no IMatType On CheckMatType()");
+                Debug.LogWarning("ERR : There is no Collider On CheckMatType()");
             }
             yield return new WaitForSeconds(m_WalkSoundDelay);
         }

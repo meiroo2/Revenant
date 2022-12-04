@@ -952,12 +952,15 @@ public class Holo_BossGang : BossGang_FSM
             
             case 5:
                 // HoloFake_Appear
-                m_Timer += Time.deltaTime;
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
-                    m_Timer = 0f;
-                    m_Animator.SetInteger(Holo, 2);
-                    m_Phase = 6;
+                    m_Timer += Time.deltaTime;
+                    if (m_Timer >= m_Enemy.p_Holo_BeforeAtkDelay)
+                    {
+                        m_Timer = 0f;
+                        m_Animator.SetInteger(Holo, 2);
+                        m_Phase = 6;
+                    }
                 }
                 break;
                 
@@ -985,13 +988,16 @@ public class Holo_BossGang : BossGang_FSM
             
             case 8:
                 // HoloReal_Appear
-                m_Timer += Time.deltaTime;
                 if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                 {
-                    m_Timer = 0f;
-                    m_Enemy.SetHotBoxesActive(true);
-                    m_Animator.SetInteger(Holo, 5);
-                    m_Phase = 9;
+                    m_Timer += Time.deltaTime;
+                    if (m_Timer >= m_Enemy.p_Holo_BeforeAtkDelay)
+                    {
+                        m_Timer = 0f;
+                        m_Enemy.SetHotBoxesActive(true);
+                        m_Animator.SetInteger(Holo, 5);
+                        m_Phase = 9;
+                    }
                 }
                 break;
             
