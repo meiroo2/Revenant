@@ -10,7 +10,7 @@ public class Breakable_MultipleHitBox : Breakable
         if (Health <= 0)
             return;
         
-        Health -= _damage;
+        Health -= 10;
         
         if (Health == 20)
         {
