@@ -40,7 +40,6 @@ public class Objective_TutoHide : Objective
 		p_TutorialHideObject.Initialize();
 		p_TutorialHideObject.action?.Invoke();
 
-		m_Player.AttachActionOnFSM(PlayerStateName.HIDDEN,() => AddCount(), true);
         m_Phase = 0;
         m_Count = 0;
 	}
@@ -70,13 +69,12 @@ public class Objective_TutoHide : Objective
 				DialogPhase();
 				break;
 			case 2:
-                if (m_Count >= 1)
+				if (m_Count >= 1)
                 {
                     m_ObjUI.SetObjectiveProgress(0, 1f);
                     m_ObjUI.SetObjectiveFontStyle(0, true);
                     m_ObjMgr.SendObjSuccessInfo(m_ObjIdx, true);
-
-                    m_Phase = -1;
+					m_Phase = -1;
                 }
                 break;
         }
@@ -102,7 +100,6 @@ public class Objective_TutoHide : Objective
 		{
 			m_Player.transform.localScale = new Vector3(-1, 1, 1);
 		}
-		Debug.Log(m_Player.transform.localScale);
 
 		if (m_CurrentDialogTextCount < p_DroneDialogTextList.Count)
 		{
@@ -127,6 +124,7 @@ public class Objective_TutoHide : Objective
 			m_InputMgr.p_MoveInputLock = false;
 			m_InputMgr.p_StairLock = false;
 			m_InputMgr.p_HideLock = false;
+			m_Player.AttachActionOnFSM(PlayerStateName.HIDDEN, () => AddCount(), true);
 			m_Player.transform.localScale = m_InitialRotate;
 			m_ObjUI.LerpUI(false);
 			m_Phase++;

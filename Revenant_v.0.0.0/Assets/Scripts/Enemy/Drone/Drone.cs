@@ -53,7 +53,6 @@ public class Drone : BasicEnemy, ISpriteMatChange
     private Enemy_HotBox[] m_HotBoxes;
     public Enemy_WeaponMgr m_WeponMgr;
     public Drone_CrashCol m_CrashCol { get; private set; }
-    public SoundPlayer m_SoundPlayer { get; private set; }
 
     public SimpleEffectPuller m_SimpleEffectPuller { get; private set; }
 

@@ -301,7 +301,13 @@ public class Player_InputMgr : MonoBehaviour
         }
         else
         {
+            if (!ReferenceEquals(m_InputCoroutine, null))
+            {
+                StopCoroutine(m_InputCoroutine);
+                m_InputCoroutine = null;
+            }
             m_InputCoroutine = StartCoroutine(CoroutineUpdate());
+            ForceSetAllKey(true);
         }
     }
     /// <summary>
@@ -366,13 +372,16 @@ public class Player_InputMgr : MonoBehaviour
 
     private void ForceSetAllKey(bool _input)
     {
-        m_IsPushLeftKey = _input;
-        m_IsPushRightKey = _input;
-        m_IsPushStairUpKey = _input;
-        m_IsPushStairDownKey = _input;
-        m_IsPushInteractKey = _input;
-        m_IsPushRollKey = _input;
-        m_IsPushHideKey = _input;
+        p_FireLock = false;
+        p_HideLock = false;
+        p_InteractLock = false;
+        p_ReloadLock = false;
+        p_RollLock = false;
+        p_StairLock = false;
+        p_BulletTimeLock = false;
+        p_MousePosLock = false;
+        p_MoveInputLock = false;
+        p_SideAttackLock = false;
     }
     // 기타 분류하고 싶은 것이 있을 경우
 }

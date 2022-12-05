@@ -51,10 +51,8 @@ public class ObjectiveUI : MonoBehaviour
 
 	public void LerpUI(bool _isPush, Action _action = null)
 	{
-		if (m_IsLerping)
-			return;
-
 		m_IsLerping = true;
+		StopCoroutine("LerpUIEnumerator");
 		m_LerpCoroutine = StartCoroutine(LerpUIEnumerator(_isPush, _action));
 	}
 
@@ -116,7 +114,7 @@ public class ObjectiveUI : MonoBehaviour
 					InitColor.a = 1;
 					FinalColor.a = 0;
 
-					m_TitleTxt.color = Color.Lerp(InitColor, FinalColor, timer / p_LerpDuration);
+					m_TitleTxt.color = Color.Lerp(InitColor, FinalColor, timer * 2 / p_LerpDuration);
 				}
 
 				foreach (var text in m_ObjectiveTextArr)
@@ -126,7 +124,7 @@ public class ObjectiveUI : MonoBehaviour
 					InitColor.a = 1;
 					FinalColor.a = 0;
 
-					text.color = Color.Lerp(InitColor, FinalColor, timer / p_LerpDuration);
+					text.color = Color.Lerp(InitColor, FinalColor, timer * 2 / p_LerpDuration);
 				}
 
 				foreach (var image in m_ProgressImgArr)
@@ -136,7 +134,7 @@ public class ObjectiveUI : MonoBehaviour
 					InitColor.a = 1;
 					FinalColor.a = 0;
 
-					image.color = Color.Lerp(InitColor, FinalColor, timer / p_LerpDuration);
+					image.color = Color.Lerp(InitColor, FinalColor, timer * 2 / p_LerpDuration);
 				}
 
 				foreach (var material in materials)
@@ -149,7 +147,7 @@ public class ObjectiveUI : MonoBehaviour
 				{
 					Color InitColor = m_TitleTxt.color;
 					Color FinalColor = m_TitleTxt.color;
-					InitColor.a = 0;
+					InitColor.a = -0.5f;
 					FinalColor.a = 1;
 					m_TitleTxt.color = Color.Lerp(InitColor, FinalColor, timer / p_LerpDuration);
 				}
@@ -159,7 +157,7 @@ public class ObjectiveUI : MonoBehaviour
 				{
 					Color InitColor = texts.color;
 					Color FinalColor = texts.color;
-					InitColor.a = 0;
+					InitColor.a = -0.5f;
 					FinalColor.a = 1;
 
 					texts.color = Color.Lerp(InitColor, FinalColor, timer / p_LerpDuration);
@@ -168,7 +166,7 @@ public class ObjectiveUI : MonoBehaviour
 				{
 					Color InitColor = images.color;
 					Color FinalColor = images.color;
-					InitColor.a = 0;
+					InitColor.a = -0.5f;
 					FinalColor.a = 1;
 
 					images.color = Color.Lerp(InitColor, FinalColor, timer / p_LerpDuration);
@@ -201,6 +199,7 @@ public class ObjectiveUI : MonoBehaviour
 			return;
 
 		m_ObjectiveTextArr[_idx].fontStyle = _isSuccess ? FontStyles.Strikethrough : FontStyles.Normal;
+		m_ObjectiveTextArr[_idx].color = _isSuccess ? Color.gray : new Color32(255, 255, 255, 255);
 
 		if (_isSuccess)
 			StartCoroutine(StartProceedSuccessEffect(_idx));

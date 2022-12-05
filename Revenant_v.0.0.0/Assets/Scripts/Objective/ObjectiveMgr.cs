@@ -99,7 +99,7 @@ public class ObjectiveMgr : MonoBehaviour
     private IEnumerator ObjSuccessWait(int _idx, bool _playNext = false)
     {
         yield return new WaitForSecondsRealtime(p_ObjectiveSuccessWaitTime);
-        
+
         if (_playNext)
         {
             m_ObjectiveUI.LerpUI(true, () => ChangeObjective(_idx + 1));

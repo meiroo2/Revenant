@@ -14,8 +14,7 @@ public class TempParaBack : MonoBehaviour
     private Transform m_MainCamTransform;
     
     private Vector3 m_CalculatedPos;
-
-    private Vector3 m_StandardPos;
+    
     private Vector3 m_TransformOriginPos;
     private float m_XPosDifferenceBetStandard;
     private bool m_IsFound = false;
@@ -24,13 +23,15 @@ public class TempParaBack : MonoBehaviour
 
     private void Awake()
     {
-        m_StandardTransform = GameObject.Find(m_StandardTransformName).transform;
-        if (!m_StandardTransform)
+        GameObject standardObj = GameObject.Find(m_StandardTransformName);
+
+        if (ReferenceEquals(standardObj, null))
         {
-            Debug.Log("ERR : TempParaBack can't find m_StandardTransform");
+            Debug.LogWarning("ERR : TempParaBack can't find m_StandardTransform");
         }
         else
         {
+            m_StandardTransform = standardObj.transform;
             m_IsFound = true;
         }
     }
@@ -42,7 +43,6 @@ public class TempParaBack : MonoBehaviour
         
         m_MainCamTransform = Camera.main.transform;
         
-        m_StandardPos = GameMgr.GetInstance().p_PlayerMgr.GetPlayer().transform.position;
         m_TransformOriginPos = transform.localPosition;
 
         m_XPosDifferenceBetStandard = m_TransformOriginPos.x - m_StandardTransform.position.x;

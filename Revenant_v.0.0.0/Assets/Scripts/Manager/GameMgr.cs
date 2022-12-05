@@ -97,6 +97,8 @@ public class GameMgr : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.PageUp))
         {
+            p_PlayerInputMgr.SetAllInputLock(false);
+            
             int sceneIdx = m_CurSceneIdx + 1;
             if (sceneIdx >= SceneManager.sceneCountInBuildSettings)
                 return;
@@ -105,6 +107,8 @@ public class GameMgr : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Home))
         {
+            p_PlayerInputMgr.SetAllInputLock(false);
+            
             int sceneIdx = m_CurSceneIdx - 1;
             if (sceneIdx < 0)
                 return;

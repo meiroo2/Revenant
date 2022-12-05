@@ -52,11 +52,12 @@ public class TutorialHatchObject : TutorialObject
 			{
 				obj.SetActive(false);
 			}
+			
 		}
 	}
 
-	public void LoadNextScene(string sceneName)
+	public void LoadNextScene()
 	{
-		GameMgr.GetInstance().RequestLoadScene(2, true);
+		GameMgr.GetInstance().RequestLoadScene(4, true);
 	}
 }

@@ -343,7 +343,8 @@ public class JumpAtk_BossGang : BossGang_FSM
     private float m_Acceleration = 1f;
     private float m_NormalTime = 0f;
     private readonly int Jump = Animator.StringToHash("Jump");
-
+    private float m_Timer = 0f;
+    
     // Constructor
     public JumpAtk_BossGang(BossGang _enemy)
     {
@@ -355,8 +356,8 @@ public class JumpAtk_BossGang : BossGang_FSM
     public override void StartState()
     {
         m_Animator = m_Enemy.m_Animator;
-        m_Animator.SetInteger(Jump, 1);
         m_Enemy.ResetRigid();
+        m_Timer = 0f;
         
         m_Phase = 0;
         m_LerpPos = 0f;
@@ -375,6 +376,7 @@ public class JumpAtk_BossGang : BossGang_FSM
         m_Enemy.transform.position = m_MovePoint;
         
         m_Enemy.SetHotBoxesActive(true);
+        m_Animator.SetInteger(Jump, 1);
     }
 
     public override void UpdateState()
@@ -382,29 +384,44 @@ public class JumpAtk_BossGang : BossGang_FSM
         switch (m_Phase)
         {
             case 0:
+                // Jump_Appear
                 m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                if (m_NormalTime >= 0.5f)
+                if (m_NormalTime >= 1f)
                 {
-                    m_Enemy.m_SEPuller.SpawnSimpleEffect(10, new Vector2(m_Enemy.transform.position.x,
-                        m_Enemy.transform.position.y + 0.32f));
-                    
-                    m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
-                    m_Phase = 1;
+                    m_Timer += Time.deltaTime;
+                    if (m_Timer >= m_Enemy.p_JumpAtk_DelayTime)
+                    {
+                        m_Animator.SetInteger(Jump, 2);
+                        m_Phase = 1;
+                        break;
+                    }
                 }
                 break;
             
             case 1:
                 m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                if (m_NormalTime >= 1f)
+                if (m_NormalTime >= 0.3f)
                 {
-                    m_NormalTime = 0f;
-                    m_Enemy.transform.position = m_StartPoint;
-                    m_Animator.SetInteger(Jump, 2);
+                    m_Enemy.m_SEPuller.SpawnSimpleEffect(10, new Vector2(m_Enemy.transform.position.x,
+                        m_Enemy.transform.position.y + 0.32f));
+                    
+                    m_Enemy.m_WeaponMgr.m_CurWeapon.Fire();
                     m_Phase = 2;
                 }
                 break;
             
             case 2:
+                m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+                if (m_NormalTime >= 1f)
+                {
+                    m_NormalTime = 0f;
+                    m_Enemy.transform.position = m_StartPoint;
+                    m_Animator.SetInteger(Jump, 3);
+                    m_Phase = 3;
+                }
+                break;
+            
+            case 3:
                 m_NormalTime = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
                 if (m_NormalTime >= 1f)
                 {
@@ -840,8 +857,13 @@ public class Holo_BossGang : BossGang_FSM
     private bool m_IsHoloFake = false;
     private int m_HoloSpawnCount = 0;
     
+    private float m_HoloRealHotBoxTimer = 0f;
+    private bool m_HoloRealHotBoxActive = false;
+    
     private bool m_DoUpdate = true;
     private readonly int Holo = Animator.StringToHash("Holo");
+    private readonly int HoloAppearSpeed = Animator.StringToHash("HoloAppearSpeed");
+
 
     // Constructor
     public Holo_BossGang(BossGang _enemy)
@@ -853,7 +875,11 @@ public class Holo_BossGang : BossGang_FSM
     // Functions
     public override void StartState()
     {
+        m_HoloRealHotBoxTimer = 0f;
+        m_HoloRealHotBoxActive = false;
+        
         m_Animator = m_Enemy.m_Animator;
+        m_Animator.SetFloat(HoloAppearSpeed, m_Enemy.p_Holo_AppearSpeed);
         m_Enemy.m_ActionOnHit_Holo = null;
         m_Enemy.m_ActionOnHit_Holo = GotoStun;
         m_DoUpdate = true;
@@ -988,16 +1014,27 @@ public class Holo_BossGang : BossGang_FSM
             
             case 8:
                 // HoloReal_Appear
-                if (m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+                m_HoloRealHotBoxTimer = m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
+                switch (m_HoloRealHotBoxTimer)
                 {
-                    m_Timer += Time.deltaTime;
-                    if (m_Timer >= m_Enemy.p_Holo_BeforeAtkDelay)
-                    {
-                        m_Timer = 0f;
+                    case >= 1f:
+                        m_Timer += Time.deltaTime;
+                        if (m_Timer >= m_Enemy.p_Holo_BeforeAtkDelay)
+                        {
+                            m_Timer = 0f;
+                            m_Animator.SetInteger(Holo, 5);
+                            m_Phase = 9;
+                        }
+                        break;
+                    
+                    case > 0.3f:
+                        if (m_HoloRealHotBoxActive)
+                            break;
+                        
+                        m_HoloRealHotBoxActive = true;
                         m_Enemy.SetHotBoxesActive(true);
-                        m_Animator.SetInteger(Holo, 5);
-                        m_Phase = 9;
-                    }
+                        break;
                 }
                 break;
             
@@ -1524,6 +1561,8 @@ public class DEAD_BossGang : BossGang_FSM
     // Functions
     public override void StartState()
     {
+        m_Enemy.SendDeathAlarmToSpawner();
+        
         m_Animator = m_Enemy.m_Animator;
         
         m_Phase = 0;

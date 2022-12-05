@@ -33,6 +33,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     // JumpAtk
     [TabGroup("JumpAtk")] public float p_JumpAtk_Height = 1f;
     [TabGroup("JumpAtk")] public float p_JumpAtk_Distance_Max = 1f;
+    [TabGroup("JumpAtk")] public float p_JumpAtk_DelayTime = 1f;
     
     // LeapAtk
     [TabGroup("LeapAtk")] public float p_LeapAtk_Distance_Min = 1f;
@@ -43,7 +44,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("Stealth")] public float p_Stealth_Speed = 1f;
     
     // Holo
-    [TabGroup("Holo")] public float p_Holo_FadeSpeed = 1f;
+    [TabGroup("Holo")] public float p_Holo_AppearSpeed = 1f;
     [TabGroup("Holo")] public float p_Holo_BeforeAtkDelay = 1f;
     [TabGroup("Holo")] public float p_Holo_Distance = 0.4f;
     [TabGroup("Holo")] public int p_Holo_MaxCount = 4;
@@ -60,7 +61,6 @@ public class BossGang : BasicEnemy, ISpriteMatChange
 
     // Ultimate
     [TabGroup("Ultimate")] public List<int> p_Ultimate_HpBookList = new List<int>();
-    [TabGroup("Ultimate")] public float p_Ultimate_FadeSpeed = 1f;
     [TabGroup("Ultimate")] public Vector2 p_Ultimate_AngleLimit;
     [TabGroup("Ultimate")] public float p_Ultimate_SetPosTime = 1f;
     [TabGroup("Ultimate")] public float p_Ultimate_DelayTimeAfterSetPos = 1f;

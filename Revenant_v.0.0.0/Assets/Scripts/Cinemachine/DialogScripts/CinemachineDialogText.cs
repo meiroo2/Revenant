@@ -40,7 +40,7 @@ public class CinemachineDialogText : MonoBehaviour
 		{
 			Vector3 pos = rectTransform.anchoredPosition;
 			pos = startingPos + (Random.insideUnitCircle * (new Vector2(1, 1) * ShakeAmount));
-			Debug.Log(pos.z);
+			//Debug.Log(pos.z);
 			rectTransform.anchoredPosition = pos;
 			ShakeDuration -= Time.deltaTime;
 		}

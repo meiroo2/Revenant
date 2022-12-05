@@ -16,8 +16,8 @@ public class DialogSequence : MonoBehaviour
     private GameObject m_Player;
     private void Start()
     {
-        if(FindObjectOfType<Player>())
-        m_Player = FindObjectOfType<Player>().gameObject;
+        if (FindObjectOfType<Player>())
+            m_Player = FindObjectOfType<Player>().gameObject;
 
         GameMgr.GetInstance().p_PlayerInputMgr.p_FireLock = true;
     }
@@ -50,7 +50,7 @@ public class DialogSequence : MonoBehaviour
                     {
                         transform.GetChild(DialogCount).gameObject.SetActive(true);
                         currentBox = transform.GetChild(DialogCount).GetComponent<DialogBox>();
-                        if(currentBox.isOnPlayerPosition)
+                        if(currentBox.isOnPlayerPosition && m_Player != null)
                         {
                             currentBox.GetComponent<RectTransform>().anchoredPosition = m_Player.transform.position + (Vector3)PlayerDialogPosition;
                         }

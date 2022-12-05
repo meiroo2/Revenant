@@ -19,6 +19,9 @@ public class SceneLoader_Signal : MonoBehaviour
     // Functions
     public void LoadScene()
     {
+        Player_InputMgr inputMgr = GameMgr.GetInstance().p_PlayerInputMgr;
+        inputMgr.SetAllInputLock(false);
+        
         GameMgr.GetInstance().p_SceneChangeMgr.InitSceneEndWithSmooth(m_LoadSceneIdx, 3f);
     }
 }
