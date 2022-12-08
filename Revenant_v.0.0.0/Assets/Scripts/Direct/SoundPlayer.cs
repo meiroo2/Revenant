@@ -7,6 +7,9 @@ using FMODUnity;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.SceneManagement;
+using Debug = FMOD.Debug;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 public class SoundPlayer : MonoBehaviour
 {
@@ -15,21 +18,492 @@ public class SoundPlayer : MonoBehaviour
 
     // Member Variables
     public static EventInstance m_BGMInstance { get; private set; }
-
+    /// <summary>
+    /// 0 = Stop, 1 = Title. 2 = Tuto, 3 = Ground, 4 = Subway, 5 = Rail, 6 = Lab, 7 = Boss
+    /// </summary>
+    public static int m_BGMIdx = 0;
+    public static  FMOD.Studio.PLAYBACK_STATE m_State;
+    
     // Constructors
     private void Awake()
     {
-        //FMODUnity.RuntimeManager.CoreSystem.set3DSettings(1f, 50f, 1f);
-        
-        FMOD.Studio.PLAYBACK_STATE state;
-        m_BGMInstance.getPlaybackState(out state);
-
-        if (state == FMOD.Studio.PLAYBACK_STATE.STOPPED)
+        m_BGMInstance.getPlaybackState(out m_State);
+        if (m_State == PLAYBACK_STATE.STOPPED)
         {
-            m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Lab");
+            m_BGMIdx = 0;
+        }
+
+        if (m_BGMIdx == 0 && SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            m_BGMIdx = 1;
+            m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+            m_BGMInstance.release();
+            m_BGMIdx = 1;
+            m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Title");
             m_BGMInstance.start();
         }
     }
+
+    public void BGMusicCalculate(int _sceneIdx)
+    {
+        FMODUnity.RuntimeManager.StudioSystem.setParameterByName("TimeScale", 0f);
+        
+        switch (GameMgr.GetInstance().m_CurSceneIdx)
+        {
+            case 0:
+                if (m_BGMIdx == 1)
+                    break;
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 1;
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Title");
+                m_BGMInstance.start();
+                break;
+            
+            case 1:
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 0;
+                break;
+            
+            case 2:
+                if (m_BGMIdx == 2)
+                    break;
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 2;
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Tutorial");
+                m_BGMInstance.start();
+                break;
+            
+            case 3:
+                if (m_BGMIdx == 2)
+                    break;
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 2;
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Tutorial");
+                m_BGMInstance.start();
+                break;
+            
+            case 4:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                
+                m_BGMInstance.start();
+
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                break;
+            
+            case 5:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                
+                m_BGMInstance.start();
+
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                break;
+            
+            case 6:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                
+                m_BGMInstance.start();
+
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                break;
+            
+            case 7:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                    
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 8:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 1f);
+                    break;
+                }
+
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 1f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 9:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 10:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 1f);
+                    break;
+                }
+
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 1f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 11:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 12:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 13:
+                if (m_BGMIdx == 3)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 3;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Ground");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 14:
+                if (m_BGMIdx == 4)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 4;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Subway");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 15:
+                if (m_BGMIdx == 4)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 4;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Subway");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 16:
+                if (m_BGMIdx == 4)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 1f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 4;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Subway");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 1f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 17:
+                if (m_BGMIdx == 4)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 4;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Subway");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                
+                m_BGMInstance.start();
+                break;
+            
+            case 18:
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 0;
+                break;
+            
+            case 19:
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 0;
+                break;
+            
+            case 20:
+                if (m_BGMIdx == 5)
+                {
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 5;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Rail");
+
+                m_BGMInstance.start();
+                break;
+            
+            case 21:
+                if (m_BGMIdx == 5)
+                {
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 5;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Rail");
+
+                m_BGMInstance.start();
+                break;
+            
+            case 22:
+                if (m_BGMIdx == 5)
+                {
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 5;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Rail");
+
+                m_BGMInstance.start();
+                break;
+            
+            case 23:
+                if (m_BGMIdx == 6)
+                {
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 6;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Lab");
+
+                m_BGMInstance.start();
+                break;
+            
+            case 24:
+                if (m_BGMIdx == 6)
+                {
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 6;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Lab");
+
+                m_BGMInstance.start();
+                break;
+            
+            case 25:
+                if (m_BGMIdx == 7)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 7;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Boss");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+
+                m_BGMInstance.start();
+                break;
+            
+            case 26:
+                if (m_BGMIdx == 7)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 1f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 7;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Boss");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 1f);
+
+                m_BGMInstance.start();
+                break;
+            
+            case 27:
+                if (m_BGMIdx == 7)
+                {
+                    FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 7;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Boss");
+                FMODUnity.RuntimeManager.StudioSystem.setParameterByName("BGMPower", 0f);
+
+                m_BGMInstance.start();
+                break;
+            
+            case 28:
+                if (m_BGMIdx == 8)
+                {
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 8;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Credit");
+
+                m_BGMInstance.start();
+                break;
+            
+            case 29:
+                if (m_BGMIdx == 8)
+                {
+                    break;
+                }
+                
+                m_BGMInstance.stop(STOP_MODE.ALLOWFADEOUT);
+                m_BGMInstance.release();
+                m_BGMIdx = 8;
+                
+                m_BGMInstance = FMODUnity.RuntimeManager.CreateInstance("event:/BGM/Credit");
+
+                m_BGMInstance.start();
+                break;
+        }
+    }
+
+    public void BGMusicStop()
+    {
+        m_BGMInstance.stop(STOP_MODE.IMMEDIATE);
+    }
+    
 
     // Updates
     private void Update()
@@ -68,7 +542,7 @@ public class SoundPlayer : MonoBehaviour
 
         return eventInstance;
     }
-    
+
     public void PlayPlayerSoundOnce(int _num)
     {
         switch (_num)
@@ -195,7 +669,73 @@ public class SoundPlayer : MonoBehaviour
                 eventInstance.start();
                 eventInstance.release();
                 break;
+            
+            case 5:
+                // BossGang
+                eventInstance = GetBossGangInstance(_soundNum, _matType);
+                eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(_position));
+                eventInstance.start();
+                eventInstance.release();
+                break;
         }
+    }
+    
+    private EventInstance GetBossGangInstance(int _soundNum, MatType _matType)
+    {
+        EventInstance eventInstance = new EventInstance();
+
+        switch (_soundNum)
+        {
+            case 0:
+                // Walk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/SpecialForce/SF_Walk");
+                break;
+            
+            case 1:
+                // Holo
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/BossGang/BG_Holo");
+                break;
+            
+            case 2:
+                // HoloATK
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/BossGang/BG_HoloAtk");
+                break;
+            
+            case 3:
+                // JumpATK
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/BossGang/BG_JumpAtk");
+                break;
+            
+            case 4:
+                // Counter
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                        "event:/SFX/Enemy/BossGang/BG_Counter");
+                break;
+            
+            case 5:
+                // LeapLand
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/BossGang/BG_LeapLand");
+                break;
+            
+            case 6:
+                // UltAtk
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/BossGang/BG_UltAtk");
+                break;
+            
+            case 7:
+                // UltEnd
+                eventInstance = FMODUnity.RuntimeManager.CreateInstance(
+                    "event:/SFX/Enemy/BossGang/BG_UltEnd");
+                break;
+        }
+        
+        return eventInstance;
     }
 
     private EventInstance GetSpecialForceInstance(int _soundNum, MatType _matType)

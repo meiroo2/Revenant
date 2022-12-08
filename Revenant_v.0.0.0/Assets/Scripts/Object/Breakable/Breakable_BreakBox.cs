@@ -12,12 +12,10 @@ public class Breakable_BreakBox : Breakable
 
     public override void GetHit(int _damage)
     {
-        base.GetHit(_damage);
-
         if (Health <= 0)
             return;
         
-        Health -= 10;
+        Health -= _damage;
         
         if (Health == 10)
         {

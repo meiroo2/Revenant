@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -15,8 +16,8 @@ public class BombWeapon_Enemy : BasicWeapon_Enemy
     
     // Member Variables
     private IHotBoxParam m_HotBoxParam;
-    
-    private List<IHotBox> m_HotBoxes = new List<IHotBox>();
+
+    private Dictionary<Collider2D, IHotBox> m_HotBoxDic = new Dictionary<Collider2D, IHotBox>();
 
 
 
@@ -34,7 +35,7 @@ public class BombWeapon_Enemy : BasicWeapon_Enemy
     {
         m_HotBoxParam.ResetContactPoint(transform.position);
 
-        var arr = m_HotBoxes.ToArray();
+        var arr = m_HotBoxDic.Values.ToArray();
         for (int i = 0; i < arr.Length; i++)
         {
             arr[i].HitHotBox(m_HotBoxParam);
@@ -62,15 +63,16 @@ public class BombWeapon_Enemy : BasicWeapon_Enemy
     {
         if (col.TryGetComponent(out IHotBox hotBox))
         {
-            m_HotBoxes.Add(hotBox);
+            if (hotBox.m_HitBoxInfo == HitBoxPoint.BODY)
+                m_HotBoxDic.Add(col, hotBox);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.TryGetComponent(out IHotBox hotBox))
+        if (m_HotBoxDic.ContainsKey(other))
         {
-            m_HotBoxes.Remove(hotBox);
+            m_HotBoxDic.Remove(other);
         }
     }
 }

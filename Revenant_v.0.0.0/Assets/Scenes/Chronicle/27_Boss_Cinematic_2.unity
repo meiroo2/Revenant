@@ -2436,6 +2436,7 @@ GameObject:
   - component: {fileID: 670215012}
   - component: {fileID: 670215011}
   - component: {fileID: 670215015}
+  - component: {fileID: 670215016}
   m_Layer: 0
   m_Name: MainCam
   m_TagString: MainCamera
@@ -2607,6 +2608,19 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &670215016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670215009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1 &686074109
 GameObject:
   m_ObjectHideFlags: 0
@@ -3388,6 +3402,14 @@ PlayableDirector:
     value: {fileID: 1250568850}
   - key: {fileID: 6174907623922933895, guid: 63edc03e526dbdf42b6e180974cf076f, type: 2}
     value: {fileID: 2102527143}
+  - key: {fileID: -8850191488421281702, guid: 63edc03e526dbdf42b6e180974cf076f, type: 2}
+    value: {fileID: 670215009}
+  - key: {fileID: 7870865509455305287, guid: 63edc03e526dbdf42b6e180974cf076f, type: 2}
+    value: {fileID: 670215009}
+  - key: {fileID: 3503018452911919981, guid: 63edc03e526dbdf42b6e180974cf076f, type: 2}
+    value: {fileID: 670215009}
+  - key: {fileID: -3980240122957554188, guid: 63edc03e526dbdf42b6e180974cf076f, type: 2}
+    value: {fileID: 670215009}
   m_ExposedReferences:
     m_References:
     - 7240addd0f8e3e54e84b6f0db40574cb: {fileID: 1745287802}

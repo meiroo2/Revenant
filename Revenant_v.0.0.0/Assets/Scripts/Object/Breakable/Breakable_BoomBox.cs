@@ -20,7 +20,7 @@ public class Breakable_BoomBox : Breakable
         if (Health <= 0)
             return;
         
-        Health -= 10;
+        Health -= _damage;
 
         if (Health <= 0)
         {

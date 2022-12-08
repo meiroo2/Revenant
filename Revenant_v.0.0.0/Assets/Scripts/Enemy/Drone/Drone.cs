@@ -70,8 +70,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
 
     private float m_VisionAngle = 0f;
     private static readonly int DetectSpeed = Animator.StringToHash("DetectSpeed");
-
-    public EventInstance m_FlySoundInstance;
+    
 
     // Constructors
     public void Awake()
@@ -132,8 +131,6 @@ public class Drone : BasicEnemy, ISpriteMatChange
         m_CurEnemyFSM.StartState();
         
         m_WeponMgr.ChangeWeapon(0);
-        
-        m_FlySoundInstance = m_SoundPlayer.GetAttachedEnemySound(2, 0, transform);
     }
 
     private void OnEnable()

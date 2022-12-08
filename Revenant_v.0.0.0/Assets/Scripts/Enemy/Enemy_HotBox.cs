@@ -115,6 +115,10 @@ public class Enemy_HotBox : MonoBehaviour, IHotBox
                     m_HitSFXMaker.EnableNewObj(0, _param.m_contactPoint);
                     break;
                 
+                case WeaponType.GRENADE:
+                    // Only Damage
+                    break;
+                
                 default:
                     return 0;
                     break;

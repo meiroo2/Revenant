@@ -137,7 +137,7 @@ public class CameraMgr : MonoBehaviour
 
 		CalCaledPos();
 		CalCamRotate();
-		//CalCamZoom();
+		CalCamZoom();
 		CalCamShake();
 
 		m_FinalCamPos = new Vector3(m_CaledCamPos.x + m_CamShakeVector.x, m_CaledCamPos.y + m_CamShakeVector.y + p_YValue, -10f);

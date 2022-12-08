@@ -647,6 +647,8 @@ MonoBehaviour:
   p_LeapAtk_Distance_Min: 1
   p_LeapAtk_MoveDistance: 1
   p_LeapAtk_Height: 1
+  p_LeapAtk_HoverTime: 0.5
+  p_LeapAtk_BeforeAtkDelay: 0.3
   p_Stealth_Speed: 1
   p_Holo_AppearSpeed: 1
   p_Holo_BeforeAtkDelay: 1
@@ -660,7 +662,6 @@ MonoBehaviour:
   p_StunBackPwr: 1
   p_Ultimate_HpBookList: 
   p_Ultimate_AngleLimit: {x: 0, y: 0}
-  p_Ultimate_SetPosTime: 1
   p_Ultimate_DelayTimeAfterSetPos: 1
   p_Ultimate_RepeatCount: 3
   p_Ultimate_RemainTime: 5
@@ -669,6 +670,10 @@ MonoBehaviour:
   p_Ultimate_CircleStartPos: -3
   p_Ultimate_CircleEndPos: 3
   p_Ultimate_CircleSpeed: 1
+  m_BasicColor: {r: 0, g: 0, b: 5.992157, a: 0}
+  m_LeapColor: {r: 0, g: 5.992157, b: 2.9490197, a: 0}
+  m_AlertColor: {r: 5.992157, g: 0, b: 0, a: 0}
+  p_ScreenImage: {fileID: 0}
   p_LeapColMaster: {fileID: 1833048553632121776}
   p_MapCenterTransform: {fileID: 0}
   p_MapLeftLimit: {fileID: 0}
@@ -677,8 +682,6 @@ MonoBehaviour:
   p_FSMText: {fileID: 3104468560753329035}
   <p_TimeSliceMgr>k__BackingField: {fileID: 2801619769076928180}
   p_Renderer: {fileID: 8681093473261972447}
-  p_HeadBox: {fileID: 8681093473104535608}
-  p_BodyBox: {fileID: 8681093472899689196}
   p_BezierMove: {fileID: 8681093471351819049}
   p_RigidCol: {fileID: 8681093471351819045}
   p_BossHpImage: {fileID: 0}
@@ -876,7 +879,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8681093472899689198}
-  - component: {fileID: 8681093472899689196}
+  - component: {fileID: 312254052507609456}
   - component: {fileID: 8681093472899689197}
   - component: {fileID: 8681093472899689195}
   m_Layer: 19
@@ -901,7 +904,7 @@ Transform:
   m_Father: {fileID: 8681093471351819047}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8681093472899689196
+--- !u!114 &312254052507609456
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -910,10 +913,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8681093472899689199}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
+  m_Script: {fileID: 11500000, guid: e0246838fc61449fa6130a16f0a764f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_MatType: 0
+  p_MatType: 5
   <p_HitBoxPoint>k__BackingField: 1
   <p_DamageMulti>k__BackingField: 1
 --- !u!61 &8681093472899689197
@@ -972,7 +975,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8681093473104535610}
-  - component: {fileID: 8681093473104535608}
+  - component: {fileID: 7596347081392994324}
   - component: {fileID: 8681093473104535609}
   - component: {fileID: 8681093473104535607}
   m_Layer: 19
@@ -997,7 +1000,7 @@ Transform:
   m_Father: {fileID: 8681093471351819047}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8681093473104535608
+--- !u!114 &7596347081392994324
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1006,12 +1009,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8681093473104535611}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65a38e503c5e4af2a7f923c899fc37cc, type: 3}
+  m_Script: {fileID: 11500000, guid: e0246838fc61449fa6130a16f0a764f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  p_MatType: 0
+  p_MatType: 5
   <p_HitBoxPoint>k__BackingField: 0
-  <p_DamageMulti>k__BackingField: 1
+  <p_DamageMulti>k__BackingField: 2
 --- !u!58 &8681093473104535609
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1102,7 +1105,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: dc3d99bebdd45f942a171d502f968382, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1122,7 +1125,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 492541667
   m_SortingLayer: 20
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: -175338016, guid: 0787faaf19c2f244b929cce004e1e31e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

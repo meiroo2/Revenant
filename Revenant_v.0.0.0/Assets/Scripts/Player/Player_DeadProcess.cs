@@ -45,6 +45,7 @@ public class Player_DeadProcess : MonoBehaviour
             case 2:
                 if (Input.anyKeyDown)
                 {
+                    FMODUnity.RuntimeManager.PlayOneShot("event:/SFX/Title_Ui/Title_Start");
                     m_CheckAniCoroutine = StartCoroutine(ColorInvert());
                 }
                 break;

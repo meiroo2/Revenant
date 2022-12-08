@@ -98,7 +98,7 @@ public class CheckPoint_Col : MonoBehaviour, IUseableObj
             for (int i = 0; i < GetEnemyNumFromEnemyList; i++)
             {
                 // 적이 죽으면
-                if (_checkPoint.EnemyListToActivate.Count == GetEnemyNumFromEnemyList && _checkPoint.EnemyListToActivate[i].gameObject.activeSelf == false)
+                if (_checkPoint.EnemyListToActivate.Count == GetEnemyNumFromEnemyList && _checkPoint.EnemyListToActivate[i].m_IsDead == true)
                 {
                     // 리스트에서 죽은 적을 제거
                     //Debug.Log(_checkPoint.EnemyListToActivate[i].gameObject.name);

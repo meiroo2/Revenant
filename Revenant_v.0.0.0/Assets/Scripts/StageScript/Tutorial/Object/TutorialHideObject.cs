@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TutorialHideObject : TutorialObject
 {
+	public GameObject p_DynaOutline;
+	
 	private Collider2D[] m_Colliders;
 	// Start is called before the first frame update
 	protected override void Start()
@@ -16,6 +19,11 @@ public class TutorialHideObject : TutorialObject
 		}
 	}
 
+	private void OnEnable()
+	{
+		p_DynaOutline.SetActive(false);
+	}
+
 	// Update is called once per frame
 	void Update()
 	{
@@ -23,6 +31,7 @@ public class TutorialHideObject : TutorialObject
 	}
 	public override void Initialize()
 	{
+		p_DynaOutline.SetActive(true);
 		action += NextAnimation;
 	}
 

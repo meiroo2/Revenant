@@ -25,11 +25,6 @@ public class Player_OldMelee : MonoBehaviour
 
 
     // Functions
-    public void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.LeftShift))
-            DoOldMelee();
-    }
 
     public void DoOldMelee()
     {

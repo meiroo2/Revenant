@@ -39,6 +39,8 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("LeapAtk")] public float p_LeapAtk_Distance_Min = 1f;
     [TabGroup("LeapAtk")] public float p_LeapAtk_MoveDistance = 1f;
     [TabGroup("LeapAtk")] public float p_LeapAtk_Height = 1f;
+    [TabGroup("LeapAtk")] public float p_LeapAtk_HoverTime = 1f;
+    [TabGroup("LeapAtk")] public float p_LeapAtk_BeforeAtkDelay = 0.5f;
     
     // Stealth
     [TabGroup("Stealth")] public float p_Stealth_Speed = 1f;
@@ -62,7 +64,6 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     // Ultimate
     [TabGroup("Ultimate")] public List<int> p_Ultimate_HpBookList = new List<int>();
     [TabGroup("Ultimate")] public Vector2 p_Ultimate_AngleLimit;
-    [TabGroup("Ultimate")] public float p_Ultimate_SetPosTime = 1f;
     [TabGroup("Ultimate")] public float p_Ultimate_DelayTimeAfterSetPos = 1f;
     [TabGroup("Ultimate")] public int p_Ultimate_RepeatCount = 3;
     [TabGroup("Ultimate")] public float p_Ultimate_RemainTime = 5f;
@@ -72,9 +73,12 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("Ultimate")] public float p_Ultimate_CircleEndPos = 3f;
     [TabGroup("Ultimate")] public float p_Ultimate_CircleSpeed = 1f;
 
+    [TabGroup("Color")] [ColorUsageAttribute(true,true)] public Color m_BasicColor;
+    [TabGroup("Color")] [ColorUsageAttribute(true,true)] public Color m_LeapColor;
+    [TabGroup("Color")] [ColorUsageAttribute(true,true)] public Color m_AlertColor;
 
-
-    [PropertySpace(10f, 0f)]
+    [PropertySpace(10f, 0f)] 
+    public Image p_ScreenImage;
     public LeapColMaster p_LeapColMaster;
     public Transform p_MapCenterTransform;
     public Transform p_MapLeftLimit;
@@ -85,8 +89,6 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     
     [field: SerializeField] public TimeSliceMgr p_TimeSliceMgr { get; private set; }
     [field: SerializeField] private SpriteRenderer p_Renderer;
-    [field: SerializeField, Space(10f)] public Enemy_HotBox p_HeadBox;
-    [field: SerializeField] public Enemy_HotBox p_BodyBox;
     [field: SerializeField] public BezierMove p_BezierMove;
     [field: SerializeField] public CircleCollider2D p_RigidCol;
     public Image p_BossHpImage;
@@ -96,6 +98,10 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     private float p_MaxHp;
     
     // Member Variables
+    private Color m_ScreenImgClearColor = new Color(1f,1f,1f,0f);
+    private Color m_ScreenImgWhiteColor = new Color(1f, 1f, 1f, 1f);
+    private Coroutine m_ScreenHexaCoroutine = null;
+    
     public readonly Vector2 p_HeadColWalkPos = new Vector2(0.029f, 0.549f);
     public readonly Vector2 p_HeadColFightPos = new Vector2(0.067f, 0.409f);
 
@@ -109,14 +115,14 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     public ScreenCaptureEffectMgr m_ScreenCaptureMgr { get; private set; }
     public SimpleEffectPuller m_SEPuller { get; private set; }
     public WeaponMgr m_WeaponMgr { get; private set; }
-    private IHotBox[] m_HotBoxes;
+    private BossGang_HotBox[] m_HotBoxes;
     public Player m_Player { get; private set; }
     
     [HideInInspector] public Action m_ActionOnHit_Holo = null;
     [HideInInspector] public Action m_ActionOnHit_Counter = null; 
-    [HideInInspector] public Action m_ActionOnHit_Ultimate = null; 
+    [HideInInspector] public Action m_ActionOnHit_Ultimate = null;
 
-    private BossStateName m_CurBossStateName;
+    public BossStateName m_CurBossStateName { get; private set; }
     private Idle_BossGang m_IDLE;
     private Walk_BossGang m_WALK;
     private JumpAtk_BossGang m_JUMP_ATK;
@@ -146,12 +152,14 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     // Constructor
     private void Awake()
     {
+        m_EnemyIdx = 5;
+        
         InitHuman();
         InitEnemy();
-
+        
         m_Renderer = p_Renderer;
         m_Animator = GetComponentInChildren<Animator>();
-        m_HotBoxes = GetComponentsInChildren<IHotBox>();
+        m_HotBoxes = GetComponentsInChildren<BossGang_HotBox>();
         m_Foot = GetComponentInChildren<Enemy_FootMgr>();
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
@@ -192,6 +200,8 @@ public class BossGang : BasicEnemy, ISpriteMatChange
 
     private void Start()
     {
+        m_Renderer.material.SetColor("Color_1256EBB7", m_BasicColor);
+        
         m_OriginPos = transform.position;
 
         Player tempPlayer = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
@@ -199,7 +209,8 @@ public class BossGang : BasicEnemy, ISpriteMatChange
         m_PlayerTransform = tempPlayer.transform;
         m_PlayerLocationSensor = tempPlayer.m_PlayerLocationSensor;
         m_SEPuller = InstanceMgr.GetInstance().GetComponentInChildren<SimpleEffectPuller>();
-
+        m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
+        
         m_ScreenCaptureMgr = InstanceMgr.GetInstance().GetComponentInChildren<ScreenCaptureEffectMgr>();
     }
 
@@ -229,6 +240,78 @@ public class BossGang : BasicEnemy, ISpriteMatChange
 
 
     // Functions
+
+    protected override IEnumerator WalkSoundEnumerator(float _time)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_time);
+            m_SoundPlayer.PlayEnemySound(m_EnemyIdx, 0, transform.position, MatType.Metal);
+        }
+        
+        yield break;
+    }
+
+    public void ActivateScreenHexa(bool _toActivate, bool _isFade = true)
+    {
+        if (!ReferenceEquals(m_ScreenHexaCoroutine, null))
+        {
+            StopCoroutine(m_ScreenHexaCoroutine);
+            m_ScreenHexaCoroutine = null;
+        }
+
+        if (!_isFade)
+            return;
+        
+        m_ScreenHexaCoroutine = StartCoroutine(ScreenHexaEnumerator(_toActivate));
+    }
+
+    private IEnumerator ScreenHexaEnumerator(bool _toActivate)
+    {
+        float lerpVal = 0f;
+        if (_toActivate)
+        {
+            while (true)
+            {
+                p_ScreenImage.color = Color.Lerp(m_ScreenImgClearColor, m_ScreenImgWhiteColor, lerpVal);
+
+                lerpVal += Time.unscaledDeltaTime;
+                if (lerpVal >= 1f)
+                {
+                    lerpVal = 1f;
+                    p_ScreenImage.color = Color.Lerp(m_ScreenImgClearColor, m_ScreenImgWhiteColor, lerpVal);
+                    break;
+                }
+                yield return null;
+            }
+        }
+        else
+        {
+            while (true)
+            {
+                p_ScreenImage.color = Color.Lerp(m_ScreenImgWhiteColor,m_ScreenImgClearColor,  lerpVal);
+
+                lerpVal += Time.unscaledDeltaTime;
+                if (lerpVal >= 1f)
+                {
+                    lerpVal = 1f;
+                    p_ScreenImage.color = Color.Lerp(m_ScreenImgWhiteColor,m_ScreenImgClearColor,  lerpVal);
+                    break;
+                }
+                yield return null;
+            }
+        }
+        
+        yield break;
+    }
+    
+    public override void SetHotBoxesActive(bool _isOn)
+    {
+        for (int i = 0; i < m_HotBoxes.Length; i++)
+        {
+            m_HotBoxes[i].gameObject.SetActive(_isOn);
+        }
+    }
 
     public override float GetDistanceBetPlayer()
     {
@@ -273,8 +356,6 @@ public class BossGang : BasicEnemy, ISpriteMatChange
 
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
-            EditorUtility.SetDirty(p_HeadBox);
-            EditorUtility.SetDirty(p_BodyBox);
         #endif
     }
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue, WeaponType _weaponType)

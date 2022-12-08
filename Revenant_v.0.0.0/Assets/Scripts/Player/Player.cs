@@ -494,8 +494,9 @@ public class Player : Human
 
         _mPlayerMatMgr.FlipAllNormalsToRight(m_IsRightHeaded);
 
-        
-        p_LeftBullet_WUI.MovetoLeftSide(m_IsRightHeaded);
+
+        if (p_LeftBullet_WUI.gameObject.activeSelf)
+            p_LeftBullet_WUI.MovetoLeftSide(m_IsRightHeaded);
         //m_PlayerAniMgr.PlayPlayerAnim();
     }
 

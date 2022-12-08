@@ -45,7 +45,7 @@ public class IDLE_Drone : Drone_FSM
     
     public override void StartState()
     {
-        m_Enemy.m_FlySoundInstance.start();
+
     }
 
     public override void UpdateState()
@@ -92,8 +92,7 @@ public class PATROL_Drone : Drone_FSM
     
     public override void StartState()
     {
-        m_Enemy.m_FlySoundInstance.start();
-        
+
         m_EnemyTransform = m_Enemy.transform;
         m_Animator = m_Enemy.m_Animator;
 
@@ -172,8 +171,7 @@ public class FOLLOW_Drone : Drone_FSM
     
     public override void StartState()
     {
-        m_Enemy.m_FlySoundInstance.start();
-        
+
         m_Animator = m_Enemy.m_Animator;
         m_CoroutineHandler = GameMgr.GetInstance().p_CoroutineHandler;
         m_Phase = 0;
@@ -331,7 +329,6 @@ public class DEAD_Drone : Drone_FSM
     {
         m_Enemy.m_IsDead = true;
         
-        m_Enemy.m_FlySoundInstance.stop(STOP_MODE.ALLOWFADEOUT);
 
         m_CoroutineElement = null;
         m_Handler = GameMgr.GetInstance().p_CoroutineHandler;

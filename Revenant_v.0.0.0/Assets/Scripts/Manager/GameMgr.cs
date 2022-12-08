@@ -75,7 +75,8 @@ public class GameMgr : MonoBehaviour
         Time.timeScale = 1f;
         
         m_CurSceneIdx = SceneManager.GetActiveScene().buildIndex;
-
+        p_SoundPlayer.BGMusicCalculate(m_CurSceneIdx);
+        
         p_PlayerInputMgr.p_FireLock = false;
         p_SceneChangeMgr.CheckSmoothSceneChange();
         p_CoroutineHandler.ResetCoroutineHandler();

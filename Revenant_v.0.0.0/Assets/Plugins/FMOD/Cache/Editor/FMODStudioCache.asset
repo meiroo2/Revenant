@@ -54,6 +54,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 491
+--- !u!114 &-8870867989335824367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Temp00/Label
+  m_EditorClassIdentifier: 
+  Name: Label
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 0
+  ID:
+    data1: 3715644276
+    data2: 2016676841
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - A
+  - B
+  - C
+  - D
+  Exists: 1
 --- !u!114 &-8774823528950978170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +164,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 32571
+--- !u!114 &-8551000866533590142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Enemy/BossGang/BG_HoloAtk
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Enemy/BossGang/BG_HoloAtk
+  Guid:
+    Data1: -1452325256
+    Data2: 1213189137
+    Data3: 2028320384
+    Data4: -952316584
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 8
+  Length: 483
 --- !u!114 &-8506983504117858481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,7 +453,7 @@ MonoBehaviour:
   Path: ../Revenant_FMOD/Build/Desktop/AMB.bank
   Name: AMB
   StudioPath: bank:/AMB
-  lastModified: 638058311885329088
+  lastModified: 638059051730794090
   FileSizes:
   - Name: Desktop
     Value: 554496
@@ -454,35 +509,6 @@ MonoBehaviour:
   IsGlobal: 1
   Labels: []
   Exists: 1
---- !u!114 &-7813156738757581110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/Temp01
-  m_EditorClassIdentifier: 
-  Path: event:/BGM/Temp01
-  Guid:
-    Data1: -1558403382
-    Data2: 1259176533
-    Data3: -219892305
-    Data4: 1234655654
-  Banks:
-  - {fileID: 8466022282554335561}
-  - {fileID: 6112227130158094469}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters:
-  - {fileID: -1459011986058028624}
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 40800
 --- !u!114 &-7668870429586206710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,6 +638,35 @@ MonoBehaviour:
   IsGlobal: 1
   Labels: []
   Exists: 1
+--- !u!114 &-6875092068015659933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Recycle/Temp01
+  m_EditorClassIdentifier: 
+  Path: event:/Recycle/Temp01
+  Guid:
+    Data1: -1558403382
+    Data2: 1259176533
+    Data3: -219892305
+    Data4: 1234655654
+  Banks:
+  - {fileID: 8466022282554335561}
+  - {fileID: 6112227130158094469}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -5208613001782749951}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 40800
 --- !u!114 &-6760168299984204905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -818,10 +873,10 @@ MonoBehaviour:
   Path: ../Revenant_FMOD/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638058311918001736
+  lastModified: 638059051737425316
   FileSizes:
   - Name: Desktop
-    Value: 7954
+    Value: 8434
   Exists: 1
 --- !u!114 &-6404118630511120750
 MonoBehaviour:
@@ -851,6 +906,30 @@ MonoBehaviour:
   MinDistance: 0
   MaxDistance: 8
   Length: 0
+--- !u!114 &-6403383160444957367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Tutorial/TimeScale
+  m_EditorClassIdentifier: 
+  Name: TimeScale
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3742381502
+    data2: 2199029439
+  Type: 0
+  IsGlobal: 1
+  Labels: []
+  Exists: 1
 --- !u!114 &-6385310123447228930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -933,6 +1012,35 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 754
+--- !u!114 &-6030026786089222164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/Boss
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/Boss
+  Guid:
+    Data1: -752655611
+    Data2: 1316116295
+    Data3: -1937861459
+    Data4: 676721768
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -2240103081889208624}
+  - {fileID: -4015779726540222609}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 109545
 --- !u!114 &-5984302663235870625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1235,6 +1343,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1364
+--- !u!114 &-5208613001782749951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Temp01/Label
+  m_EditorClassIdentifier: 
+  Name: Label
+  StudioPath: 
+  Min: 0
+  Max: 3
+  Default: 0
+  ID:
+    data1: 3715644276
+    data2: 2016676841
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - A
+  - B
+  - C
+  - D
+  Exists: 1
 --- !u!114 &-5062257222162972302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1260,7 +1396,6 @@ MonoBehaviour:
   IsOneShot: 0
   Parameters:
   - {fileID: -7332958408982660674}
-  - {fileID: -1834814411475076021}
   MinDistance: 1
   MaxDistance: 20
   Length: 70243
@@ -1484,34 +1619,6 @@ MonoBehaviour:
   MinDistance: 0
   MaxDistance: 8
   Length: 214
---- !u!114 &-4234299858704908524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/SFX/Title_Ui/Title_Ui_Button_start
-  m_EditorClassIdentifier: 
-  Path: event:/SFX/Title_Ui/Title_Ui_Button_start
-  Guid:
-    Data1: 484308156
-    Data2: 1194587363
-    Data3: 1765966485
-    Data4: 1903703366
-  Banks:
-  - {fileID: 6112227130158094469}
-  - {fileID: 4419010813601691070}
-  IsStream: 0
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 812
 --- !u!114 &-4216539072703834646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1539,6 +1646,30 @@ MonoBehaviour:
   MinDistance: 0
   MaxDistance: 8
   Length: 3923
+--- !u!114 &-4015779726540222609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Boss/BGMPower
+  m_EditorClassIdentifier: 
+  Name: BGMPower
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 14356556
+    data2: 3369210938
+  Type: 0
+  IsGlobal: 1
+  Labels: []
+  Exists: 1
 --- !u!114 &-3935750439044505762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1868,7 +1999,7 @@ MonoBehaviour:
   MinDistance: 0
   MaxDistance: 8
   Length: 2500
---- !u!114 &-2539918588224883388
+--- !u!114 &-2880779361665388993
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1877,25 +2008,51 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Temp00/Label
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Enemy/BossGang/BG_LeapLand
   m_EditorClassIdentifier: 
-  Name: Label
-  StudioPath: 
-  Min: 0
-  Max: 3
-  Default: 0
-  ID:
-    data1: 3715644276
-    data2: 2016676841
-  Type: 2
-  IsGlobal: 0
-  Labels:
-  - A
-  - B
-  - C
-  - D
-  Exists: 1
+  Path: event:/SFX/Enemy/BossGang/BG_LeapLand
+  Guid:
+    Data1: 2023968031
+    Data2: 1232495409
+    Data3: -913470532
+    Data4: -1206162385
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 8
+  Length: 1628
+--- !u!114 &-2768949002096181433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/Credit
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/Credit
+  Guid:
+    Data1: -572397951
+    Data2: 1211309097
+    Data3: 823511443
+    Data4: 1183288502
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 72000
 --- !u!114 &-2441615329401824382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1924,6 +2081,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-2430556966705017150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM/Tutorial
+  m_EditorClassIdentifier: 
+  Path: event:/BGM/Tutorial
+  Guid:
+    Data1: -48098849
+    Data2: 1191469524
+    Data3: 1885236156
+    Data4: -1286065021
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -6403383160444957367}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 104727
 --- !u!114 &-2373272982295209787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2060,6 +2245,30 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1893
+--- !u!114 &-2240103081889208624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Boss/TimeScale
+  m_EditorClassIdentifier: 
+  Name: TimeScale
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 3742381502
+    data2: 2199029439
+  Type: 0
+  IsGlobal: 1
+  Labels: []
+  Exists: 1
 --- !u!114 &-2097534528227343380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2114,30 +2323,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1262
---- !u!114 &-1834814411475076021
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Rail/BGMPower
-  m_EditorClassIdentifier: 
-  Name: BGMPower
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 14356556
-    data2: 3369210938
-  Type: 0
-  IsGlobal: 1
-  Labels: []
-  Exists: 1
 --- !u!114 &-1748912821904696063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2193,35 +2378,7 @@ MonoBehaviour:
   - Metal
   - Player
   Exists: 1
---- !u!114 &-1459011986058028624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Temp01/Label
-  m_EditorClassIdentifier: 
-  Name: Label
-  StudioPath: 
-  Min: 0
-  Max: 3
-  Default: 0
-  ID:
-    data1: 3715644276
-    data2: 2016676841
-  Type: 2
-  IsGlobal: 0
-  Labels:
-  - A
-  - B
-  - C
-  - D
-  Exists: 1
---- !u!114 &-1447690897827460556
+--- !u!114 &-1392703336213334274
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2231,25 +2388,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/Temp00
+  m_Name: event:/SFX/Enemy/BossGang/BG_UltEnd
   m_EditorClassIdentifier: 
-  Path: event:/BGM/Temp00
+  Path: event:/SFX/Enemy/BossGang/BG_UltEnd
   Guid:
-    Data1: -603023470
-    Data2: 1267348407
-    Data3: -1973888588
-    Data4: -92173989
+    Data1: 450692073
+    Data2: 1295494030
+    Data3: -2110206076
+    Data4: 1857867206
   Banks:
-  - {fileID: 8466022282554335561}
   - {fileID: 6112227130158094469}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters:
-  - {fileID: -2539918588224883388}
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 166054
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 8
+  Length: 599
 --- !u!114 &-1222446114687727441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2443,6 +2598,34 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 1142
+--- !u!114 &-404439032973818617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Title_Ui/Title_Start
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Title_Ui/Title_Start
+  Guid:
+    Data1: 484308156
+    Data2: 1194587363
+    Data3: 1765966485
+    Data4: 1903703366
+  Banks:
+  - {fileID: 6112227130158094469}
+  - {fileID: 4419010813601691070}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 1625
 --- !u!114 &-324542777198116171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2573,9 +2756,6 @@ MonoBehaviour:
   EditorEvents:
   - {fileID: -8562664789143923474}
   - {fileID: -459614092682151606}
-  - {fileID: -1447690897827460556}
-  - {fileID: 6681904005940303568}
-  - {fileID: -7813156738757581110}
   - {fileID: -6385310123447228930}
   - {fileID: 2347524592001571649}
   - {fileID: -7078345268933782735}
@@ -2621,7 +2801,6 @@ MonoBehaviour:
   - {fileID: 1088009482304689163}
   - {fileID: -8367224425113750509}
   - {fileID: 575949702124388794}
-  - {fileID: -4234299858704908524}
   - {fileID: 3601480205063029555}
   - {fileID: -8214790377755162685}
   - {fileID: -5058448436982391896}
@@ -2722,6 +2901,21 @@ MonoBehaviour:
   - {fileID: 6634312580703403754}
   - {fileID: 1603091811149856514}
   - {fileID: -5434277604817578321}
+  - {fileID: 773503539112503192}
+  - {fileID: 2829230235772079074}
+  - {fileID: -6875092068015659933}
+  - {fileID: -6030026786089222164}
+  - {fileID: -404439032973818617}
+  - {fileID: 6709670763687304770}
+  - {fileID: -2768949002096181433}
+  - {fileID: -2430556966705017150}
+  - {fileID: -2880779361665388993}
+  - {fileID: 3539850305334270009}
+  - {fileID: 770157344327852866}
+  - {fileID: -8551000866533590142}
+  - {fileID: 2375513964906083973}
+  - {fileID: -1392703336213334274}
+  - {fileID: 1416461750638215783}
   EditorParameters:
   - {fileID: 8643100240152204029}
   - {fileID: 7441750826357026885}
@@ -2730,7 +2924,7 @@ MonoBehaviour:
   - {fileID: 6112227130158094469}
   StringsBanks:
   - {fileID: -6572465696859303315}
-  cacheTime: 638058311922616397
+  cacheTime: 638059051739066886
   cacheVersion: 131593
 --- !u!114 &226226175686165519
 MonoBehaviour:
@@ -2863,6 +3057,62 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 117333
+--- !u!114 &770157344327852866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Enemy/BossGang/BG_JumpAtk
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Enemy/BossGang/BG_JumpAtk
+  Guid:
+    Data1: -969068222
+    Data2: 1209450822
+    Data3: 271238831
+    Data4: 1501555162
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 8
+  Length: 1000
+--- !u!114 &773503539112503192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Recycle/Temp00
+  m_EditorClassIdentifier: 
+  Path: event:/Recycle/Temp00
+  Guid:
+    Data1: -603023470
+    Data2: 1267348407
+    Data3: -1973888588
+    Data4: -92173989
+  Banks:
+  - {fileID: 8466022282554335561}
+  - {fileID: 6112227130158094469}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters:
+  - {fileID: -8870867989335824367}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 166054
 --- !u!114 &788062634247883232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3055,6 +3305,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 553
+--- !u!114 &1416461750638215783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Enemy/BossGang/BG_Holo
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Enemy/BossGang/BG_Holo
+  Guid:
+    Data1: 899751414
+    Data2: 1270771995
+    Data3: -1491686016
+    Data4: 1271407085
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 8
+  Length: 828
 --- !u!114 &1486119609256559976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3215,6 +3492,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 14750
+--- !u!114 &2375513964906083973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Enemy/BossGang/BG_UltAtk
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Enemy/BossGang/BG_UltAtk
+  Guid:
+    Data1: -152909113
+    Data2: 1161235826
+    Data3: 2102563718
+    Data4: 1904958355
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 8
+  Length: 1000
 --- !u!114 &2413483701756073045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3325,6 +3629,34 @@ MonoBehaviour:
   - Metal
   - Player
   Exists: 1
+--- !u!114 &2829230235772079074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Recycle/Temp02
+  m_EditorClassIdentifier: 
+  Path: event:/Recycle/Temp02
+  Guid:
+    Data1: 1961526169
+    Data2: 1220108628
+    Data3: -556174965
+    Data4: 1484461107
+  Banks:
+  - {fileID: 8466022282554335561}
+  - {fileID: 6112227130158094469}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 40421
 --- !u!114 &2947655617216060162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3488,6 +3820,33 @@ MonoBehaviour:
   MinDistance: 0
   MaxDistance: 8
   Length: 925
+--- !u!114 &3539850305334270009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SFX/Enemy/BossGang/BG_Counter
+  m_EditorClassIdentifier: 
+  Path: event:/SFX/Enemy/BossGang/BG_Counter
+  Guid:
+    Data1: 694908213
+    Data2: 1294429360
+    Data3: 55451054
+    Data4: -662884123
+  Banks:
+  - {fileID: 6112227130158094469}
+  IsStream: 0
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 8
+  Length: 537
 --- !u!114 &3601480205063029555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3721,10 +4080,10 @@ MonoBehaviour:
   Path: ../Revenant_FMOD/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638058311922616397
+  lastModified: 638059051739066886
   FileSizes:
   - Name: Desktop
-    Value: 2416096
+    Value: 2402624
   Exists: 1
 --- !u!114 &4475480639601629828
 MonoBehaviour:
@@ -4202,10 +4561,10 @@ MonoBehaviour:
   Path: ../Revenant_FMOD/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638058311917951691
+  lastModified: 638059051737375269
   FileSizes:
   - Name: Desktop
-    Value: 17457504
+    Value: 27594720
   Exists: 1
 --- !u!114 &6355194844736972492
 MonoBehaviour:
@@ -4288,7 +4647,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 71611
---- !u!114 &6681904005940303568
+--- !u!114 &6709670763687304770
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4298,16 +4657,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/BGM/Temp02
+  m_Name: event:/BGM/Title
   m_EditorClassIdentifier: 
-  Path: event:/BGM/Temp02
+  Path: event:/BGM/Title
   Guid:
-    Data1: 1961526169
-    Data2: 1220108628
-    Data3: -556174965
-    Data4: 1484461107
+    Data1: 626214386
+    Data2: 1079738860
+    Data3: 957971380
+    Data4: -183564507
   Banks:
-  - {fileID: 8466022282554335561}
   - {fileID: 6112227130158094469}
   IsStream: 1
   Is3D: 0
@@ -4315,7 +4673,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 40421
+  Length: 12000
 --- !u!114 &6875654164018717941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4869,7 +5227,7 @@ MonoBehaviour:
   Path: ../Revenant_FMOD/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 638058311893201800
+  lastModified: 638059051732070325
   FileSizes:
   - Name: Desktop
     Value: 3570496

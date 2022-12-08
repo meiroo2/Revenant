@@ -9,11 +9,11 @@ public class Breakable_OneHitBox : Breakable
         if (Health <= 0)
             return;
         
-        Health -= 10;
+        Health -= _damage;
         
         if (Health <= 0)
         {
-            m_Animator.SetInteger("Hp", Health);
+            m_Animator.SetTrigger("Break");
             m_HotBox.gameObject.SetActive(false);
         }
     }

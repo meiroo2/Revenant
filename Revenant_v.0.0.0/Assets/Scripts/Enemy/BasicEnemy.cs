@@ -107,7 +107,7 @@ public class BasicEnemy : Human
         m_WalkSoundCoroutine = StartCoroutine(WalkSoundEnumerator(_time));
     }
 
-    private IEnumerator WalkSoundEnumerator(float _time)
+    protected virtual IEnumerator WalkSoundEnumerator(float _time)
     {
         while (true)
         {

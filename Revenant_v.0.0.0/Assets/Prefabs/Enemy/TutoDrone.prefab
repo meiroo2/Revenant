@@ -56,13 +56,16 @@ MonoBehaviour:
   <p_AngleLimit>k__BackingField: 20
   <p_VisionDistance>k__BackingField: 0
   p_AtkDistance: 0
-  m_DeadReasonForMat: 0
+  m_IsDead: 0
   WayPointsVectorList: []
   WayPointsIndex: 0
   p_PatrolPoses: []
   p_HeadBox: {fileID: 138541702448630658}
   p_BodyBox: {fileID: 138541702515760383}
   p_Animator: {fileID: 138541702080474137}
+  <p_BnWMat>k__BackingField: {fileID: 0}
+  <p_RedHoloMat>k__BackingField: {fileID: 2100000, guid: 341ce21ae549ba2498d668eda42037ac, type: 2}
+  <p_DisappearMat>k__BackingField: {fileID: 2100000, guid: d446be44456e3104abede786e4c47706, type: 2}
 --- !u!50 &138541701455968887
 Rigidbody2D:
   serializedVersion: 4
@@ -137,7 +140,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 42954f1133be95c4185fcee95962bc5d, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

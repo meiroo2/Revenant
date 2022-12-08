@@ -1252,6 +1252,7 @@ GameObject:
   - component: {fileID: 670215011}
   - component: {fileID: 670215015}
   - component: {fileID: 670215016}
+  - component: {fileID: 670215017}
   m_Layer: 0
   m_Name: MainCam
   m_TagString: MainCamera
@@ -1443,6 +1444,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &670215017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670215009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1 &798973929
 GameObject:
   m_ObjectHideFlags: 0
@@ -2393,7 +2407,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8411051076174468982, guid: fc7adfc089233ff4ba257d86a618162a, type: 3}
       propertyPath: m_RootOrder
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 8411051076174468982, guid: fc7adfc089233ff4ba257d86a618162a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2526,6 +2540,14 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: 8248504158128519549, guid: ef846dd9092288c489fc5ca3c0aa3f52, type: 2}
     value: {fileID: 1502765575}
+  - key: {fileID: 405947354974606132, guid: ef846dd9092288c489fc5ca3c0aa3f52, type: 2}
+    value: {fileID: 670215009}
+  - key: {fileID: -7891249488808748318, guid: ef846dd9092288c489fc5ca3c0aa3f52, type: 2}
+    value: {fileID: 670215009}
+  - key: {fileID: -5215880638487158764, guid: ef846dd9092288c489fc5ca3c0aa3f52, type: 2}
+    value: {fileID: 670215009}
+  - key: {fileID: 6424644982935290633, guid: ef846dd9092288c489fc5ca3c0aa3f52, type: 2}
+    value: {fileID: 670215009}
   m_ExposedReferences:
     m_References:
     - 3d47f9832cf07014f94bc952b3f05baa: {fileID: 506048528}
