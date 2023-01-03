@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using FMOD;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 using Debug = UnityEngine.Debug;
 
 public enum EnemyStateName

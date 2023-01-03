@@ -93,7 +93,7 @@ public class CameraMgr : MonoBehaviour
 			m_FinalCamPos.z = -10f;
 			transform.position = m_FinalCamPos;
 			yield return null;
-			if (Vector2.Distance(transform.position, targetPosition) < 0.001f) // Ä«¸Þ¶ó°¡ ´ë»óÀ» ¹Ù¶óº¸°í ÀÖÀ½
+			if (Vector2.Distance(transform.position, targetPosition) < 0.001f) // ì¹´ë©”ë¼ê°€ ëŒ€ìƒì„ ë°”ë¼ë³´ê³  ìžˆìŒ
 			{
 				m_IsFollowTarget = false;
 				MoveStopTimer += Time.deltaTime;
@@ -104,14 +104,14 @@ public class CameraMgr : MonoBehaviour
 		yield return null;
 
 
-		// µ¹¾Æ°¨
+		// ëŒì•„ê°
 		while (!m_IsMoveEnd)
 		{
 			m_FinalCamPos = Vector2.Lerp(transform.position, originPosition, Time.deltaTime * 4f);
 			m_FinalCamPos.z = -10f;
 			transform.position = m_FinalCamPos;
 			yield return null;
-			if (Vector2.Distance(transform.position, originPosition) < 0.001f) // Ä«¸Þ¶ó°¡ ´ë»óÀ» ¹Ù¶óº¸°í ÀÖÀ½
+			if (Vector2.Distance(transform.position, originPosition) < 0.001f) // ì¹´ë©”ë¼ê°€ ëŒ€ìƒì„ ë°”ë¼ë³´ê³  ìžˆìŒ
 			{
 				m_IsMoveEnd = true;
 			}
@@ -137,7 +137,7 @@ public class CameraMgr : MonoBehaviour
 
 		CalCaledPos();
 		CalCamRotate();
-		CalCamZoom();
+		//CalCamZoom();
 		CalCamShake();
 
 		m_FinalCamPos = new Vector3(m_CaledCamPos.x + m_CamShakeVector.x, m_CaledCamPos.y + m_CamShakeVector.y + p_YValue, -10f);

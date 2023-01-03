@@ -43,7 +43,7 @@ public class BulletTime_AR : MonoBehaviour
         }
         
         
-        // °¢ ClearColor·Î ÇÒ´ç
+        // ê° ClearColorë¡œ í• ë‹¹
         for (int i = 0; i < m_ImgList.Count; i++)
         {
             m_ImgList[i].color = m_ImgClearColorList[i];
@@ -54,8 +54,8 @@ public class BulletTime_AR : MonoBehaviour
     // Functions
 
     /// <summary>
-    /// BulletTime½Ã ³ª¿À´Â °ÔÀÌÁöÀÇ ¾çÀ» Á¶ÀıÇÕ´Ï´Ù.
-    /// ÆÄ¶ó¹ÌÅÍ ¾ÈÀüÃ³¸® ¿Ï·á
+    /// BulletTimeì‹œ ë‚˜ì˜¤ëŠ” ê²Œì´ì§€ì˜ ì–‘ì„ ì¡°ì ˆí•©ë‹ˆë‹¤.
+    /// íŒŒë¼ë¯¸í„° ì•ˆì „ì²˜ë¦¬ ì™„ë£Œ
     /// </summary>
     /// <param name="_fillAmount"></param>
     public void ChangeGaugeFill(float _fillAmount)
@@ -71,9 +71,9 @@ public class BulletTime_AR : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇØ´ç ÀÌÆåÆ®¸¦ Fade in/outÀ¸·Î ºÎµå·´°Ô ³ªÅ¸³»°Å³ª ¾ø¾Û´Ï´Ù.
+    /// í•´ë‹¹ ì´í™íŠ¸ë¥¼ Fade in/outìœ¼ë¡œ ë¶€ë“œëŸ½ê²Œ ë‚˜íƒ€ë‚´ê±°ë‚˜ ì—†ì•±ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="_toFadeIn">true¸é ³ªÅ¸³ª±â</param>
+    /// <param name="_toFadeIn">trueë©´ ë‚˜íƒ€ë‚˜ê¸°</param>
     public void ActivateUsingFade(bool _toFadeIn)
     {
         if (!ReferenceEquals(m_FadeCoroutine, null))
