@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using Unity.Collections;
 using Cysharp;
@@ -11,6 +12,7 @@ public class CamEftByJob : MonoBehaviour
 {
     private Camera m_Camera;
     private float m_OrthoSize;
+    private CancellationTokenSource m_ZoomCancelToken = new CancellationTokenSource();
     
     private void Awake()
     {
@@ -22,8 +24,15 @@ public class CamEftByJob : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            UniTask.SwitchToTaskPool();
-            DoZoomnOut();
+            m_ZoomCancelToken.Cancel();
+            m_ZoomCancelToken.Dispose();
+            m_ZoomCancelToken = new CancellationTokenSource();
+            var sans = DoZoomnOut();
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            
         }
     }
 
@@ -39,7 +48,10 @@ public class CamEftByJob : MonoBehaviour
                 m_Camera.orthographicSize = m_OrthoSize;
                 break;
             }
-            await UniTask.Yield();
+
+            //await UniTask.DelayFrame(1);
+            //await UniTask.NextFrame(cancellationToken:m_ZoomCancelToken);
+            await UniTask.Yield(m_ZoomCancelToken.Token);
         }
     }
 }
