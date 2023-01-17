@@ -76,7 +76,7 @@ public class LocationInfo : MonoBehaviour
         return -1;
     }
 
-    // ÆÄ¶ó¹ÌÅÍ·Î ÇÔ¼ö¸¦ È£ÃâÇÏ´Â ´ë»óÀÇ Position°ú ¸ñÀûÁö LocationInfo¸¦ ³ÖÀ¸¸é »óÈ£ÀÛ¿ë ¿ÀºêÁ§Æ® À§Ä¡¸¦ ¾È³»
+    // íŒŒë¼ë¯¸í„°ë¡œ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ëŠ” ëŒ€ìƒì˜ Positionê³¼ ëª©ì ì§€ LocationInfoë¥¼ ë„£ìœ¼ë©´ ìƒí˜¸ìž‘ìš© ì˜¤ë¸Œì íŠ¸ ìœ„ì¹˜ë¥¼ ì•ˆë‚´
     public Vector2 GetRoomDestPos(Vector2 _entity, LocationInfo _dest)
     {
         int roomIdx = GetRoomIdx(_dest);
@@ -91,7 +91,7 @@ public class LocationInfo : MonoBehaviour
             minimumDistance = Vector2.Distance(_entity,
                 p_ConnectedRooms[roomIdx].p_RoomnInteracts[destIdx].transform.position);
 
-            // ÇØ´ç ¹æÀ¸·Î °¥ ¼ö ÀÖ´Â °æ·Î°¡ 2°¡Áö ÀÌ»ó
+            // í•´ë‹¹ ë°©ìœ¼ë¡œ ê°ˆ ìˆ˜ ìžˆëŠ” ê²½ë¡œê°€ 2ê°€ì§€ ì´ìƒ
             if (p_ConnectedRooms[roomIdx].p_RoomnInteracts.Length > 3)
             {
                 for (int i = 2; i < p_ConnectedRooms[roomIdx].p_RoomnInteracts.Length; i++)
