@@ -83,6 +83,7 @@ public class Player : Human
     public LocationSensor m_PlayerLocationSensor { get; private set; }
     public Player_HitscanRay m_PlayerHitscanRay { get; private set; }
     [field: SerializeField] public Player_MeleeAttack m_MeleeAttack { get; private set; }
+    [field: SerializeField] public SectionSensor m_PlayerSectionSensor { get; private set; }
     public Player_ArmMgr m_ArmMgr { get; private set; }
     public RageGauge m_RageGauge { get; private set; }
     public BulletTimeMgr m_BulletTimeMgr { get; private set; }

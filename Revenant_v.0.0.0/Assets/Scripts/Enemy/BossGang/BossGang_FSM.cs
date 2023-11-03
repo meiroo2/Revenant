@@ -1389,7 +1389,7 @@ public class Ultimate_BossGang : BossGang_FSM
 
     public override void ExitState()
     {
-        m_Enemy.ActivateScreenHexa(false, false);
+        m_Enemy.ActivateScreenHexa(false, true);
         m_Animator.SetInteger(Ult, 0);
     }
 

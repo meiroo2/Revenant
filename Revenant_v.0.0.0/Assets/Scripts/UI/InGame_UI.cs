@@ -68,4 +68,59 @@ public class InGame_UI : MonoBehaviour
         
         _action?.Invoke();
     }
+    
+    
+    public void DoWhiteOut(bool _IsFadeOut)
+    {
+        m_WhiteClearColor = Color.white;
+        
+        if (_IsFadeOut)
+        {
+            m_ScreenCoverImg.color = m_WhiteClearColor;
+            StartCoroutine(WhiteFadeOut());
+        }
+        else
+        {
+            m_WhiteClearColor.a = 0;
+            m_ScreenCoverImg.color = m_WhiteClearColor;
+            StartCoroutine(WhiteFadeIn());
+        }
+    }
+    
+    private IEnumerator WhiteFadeOut()
+    {
+        while (true)
+        {
+            m_WhiteClearColor.a -= Time.deltaTime * p_WhiteOutSpeed;
+            m_ScreenCoverImg.color = m_WhiteClearColor;
+
+            if (m_WhiteClearColor.a <= 0f)
+            {
+                m_ScreenCoverImg.color = Color.clear;
+                m_WhiteClearColor = Color.white;
+                yield break;
+            }
+
+            yield return null;
+        }
+    }
+    private IEnumerator WhiteFadeIn()
+    {
+        while (true)
+        {
+            m_WhiteClearColor.a += Time.deltaTime * p_WhiteOutSpeed;
+            m_ScreenCoverImg.color = m_WhiteClearColor;
+            
+            if (m_WhiteClearColor.a >= 1f)
+            {
+                m_WhiteClearColor = Color.white;
+                m_ScreenCoverImg.color = m_WhiteClearColor;
+                
+                
+                yield break;
+            }
+            
+            yield return null;
+        }
+    }
 }

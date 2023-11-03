@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
+
+
 public class GameMgr : MonoBehaviour
 {
     // Visible Member Variables
@@ -18,6 +20,7 @@ public class GameMgr : MonoBehaviour
     [field: SerializeField] public SceneChangeMgr p_SceneChangeMgr { get; private set; }
     [field: SerializeField] public MatChanger p_MatChanger { get; private set; }
     [field: SerializeField] public EnemyMgr p_EnemyMgr { get; private set; }
+    [field: SerializeField] public LanguageManager p_LangMgr { get; private set; }
 
     public float m_GameTimer { get; private set; } = 0f;
 
@@ -34,7 +37,6 @@ public class GameMgr : MonoBehaviour
     [HideInInspector] public bool m_CanInputAnyKey = false;
 
     public int m_CurSceneIdx { get; private set; } = 0;
-
 
 
     // Constructor

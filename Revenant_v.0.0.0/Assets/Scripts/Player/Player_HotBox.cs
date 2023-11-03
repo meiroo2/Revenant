@@ -65,7 +65,7 @@ public class Player_HotBox : MonoBehaviour, IHotBox
         switch (m_hotBoxType)
         {
             case 0:
-                m_ScreenEffectUI.ActivateScreenBloodEft();
+                m_ScreenEffectUI.ActivateScreenEdgeEffect();
                 m_ScreenEffectUI.ActivateScreenColorDistortionEffect();
                 m_SoundPlayer.PlayHitSoundByMatType(MatType.Flesh, m_Player.transform);
                 

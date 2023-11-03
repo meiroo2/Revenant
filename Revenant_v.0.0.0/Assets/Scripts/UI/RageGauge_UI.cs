@@ -360,7 +360,6 @@ public class RageGauge_UI : MonoBehaviour
 				{
 					StopCoroutine(m_RollImgCoroutine);
 					m_RollImgCoroutine = null;
-					p_RollParentTransform.anchoredPosition = m_RollImgOriginPos;
 				}
 				break;
 			
@@ -369,7 +368,6 @@ public class RageGauge_UI : MonoBehaviour
 				{
 					StopCoroutine(m_MeleeImgCoroutine);
 					m_MeleeImgCoroutine = null;
-					p_MeleeParentTransform.anchoredPosition = m_MeleeImgOriginPos;
 				}
 				break;
 			
@@ -378,7 +376,6 @@ public class RageGauge_UI : MonoBehaviour
 				{
 					StopCoroutine(m_UltImgCoroutine);
 					m_UltImgCoroutine = null;
-					p_UltParentTransform.anchoredPosition = m_UltImgOriginPos;
 				}
 				break;
 		}

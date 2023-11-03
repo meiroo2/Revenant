@@ -266,7 +266,6 @@ public class Player_UI : MonoBehaviour
         {
             case 0:     // Head
                 p_Hitmark.sprite = p_HitmarkArr[0];
-                m_Maincam.DoQuickZoom(m_Maincam.p_HeadZoomPower, m_Maincam.p_ZoomSpeed);
                 m_Maincam.DoCamShake(true);
                 m_SoundPlayer.PlayUISoundOnce(0);
                 

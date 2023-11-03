@@ -81,7 +81,7 @@ public class TutorialDialog : MonoBehaviour
 		material.SetFloat("_TextEnd", 0);
 		//DialogEndUI.SetBool("isTextEnd", isTextEnd);
 		if (TextUI)
-		TextUI.text = "";
+			TextUI.text = "";
 	}
 
 	public void SetDialogActive(bool value)

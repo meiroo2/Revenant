@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -21,9 +18,8 @@ public class CameraMgr : MonoBehaviour
 	public float p_ShakeRecoverSpeed = 5f;
 	public float p_RotateRecoverSpeed = 1f;
 	public float p_BodyHitRatio = 0.5f;
+	public float p_CamShakeZoomPower = 0f;
 
-	[TabGroup("Zoom")] public float p_HeadZoomPower = 1f;
-	[TabGroup("Zoom")] public float p_ZoomSpeed = 1f;
 
 	// Member Variables
 	private Vector3 m_CaledCamPos;
@@ -55,10 +51,6 @@ public class CameraMgr : MonoBehaviour
 	public bool m_IsFollowTarget { get; set; } = false;
     public bool m_IsMoveEnd { get; set; } = true;
 
-    // UniTask Effects
-    private CancellationTokenSource m_ZoomCancelToken = new CancellationTokenSource();
-    
-    
 	// Constructors
 	private void Awake()
 	{
@@ -145,7 +137,7 @@ public class CameraMgr : MonoBehaviour
 
 		CalCaledPos();
 		CalCamRotate();
-		//CalCamZoom();
+		CalCamZoom();
 		CalCamShake();
 
 		m_FinalCamPos = new Vector3(m_CaledCamPos.x + m_CamShakeVector.x, m_CaledCamPos.y + m_CamShakeVector.y + p_YValue, -10f);
@@ -211,29 +203,10 @@ public class CameraMgr : MonoBehaviour
 			p_RotateRecoverSpeed);
 	}
 
-	public void DoQuickZoom(float _power, float _speed)
+	private void CalCamZoom()
 	{
-		m_ZoomCancelToken.Cancel();
-		m_ZoomCancelToken.Dispose();
-		m_ZoomCancelToken = new CancellationTokenSource();
-		QuickZoom(_power, _speed);
-	}
-	private async UniTaskVoid QuickZoom(float _power, float _speed)
-	{
-		float power = _power;
-		
-		while (true)
-		{
-			m_MainCam.orthographicSize = m_OriginCamZoomValue + power;
-			power -= Time.deltaTime;
-			
-			if (power <= 0f)
-			{
-				m_MainCam.orthographicSize = m_OriginCamZoomValue;
-				break;
-			}
-			await UniTask.Yield(m_ZoomCancelToken.Token);
-		}
+		m_CamShakeZoomValue = Mathf.Lerp(m_CamShakeZoomValue, 0f, m_DeltaTime * 5f);
+		m_MainCam.orthographicSize = m_OriginCamZoomValue + m_CamShakeZoomValue;
 	}
 
 	private void CalCamShake()
@@ -259,6 +232,12 @@ public class CameraMgr : MonoBehaviour
 			m_CamShakeVector *= p_BodyHitRatio;
 			m_CamShakeRotationAngle *= p_BodyHitRatio;
 		}
+		else
+		{
+			// Head Hit
+			m_CamShakeZoomValue = p_CamShakeZoomPower;
+		}
+
 		transform.rotation = Quaternion.Euler(0, 0, m_CamShakeRotationAngle);
 	}
 

@@ -9,7 +9,7 @@ public class LightMgr : MonoBehaviour
     public float[] p_LayerParallaxIntensity = new float[8];
 
     [Space (30f)]
-    [Header("Don't ¶£Áã")]
+    [Header("Don't ë•ƒì¥")]
     public TempParaBack[] p_BackGrounds;
     public Light2D[] p_LayerLights;
 

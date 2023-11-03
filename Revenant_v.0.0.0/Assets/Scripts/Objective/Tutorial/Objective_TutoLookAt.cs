@@ -20,6 +20,7 @@ public class Objective_TutoLookAt : Objective
     private int m_Phase = 0;
     private Player m_Player;
 
+    [Multiline(3)]
     public List<string> p_DroneDialogTextList = new();
     private int m_CurrentDialogTextCount = 0;
 

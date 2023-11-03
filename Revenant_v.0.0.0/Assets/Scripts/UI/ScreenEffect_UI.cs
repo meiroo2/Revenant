@@ -10,19 +10,22 @@ using UnityEngine.Serialization;
 public class ScreenEffect_UI : MonoBehaviour
 {
     // Visible Member Variables
-    public float p_ScreenBloodEftSpeed = 5f;
+    public float p_EdgeEffectFadeoutspeed = 5f;
     public float p_ColorDistortionPower = 1f;
     public float p_ColorDistortionRestoreSpeed = 5f;
     
     public float p_LensDistortPower = -0.5f;
     public float p_LensDistortRestoreSpeed = 2f;
 
-    [Space(20f), Header("Assign")] 
-    public Image p_ScreenBloodImg;
-    
+    public float p_VignettePower = 0.5f;
+    public float p_VignetteSpeed = 1f;
 
+    public float p_AREffectSpeed = 1f;
+    
     // Member Variables
-    private Coroutine m_ScreenBloodEftCoroutine = null;
+    private Color m_Color;
+    private Image m_Image;
+    private Coroutine m_EdgeEffectCoroutine;
 
     private Camera m_MainCamera;
     private VolumeProfile m_CamVolumeProfile;
@@ -31,8 +34,12 @@ public class ScreenEffect_UI : MonoBehaviour
     private UnityEngine.Rendering.Universal.Vignette m_Vignette;
     private Coroutine m_LensDistortCoroutine;
     private Coroutine m_ColorDistortionCoroutine;
+    private Coroutine m_VignetteCoroutine;
 
-
+    private BulletTime_AR m_BulletTime_AR;
+    private RageGauge_UI m_RageGauge_UI;
+    
+    
     // Constructor
     private void Awake()
     {
@@ -64,59 +71,95 @@ public class ScreenEffect_UI : MonoBehaviour
         }
 
 
-        p_ScreenBloodImg.color = Color.clear;
+        m_Image = GetComponentInChildren<Image>();
+        m_Color = new Color(1, 1, 1, 0);
+        m_Image.color = m_Color;
     }
 
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
+        m_BulletTime_AR = instance.m_BulletTime_AR;
+        m_RageGauge_UI = instance.m_RageGauge.p_RageGaugeUI;
+        //m_BulletTime_AR.p_FadeSpeed = p_AREffectSpeed;
     }
 
 
     // Updates
 
+
     // Functions
 
     /// <summary>
-    /// 화면 가장자리에 유혈 효과를 생성합니다.
+    /// 카메라에 비네팅 효과를 부드럽게 넣거나 뻅니다.
     /// </summary>
-    public void ActivateScreenBloodEft()
+    /// <param name="_isTrue">True면 넣음</param>
+    public void ActivateVignetteEffect(bool _isTrue)
     {
-        if (!ReferenceEquals(m_ScreenBloodEftCoroutine, null))
-        {
-            StopCoroutine(m_ScreenBloodEftCoroutine);
-            m_ScreenBloodEftCoroutine = null;
-        }
-        
-        m_ScreenBloodEftCoroutine = StartCoroutine(ScreenBloodEftIEnumerator());
+        m_Vignette.intensity.value = _isTrue ? 0f : p_VignettePower;
+
+        m_VignetteCoroutine = StartCoroutine(VignetteEffectCoroutine(_isTrue));
     }
 
-    // 내부 카메라 이펙트 Enumerator
-    private IEnumerator ScreenBloodEftIEnumerator()
+    private IEnumerator VignetteEffectCoroutine(bool _isTrue)
     {
-        // 우선 해당 화면 이펙트 알파값 최대
-        Color imgColor = Color.white;
-        p_ScreenBloodImg.color = imgColor;
-
-        float timer = 0f;
-        
         while (true)
         {
-            timer += Time.unscaledDeltaTime * p_ScreenBloodEftSpeed;
-            imgColor.a = Mathf.Cos(timer);
-
-            if (imgColor.a <= 0f)
+            if (_isTrue)
             {
-                imgColor.a = 0f;
-                p_ScreenBloodImg.color = imgColor;
-                break;
+                m_Vignette.intensity.value += Time.unscaledDeltaTime * p_VignetteSpeed;
+                if (m_Vignette.intensity.value >= p_VignettePower)
+                {
+                    m_Vignette.intensity.value = p_VignettePower;
+                    break;
+                }
             }
-
-            p_ScreenBloodImg.color = imgColor;
+            else
+            {
+                m_Vignette.intensity.value -= Time.unscaledDeltaTime * p_VignetteSpeed;
+                if (m_Vignette.intensity.value <= 0f)
+                {
+                    m_Vignette.intensity.value = 0f;
+                    break;
+                }
+            }
+            
             yield return null;
         }
 
         yield break;
+    }
+    
+    
+    
+    /// <summary>
+    /// 화면 가장자리에 유혈 효과를 생성합니다.
+    /// </summary>
+    public void ActivateScreenEdgeEffect()
+    {
+        // 우선 해당 화면 이펙트 알파값 최대
+        m_Color = Color.white;
+        m_Image.color = m_Color;
+        
+        if(m_EdgeEffectCoroutine != null)
+            StopCoroutine(m_EdgeEffectCoroutine);
+        
+        m_EdgeEffectCoroutine = StartCoroutine(EdgeEffectStart());
+    }
+
+    // 내부 카메라 이펙트 코루틴
+    private IEnumerator EdgeEffectStart()
+    {
+        while (true)
+        {
+            m_Image.color = m_Color;
+            m_Color.a -= Time.unscaledDeltaTime * p_EdgeEffectFadeoutspeed;
+            
+            if (m_Color.a <= 0f)
+                break;
+            
+            yield return null;
+        }
     }
 
     /// <summary>

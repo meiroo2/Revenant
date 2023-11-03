@@ -19,6 +19,15 @@ public abstract class Objective : MonoBehaviour
     {
         m_ObjIdx = _idx;
     }
+
+    public void ClearObjectiveTxt()
+    {
+        for (int i = 0; i < m_ObjectiveTxtArr.Length; i++)
+        {
+            m_ObjectiveTxtArr[i] = null;
+        }
+    }
+    
     public abstract void InitObjective(ObjectiveMgr _mgr, ObjectiveUI _ui);
 
     public abstract void UpdateObjective();

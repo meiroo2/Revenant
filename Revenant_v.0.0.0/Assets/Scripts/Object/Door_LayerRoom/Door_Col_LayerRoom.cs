@@ -10,7 +10,7 @@ public class Door_Col_LayerRoom : MonoBehaviour, IUseableObj
     
     public Door_LayerRoom m_Door;
     private static readonly int IsOpen = Animator.StringToHash("IsOpen");
-
+    
     private void Awake()
     {
         m_Door = GetComponentInParent<Door_LayerRoom>();
