@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using Unity.Collections;
-using Cysharp;
-using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 
 public class CamEftByJob : MonoBehaviour
@@ -22,6 +20,7 @@ public class CamEftByJob : MonoBehaviour
 
     private void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.P))
         {
             m_ZoomCancelToken.Cancel();
@@ -34,8 +33,10 @@ public class CamEftByJob : MonoBehaviour
         {
             
         }
+        */
     }
 
+    /*
     async UniTaskVoid DoZoomnOut()
     {
         float AddZoom = 1f;
@@ -54,4 +55,5 @@ public class CamEftByJob : MonoBehaviour
             await UniTask.Yield(m_ZoomCancelToken.Token);
         }
     }
+    */
 }
