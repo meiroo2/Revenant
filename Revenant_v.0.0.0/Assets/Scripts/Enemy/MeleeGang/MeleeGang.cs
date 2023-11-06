@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using UnityEngine.Serialization;
+using VariableDB;
 
 public class MeleeGang : BasicEnemy, ISpriteMatChange
 {
@@ -92,6 +93,9 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
         m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
         m_PlayerTransform = m_Player.transform;
         m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
+        
+        EnemyMgr enemyMgr = GameMgr.GetInstance().p_EnemyMgr;
+        InitEnemyVariablesByDB(enemyMgr.GetMeleeGangDB());
     }
 
 
@@ -163,27 +167,52 @@ public class MeleeGang : BasicEnemy, ISpriteMatChange
             ChangeEnemyFSM(EnemyStateName.CHANGE);
         }
     }
+
+    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
+    {
+        if (gangDB is MeleeGang_DB meleeGangDB)
+        {
+            p_Hp = meleeGangDB.Hp;
+            p_MoveSpeed = meleeGangDB.Speed;
+            p_StunHp = meleeGangDB.StunThreshold;
+            p_VisionDistance = meleeGangDB.VisionDistance;
+            p_MeleeDistance = meleeGangDB.MeleeAtkDistance;
+            p_AttackTiming = meleeGangDB.PointAtkTime;
+            p_FollowSpeedMulti = meleeGangDB.FollowSpeedMulti;
+            p_DelayAfterAttack = meleeGangDB.DelayAfterAtk;
+            p_StunWaitTime = meleeGangDB.StunWaitTime;
+            p_HeadBox.p_DamageMulti = meleeGangDB.HeadDmgMulti;
+            p_BodyBox.p_DamageMulti = meleeGangDB.BodyDmgMulti;
+
+            var meleeWeapon = GetComponentInChildren<MeleeWeapon_Enemy>();
+            meleeWeapon.p_BulletDamage = meleeGangDB.MeleeDmg;
+        }
+        else
+        {
+            Debug.LogWarning("현재 MeleeGang에 들어온 DB 타입이 다릅니다.");
+            return;
+        }
+    }
     
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
         if (p_OverrideEnemyMgr) 
             return;
-
-        var meleeWeapon = GetComponentInChildren<MeleeWeapon_Enemy>();
         
         p_Hp = _mgr.M_HP;
-        p_StunHp = _mgr.M_StunThreshold;
-        meleeWeapon.p_BulletDamage = _mgr.M_MeleeDamage;
         p_MoveSpeed = _mgr.M_Speed;
+        p_StunHp = _mgr.M_StunThreshold;
         p_VisionDistance = _mgr.M_Vision_Distance;
         p_MeleeDistance = _mgr.M_MeleeAttack_Distance;
         p_AttackTiming = _mgr.M_PointAttackTime;
-        p_HeadBox.p_DamageMulti = _mgr.M_HeadDmgMulti;
-        p_BodyBox.p_DamageMulti = _mgr.M_BodyDmgMulti;
         p_FollowSpeedMulti = _mgr.M_FollowSpeedMulti;
         p_DelayAfterAttack = _mgr.M_DelayAfterAttack;
         p_StunWaitTime = _mgr.M_StunWaitTime;
+        p_HeadBox.p_DamageMulti = _mgr.M_HeadDmgMulti;
+        p_BodyBox.p_DamageMulti = _mgr.M_BodyDmgMulti;
 
+        var meleeWeapon = GetComponentInChildren<MeleeWeapon_Enemy>();
+        meleeWeapon.p_BulletDamage = _mgr.M_MeleeDamage;
         
         #if UNITY_EDITOR
             EditorUtility.SetDirty(this);

@@ -160,7 +160,7 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
     {
         if (gangDB is NormalGang_DB normalGangDB)
         {
-            p_Hp = normalGangDB.HP;
+            p_Hp = normalGangDB.Hp;
             p_MoveSpeed = normalGangDB.Speed;
             p_StunHp = normalGangDB.StunThreshold;
             p_VisionDistance = normalGangDB.VisionDistance;

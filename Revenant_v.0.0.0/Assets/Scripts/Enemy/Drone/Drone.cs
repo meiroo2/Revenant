@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
+using VariableDB;
 using Debug = UnityEngine.Debug;
 using FixedUpdate = Unity.VisualScripting.FixedUpdate;
 
@@ -131,6 +132,8 @@ public class Drone : BasicEnemy, ISpriteMatChange
         m_CurEnemyFSM.StartState();
         
         m_WeponMgr.ChangeWeapon(0);
+
+        InitEnemyVariablesByDB(GameMgr.GetInstance().p_EnemyMgr.GetDroneGangDB());
     }
 
     private void OnEnable()
@@ -185,10 +188,31 @@ public class Drone : BasicEnemy, ISpriteMatChange
             m_PlayerCognition = true;
         }
     }
-    
-    public void SetCoroutineCallback(CoroutineDelegate _input)
+
+    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
     {
-        m_CoroutineCallback = _input;
+        if (gangDB is DroneGang_DB droneGangDB)
+        {
+            p_Hp = droneGangDB.Hp;
+            p_BreakPower = droneGangDB.BreakPower;
+            p_MoveSpeed = droneGangDB.Speed;
+            p_RushSpeedRatio = droneGangDB.RushSpeedMulti;
+            p_AtkDistance = droneGangDB.RushTriggerDistance;
+            p_HeadHotBox.p_DamageMulti = droneGangDB.DroneDmgMulti;
+            p_BodyHotBox.p_DamageMulti = droneGangDB.BombDmgMulti;
+            p_DetectSpeed = droneGangDB.DetectSpeed;
+            p_VisionDistance = droneGangDB.VisionDistance;
+            p_DecidePositionPointTime = droneGangDB.DecidePositionPointTime;
+            
+            var bombWeapon = GetComponentInChildren<BombWeapon_Enemy>();
+            bombWeapon.p_BulletDamage = droneGangDB.BombDamage;
+            bombWeapon.p_BombRadius = droneGangDB.BombRadius;
+        }
+        else
+        {
+            Debug.LogWarning("현재 DroneGang에 들어온 DB 타입이 다릅니다.");
+            return;
+        }
     }
     public override void SetEnemyValues(EnemyMgr _mgr)
     {

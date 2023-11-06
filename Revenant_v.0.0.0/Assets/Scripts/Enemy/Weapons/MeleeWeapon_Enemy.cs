@@ -38,7 +38,7 @@ public class MeleeWeapon_Enemy : BasicWeapon_Enemy
         
         if (m_HotBoxColliderList[minIdx].TryGetComponent(out IHotBox hotBox))
         {
-            hotBox.HitHotBox(new IHotBoxParam(10, 0, transform.position,
+            hotBox.HitHotBox(new IHotBoxParam(p_BulletDamage, 0, transform.position,
                 WeaponType.KNIFE));
         }
         

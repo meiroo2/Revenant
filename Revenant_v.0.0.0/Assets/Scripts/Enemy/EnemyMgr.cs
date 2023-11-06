@@ -102,6 +102,18 @@ public class EnemyMgr : MonoBehaviour
     // Test Public Variables
     public NormalGang_DB[] NormalGangDBArr;
     public int IdxForNormalGangDB;
+
+    public MeleeGang_DB[] MeleeGangDBArr;
+    public int IdxForMeleeGangDB;
+    
+    public DroneGang_DB[] DroneGangDBArr;
+    public int IdxForDroneGangDB;
+
+    public ShieldGang_DB[] ShieldGangDBArr;
+    public int IdxForShieldGangDB;
+    
+    public SpecialGang_DB[] SpecialGangDBArr;
+    public int IdxForSpecialGangDB;
     
     // Member Variables
 
@@ -119,6 +131,50 @@ public class EnemyMgr : MonoBehaviour
         }
         
         return NormalGangDBArr[IdxForNormalGangDB];
+    }
+
+    public MeleeGang_DB GetMeleeGangDB()
+    {
+        if (IdxForMeleeGangDB < 0 || IdxForMeleeGangDB >= MeleeGangDBArr.Length)
+        {
+            Debug.LogError("MeleeGangDB를 Return할 수 없습니다.");
+            return null;
+        }
+
+        return MeleeGangDBArr[IdxForMeleeGangDB];
+    }
+
+    public DroneGang_DB GetDroneGangDB()
+    {
+        if (IdxForDroneGangDB < 0 || IdxForDroneGangDB >= DroneGangDBArr.Length)
+        {
+            Debug.LogError("DroneGangDB를 Return할 수 없습니다.");
+            return null;
+        }
+
+        return DroneGangDBArr[IdxForDroneGangDB];
+    }
+
+    public ShieldGang_DB GetShieldGangDB()
+    {
+        if (IdxForShieldGangDB < 0 || IdxForShieldGangDB >= ShieldGangDBArr.Length)
+        {
+            Debug.LogError("ShieldGangDB를 Return할 수 없습니다.");
+            return null;
+        }
+
+        return ShieldGangDBArr[IdxForShieldGangDB];
+    }
+
+    public SpecialGang_DB GetSpecialGangDB()
+    {
+        if (IdxForSpecialGangDB < 0 || IdxForSpecialGangDB >= SpecialGangDBArr.Length)
+        {
+            Debug.LogError("SpecialGangDB를 Return할 수 없습니다.");
+            return null;
+        }
+
+        return SpecialGangDBArr[IdxForSpecialGangDB];
     }
     
     [Button]

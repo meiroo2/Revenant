@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using VariableDB;
 
 
 public class ShieldGang : BasicEnemy, ISpriteMatChange
@@ -115,6 +116,8 @@ public class ShieldGang : BasicEnemy, ISpriteMatChange
         m_CurEnemyStateName = EnemyStateName.IDLE;
         m_CurEnemyFSM.StartState();
 
+        InitEnemyVariablesByDB(GameMgr.GetInstance().p_EnemyMgr.GetShieldGangDB());
+        
         // Weapon Value Initiate
         m_WeaponMgr.m_CurWeapon.p_BulletDamage = p_AttackDamage;
     }
@@ -199,6 +202,33 @@ public class ShieldGang : BasicEnemy, ISpriteMatChange
             }
             
             return 0;
+        }
+    }
+    
+    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
+    {
+        if (gangDB is ShieldGang_DB shieldGangDB)
+        {
+            p_Hp = shieldGangDB.Hp;
+            p_Shield_Hp = shieldGangDB.ShieldHp;
+            p_AttackDamage = shieldGangDB.MeleeDamage;
+            p_MoveSpeed = shieldGangDB.Speed;
+            p_BackMoveSpeedMulti = shieldGangDB.BackSpeedMulti;
+            p_BrokenSpeedMulti = shieldGangDB.BrokenSpeedMulti;
+            p_VisionDistance = shieldGangDB.VisionDistance;
+            p_AttackDistance = shieldGangDB.AttackDistance;
+            p_GapDistance = shieldGangDB.GapDistance;
+            p_AtkAniSpeedMulti = shieldGangDB.AtkAniSpeedMulti;
+            p_PointAtkTime = shieldGangDB.PointAtkTime;
+            p_AtkHoldTime = shieldGangDB.AtkHoldTime;
+            p_Shield_Dmg_Multi = shieldGangDB.ShieldDmgMulti;
+            p_HeadHotBox.p_DamageMulti = shieldGangDB.HeadDmgMulti;
+            p_BodyHotBox.p_DamageMulti = shieldGangDB.BodyDmgMulti;
+        }
+        else
+        {
+            Debug.LogWarning("현재 ShieldGang에 들어온 DB 타입이 다릅니다.");
+            return;
         }
     }
     

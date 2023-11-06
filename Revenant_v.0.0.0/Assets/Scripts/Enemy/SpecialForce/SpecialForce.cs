@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VariableDB;
 using Update = UnityEngine.PlayerLoop.Update;
 
 
@@ -208,6 +209,49 @@ public class SpecialForce : BasicEnemy, ISpriteMatChange
                 p_ArmRenderer.enabled = true;
                 p_LegRenderer.enabled = true;
                 break;
+        }
+    }
+    
+    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
+    {
+        if (gangDB is SpecialGang_DB specialGangDB)
+        {
+            p_Hp = specialGangDB.Hp;
+            p_SingleRifleWeapon.p_BulletDamage = specialGangDB.BulletDamage;
+            p_Bullet_Speed = specialGangDB.BulletSpeed;
+            p_SingleRifleWeapon.p_BulletSpeed = specialGangDB.BulletSpeed;
+            p_SingleRifleWeapon.p_BulletSpread = specialGangDB.BulletSpread;
+            p_FireAnimSpeed = specialGangDB.FireAnimSpeed;
+            p_Fire_Delay = specialGangDB.FireDelay;
+            p_MoveSpeed = specialGangDB.MoveSpeed;
+            p_RunSpeedMulti = specialGangDB.RunSpeedMulti;
+            p_StunAlertSpeed = specialGangDB.StunAlertSpeed;
+            p_StunHp = specialGangDB.StunThreshold;
+            p_VisionDistance = specialGangDB.VisionDistance;
+            p_AtkDistance = specialGangDB.AttackDistance;
+            p_MeleeRollDistance = specialGangDB.MeleeRollDistance;
+            p_GapDistance = specialGangDB.GapDistance;
+
+            p_HeadDmgMulti = specialGangDB.HeadDmgMulti;
+            p_HeadHotBox.p_DamageMulti = specialGangDB.HeadDmgMulti;
+
+            p_BodyDmgMulti = specialGangDB.BodyDmgMulti;
+            p_BodyHotBox.p_DamageMulti = specialGangDB.BodyDmgMulti;
+
+
+            p_Roll_Refresh = specialGangDB.Roll_Refresh;
+            p_Roll_Tick = specialGangDB.Roll_Tick;
+            p_Roll_Chance = specialGangDB.Roll_Chance;
+            p_Roll_Cooldown = specialGangDB.Roll_Cooldown;
+            p_Roll_Speed_Multi = specialGangDB.Roll_Speed_Multi;
+
+            p_Alert_Speed = specialGangDB.AlertSpeed;
+            p_Alert_Fade_Speed = specialGangDB.AlertFadeSpeed;
+        }
+        else
+        {
+            Debug.LogWarning("현재 SpecialGang에 들어온 DB 타입이 다릅니다.");
+            return;
         }
     }
     
