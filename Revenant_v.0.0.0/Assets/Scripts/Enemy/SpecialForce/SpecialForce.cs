@@ -158,6 +158,8 @@ public class SpecialForce : BasicEnemy, ISpriteMatChange
 
         SetSpriteMode(0);
         
+        InitEnemyVariablesByDB(GameMgr.GetInstance().p_EnemyMgr.GetSpecialGangDB());
+        
         m_CurEnemyFSM.StartState();
         m_SoundPlayer = GameMgr.GetInstance().p_SoundPlayer;
     }
