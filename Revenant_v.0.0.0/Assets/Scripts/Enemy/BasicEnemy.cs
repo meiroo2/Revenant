@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FMOD;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using VariableDB;
 using Debug = UnityEngine.Debug;
 
 public enum EnemyStateName
@@ -152,6 +153,11 @@ public class BasicEnemy : Human
         m_Animator = GetComponentInChildren<Animator>();
     }
     public virtual void SetEnemyValues(EnemyMgr _mgr) { }
+
+    public virtual void InitEnemyVariablesByDB(Gang_DB gangDB)
+    {
+        Debug.Log("해당 Gang에 대한 변수 초기화 코드 없음을 확인");
+    }
 
     public Vector2 GetMovePoint() { return m_MovePoint; }
     public void SendDeathAlarmToSpawner()

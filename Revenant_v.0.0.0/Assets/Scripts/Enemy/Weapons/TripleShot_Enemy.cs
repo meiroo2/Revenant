@@ -54,6 +54,8 @@ public class TripleShot_Enemy : BasicWeapon_Enemy
         m_BulletParam.m_IsRightHeaded = m_Enemy.m_IsRightHeaded;
         m_BulletParam.m_Position = m_BulletPos.position;
         m_BulletParam.m_Rotation = m_Enemy_Arm.rotation;
+        m_BulletParam.m_Damage = p_BulletDamage;
+        m_BulletParam.m_Speed = p_BulletSpeed;
         
         // 불릿 랜덤 로테이션
         float randomRotation = Random.Range(-p_BulletRandomRotation, p_BulletRandomRotation);

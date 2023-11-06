@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VariableDB;
 using Update = UnityEngine.PlayerLoop.Update;
 
 
@@ -110,6 +111,9 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
         m_Player = GameMgr.GetInstance().p_PlayerMgr.GetPlayer();
         m_PlayerTransform = m_Player.transform;
         m_PlayerLocationSensor = m_Player.m_PlayerLocationSensor;
+
+        EnemyMgr enemyMgr = GameMgr.GetInstance().p_EnemyMgr;
+        InitEnemyVariablesByDB(enemyMgr.GetNormalGangDB());
     }
 
     private void OnEnable()
@@ -152,6 +156,34 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
         StartPlayerCognition();
     }
 
+    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
+    {
+        if (gangDB is NormalGang_DB normalGangDB)
+        {
+            p_Hp = normalGangDB.HP;
+            p_MoveSpeed = normalGangDB.Speed;
+            p_StunHp = normalGangDB.StunThreshold;
+            p_VisionDistance = normalGangDB.VisionDistance;
+            p_AtkDistance = normalGangDB.GunFireDistance;
+            p_MeleeDistance = normalGangDB.MeleeAtkDistance;
+            p_AlertSpeed = normalGangDB.AlertSpeed;
+            p_StunAlertSpeed = normalGangDB.StunAlertSpeed;
+            p_HeadBox.p_DamageMulti = normalGangDB.HeadDmgMulti;
+            p_BodyBox.p_DamageMulti = normalGangDB.BodyDmgMulti;
+
+            var tripleshot = GetComponentInChildren<TripleShot_Enemy>();
+            tripleshot.p_BulletDamage = normalGangDB.BulletDmg;
+            tripleshot.p_FireDelay = normalGangDB.FireDelay;
+            tripleshot.p_BulletSpeed = normalGangDB.BulletSpeed;
+            tripleshot.p_BulletRandomRotation = normalGangDB.BulletRndRotation;
+        }
+        else
+        {
+            Debug.LogWarning("현재 NormalGang에 들어온 DB 타입이 다릅니다.");
+            return;
+        }
+    }
+    
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
         if (p_OverrideEnemyMgr)

@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using VariableDB;
 
 
 public class EnemyMgr : MonoBehaviour
@@ -98,14 +99,28 @@ public class EnemyMgr : MonoBehaviour
     public float SF_AlertSpeed;
     public float SF_AlertFadeSpeed;
     
-
+    // Test Public Variables
+    public NormalGang_DB[] NormalGangDBArr;
+    public int IdxForNormalGangDB;
+    
     // Member Variables
 
 
     // Constructors
-
+    
 
     // Functions
+    public NormalGang_DB GetNormalGangDB()
+    {
+        if (IdxForNormalGangDB < 0 || IdxForNormalGangDB >= NormalGangDBArr.Length)
+        {
+            Debug.LogError("NormalGangDB를 Return할 수 없습니다.");
+            return null;
+        }
+        
+        return NormalGangDBArr[IdxForNormalGangDB];
+    }
+    
     [Button]
     public void StickToFloor()
     {
