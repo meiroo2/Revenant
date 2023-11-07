@@ -4,7 +4,7 @@ using UnityEngine;
 namespace VariableDB
 {
     [CreateAssetMenu(fileName = "ShieldGang_DB", menuName = "VariableDB/ShieldGang_DB")]
-    public class ShieldGang_DB : Gang_DB
+    public class ShieldGang_DB : Variable_DB
     {
         public int Hp;
         public int ShieldHp;

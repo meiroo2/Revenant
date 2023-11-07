@@ -214,7 +214,7 @@ public class SpecialForce : BasicEnemy, ISpriteMatChange
         }
     }
     
-    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
+    public override void InitEnemyVariablesByDB(Variable_DB gangDB)
     {
         if (gangDB is SpecialGang_DB specialGangDB)
         {

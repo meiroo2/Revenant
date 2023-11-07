@@ -2,7 +2,7 @@
 
 namespace VariableDB
 {
-    public class Gang_DB : ScriptableObject
+    public class Variable_DB : ScriptableObject
     {
         
     }

@@ -189,7 +189,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
         }
     }
 
-    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
+    public override void InitEnemyVariablesByDB(Variable_DB gangDB)
     {
         if (gangDB is DroneGang_DB droneGangDB)
         {

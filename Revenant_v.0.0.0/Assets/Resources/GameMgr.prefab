@@ -58,7 +58,7 @@ MonoBehaviour:
   <p_CoroutineHandler>k__BackingField: {fileID: 8798066901285890878}
   <p_PlayerMgr>k__BackingField: {fileID: 4840181404405830559}
   <p_PlayerInputMgr>k__BackingField: {fileID: 6942717333549071119}
-  <p_PlayerManipulator>k__BackingField: {fileID: 4718642478766582402}
+  <p_PlayerDBManager>k__BackingField: {fileID: 4718642478766582402}
   <p_SoundPlayer>k__BackingField: {fileID: 9090690121671856532}
   <p_DataHandleMgr>k__BackingField: {fileID: 3488895593461691035}
   <p_SceneChangeMgr>k__BackingField: {fileID: 1403804111787752519}
@@ -118,21 +118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1cc164786c6d354ba2d8bf7303ad3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  P_HP: 10
-  P_StunInvincibleTime: 1
-  P_Speed: 1.3
-  P_BackSpeedMulti: 0.6
-  P_RollSpeedMulti: 3.2
-  P_MeleeSpeedMulti: 8
-  P_MeleeDamage: 20
-  P_MeleeStunValue: 20
-  P_JustEvadeStartTime: 0
-  P_JustEvadeEndTime: 0.6
-  P_RollDecelerationSpeed: 3.5
-  P_ReloadSpeed: 1.4
-  N_Damage: 10
-  N_StunValue: 10
-  N_MinFireDelay: 0.1
+  PlayerDBArr:
+  - {fileID: 11400000, guid: 7ddbc2f43b63d8a4aa638539b79f4007, type: 2}
+  IdxForPlayerDB: 0
 --- !u!114 &4840181404405830559
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using VariableDB;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -188,48 +189,37 @@ public class Player : Human
         m_DEAD = new Player_DEAD(this);
         m_BULLETTIME = new Player_BULLET_TIME(this);
 
+        if (GameMgr.GetInstance().p_PlayerDBManager.TryGetPlayerDB(out Player_DB playerDB))
+        {
+            initByPlayerDB(playerDB);
+        }
+        else
+        {
+            Debug.LogError("Player DB로 초기화 실패");
+        }
+        
         m_CurPlayerFSM = m_IDLE;
         m_CurPlayerFSM.StartState();
     }
 
-    public void SetPlayer(PlayerManipulator _input, bool _isEditor)
+    private void initByPlayerDB(Player_DB playerDB)
     {
-        p_Hp = _input.P_HP;
-        p_StunAlertSpeed = _input.P_StunInvincibleTime;
-        p_MoveSpeed = _input.P_Speed;
-        p_BackSpeedMulti = _input.P_BackSpeedMulti;
-        p_RollSpeedMulti = _input.P_RollSpeedMulti;
-        p_MeleeSpeedMulti = _input.P_MeleeSpeedMulti;
-        m_MeleeAttack.m_Damage = _input.P_MeleeDamage;
-        m_MeleeAttack.m_StunValue = _input.P_MeleeStunValue;
-        p_JustEvadeNormalizeTime = new Vector2(_input.P_JustEvadeStartTime, _input.P_JustEvadeEndTime);
-        p_RollDecelerationSpeed = _input.P_RollDecelerationSpeed;
-        p_ReloadSpeed = _input.P_ReloadSpeed;
-
-
-        if (!_isEditor)
-            return;
+        p_Hp = playerDB.HP;
+        p_StunAlertSpeed = playerDB.StunInvincibleTime;
+        p_MoveSpeed = playerDB.Speed;
+        p_BackSpeedMulti = playerDB.BackSpeedMulti;
+        p_RollSpeedMulti = playerDB.RollSpeedMulti;
+        p_MeleeSpeedMulti = playerDB.MeleeSpeedMulti;
+        m_MeleeAttack.m_Damage = playerDB.MeleeDamage;
+        m_MeleeAttack.m_StunValue = playerDB.MeleeStunValue;
+        p_JustEvadeNormalizeTime = new Vector2(playerDB.JustEvadeStartTime, playerDB.JustEvadeEndTime);
+        p_RollDecelerationSpeed = playerDB.RollDecelerationSpeed;
+        p_ReloadSpeed = playerDB.ReloadSpeed;
         
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-            EditorUtility.SetDirty(m_MeleeAttack);
-        #endif
-    }
-
-    public void SetNegotiator(PlayerManipulator _input, bool _isEditor)
-    {
         var nego = GetComponentInChildren<Negotiator_Player>();
-
-        nego.p_BulletDamage = _input.N_Damage;
-        nego.p_StunValue = _input.N_StunValue;
-        nego.p_MinFireDelay = _input.N_MinFireDelay;
-
-        if (!_isEditor)
-            return;
-        
-        #if UNITY_EDITOR
-            EditorUtility.SetDirty(nego);
-        #endif
+        nego.p_BulletDamage = playerDB.Damage;
+        nego.p_StunValue = playerDB.StunValue;
+        nego.p_MinFireDelay = playerDB.MinFireDelay;
     }
 
 

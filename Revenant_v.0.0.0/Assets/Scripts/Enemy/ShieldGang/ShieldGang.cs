@@ -205,7 +205,7 @@ public class ShieldGang : BasicEnemy, ISpriteMatChange
         }
     }
     
-    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
+    public override void InitEnemyVariablesByDB(Variable_DB gangDB)
     {
         if (gangDB is ShieldGang_DB shieldGangDB)
         {

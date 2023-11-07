@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
+using VariableDB;
 using Random = UnityEngine.Random;
 
 /// <summary>
@@ -99,9 +100,23 @@ public class BulletTimeMgr : MonoBehaviour
         m_BulletTime_AR = instance.m_BulletTime_AR;
         
         m_MatChanger = GameMgr.GetInstance().p_MatChanger;
+
+        if (GameMgr.GetInstance().p_PlayerDBManager.TryGetPlayerDB(out Player_DB playerDB))
+        {
+            initByPlayerDB(playerDB);
+        }
+        else
+        {
+            Debug.LogError("BulletTimeMgr DB 초기화 실패");
+        }
     }
 
-
+    private void initByPlayerDB(Player_DB playerDB)
+    {
+        p_BulletTimeLimit = playerDB.BulletTimeLimit;
+        p_ShotDelayTime = playerDB.ShotDelayTime;
+    }
+    
     // Updates
 
 

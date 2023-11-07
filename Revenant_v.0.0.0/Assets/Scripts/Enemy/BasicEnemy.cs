@@ -154,7 +154,7 @@ public class BasicEnemy : Human
     }
     public virtual void SetEnemyValues(EnemyMgr _mgr) { }
 
-    public virtual void InitEnemyVariablesByDB(Gang_DB gangDB)
+    public virtual void InitEnemyVariablesByDB(Variable_DB gangDB)
     {
         Debug.Log("해당 Gang에 대한 변수 초기화 코드 없음을 확인");
     }

@@ -156,7 +156,7 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
         StartPlayerCognition();
     }
 
-    public override void InitEnemyVariablesByDB(Gang_DB gangDB)
+    public override void InitEnemyVariablesByDB(Variable_DB gangDB)
     {
         if (gangDB is NormalGang_DB normalGangDB)
         {

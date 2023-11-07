@@ -3,6 +3,7 @@ using System.Collections;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
+using VariableDB;
 
 public class RageGauge : MonoBehaviour
 {
@@ -34,17 +35,19 @@ public class RageGauge : MonoBehaviour
     public RageGauge_UI p_RageGaugeUI;
 
 	// Constructors
-	private void Awake()
-    {
-        m_CurGaugeValue = 0f;
-        m_Multiply = 1f / p_Gauge_Max;
-    }
-
     private void Start()
     {
         var instance = InstanceMgr.GetInstance();
         m_BulletTimeMgr = instance.GetComponentInChildren<BulletTimeMgr>();
 
+        if (GameMgr.GetInstance().p_PlayerDBManager.TryGetPlayerDB(out Player_DB rageGaugeDB))
+        {
+            Debug.Log("광분게이지 초기화됨");
+            initVariablesByDB(rageGaugeDB);
+        }
+
+        m_CurGaugeValue = 0f;
+        m_Multiply = 1f / p_Gauge_Max;
         ChangeGaugeValue(p_Gauge_Refill_Limit);
     }
 
@@ -58,6 +61,18 @@ public class RageGauge : MonoBehaviour
         StopCoroutine(m_RefillCoroutine);
     }
 
+    private void initVariablesByDB(Player_DB playerDB)
+    {
+        p_Gauge_Max = playerDB.Gauge_Max;
+        p_Gauge_Refill_Nature = playerDB.Gauge_Refill_Nature;
+        p_Gauge_Refill_Attack_Multi = playerDB.Gauge_Refill_Attack_Multi;
+        p_Gauge_Refill_Evade = playerDB.Gauge_Refill_Evade;
+        p_Gauge_Refill_JustEvade = playerDB.Gauge_Refill_JustEvade;
+        p_Gauge_Refill_Limit = playerDB.Gauge_Refill_Limit;
+        p_Gauge_Consume_Nature = playerDB.Gauge_Consume_Nature;
+        p_Gauge_Consume_Roll = playerDB.Gauge_Consume_Roll;
+        p_Gauge_Consume_Melee = playerDB.Gauge_Consume_Melee;
+    }
 
     // Functions
     

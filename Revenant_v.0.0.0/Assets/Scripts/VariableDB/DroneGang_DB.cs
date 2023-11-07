@@ -4,7 +4,7 @@ using UnityEngine;
 namespace VariableDB
 {
     [CreateAssetMenu(fileName = "DroneGang_DB", menuName = "VariableDB/DroneGang_DB")]
-    public class DroneGang_DB : Gang_DB
+    public class DroneGang_DB : Variable_DB
     {
         public int Hp;
         public float Speed;

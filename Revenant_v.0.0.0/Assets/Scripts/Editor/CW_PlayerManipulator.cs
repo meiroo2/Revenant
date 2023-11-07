@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class CW_PlayerManipulator : OdinEditorWindow
 {
+    /*
     // Const Variables
     private const float m_LabelWidth = 150f;
     
@@ -207,4 +208,5 @@ public class CW_PlayerManipulator : OdinEditorWindow
             EditorUtility.SetDirty(aimCursor);
         #endif
     }
+    */
 }

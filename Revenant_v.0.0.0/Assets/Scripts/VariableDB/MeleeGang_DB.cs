@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 namespace VariableDB
 {
     [CreateAssetMenu(fileName = "MeleeGang_DB", menuName = "VariableDB/MeleeGang_DB")]
-    public class MeleeGang_DB : Gang_DB
+    public class MeleeGang_DB : Variable_DB
     {
         public int Hp;
         public float Speed;

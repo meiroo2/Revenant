@@ -3,7 +3,7 @@
 namespace VariableDB
 {
     [CreateAssetMenu(fileName = "SpecialGang_DB", menuName = "VariableDB/SpecialGang_DB")]
-    public class SpecialGang_DB : Gang_DB
+    public class SpecialGang_DB : Variable_DB
     {
         public int Hp;
         public int BulletDamage;
