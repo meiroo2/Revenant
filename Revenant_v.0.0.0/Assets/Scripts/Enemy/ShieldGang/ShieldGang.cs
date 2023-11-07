@@ -234,6 +234,7 @@ public class ShieldGang : BasicEnemy, ISpriteMatChange
     
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
+        /*
         if (p_OverrideEnemyMgr)
             return;
 
@@ -261,6 +262,7 @@ public class ShieldGang : BasicEnemy, ISpriteMatChange
             EditorUtility.SetDirty(p_BodyHotBox);
             EditorUtility.SetDirty(m_Shield);
         #endif
+        */
     }
     
     public void BreakShield()

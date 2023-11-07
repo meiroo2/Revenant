@@ -9,111 +9,21 @@ using VariableDB;
 
 public class EnemyMgr : MonoBehaviour
 {
-    // Visible Member Variables
-    [Header("원거리 적 변수 목록")] 
-    public int N_HP;
-    public int N_BulletDamage;
-    public float N_BulletSpeed;
-    public float N_BulletRandomRotation;
-    public float N_FireDelay;
-    public float N_Speed;
-    public int N_StunThreshold;
-    public float N_Vision_Distance;
-    public float N_GunFire_Distance;
-    public float N_MeleeAttack_Distance;
-    public float N_AlertSpeedMulti;
-    public float N_StunAlertSpeedMulti;
-    public int N_HeadDmgMulti;
-    public int N_BodyDmgMulti;
-    
-    [Space(10f)]
-    [Header("근거리 적 변수 목록")] 
-    public int M_HP;
-    public int M_StunThreshold;
-    public int M_MeleeDamage;
-    public float M_Speed;
-    public float M_Vision_Distance;
-    public float M_MeleeAttack_Distance;
-    [Range(0.0f, 1.0f)] public float M_PointAttackTime;
-    public int M_HeadDmgMulti;
-    public int M_BodyDmgMulti;
-    public float M_FollowSpeedMulti;
-    public float M_DelayAfterAttack;
-    public float M_StunWaitTime;
-    
-    [Space(10f)]
-    [Header("드론 변수 목록")] 
-    public int D_HP;
-    public int D_BombDamage;
-    public float D_BombRadius;
-    public float D_BreakPower;
-    public float D_Speed;
-    public float D_RushSpeedMulti;
-    public float D_RushTriggerDistance;
-    public int D_DroneDmgMulti;
-    public int D_BombDmgMulti;
-    public float D_DetectSpeed;
-    public float D_VisionDistance;
-    public float D_DecidePositionPointTime;
-
-    [Space(10f)] 
-    [Header("방패적 변수 목록")] 
-    public int S_HP;
-    public int S_ShieldHp;
-    public int S_MeleeDamage;
-    public float S_Speed;
-    public float S_BackSpeedMulti;
-    public float S_BrokenSpeedMulti;
-    public float S_VisionDistance;
-    public float S_AttackDistance;
-    public float S_GapDistance;
-    public float S_AtkAniSpeedMulti;
-    [Range(0.0f, 1.0f)] public float S_PointAtkTime;
-    public float S_AtkHoldTime;
-    public int S_ShieldDmgMulti;
-    public int S_HeadDmgMulti;
-    public int S_BodyDmgMulti;
-
-    [Space(10f)] [Header("특수부대 변수 목록")]
-    public int SF_Hp;
-    public int SF_BulletDamage;
-    public float SF_BulletSpeed;
-    public float SF_BulletSpread;
-    public float SF_FireAnimSpeed;
-    public float SF_FireDelay;
-    public float SF_MoveSpeed;
-    public float SF_RunSpeedMulti;
-    public float SF_StunAlertSpeed;
-    public int SF_StunThreshold;
-    public float SF_VisionDistance;
-    public float SF_AttackDistance;
-    public float SF_MeleeRollDistance;
-    public float SF_GapDistance;
-    public int SF_HeadDmgMulti;
-    public int SF_BodyDmgMulti;
-    public float SF_Roll_Refresh;
-    public Vector2 SF_Roll_Tick;
-    public int SF_Roll_Chance;
-    public float SF_Roll_Cooldown;
-    public float SF_Roll_Speed_Multi;
-    public float SF_AlertSpeed;
-    public float SF_AlertFadeSpeed;
-    
     // Test Public Variables
-    public NormalGang_DB[] NormalGangDBArr;
-    public int IdxForNormalGangDB;
+    [TabGroup("NormalGang")] public NormalGang_DB[] NormalGangDBArr;
+    [TabGroup("NormalGang")] public int IdxForNormalGangDB;
 
-    public MeleeGang_DB[] MeleeGangDBArr;
-    public int IdxForMeleeGangDB;
+    [TabGroup("MeleeGang")] public MeleeGang_DB[] MeleeGangDBArr;
+    [TabGroup("MeleeGang")] public int IdxForMeleeGangDB;
     
-    public DroneGang_DB[] DroneGangDBArr;
-    public int IdxForDroneGangDB;
+    [TabGroup("DroneGang")] public DroneGang_DB[] DroneGangDBArr;
+    [TabGroup("DroneGang")] public int IdxForDroneGangDB;
 
-    public ShieldGang_DB[] ShieldGangDBArr;
-    public int IdxForShieldGangDB;
+    [TabGroup("ShieldGang")] public ShieldGang_DB[] ShieldGangDBArr;
+    [TabGroup("ShieldGang")] public int IdxForShieldGangDB;
     
-    public SpecialGang_DB[] SpecialGangDBArr;
-    public int IdxForSpecialGangDB;
+    [TabGroup("SpecialGang")] public SpecialGang_DB[] SpecialGangDBArr;
+    [TabGroup("SpecialGang")] public int IdxForSpecialGangDB;
     
     // Member Variables
 

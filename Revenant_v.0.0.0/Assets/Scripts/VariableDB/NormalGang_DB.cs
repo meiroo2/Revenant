@@ -7,7 +7,7 @@ namespace VariableDB
     [CreateAssetMenu(fileName = "NormalGang_DB", menuName = "VariableDB/NormalGang_DB")]
     public class NormalGang_DB : Gang_DB
     {
-        public int Hp;
+        [ShowInInspector] public readonly int Hp;
         public float Speed;
         public int StunThreshold;
         public float VisionDistance;

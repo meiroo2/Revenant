@@ -9,6 +9,7 @@ using UnityEngine;
 
 public class CW_EnemyManipulator : OdinEditorWindow
 {
+    /*
     // Const Variables
     private const float m_LabelWidth = 150f;
     
@@ -494,4 +495,5 @@ public class CW_EnemyManipulator : OdinEditorWindow
             EditorUtility.SetDirty(_enemyMgr);
         #endif
     }
+    */
 }

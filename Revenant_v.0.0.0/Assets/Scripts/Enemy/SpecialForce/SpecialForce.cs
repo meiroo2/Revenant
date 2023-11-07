@@ -259,6 +259,7 @@ public class SpecialForce : BasicEnemy, ISpriteMatChange
     
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
+        /*
         if (p_OverrideEnemyMgr)
             return;
 
@@ -300,6 +301,7 @@ public class SpecialForce : BasicEnemy, ISpriteMatChange
             EditorUtility.SetDirty(p_BodyHotBox);
             EditorUtility.SetDirty(p_SingleRifleWeapon);
         #endif
+        */
     }
 
     public override void SetRigidToPoint(float _addSpeed = 1f)

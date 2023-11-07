@@ -186,6 +186,7 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
     
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
+        /*
         if (p_OverrideEnemyMgr)
             return;
 
@@ -214,6 +215,7 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
         EditorUtility.SetDirty(p_BodyBox);
         EditorUtility.SetDirty(tripleshot);
 #endif
+*/
     }
 
     public override void AttackedByWeapon(HitBoxPoint _point, int _damage, int _stunValue, WeaponType _weaponType)

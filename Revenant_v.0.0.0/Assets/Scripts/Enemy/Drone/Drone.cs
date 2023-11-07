@@ -216,6 +216,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
     }
     public override void SetEnemyValues(EnemyMgr _mgr)
     {
+        /*
         if (p_OverrideEnemyMgr)
             return;
 
@@ -240,6 +241,7 @@ public class Drone : BasicEnemy, ISpriteMatChange
                 EditorUtility.SetDirty(p_BodyHotBox);
                 EditorUtility.SetDirty(bombWeapon);
         #endif
+        */
     }
 
     public void SetUpdateCallback(UpdateDelegate _input)
