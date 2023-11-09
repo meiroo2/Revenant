@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Enemy.BossGang.TimeSlice;
 using Sirenix.OdinInspector;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class TimeSliceObj : MonoBehaviour
     public TimeSliceMgr p_TimeSliceMgr;
     public TimeSliceBullet p_Bullet;
     public TimeSliceCircleCol p_CircleCol;
+    public TimeSliceCol p_SliceCol;
     
     public SpriteRenderer p_FrontCutRenderer;
     public Collider2D p_FloorCol;

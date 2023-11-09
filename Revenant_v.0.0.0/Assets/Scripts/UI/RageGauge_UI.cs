@@ -35,6 +35,18 @@ public class RageGauge_UI : MonoBehaviour
 	[BoxGroup("게이지 비주얼")] public Sprite p_UltGaugeNormalSprite;
 	[BoxGroup("게이지 비주얼")] public Sprite p_UltGaugeFullSprite;
 	[BoxGroup("게이지 비주얼")] public Image p_UltOvaSprite;
+
+	[Space(10f)] 
+	[BoxGroup("게이지 비주얼")] public Image p_RollGaugeBtnImg;
+	[BoxGroup("게이지 비주얼")] public Sprite p_RollGaugeBtnSprite;
+	
+	[BoxGroup("게이지 비주얼")] public Image p_MeleeGaugeBtnImg;
+	[BoxGroup("게이지 비주얼")] public Sprite p_MeleeGaugeBtnSprite;
+	
+	[BoxGroup("게이지 비주얼")] public Image p_UltGaugeBtnImg;
+	[BoxGroup("게이지 비주얼")] public Sprite p_UltGaugeBtnSprite;
+	
+	[BoxGroup("게이지 비주얼")] public Sprite p_LockSprite;
 	
 	[Space(20f)]
 	public float p_MoveSpeed = 2f;
@@ -95,8 +107,26 @@ public class RageGauge_UI : MonoBehaviour
 	
 	// Updates
 	
-
+	
 	// Functions
+	public void LockSkill(SkillType skillType, bool lockState)
+	{
+		switch (skillType)
+		{
+			case SkillType.Roll:
+				p_RollGaugeBtnImg.sprite = lockState ? p_LockSprite : p_RollGaugeBtnSprite;
+				break;
+			
+			case SkillType.Melee:
+				p_MeleeGaugeBtnImg.sprite = lockState ? p_LockSprite : p_MeleeGaugeBtnSprite ;
+				break;
+			
+			case SkillType.Ult:
+				p_UltGaugeBtnImg.sprite = lockState ? p_LockSprite : p_UltGaugeBtnSprite;
+				break;
+		}
+	}
+	
 	public IEnumerator UIOnEnumerator(Image _img)
 	{
 		Material mat = Instantiate(_img.material);

@@ -72,6 +72,7 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     [TabGroup("Ultimate"), PropertySpace] public float p_Ultimate_CircleStartPos = -3f;
     [TabGroup("Ultimate")] public float p_Ultimate_CircleEndPos = 3f;
     [TabGroup("Ultimate")] public float p_Ultimate_CircleSpeed = 1f;
+    [TabGroup("Ultimate")] public float p_Ultimate_TimeSliceSkillLockTime = 3f;
 
     [TabGroup("Color")] [ColorUsageAttribute(true,true)] public Color m_BasicColor;
     [TabGroup("Color")] [ColorUsageAttribute(true,true)] public Color m_LeapColor;

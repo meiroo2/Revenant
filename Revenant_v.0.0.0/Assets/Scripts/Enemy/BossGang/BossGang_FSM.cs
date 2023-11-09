@@ -1233,6 +1233,8 @@ public class Ultimate_BossGang : BossGang_FSM
                     m_Enemy.p_TimeSliceMgr.SpawnTimeSlice(m_Enemy.p_Ultimate_TimeSliceMoveSpeed,
                         m_Enemy.p_Ultimate_TImeSliceColorSpeed, m_Angle, m_Enemy.p_Ultimate_RemainTime);
                 
+                m_TimeSliceObj.p_SliceCol.SetSkillLockTime(m_Enemy.p_Ultimate_TimeSliceSkillLockTime);
+                
                 // TimeSlice Circle Setting
                 m_SkipTimeSliceObjActivate = false;
                 m_IsTimeCircleMoveCompleted = false;

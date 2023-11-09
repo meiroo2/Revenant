@@ -1,9 +1,18 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using VariableDB;
+
+public enum SkillType
+{
+    Roll,
+    Melee,
+    Ult
+}
 
 public class RageGauge : MonoBehaviour
 {
@@ -24,6 +33,7 @@ public class RageGauge : MonoBehaviour
     private bool m_SafetyLock = false;
     public bool m_IsHitMaxOnce = false;
 
+    private Dictionary<SkillType, Coroutine> m_SkillLockCoroutineDic = new();
     
     // 0-1의 Fill Amount 비례수
     private float m_Multiply = 0.1f;
@@ -75,6 +85,42 @@ public class RageGauge : MonoBehaviour
     }
 
     // Functions
+    public void LockSkill(SkillType skillType, float time)
+    {
+        if (time <= 0f)
+            return;
+
+        if (m_SkillLockCoroutineDic.TryGetValue(skillType, out Coroutine skillCoroutine))
+        {
+            StopCoroutine(skillCoroutine);
+            m_SkillLockCoroutineDic.Remove(skillType);
+        }
+        
+        p_RageGaugeUI.LockSkill(skillType, true);
+        m_SkillLockCoroutineDic.Add(skillType, StartCoroutine(skillLockEnumerator(skillType, time)));
+    }
+
+    private IEnumerator skillLockEnumerator(SkillType skillType, float time)
+    {
+        float timer = 0f;
+        while (true)
+        {
+            timer += Time.deltaTime;
+
+            if (timer >= time)
+                break;
+
+            yield return null;
+        }
+        
+        if (m_SkillLockCoroutineDic.TryGetValue(skillType, out Coroutine coroutine))
+        {
+            m_SkillLockCoroutineDic.Remove(skillType);
+        }
+        
+        p_RageGaugeUI.LockSkill(skillType, false);
+        yield break;
+    }
     
     /// <summary>
     /// 일시적으로 RageGauge의 Update를 중단/재개합니다.
@@ -95,6 +141,9 @@ public class RageGauge : MonoBehaviour
         switch (_idx)
         {
             case 0:
+                if (m_SkillLockCoroutineDic.ContainsKey(SkillType.Roll))
+                    return false;
+                
                 // Roll
                 if (m_CurGaugeValue - p_Gauge_Consume_Roll >= 0f)
                 {
@@ -110,6 +159,9 @@ public class RageGauge : MonoBehaviour
                 break;
             
             case 1:
+                if (m_SkillLockCoroutineDic.ContainsKey(SkillType.Melee))
+                    return false;
+                
                 // Melee
                 if (m_CurGaugeValue - p_Gauge_Consume_Melee >= 0f)
                 {
