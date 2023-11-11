@@ -115,6 +115,11 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
         m_Alert.SetAlertSpeed(p_AlertSpeed);
     }
 
+    private void OnEnable()
+    {
+        m_Alert.SetAlertSpeed(p_AlertSpeed);
+    }
+    
     public override void InitEnemy()
     {
         base.InitEnemy();

@@ -38,7 +38,7 @@ public class Bullet : MonoBehaviour
     public void InitBullet(BulletParam _param)
     {
         m_BulletParam = (BulletParam)_param.DeepCopy();
-        Debug.Log(m_BulletParam.m_Speed);
+        //Debug.Log(m_BulletParam.m_Speed);
         transform.SetPositionAndRotation(m_BulletParam.m_Position, m_BulletParam.m_Rotation);
         transform.localScale = new Vector3(transform.localScale.x * (m_BulletParam.m_IsRightHeaded ? 1 : -1), 1, 1);
         m_Renderer.sprite = m_BulletParam.m_BulletSprite;
