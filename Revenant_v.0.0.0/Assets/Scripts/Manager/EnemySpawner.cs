@@ -61,6 +61,8 @@ public class EnemySpawner : MonoBehaviour
     private IEnumerator DeActive()
     {
         yield return null;
+        yield return null;
+        yield return null;
         
         for (int i = 0; i < p_WillSpawnEnemys.Length; i++)
         {
