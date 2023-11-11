@@ -84,8 +84,6 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
         m_WeaponMgr = GetComponentInChildren<WeaponMgr>();
         m_EnemyRigid = GetComponent<Rigidbody2D>();
 
-        m_Alert.SetAlertSpeed(p_AlertSpeed);
-
         m_IDLE = new IDLE_NormalGang(this);
         m_FOLLOW = new FOLLOW_NormalGang(this);
         m_ATTACK = new ATTACK_NormalGang(this);
@@ -114,10 +112,6 @@ public class NormalGang : BasicEnemy, ISpriteMatChange
 
         EnemyMgr enemyMgr = GameMgr.GetInstance().p_EnemyMgr;
         InitEnemyVariablesByDB(enemyMgr.GetNormalGangDB());
-    }
-
-    private void OnEnable()
-    {
         m_Alert.SetAlertSpeed(p_AlertSpeed);
     }
 
