@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FMOD;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -59,7 +60,7 @@ public class BasicEnemy : Human
 
     protected Vector2 m_MovePoint;
     private Coroutine m_MatCoroutine;
-
+    
     /// <summary>
     /// 사망 사유를 기재합니다. 머터리얼 교체용
     /// 0기본, 1불릿타임
@@ -219,28 +220,51 @@ public class BasicEnemy : Human
             ChangeEnemyFSM(EnemyStateName.STUN);
         }
     }
+    
+    private Vector2 _rayPosition
+    {
+        get
+        {
+            return new Vector2(transform.position.x, transform.position.y - 0.36f);
+        }
+    }
     public virtual void RaycastVisionCheck()
     {
-        Vector2 position = transform.position;
-        position.y -= 0.36f;
+        int _layerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Player"));
         
-        int layerMask = (1 << LayerMask.NameToLayer("Floor")) | (1 << LayerMask.NameToLayer("Player"));
+        m_VisionHit = m_NullHit;
+        RaycastHit2D[] rayHits = null;
+
+        rayHits = Physics2D.RaycastAll(_rayPosition, m_IsRightHeaded ? Vector2.right : Vector2.left,
+            p_VisionDistance, _layerMask);
+        Array.Sort(rayHits, (a, b) => (a.distance.CompareTo(b.distance)));
         
-        if (m_IsRightHeaded)
+        Debug.DrawRay(_rayPosition,
+            (m_IsRightHeaded ? Vector2.right : Vector2.left) * p_VisionDistance, Color.red);
+
+        if (rayHits.Length <= 0) 
+            return;
+        
+        if (rayHits[0].collider.CompareTag("Player"))
         {
-            m_VisionHit = Physics2D.Raycast(position, Vector2.right, p_VisionDistance, layerMask);
-            Debug.DrawRay(position, Vector2.right * p_VisionDistance, Color.red);
+            m_VisionHit = rayHits[0];
         }
         else
         {
-            m_VisionHit = Physics2D.Raycast( position, -Vector2.right, p_VisionDistance, layerMask);
-            Debug.DrawRay(position, -Vector2.right * p_VisionDistance, Color.red);
+            int shieldCount = 0;
+            for (int i = 0; i < rayHits.Length; i++)
+            {
+                if (rayHits[i].collider.CompareTag("Shield"))
+                {
+                    shieldCount++;
+                }
+                else if (rayHits[i].collider.CompareTag("Player") &&
+                         i == shieldCount)
+                {
+                    m_VisionHit = rayHits[i];
+                }
+            }
         }
-
-        //Debug.Log(m_VisionHit.collider.name);
-        
-        if (!ReferenceEquals(m_VisionHit.collider, null) && !m_VisionHit.collider.CompareTag("Player"))
-            m_VisionHit = m_NullHit;
     }
     public virtual void ChangeEnemyFSM(EnemyStateName _name)
     {
