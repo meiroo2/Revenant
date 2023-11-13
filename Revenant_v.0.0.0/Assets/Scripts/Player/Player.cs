@@ -67,6 +67,9 @@ public class Player : Human
 
 
     // Member Variables
+    private float _playerSpeedRatio = 1f;
+    private Coroutine _playerAddSpeedCoroutine = null;
+    
     [ReadOnly] public bool bIsOnStair = false;
     public int PlayerStairNum { get; set; } = 0;
     public int PlayerMapSectionNum { get; set; } = 0;
@@ -287,6 +290,12 @@ public class Player : Human
 
     // Functions
 
+    public void SetPlayerSpeedRatio(float value)
+    {
+        _playerSpeedRatio = value;
+    }
+    
+    
     /// <summary>
     /// 플레이어 좌우에 Ray를 싸 빈 공간 여부를 확인합니다.
     /// 0이면 없음, 1이면 왼쪽, 2면 오른쪽, 3이면 전부 빔
@@ -529,12 +538,14 @@ public class Player : Human
 
             case 1:
                 m_PlayerRigid.velocity =
-                    -StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal) * (p_MoveSpeed * _multi);
+                    -StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal) * 
+                    ((p_MoveSpeed * _playerSpeedRatio) * _multi);
                 break;
 
             case -1:
                 m_PlayerRigid.velocity =
-                    StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal) * (p_MoveSpeed * _multi);
+                    StaticMethods.getLPerpVec(m_PlayerFootMgr.m_PlayerNormal) * 
+                    ((p_MoveSpeed * _playerSpeedRatio) * _multi);
                 break;
         }
     }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Enemy.BossGang;
+using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
 
@@ -158,6 +159,10 @@ public class Walk_BossGang : BossGang_FSM
                 break;
 
             case 4:
+                // FOR TEST
+                m_Enemy.ChangeBossFSM(BossStateName.LEAPATK);
+                break;
+                
                 m_Phase = -1;
 
                 float distance = m_Enemy.GetDistanceBetPlayer();
@@ -524,7 +529,8 @@ public class LeapAtk_BossGang : BossGang_FSM
     private Vector2 m_ColSpawnPos;
     private Vector2 m_LandPos;
     private readonly int Leap = Animator.StringToHash("Leap");
-
+    private BossGang_SpeedDownCol _speedDownCol = null;
+    
     // Constructor
     public LeapAtk_BossGang(BossGang _enemy)
     {
@@ -637,6 +643,15 @@ public class LeapAtk_BossGang : BossGang_FSM
                     
                     m_EnemyTransform.position = m_LandPos;
                     m_Enemy.p_LeapColMaster.DoAttack();
+                    
+                    // Hard Mode
+                    if (m_Enemy.IsHardMode)
+                    {
+                        _speedDownCol = GameObject.Instantiate(m_Enemy.PlayerSpeedDownCol);
+                        _speedDownCol.transform.position = m_LandPos;
+                        _speedDownCol.PlayerSpeedRatio = m_Enemy.PlayerSpeedRatio;
+                        _speedDownCol.SetLifeTime(m_Enemy.PlayerSpeedDownColLifeTime);
+                    }
                     
                     m_Phase = 5;
                 }

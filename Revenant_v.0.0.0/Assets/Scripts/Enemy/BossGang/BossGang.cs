@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Enemy.BossGang;
 using UnityEditor;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -95,6 +96,12 @@ public class BossGang : BasicEnemy, ISpriteMatChange
     public Image p_BossHpImage;
     public CircleCollider2D p_HeadCol;
     public BoxCollider2D p_BodyCol;
+
+    // Hard Mode
+    [TitleGroup("Hard_Mode")] public bool IsHardMode = false;
+    [TitleGroup("Hard_Mode")] public BossGang_SpeedDownCol PlayerSpeedDownCol;
+    [TitleGroup("Hard_Mode")] public float PlayerSpeedRatio = 0.5f;
+    [TitleGroup("Hard_Mode")] public float PlayerSpeedDownColLifeTime = 1f;
     
     private float p_MaxHp;
     
